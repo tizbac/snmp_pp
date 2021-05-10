@@ -1,5 +1,4 @@
-message (STATUS "Running with CMake ${CMAKE_VERSION}")
-cmake_minimum_required (VERSION 3.15)
+cmake_minimum_required (VERSION 3.15...3.20)
 
 project (snmp_pp VERSION 3.4.6 LANGUAGES CXX)
 
