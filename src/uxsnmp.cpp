@@ -782,7 +782,7 @@ void Snmp::init(int& status, IpAddress *addresses[2],
       setCloseOnExecFlag(iv_snmp_session);
 
       // bind the socket
-      if (bind(iv_snmp_session, (struct sockaddr*)&mgr_addr,
+      if (::bind(iv_snmp_session, (struct sockaddr*)&mgr_addr,
                sizeof(mgr_addr)) < 0)
       {
 #ifdef WIN32
@@ -900,7 +900,7 @@ void Snmp::init(int& status, IpAddress *addresses[2],
       mgr_addr.sin6_port = htons( port_v6);
       mgr_addr.sin6_scope_id = scope;
       // bind the socket
-      if (bind(iv_snmp_session_ipv6, (struct sockaddr*) &mgr_addr,
+      if (::bind(iv_snmp_session_ipv6, (struct sockaddr*) &mgr_addr,
                sizeof(mgr_addr)) < 0)
       {
 #ifdef WIN32

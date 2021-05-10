@@ -2,7 +2,6 @@ message (STATUS "Running with CMake ${CMAKE_VERSION}")
 cmake_minimum_required (VERSION 3.15)
 
 project (snmp_pp VERSION 3.4.6 LANGUAGES CXX)
-enable_language (CXX)
 
 include (CheckIncludeFiles)
 include (CheckFunctionExists)
@@ -30,12 +29,12 @@ option (OPTION_EXTENDED_DEBUG "Enable additional debug messages" OFF)
 
 set (LogProfile "original" CACHE STRING
   "Log Profile")
- 
+
 set (LogProfileValues "original;off;quiet;std;events;verbose;full;debug;schwafel" CACHE STRING
   "List of possible values for the Log Profile variable")
- 
+
 set_property (CACHE LogProfile PROPERTY STRINGS ${LogProfileValues})
- 
+
 message (STATUS "LogProfile='${LogProfile}'")
 
 set (VERSION ${PROJECT_VERSION})
@@ -198,7 +197,7 @@ endif ()
 check_struct_has_member ("struct sockaddr_storage"
             ss_family "${SOCKADDR_HEADERS}"
             CNF_HAVE_STRUCT_SOCKADDR_STORAGE_SS_FAMILY LANGUAGE CXX)
-            
+
 check_struct_has_member ("struct sockaddr_storage"
             __ss_family "${SOCKADDR_HEADERS}"
             CNF_HAVE_STRUCT_SOCKADDR_STORAGE___SS_FAMILY LANGUAGE CXX)
@@ -283,11 +282,11 @@ if (OPTION_OPENSSL)
   if (OPENSSL_FOUND)
     message (STATUS "Found OpenSSL (include: ${OPENSSL_INCLUDE_DIR}, library: ${OPENSSL_LIBRARIES})")
 
-    include_directories (${OPENSSL_INCLUDE_DIR})
+    set (CRYPTO_INCLUDE_DIRS ${OPENSSL_INCLUDE_DIR})
     set (CRYPTO_LINKLIBS ${OPENSSL_LIBRARIES})
-  else (OPENSSL_FOUND)
+  else ()
     message (FATAL_ERROR "OpenSSL NOT found")
-  endif (OPENSSL_FOUND)
+  endif ()
 
   set (WITH_LIBSSL 1)
 else ()
@@ -297,11 +296,11 @@ endif ()
 if (OPTION_LIBTOMCRYPT)
   find_package (TOMCRYPT)
   if (TOMCRYPT_FOUND)
-    include_directories (${TOMCRYPT_INCLUDE_DIR})
+    set (CRYPTO_INCLUDE_DIRS ${TOMCRYPT_INCLUDE_DIR})
     set (CRYPTO_LINKLIBS ${TOMCRYPT_LIBRARIES})
-  else (TOMCRYPT_FOUND)
+  else ()
     message (FATAL_ERROR " Libtomcrypt NOT found!")
-  endif (TOMCRYPT_FOUND)
+  endif ()
 
    set (WITH_LIBTOMCRYPT 1)
 else ()
@@ -314,11 +313,11 @@ if (OPTION_LIBDES)
 
   if (DES_FOUND)
     message (STATUS "Libdes found / ${DES_INCLUDE_DIR} / ${DES_LIBRARIES} / ")
-    include_directories (${DES_INCLUDE_DIR})
+    set (CRYPTO_INCLUDE_DIRS ${DES_INCLUDE_DIR})
     set (CRYPTO_LINKLIBS ${DES_LIBRARIES})
-  else (DES_FOUND)
+  else ()
     message (FATAL_ERROR " Libdes NOT found!")
-  endif (DES_FOUND)
+  endif ()
 
   set (WITH_LIBDES 1)
 else ()
@@ -350,7 +349,7 @@ check_type_size (size_t SIZE_T LANGUAGE CXX)
 if (NOT HAVE_SIZE_T)
   if ("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
     set (size_t "uint64_t")
-  else ("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
+  else ()
     set (size_t   "uint32_t")
   endif ("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
 endif ()
@@ -365,22 +364,15 @@ configure_file (${CMAKE_CURRENT_SOURCE_DIR}/cmake_libsnmp.h.in ${CMAKE_CURRENT_S
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/cmake_libsnmp.h.in ${CMAKE_CURRENT_SOURCE_DIR}/include/system/libsnmp.h)
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/include/snmp_pp/config_snmp_pp.h.in ${CMAKE_CURRENT_SOURCE_DIR}/include/snmp_pp/config_snmp_pp.h)
 
-set (CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -DHAVE_CONFIG_H")
 
 if (MSVC)
     # warning level 4 (all warnings as errors: /WX)
     add_compile_options (/W4 /WX)
 else ()
-    # lots of warnings (-Wextra -pedantic)
     add_compile_options (-Wall)
+    # TODO: lots of warnings (-Wextra -Wpedantic)
 endif ()
 
-include_directories (${CMAKE_BINARY_DIR})
-include_directories (.)
-include_directories (include)
-include_directories (include/snmp_pp)
-include_directories (include/system)
-include_directories (snmp_pp)
 
 set (MY_HEADER_FILES
   include/snmp_pp/address.h
@@ -461,7 +453,6 @@ set (MY_SRC_FILES
   src/vb.cpp
   )
 
-link_libraries (${CRYPTO_LINKLIBS})
 
 add_library (snmp++ SHARED
   ${MY_HEADER_FILES}
@@ -470,9 +461,14 @@ add_library (snmp++ SHARED
   ${MY_SRC_FILES}
 )
 
+
 set_property (TARGET snmp++ PROPERTY POSITION_INDEPENDENT_CODE 1)
 # Set .so version as autoconf does: snmp++ version 1.2.3 will go to .so.12.0.3!
 set_target_properties (snmp++ PROPERTIES VERSION ${PROJECT_VERSION_MAJOR}${PROJECT_VERSION_MINOR}.0.${PROJECT_VERSION_PATCH} SOVERSION ${PROJECT_VERSION_MAJOR}${PROJECT_VERSION_MINOR})
+set_target_properties (snmp++ PROPERTIES CXX_STANDARD ${CMAKE_CXX_STANDARD})
+target_link_libraries (snmp++ PUBLIC ${CRYPTO_LINKLIBS})
+target_compile_definitions (snmp++ PUBLIC -DHAVE_CONFIG_H)
+target_include_directories (snmp++ SYSTEM BEFORE PRIVATE ${CMAKE_BINARY_DIR} . include include/system ${CRYPTO_INCLUDE_DIRS})
 
 set (EXAMPLE_SOURCE_FILES
         consoleExamples/receive_trap.cpp
@@ -495,18 +491,25 @@ foreach (examplesourcefile ${EXAMPLE_SOURCE_FILES})
     string (REPLACE "consoleExamples/" "" examplename ${examplename})
     add_executable (${examplename} ${examplesourcefile})
     target_link_libraries (${examplename} snmp++)
+    target_include_directories (${examplename} SYSTEM BEFORE PRIVATE ${CMAKE_BINARY_DIR} . include include/system ${CRYPTO_INCLUDE_DIRS})
     if (WITH_THREADS)
       if (NOT APPLE)
         target_link_libraries (${examplename} Threads::Threads)
-      endif (NOT APPLE)
+      endif ()
     endif ()
 
-endforeach (examplesourcefile ${EXAMPLE_SOURCE_FILES})
+endforeach ()
 
 add_library (snmp++_static STATIC
   ${MY_HEADER_FILES}
+  ${MY_HEADER_LIB_FILES}
+  config.h
   ${MY_SRC_FILES}
 )
+set_target_properties(snmp++_static PROPERTIES CXX_STANDARD ${CMAKE_CXX_STANDARD})
+target_link_libraries (snmp++_static PUBLIC ${CRYPTO_LINKLIBS})
+target_compile_definitions (snmp++_static PUBLIC -DHAVE_CONFIG_H)
+target_include_directories (snmp++_static SYSTEM BEFORE PRIVATE ${CMAKE_BINARY_DIR} . include include/system ${CRYPTO_INCLUDE_DIRS})
 
 install (TARGETS snmp++ DESTINATION lib)
 install (TARGETS snmp++_static DESTINATION lib)
