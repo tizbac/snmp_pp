@@ -358,9 +358,8 @@ check_include_files (malloc.h HAVE_MALLOC_H)
 check_include_files ("sys/param.h;sys/mount.h" HAVE_SYS_MOUNT_H)
 check_function_exists ("strcasecmp" HAVE_STRCASECMP)
 
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/cmake_config.h.in ${CMAKE_CURRENT_SOURCE_DIR}/config.h)
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/cmake_libsnmp.h.in ${CMAKE_CURRENT_SOURCE_DIR}/libsnmp.h)
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/cmake_libsnmp.h.in ${CMAKE_CURRENT_SOURCE_DIR}/include/system/libsnmp.h)
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/cmake_config.h.in config.h)
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/cmake_libsnmp.h.in libsnmp.h)
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/include/snmp_pp/config_snmp_pp.h.in ${CMAKE_CURRENT_SOURCE_DIR}/include/snmp_pp/config_snmp_pp.h)
 
 
@@ -415,7 +414,7 @@ set (MY_HEADER_FILES
   )
 
 set (MY_HEADER_LIB_FILES
-  libsnmp.h
+  ${CMAKE_BINARY_DIR}/libsnmp.h
   )
 
 set (MY_SRC_FILES
@@ -456,7 +455,7 @@ set (MY_SRC_FILES
 add_library (snmp++ SHARED
   ${MY_HEADER_FILES}
   ${MY_HEADER_LIB_FILES}
-  config.h
+  ${CMAKE_BINARY_DIR}/config.h
   ${MY_SRC_FILES}
 )
 
@@ -467,7 +466,7 @@ set_target_properties (snmp++ PROPERTIES VERSION ${PROJECT_VERSION_MAJOR}${PROJE
 set_target_properties (snmp++ PROPERTIES CXX_STANDARD ${CMAKE_CXX_STANDARD})
 target_link_libraries (snmp++ PUBLIC ${CRYPTO_LINKLIBS})
 target_compile_definitions (snmp++ PUBLIC -DHAVE_CONFIG_H)
-target_include_directories (snmp++ SYSTEM BEFORE PRIVATE ${CMAKE_BINARY_DIR} . include include/system ${CRYPTO_INCLUDE_DIRS})
+target_include_directories (snmp++ SYSTEM BEFORE PRIVATE ${CMAKE_BINARY_DIR} . include ${CRYPTO_INCLUDE_DIRS})
 
 set (EXAMPLE_SOURCE_FILES
         consoleExamples/receive_trap.cpp
@@ -490,7 +489,7 @@ foreach (examplesourcefile ${EXAMPLE_SOURCE_FILES})
     string (REPLACE "consoleExamples/" "" examplename ${examplename})
     add_executable (${examplename} ${examplesourcefile})
     target_link_libraries (${examplename} snmp++)
-    target_include_directories (${examplename} SYSTEM BEFORE PRIVATE ${CMAKE_BINARY_DIR} . include include/system ${CRYPTO_INCLUDE_DIRS})
+    target_include_directories (${examplename} SYSTEM BEFORE PRIVATE ${CMAKE_BINARY_DIR} . include ${CRYPTO_INCLUDE_DIRS})
     if (WITH_THREADS)
       if (NOT APPLE)
         target_link_libraries (${examplename} Threads::Threads)
@@ -502,13 +501,13 @@ endforeach ()
 add_library (snmp++_static STATIC
   ${MY_HEADER_FILES}
   ${MY_HEADER_LIB_FILES}
-  config.h
+  ${CMAKE_BINARY_DIR}/config.h
   ${MY_SRC_FILES}
 )
 set_target_properties(snmp++_static PROPERTIES CXX_STANDARD ${CMAKE_CXX_STANDARD})
 target_link_libraries (snmp++_static PUBLIC ${CRYPTO_LINKLIBS})
 target_compile_definitions (snmp++_static PUBLIC -DHAVE_CONFIG_H)
-target_include_directories (snmp++_static SYSTEM BEFORE PRIVATE ${CMAKE_BINARY_DIR} . include include/system ${CRYPTO_INCLUDE_DIRS})
+target_include_directories (snmp++_static SYSTEM BEFORE PRIVATE ${CMAKE_BINARY_DIR} . include ${CRYPTO_INCLUDE_DIRS})
 
 install (TARGETS snmp++ DESTINATION lib)
 install (TARGETS snmp++_static DESTINATION lib)
