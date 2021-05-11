@@ -465,7 +465,7 @@ set_property (TARGET snmp++ PROPERTY POSITION_INDEPENDENT_CODE 1)
 set_target_properties (snmp++ PROPERTIES VERSION ${PROJECT_VERSION_MAJOR}${PROJECT_VERSION_MINOR}.0.${PROJECT_VERSION_PATCH} SOVERSION ${PROJECT_VERSION_MAJOR}${PROJECT_VERSION_MINOR})
 set_target_properties (snmp++ PROPERTIES CXX_STANDARD ${CMAKE_CXX_STANDARD})
 target_link_libraries (snmp++ PUBLIC ${CRYPTO_LINKLIBS})
-target_compile_definitions (snmp++ PUBLIC -DHAVE_CONFIG_H)
+# NOT installed! CK target_compile_definitions (snmp++ PUBLIC -DHAVE_CONFIG_H)
 target_include_directories (snmp++ SYSTEM BEFORE PRIVATE ${CMAKE_BINARY_DIR} . include ${CRYPTO_INCLUDE_DIRS})
 
 set (EXAMPLE_SOURCE_FILES
@@ -506,7 +506,7 @@ add_library (snmp++_static STATIC
 )
 set_target_properties(snmp++_static PROPERTIES CXX_STANDARD ${CMAKE_CXX_STANDARD})
 target_link_libraries (snmp++_static PUBLIC ${CRYPTO_LINKLIBS})
-target_compile_definitions (snmp++_static PUBLIC -DHAVE_CONFIG_H)
+# NOT installed! CK target_compile_definitions (snmp++_static PUBLIC -DHAVE_CONFIG_H)
 target_include_directories (snmp++_static SYSTEM BEFORE PRIVATE ${CMAKE_BINARY_DIR} . include ${CRYPTO_INCLUDE_DIRS})
 
 install (TARGETS snmp++ DESTINATION lib)
