@@ -17,5 +17,5 @@ find_package_handle_standard_args(DES DEFAULT_MSG DES_INCLUDE_DIR DES_LIBRARIES)
 if(DES_FOUND)
   message(STATUS "Found DES (include: ${DES_INCLUDE_DIR}, library: ${DES_LIBRARIES})")
   mark_as_advanced(DES_INCLUDE_DIR DES_LIBRARIES)
-endif(DES_FOUND)
+endif()
 

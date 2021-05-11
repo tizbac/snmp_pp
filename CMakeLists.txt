@@ -283,6 +283,7 @@ if (OPTION_OPENSSL)
 
     set (CRYPTO_INCLUDE_DIRS ${OPENSSL_INCLUDE_DIR})
     set (CRYPTO_LINKLIBS ${OPENSSL_LIBRARIES})
+    set (CRYPTO_LIB OpenSSL)
   else ()
     message (FATAL_ERROR "OpenSSL NOT found")
   endif ()
@@ -297,6 +298,7 @@ if (OPTION_LIBTOMCRYPT)
   if (TOMCRYPT_FOUND)
     set (CRYPTO_INCLUDE_DIRS ${TOMCRYPT_INCLUDE_DIR})
     set (CRYPTO_LINKLIBS ${TOMCRYPT_LIBRARIES})
+    set (CRYPTO_LIB TOMCRYPT)
   else ()
     message (FATAL_ERROR " Libtomcrypt NOT found!")
   endif ()
@@ -314,6 +316,7 @@ if (OPTION_LIBDES)
     message (STATUS "Libdes found / ${DES_INCLUDE_DIR} / ${DES_LIBRARIES} / ")
     set (CRYPTO_INCLUDE_DIRS ${DES_INCLUDE_DIR})
     set (CRYPTO_LINKLIBS ${DES_LIBRARIES})
+    set (CRYPTO_LIB DES)
   else ()
     message (FATAL_ERROR " Libdes NOT found!")
   endif ()
@@ -411,11 +414,11 @@ set (MY_HEADER_FILES
   include/snmp_pp/uxsnmp.h
   include/snmp_pp/v3.h
   include/snmp_pp/vb.h
-  )
+)
 
 set (MY_HEADER_LIB_FILES
   ${CMAKE_BINARY_DIR}/libsnmp.h
-  )
+)
 
 set (MY_SRC_FILES
   src/address.cpp
@@ -449,7 +452,7 @@ set (MY_SRC_FILES
   src/uxsnmp.cpp
   src/v3.cpp
   src/vb.cpp
-  )
+)
 
 
 add_library (snmp++ SHARED
@@ -465,31 +468,30 @@ set_property (TARGET snmp++ PROPERTY POSITION_INDEPENDENT_CODE 1)
 set_target_properties (snmp++ PROPERTIES VERSION ${PROJECT_VERSION_MAJOR}${PROJECT_VERSION_MINOR}.0.${PROJECT_VERSION_PATCH} SOVERSION ${PROJECT_VERSION_MAJOR}${PROJECT_VERSION_MINOR})
 set_target_properties (snmp++ PROPERTIES CXX_STANDARD ${CMAKE_CXX_STANDARD})
 target_link_libraries (snmp++ PUBLIC ${CRYPTO_LINKLIBS})
-# NOT installed! CK target_compile_definitions (snmp++ PUBLIC -DHAVE_CONFIG_H)
-target_include_directories (snmp++ SYSTEM BEFORE PRIVATE ${CMAKE_BINARY_DIR} . include ${CRYPTO_INCLUDE_DIRS})
+target_include_directories (snmp++ SYSTEM BEFORE PRIVATE ${CMAKE_BINARY_DIR} include ${CRYPTO_INCLUDE_DIRS})
 
 set (EXAMPLE_SOURCE_FILES
-        consoleExamples/receive_trap.cpp
-        consoleExamples/snmpBulk.cpp
-        consoleExamples/snmpDiscover.cpp
-        consoleExamples/snmpGet.cpp
-        consoleExamples/snmpInform.cpp
-        consoleExamples/snmpNext.cpp
-        consoleExamples/snmpNextAsync.cpp
-        consoleExamples/snmpPasswd.cpp
-        consoleExamples/snmpSet.cpp
-        consoleExamples/snmpTraps.cpp
-        consoleExamples/snmpWalk.cpp
-        consoleExamples/snmpWalkThreads.cpp
-        consoleExamples/test_app.cpp
-        )
+  consoleExamples/receive_trap.cpp
+  consoleExamples/snmpBulk.cpp
+  consoleExamples/snmpDiscover.cpp
+  consoleExamples/snmpGet.cpp
+  consoleExamples/snmpInform.cpp
+  consoleExamples/snmpNext.cpp
+  consoleExamples/snmpNextAsync.cpp
+  consoleExamples/snmpPasswd.cpp
+  consoleExamples/snmpSet.cpp
+  consoleExamples/snmpTraps.cpp
+  consoleExamples/snmpWalk.cpp
+  consoleExamples/snmpWalkThreads.cpp
+  consoleExamples/test_app.cpp
+)
 
 foreach (examplesourcefile ${EXAMPLE_SOURCE_FILES})
     string (REPLACE ".cpp" "" examplename ${examplesourcefile})
     string (REPLACE "consoleExamples/" "" examplename ${examplename})
     add_executable (${examplename} ${examplesourcefile})
     target_link_libraries (${examplename} snmp++)
-    target_include_directories (${examplename} SYSTEM BEFORE PRIVATE ${CMAKE_BINARY_DIR} . include ${CRYPTO_INCLUDE_DIRS})
+    target_include_directories (${examplename} SYSTEM BEFORE PRIVATE ${CMAKE_BINARY_DIR} include ${CRYPTO_INCLUDE_DIRS})
     if (WITH_THREADS)
       if (NOT APPLE)
         target_link_libraries (${examplename} Threads::Threads)
@@ -498,19 +500,54 @@ foreach (examplesourcefile ${EXAMPLE_SOURCE_FILES})
 
 endforeach ()
 
-add_library (snmp++_static STATIC
+add_library (snmp_pp STATIC
   ${MY_HEADER_FILES}
   ${MY_HEADER_LIB_FILES}
   ${CMAKE_BINARY_DIR}/config.h
   ${MY_SRC_FILES}
 )
-set_target_properties(snmp++_static PROPERTIES CXX_STANDARD ${CMAKE_CXX_STANDARD})
-target_link_libraries (snmp++_static PUBLIC ${CRYPTO_LINKLIBS})
-# NOT installed! CK target_compile_definitions (snmp++_static PUBLIC -DHAVE_CONFIG_H)
-target_include_directories (snmp++_static SYSTEM BEFORE PRIVATE ${CMAKE_BINARY_DIR} . include ${CRYPTO_INCLUDE_DIRS})
+set_target_properties(snmp_pp PROPERTIES CXX_STANDARD ${CMAKE_CXX_STANDARD})
+target_link_libraries (snmp_pp PUBLIC ${CRYPTO_LINKLIBS})
+target_include_directories (snmp_pp SYSTEM BEFORE PRIVATE ${CMAKE_BINARY_DIR} ${PROJECT_SOURCE_DIR}/include)
+target_include_directories (snmp_pp PUBLIC
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include ${CRYPTO_INCLUDE_DIRS}>
+  $<INSTALL_INTERFACE:include>
+)
 
 install (TARGETS snmp++ DESTINATION lib)
-install (TARGETS snmp++_static DESTINATION lib)
+#XXX install (TARGETS snmp_pp DESTINATION lib)
 install (FILES ${MY_HEADER_LIB_FILES} DESTINATION include)
-install (FILES ${MY_HEADER_FILES} DESTINATION include/snmp_pp)
+#XXX install (FILES ${MY_HEADER_FILES} DESTINATION include/snmp_pp)
+#XXX we use:
+## CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.7.0")
+include(PackageProject)
 
+packageProject(
+  # the name of the target to export
+  NAME ${PROJECT_NAME}
+  # the version of the target to export
+  VERSION ${PROJECT_VERSION}
+  # a temporary directory to create the config files
+  BINARY_DIR ${PROJECT_BINARY_DIR}
+  # location of the target's public headers
+  INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include
+  # should match the target's INSTALL_INTERFACE include directory
+  INCLUDE_DESTINATION include
+  # semicolon separated list of the project's dependencies
+  DEPENDENCIES "${CRYPTO_LIB}"
+  # (optional) create a header containing the version info
+  # Note: that the path to headers should be lowercase
+  ## VERSION_HEADER "${PROJECT_NAME}/version.h"
+  # (optional) create a export header using GenerateExportHeader module
+  ## EXPORT_HEADER "${PROJECT_NAME}/export.h"
+  # (optional) install your library with a namespace (Note: do NOT add extra '::')
+  NAMESPACE ${PROJECT_NAME}
+  # (optional) define the project's version compatibility, defaults to `AnyNewerVersion`
+  # supported values: `AnyNewerVersion|SameMajorVersion|SameMinorVersion|ExactVersion`
+  COMPATIBILITY SameMajorVersion
+  # (optional) option to disable the versioning of install destinations
+  DISABLE_VERSION_SUFFIX YES
+  # (optional) option to ignore target architecture for package resolution
+  # defaults to YES for header only (i.e. INTERFACE) libraries
+  ## ARCH_INDEPENDENT YES
+)
