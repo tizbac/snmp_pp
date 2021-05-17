@@ -203,11 +203,11 @@ check_struct_has_member ("struct sockaddr_storage"
 
 
 if (OPTION_SNMPv3)
-  set (_SNMPv3 1)
-  set (_NO_SNMPv3 0)
+   set (_SNMPv3 1)
+   set (_NO_SNMPv3 0)
 else ()
-  set (_SNMPv3 0)
-  set (_NO_SNMPv3 1)
+   set (_SNMPv3 0)
+   set (_NO_SNMPv3 1)
 endif ()
 
 if (OPTION_IPv6)
@@ -219,17 +219,8 @@ else ()
 endif ()
 
 if (OPTION_THREADS)
-  set (CMAKE_THREAD_PREFER_PTHREAD 1)
-  if (APPLE)
-    # assume built-in pthreads on MacOS
-    set (CMAKE_THREAD_LIBS_INIT "-lpthread")
-    set (CMAKE_HAVE_THREADS_LIBRARY 1)
-    set (CMAKE_USE_WIN32_THREADS_INIT 0)
-    set (CMAKE_USE_PTHREADS_INIT 1)
-    set (THREADS_PREFER_PTHREAD_FLAG ON)
-  else ()
-    find_package (Threads)
-  endif ()
+   set (CMAKE_THREAD_PREFER_PTHREAD 1)
+   find_package (Threads REQUIRED)
 
    set (WITH_THREADS 1)
    if (CNF_HAVE_PTHREAD_H)
@@ -238,7 +229,7 @@ if (OPTION_THREADS)
       set (WITH_PTHREAD 0)
    endif ()
 else ()
-  set (CMAKE_DISABLE_FIND_PACKAGE_Threads ON)
+   set (CMAKE_DISABLE_FIND_PACKAGE_Threads ON)
    set (WITH_THREADS 0)
    set (WITH_PTHREAD 0)
 endif ()
@@ -467,7 +458,7 @@ set_property (TARGET snmp++ PROPERTY POSITION_INDEPENDENT_CODE 1)
 # Set .so version as autoconf does: snmp++ version 1.2.3 will go to .so.12.0.3!
 set_target_properties (snmp++ PROPERTIES VERSION ${PROJECT_VERSION_MAJOR}${PROJECT_VERSION_MINOR}.0.${PROJECT_VERSION_PATCH} SOVERSION ${PROJECT_VERSION_MAJOR}${PROJECT_VERSION_MINOR})
 set_target_properties (snmp++ PROPERTIES CXX_STANDARD ${CMAKE_CXX_STANDARD})
-target_link_libraries (snmp++ PUBLIC ${CRYPTO_LINKLIBS})
+target_link_libraries (snmp++ PUBLIC ${CRYPTO_LINKLIBS} Threads::Threads)
 target_include_directories (snmp++ SYSTEM BEFORE PRIVATE ${CMAKE_BINARY_DIR} include ${CRYPTO_INCLUDE_DIRS})
 
 set (EXAMPLE_SOURCE_FILES
@@ -492,12 +483,6 @@ foreach (examplesourcefile ${EXAMPLE_SOURCE_FILES})
     add_executable (${examplename} ${examplesourcefile})
     target_link_libraries (${examplename} snmp++)
     target_include_directories (${examplename} SYSTEM BEFORE PRIVATE ${CMAKE_BINARY_DIR} include ${CRYPTO_INCLUDE_DIRS})
-    if (WITH_THREADS)
-      if (NOT APPLE)
-        target_link_libraries (${examplename} Threads::Threads)
-      endif ()
-    endif ()
-
 endforeach ()
 
 add_library (snmp_pp STATIC
@@ -507,10 +492,10 @@ add_library (snmp_pp STATIC
   ${MY_SRC_FILES}
 )
 set_target_properties(snmp_pp PROPERTIES CXX_STANDARD ${CMAKE_CXX_STANDARD})
-target_link_libraries (snmp_pp PUBLIC ${CRYPTO_LINKLIBS})
+target_link_libraries (snmp_pp PUBLIC ${CRYPTO_LINKLIBS} Threads::Threads)
 target_include_directories (snmp_pp SYSTEM BEFORE PRIVATE ${CMAKE_BINARY_DIR} ${PROJECT_SOURCE_DIR}/include)
 target_include_directories (snmp_pp PUBLIC
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include ${CRYPTO_INCLUDE_DIRS}>
+  $<BUILD_INTERFACE:${CRYPTO_INCLUDE_DIRS}>
   $<INSTALL_INTERFACE:include>
 )
 
@@ -534,7 +519,7 @@ packageProject(
   # should match the target's INSTALL_INTERFACE include directory
   INCLUDE_DESTINATION include
   # semicolon separated list of the project's dependencies
-  DEPENDENCIES "${CRYPTO_LIB}"
+  DEPENDENCIES "${CRYPTO_LIB}; Threads"
   # (optional) create a header containing the version info
   # Note: that the path to headers should be lowercase
   ## VERSION_HEADER "${PROJECT_NAME}/version.h"
