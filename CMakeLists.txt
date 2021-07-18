@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15...3.20)
+cmake_minimum_required(VERSION 3.14...3.21)
 
 project(
   snmp_pp
@@ -13,15 +13,16 @@ include(CheckLibraryExists)
 include(CheckStructHasMember)
 include(CheckTypeSize)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)
 
+option(OPTION_EXAMPLES "Enable to build examples" OFF)
 option(OPTION_SNMPv3 "Enable support for SNMPv3" ON)
 option(OPTION_IPv6 "Enable support for IPv6" ON)
 option(OPTION_THREADS "Enable support for threads" ON)
 option(OPTION_NAMESPACE "Enable using of namespace" ON)
-option(OPTION_LOGGING "Enable logging" ON)
+option(OPTION_LOGGING "Enable logging" OFF)
 option(OPTION_MACADDR "Enable MacAddress class" OFF)
 option(OPTION_IPXADDR "Enable IpxAddress class" OFF)
 option(OPTION_OPENSSL "Search for OpenSSL library" ON)
@@ -54,16 +55,20 @@ check_include_files(sys/types.h CNF_HAVE_SYS_TYPES_H)
 check_include_files(sys/stat.h CNF_HAVE_SYS_STAT_H)
 check_include_files("cctype;cerrno;climits;csignal;cstddef;cstdio;cstdlib;cstring;ctime" CNF_STDCXX_98_HEADERS)
 check_include_files("iostream" CNF_HAVE_IOSTREAM)
-check_include_files("stdlib.h;stddef.h" CNF_STDC_HEADERS)
-check_include_files(stdlib.h CNF_HAVE_STDLIB_H)
-check_include_files(string.h CNF_HAVE_STRING_H)
-check_include_files(memory.h CNF_HAVE_MEMORY_H)
-check_include_files(strings.h CNF_HAVE_STRINGS_H)
-check_include_files(inttypes.h CNF_HAVE_INTTYPES_H)
-check_include_files(ctype.h CNF_HAVE_CTYPE_H)
-check_include_files(signal.h CNF_HAVE_SIGNAL_H)
-check_include_files(errno.h CNF_HAVE_ERRNO_H)
-check_include_files(time.h CNF_HAVE_TIME_H)
+
+if(NOT CNF_STDCXX_98_HEADERS)
+  check_include_files("stdlib.h;stddef.h" CNF_STDC_HEADERS)
+  check_include_files(stdlib.h CNF_HAVE_STDLIB_H)
+  check_include_files(string.h CNF_HAVE_STRING_H)
+  check_include_files(memory.h CNF_HAVE_MEMORY_H)
+  check_include_files(strings.h CNF_HAVE_STRINGS_H)
+  check_include_files(inttypes.h CNF_HAVE_INTTYPES_H)
+  check_include_files(ctype.h CNF_HAVE_CTYPE_H)
+  check_include_files(signal.h CNF_HAVE_SIGNAL_H)
+  check_include_files(errno.h CNF_HAVE_ERRNO_H)
+  check_include_files(time.h CNF_HAVE_TIME_H)
+endif()
+
 check_include_files(unistd.h CNF_HAVE_UNISTD_H)
 check_include_files(sys/unistd.h CNF_HAVE_SYS_UNISTD_H)
 check_include_files(stdint.h CNF_HAVE_STDINT_H)
@@ -270,7 +275,11 @@ else()
 endif()
 
 if(OPTION_OPENSSL)
-  #set (OPENSSL_ROOT_DIR "/usr/local/opt/openssl")
+  # NOTE: may needed on OSX! CK
+  set(OPENSSL_ROOT_DIR
+      /usr/local/opt/openssl
+      CACHE FILEPATH ""
+  )
   find_package(OpenSSL REQUIRED)
 
   if(OPENSSL_FOUND)
@@ -336,6 +345,7 @@ endif()
 
 if(CNF_STDCXX_98_HEADERS)
   set(STDCXX_98_HEADERS 1)
+  unset(STDC_HEADERS)
 else()
   set(STDCXX_98_HEADERS 0)
 endif()
@@ -364,7 +374,7 @@ if(MSVC)
   # warning level 4 (all warnings as errors: /WX)
   add_compile_options(/W4 /WX)
 else()
-  add_compile_options(-Wall)
+  add_compile_options(-Wall -Wextra)
   # TODO: lots of warnings (-Wextra -Wpedantic)
 endif()
 
@@ -459,29 +469,31 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${CRYPTO_LINKLIBS} Threads::Threads
 target_include_directories(${PROJECT_NAME} SYSTEM BEFORE PRIVATE ${CMAKE_BINARY_DIR} ${PROJECT_SOURCE_DIR}/include)
 target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CRYPTO_INCLUDE_DIRS}> $<INSTALL_INTERFACE:include>)
 
-set(EXAMPLE_SOURCE_FILES
-    consoleExamples/receive_trap.cpp
-    consoleExamples/snmpBulk.cpp
-    consoleExamples/snmpDiscover.cpp
-    consoleExamples/snmpGet.cpp
-    consoleExamples/snmpInform.cpp
-    consoleExamples/snmpNext.cpp
-    consoleExamples/snmpNextAsync.cpp
-    consoleExamples/snmpPasswd.cpp
-    consoleExamples/snmpSet.cpp
-    consoleExamples/snmpTraps.cpp
-    consoleExamples/snmpWalk.cpp
-    consoleExamples/snmpWalkThreads.cpp
-    consoleExamples/test_app.cpp
-)
+if(OPTION_EXAMPLES)
+  set(EXAMPLE_SOURCE_FILES
+      consoleExamples/receive_trap.cpp
+      consoleExamples/snmpBulk.cpp
+      consoleExamples/snmpDiscover.cpp
+      consoleExamples/snmpGet.cpp
+      consoleExamples/snmpInform.cpp
+      consoleExamples/snmpNext.cpp
+      consoleExamples/snmpNextAsync.cpp
+      consoleExamples/snmpPasswd.cpp
+      consoleExamples/snmpSet.cpp
+      consoleExamples/snmpTraps.cpp
+      consoleExamples/snmpWalk.cpp
+      consoleExamples/snmpWalkThreads.cpp
+      consoleExamples/test_app.cpp
+  )
 
-foreach(examplesourcefile ${EXAMPLE_SOURCE_FILES})
-  string(REPLACE ".cpp" "" examplename ${examplesourcefile})
-  string(REPLACE "consoleExamples/" "" examplename ${examplename})
-  add_executable(${examplename} ${examplesourcefile})
-  target_link_libraries(${examplename} ${PROJECT_NAME})
-  target_include_directories(${examplename} SYSTEM BEFORE PRIVATE ${CMAKE_BINARY_DIR} ${PROJECT_SOURCE_DIR}/include)
-endforeach()
+  foreach(examplesourcefile ${EXAMPLE_SOURCE_FILES})
+    string(REPLACE ".cpp" "" examplename ${examplesourcefile})
+    string(REPLACE "consoleExamples/" "" examplename ${examplename})
+    add_executable(${examplename} ${examplesourcefile})
+    target_link_libraries(${examplename} ${PROJECT_NAME})
+    target_include_directories(${examplename} SYSTEM BEFORE PRIVATE ${CMAKE_BINARY_DIR} ${PROJECT_SOURCE_DIR}/include)
+  endforeach()
+endif()
 
 install(FILES ${MY_HEADER_LIB_FILES} DESTINATION include)
 
