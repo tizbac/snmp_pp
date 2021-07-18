@@ -17,5 +17,5 @@ find_package_handle_standard_args(TOMCRYPT DEFAULT_MSG TOMCRYPT_INCLUDE_DIR TOMC
 if(TOMCRYPT_FOUND)
   message(STATUS "Found TOMCRYPT (include: ${TOMCRYPT_INCLUDE_DIR}, library: ${TOMCRYPT_LIBRARIES})")
   mark_as_advanced(TOMCRYPT_INCLUDE_DIR TOMCRYPT_LIBRARIES)
-endif(TOMCRYPT_FOUND)
+endif()
 
