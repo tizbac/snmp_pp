@@ -214,7 +214,7 @@ long Snmp::MyMakeReqId()
     rid = ++current_rid;
 
 #ifdef INVALID_REQID
-    debugprintf(-10, "\nWARNING: Using constand RequestID!\n");
+    debugprintf(-10, "\nWARNING: Using constant RequestID!\n");
     rid = 0xc0de;
 #endif
 
@@ -782,7 +782,7 @@ void Snmp::init(int& status, IpAddress *addresses[2],
       setCloseOnExecFlag(iv_snmp_session);
 
       // bind the socket
-      if (::bind(iv_snmp_session, (struct sockaddr*)&mgr_addr,
+      if (bind(iv_snmp_session, (struct sockaddr*)&mgr_addr,
                sizeof(mgr_addr)) < 0)
       {
 #ifdef WIN32
@@ -900,7 +900,7 @@ void Snmp::init(int& status, IpAddress *addresses[2],
       mgr_addr.sin6_port = htons( port_v6);
       mgr_addr.sin6_scope_id = scope;
       // bind the socket
-      if (::bind(iv_snmp_session_ipv6, (struct sockaddr*) &mgr_addr,
+      if (bind(iv_snmp_session_ipv6, (struct sockaddr*) &mgr_addr,
                sizeof(mgr_addr)) < 0)
       {
 #ifdef WIN32
@@ -997,9 +997,9 @@ const char *Snmp::error_msg(const int c)
 {
 #ifdef _SNMPv3
   if (c>=SNMPv3_USM_MIN_ERROR)
-    return ((c>SNMPv3_USM_MAX_ERROR)?pv3Errs[SNMPv3_USM_ERRORCOUNT]:pv3Errs[c-SNMPv3_USM_MIN_ERROR]);
+    return ((c>SNMPv3_USM_MAX_ERROR)?pv3Errs[SNMPv3_USM_ERRORCOUNT+1]:pv3Errs[c-SNMPv3_USM_MIN_ERROR]);
   if (c<=SNMPv3_MP_MAX_ERROR)
-    return ((c<SNMPv3_MP_MIN_ERROR)?nv3Errs[SNMPv3_MP_ERRORCOUNT]:nv3Errs[SNMPv3_MP_MAX_ERROR - c]);
+    return ((c<SNMPv3_MP_MIN_ERROR)?nv3Errs[SNMPv3_MP_ERRORCOUNT+1]:nv3Errs[SNMPv3_MP_MAX_ERROR - c]);
 #endif
   return ((c<0)?
           ((c<MAX_NEG_ERROR)?nErrs[-(MAX_NEG_ERROR)+1]:nErrs[-c]):
@@ -1780,8 +1780,8 @@ int Snmp::snmp_engine( Pdu &pdu,              // pdu to use
           // Override const here
           ((UTarget*)utarget)->set_engine_id(engine_id);
         }
-	else
-	{
+        else
+        {
           // check if engine id discovery is enabled
           if ((!mpv3->get_usm()->is_discovery_enabled()) &&
               ((pdu_action == sNMP_PDU_GET) ||

@@ -194,7 +194,7 @@ static const char * nv3Errs[] = {
   "SNMPv3: Unavailable Context",        //-1416
   "SNMPv3: Unknown Context",            //-1417
   "SNMPv3: Report sent",                //-1418
-  "SNMPv3: Unknown errorcode"
+  "SNMPv3: Unknown error code"
 };
 
 static const char * pv3Errs[] = {
@@ -219,7 +219,7 @@ static const char * pv3Errs[] = {
   "SNMPv3: USM: Could not delete file",       // 1418
   "SNMPv3: USM: Could not write into file",   // 1419
   "SNMPv3: USM: Could not read from file",    // 1420
-  "SNMPv3: USM: unknown errorcode"
+  "SNMPv3: USM: Unknown error code"
 };
 #endif
 
