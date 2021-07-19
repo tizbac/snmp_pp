@@ -1,3 +1,13 @@
+Changes snmp++v3.4.7
+====================
+
+- Fixed: Snmp::error_msg() returns a string with "Unknown error code" for
+  invalid error codes.
+- Fixed: v3MP::remove_engine_id() did not remove localized users from USM
+  because USM::remove_engine_id() did not remove the localized users.
+- Fixed: Build failure if older snmp++ headers were installed in the same directory as
+  the used crypto library.
+
 Changes snmp++v3.4.6
 ====================
 

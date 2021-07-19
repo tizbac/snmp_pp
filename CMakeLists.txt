@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.14...3.21)
 
 project(
   snmp_pp
-  VERSION 3.4.6
+  VERSION 3.4.7
   LANGUAGES CXX
 )
 

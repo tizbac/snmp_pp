@@ -760,11 +760,8 @@ int USM::remove_all_users() {
 // Delete this engine id form all USM tables (users and engine time).
 int USM::remove_engine_id(const OctetStr &engine_id)
 {
-  int retval1, retval2;
-
-  retval1 = usm_time_table->delete_entry(engine_id);
-
-  retval2 = usm_user_table->delete_entries(engine_id);
+  int retval1 = usm_time_table->delete_entry(engine_id);
+  int retval2 = usm_user_table->delete_engine_id(engine_id);
 
   if ((retval1 == SNMPv3_USM_ERROR) ||
       (retval2 == SNMPv3_USM_ERROR))

@@ -380,7 +380,7 @@ int CNotifyEventQueue::AddEntry(Snmp *snmp,
 #endif
 
       // bind the socket
-      if (::bind(m_notify_fd, (struct sockaddr *) &mgr_addr,
+      if (bind(m_notify_fd, (struct sockaddr *) &mgr_addr,
                sizeof(mgr_addr)) < 0)
       {
 #ifdef WIN32
@@ -510,7 +510,7 @@ int CNotifyEventQueue::AddEntry(Snmp *snmp,
       mgr_addr.sin6_scope_id = scope;
 
       // bind the socket
-      if (::bind(m_notify_fd, (struct sockaddr *) &mgr_addr,
+      if (bind(m_notify_fd, (struct sockaddr *) &mgr_addr,
                sizeof(mgr_addr)) < 0)
       {
 #ifdef WIN32
