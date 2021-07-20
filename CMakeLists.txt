@@ -80,7 +80,6 @@ check_include_files(sys/timeb.h CNF_HAVE_SYS_TIMEB_H)
 check_include_files(winsock2.h CNF_HAVE_WINSOCK2_H)
 check_include_files(ws2tcpip.h CNF_HAVE_WS2TCPIP_H)
 check_include_files(wspiapi.h CNF_HAVE_WSPIAPI_H)
-check_include_files(winsock.h CNF_HAVE_WINSOCK_H)
 check_include_files(netdb.h CNF_HAVE_NETDB_H)
 check_include_files(sys/socket.h CNF_HAVE_SYS_SOCKET_H)
 check_include_files(arpa/inet.h CNF_HAVE_ARPA_INET_H)
@@ -151,7 +150,6 @@ check_include_files(unistd.h HAVE_UNISTD_H) # again?
 
 if(MSVC)
   check_include_files(winsock2.h HAVE_WINSOCK2_H)
-  check_include_files(winsock.h HAVE_WINSOCK_H)
   check_include_files(ws2tcpip.h HAVE_WS2TCPIP_H)
   check_include_files(wspiapi.h HAVE_WSPIAPI_H)
 endif()
@@ -193,9 +191,6 @@ if(CNF_HAVE_WINSOCK2_H)
 endif()
 if(CNF_HAVE_WS2TCPIP_H)
   set(SOCKADDR_HEADERS ${SOCKADDR_HEADERS} ws2tcpip.h)
-endif()
-if(CNF_HAVE_WINSOCK_H)
-  set(SOCKADDR_HEADERS ${SOCKADDR_HEADERS} winsock.h)
 endif()
 if(CNF_HAVE_NETDB_H)
   set(SOCKADDR_HEADERS ${SOCKADDR_HEADERS} netdb.h)
@@ -378,14 +373,6 @@ configure_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/include/snmp_pp/config_snmp_pp.h
 )
 
-if(MSVC)
-  # warning level 4 (all warnings as errors: /WX)
-  add_compile_options(/W4 /WX)
-else()
-  add_compile_options(-Wall -Wextra)
-  # TODO: lots of warnings (-Wextra -Wpedantic)
-endif()
-
 set(MY_HEADER_FILES
     include/snmp_pp/address.h
     include/snmp_pp/asn1.h
@@ -464,7 +451,15 @@ set(MY_SRC_FILES
 )
 
 option(BUILD_SHARED_LIBS "Global flag to cause add_library() to create shared libraries if on." ON)
-add_library(${PROJECT_NAME} ${MY_HEADER_FILES} ${MY_HEADER_LIB_FILES} ${CMAKE_CURRENT_BINARY_DIR}/config.h ${MY_SRC_FILES})
+add_library(${PROJECT_NAME} STATIC ${MY_HEADER_FILES} ${MY_HEADER_LIB_FILES} ${CMAKE_CURRENT_BINARY_DIR}/config.h ${MY_SRC_FILES})
+
+if(MSVC)
+  # warning level 4 (all warnings as errors: /WX)
+  target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
+else()
+  target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra)
+  # TODO: lots of warnings (-Wextra -Wpedantic)
+endif()
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE 1)
 # Set .so version as autoconf does: snmp++ version 1.2.3 will go to .so.12.0.3!
@@ -483,7 +478,7 @@ target_include_directories(
 target_include_directories(
   ${PROJECT_NAME}
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-         ${CRYPTO_INCLUDE_DIRS} $<INSTALL_INTERFACE:include>
+         $<BUILD_INTERFACE:${CRYPTO_INCLUDE_DIRS}> $<INSTALL_INTERFACE:include>
 )
 
 if(OPTION_EXAMPLES)
