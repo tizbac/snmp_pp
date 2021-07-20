@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.14...3.21)
 
 project(
   snmp_pp
-  VERSION 3.4.7.1
+  VERSION 3.4.7.2
   LANGUAGES CXX
 )
 
@@ -451,7 +451,9 @@ set(MY_SRC_FILES
 )
 
 option(BUILD_SHARED_LIBS "Global flag to cause add_library() to create shared libraries if on." ON)
-add_library(${PROJECT_NAME} STATIC ${MY_HEADER_FILES} ${MY_HEADER_LIB_FILES} ${CMAKE_CURRENT_BINARY_DIR}/config.h ${MY_SRC_FILES})
+add_library(
+  ${PROJECT_NAME} STATIC ${MY_HEADER_FILES} ${MY_HEADER_LIB_FILES} ${CMAKE_CURRENT_BINARY_DIR}/config.h ${MY_SRC_FILES}
+)
 
 if(MSVC)
   # warning level 4 (all warnings as errors: /WX)
