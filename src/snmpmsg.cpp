@@ -64,7 +64,9 @@ char snmpmsg_cpp_version[]="#(@) SNMP++ $Id$";
 namespace Snmp_pp {
 #endif
 
+#ifndef _NO_LOGGING
 static const char *loggerModuleName = "snmp++.snmpmsg";
+#endif
 
 #define MAX_LEN_COMMUNITY 254
 

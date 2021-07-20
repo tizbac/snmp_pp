@@ -35,7 +35,9 @@
 namespace Snmp_pp {
 #endif
 
+#ifndef _NO_LOGGING
 static const char *loggerModuleName = "snmp++.v3";
+#endif
 
 #define MAX_LINE_LEN 100
 

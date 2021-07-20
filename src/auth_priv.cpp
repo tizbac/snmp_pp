@@ -72,7 +72,9 @@
 namespace Snmp_pp {
 #endif
 
+#ifndef _NO_LOGGING
 static const char *loggerModuleName = "snmp++.auth";
+#endif
 
 /*-----------------[ defines for crypto libraries ]------------------*/
 
