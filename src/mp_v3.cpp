@@ -46,7 +46,9 @@ char mp_v3_cpp_version[]="@(#) SNMP++ $Id$";
 namespace Snmp_pp {
 #endif
 
+#ifndef _NO_LOGGING
 static const char *loggerModuleName = "snmp++.mp_v3";
+#endif
 
 #define MAX_MPMSGID 2147483647
 

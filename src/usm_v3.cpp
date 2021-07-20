@@ -45,7 +45,9 @@
 namespace Snmp_pp {
 #endif
 
+#ifndef _NO_LOGGING
 static const char *loggerModuleName = "snmp++.usm_v3";
+#endif
 
 // Use locking on access methods in an multi-threading environment.
 #ifdef _THREADS

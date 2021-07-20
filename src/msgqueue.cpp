@@ -66,7 +66,9 @@ namespace Snmp_pp {
 #endif
 
 
+#ifndef _NO_LOGGING
 static const char *loggerModuleName = "snmp++.msgqueue";
+#endif
 
 //--------[ externs ]---------------------------------------------------
 extern int send_snmp_request(SnmpSocket sock, unsigned char *send_buf,

@@ -69,7 +69,9 @@
 namespace Snmp_pp {
 #endif
 
+#ifndef _NO_LOGGING
 static const char *loggerModuleName = "snmp++.uxsnmp";
+#endif
 
 //-----[ special includes ]-------------------------------------------
 extern "C"

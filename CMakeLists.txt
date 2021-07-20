@@ -341,6 +341,8 @@ if(OPTION_LOGGING)
     set(WITH_LOG_PROFILES 1)
     set(DEFAULT_LOG_PROFILE "${LogProfile}")
   endif()
+else()
+  set(WITH_LOG_PROFILES 0)
 endif()
 
 if(CNF_STDC_HEADERS)

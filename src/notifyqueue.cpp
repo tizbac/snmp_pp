@@ -81,8 +81,9 @@ char notifyqueue_version[]="#(@) SNMP++ $Id$";
 namespace Snmp_pp {
 #endif
 
+#ifndef _NO_LOGGING
 static const char *loggerModuleName = "snmp++.notifyqueue";
-
+#endif
 //--------[ externs ]---------------------------------------------------
 extern int receive_snmp_notification(SnmpSocket sock, Snmp &snmp_session,
                                      Pdu &pdu, SnmpTarget **target);
