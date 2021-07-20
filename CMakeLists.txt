@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.14...3.21)
 
 project(
   snmp_pp
-  VERSION 3.4.7
+  VERSION 3.4.7.1
   LANGUAGES CXX
 )
 
@@ -15,7 +15,7 @@ include(CheckTypeSize)
 
 set(CMAKE_CXX_STANDARD 17)
 
-list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 
 option(OPTION_EXAMPLES "Enable to build examples" OFF)
 option(OPTION_SNMPv3 "Enable support for SNMPv3" ON)
@@ -30,19 +30,21 @@ option(OPTION_LIBDES "Search for DES library" OFF)
 option(OPTION_LIBTOMCRYPT "Search for Tomcrypt library" OFF)
 option(OPTION_EXTENDED_DEBUG "Enable additional debug messages" OFF)
 
-set(LogProfile
-    "original"
-    CACHE STRING "Log Profile"
-)
+if(OPTION_LOGGING)
+  set(LogProfile
+      "original"
+      CACHE STRING "Log Profile"
+  )
 
-set(LogProfileValues
-    "original;off;quiet;std;events;verbose;full;debug;schwafel"
-    CACHE STRING "List of possible values for the Log Profile variable"
-)
+  set(LogProfileValues
+      "original;off;quiet;std;events;verbose;full;debug;schwafel"
+      CACHE STRING "List of possible values for the Log Profile variable"
+  )
 
-set_property(CACHE LogProfile PROPERTY STRINGS ${LogProfileValues})
+  set_property(CACHE LogProfile PROPERTY STRINGS ${LogProfileValues})
 
-message(STATUS "LogProfile='${LogProfile}'")
+  message(STATUS "LogProfile='${LogProfile}'")
+endif()
 
 set(VERSION ${PROJECT_VERSION})
 set(SNMP_PP_MAJOR_VERSION ${PROJECT_VERSION_MAJOR})
@@ -108,48 +110,52 @@ check_function_exists("inet_aton" HAVE_INET_ATON)
 check_function_exists("inet_ntoa" HAVE_INET_NTOA)
 check_function_exists("inet_ntop" HAVE_INET_NTOP)
 check_function_exists("inet_pton" HAVE_INET_PTON)
-check_include_files(inttypes.h HAVE_INTTYPES_H)
-check_include_files(io.h HAVE_IO_H)
 check_function_exists("isdigit" HAVE_ISDIGIT)
-check_include_files(limits.h HAVE_LIMITS_H)
 check_function_exists("localtime_r" HAVE_LOCALTIME_R)
 check_function_exists("malloc" HAVE_MALLOC)
-check_include_files(memory.h HAVE_MEMORY_H)
 check_function_exists("memset" HAVE_MEMSET)
-check_include_files(netdb.h HAVE_NETDB_H)
-check_include_files(netinet/in.h HAVE_NETINET_IN_H)
 check_function_exists("poll" HAVE_POLL)
-check_include_files(poll.h HAVE_POLL_H)
-check_include_files(process.h HAVE_PROCESS_H)
-check_include_files(pthread.h HAVE_PTHREAD) # :-(
 check_function_exists("realloc" HAVE_REALLOC)
 check_function_exists("select" HAVE_SELECT)
-check_include_files(signal.h HAVE_SIGNAL_H)
 check_function_exists("socket" HAVE_SOCKET)
-check_include_files(stdint.h HAVE_STDINT_H)
-check_include_files(stdio.h HAVE_STDIO_H)
-check_include_files(stdlib.h HAVE_STDLIB_H)
 check_function_exists("strcasecmp" HAVE_STRCASECMP)
 check_function_exists("strchr" HAVE_STRCHR)
 check_function_exists("strerror" HAVE_STRERROR)
 check_function_exists("stricmp" HAVE_STRICMP)
-check_include_files(strings.h HAVE_STRINGS_H)
-check_include_files(string.h HAVE_STRING_H)
 check_function_exists("strstr" HAVE_STRSTR)
-check_include_files(sys/param.h HAVE_SYS_PARAM_H)
-check_include_files(sys/select.h HAVE_SYS_SELECT_H)
-check_include_files(sys/socket.h HAVE_SYS_SOCKET_H)
-check_include_files(sys/stat.h HAVE_SYS_STAT_H)
-check_include_files(sys/timeb.h HAVE_SYS_TIMEB_H)
-check_include_files(sys/time.h HAVE_SYS_TIME_H)
-check_include_files(sys/types.h HAVE_SYS_TYPES_H)
-check_include_files(sys/unistd.h HAVE_SYS_UNISTD_H)
-check_include_files(time.h HAVE_TIME_H)
-check_include_files(unistd.h HAVE_UNISTD_H)
-check_include_files(winsock2.h HAVE_WINSOCK2_H)
-check_include_files(winsock.h HAVE_WINSOCK_H)
-check_include_files(ws2tcpip.h HAVE_WS2TCPIP_H)
-check_include_files(wspiapi.h HAVE_WSPIAPI_H)
+check_include_files(inttypes.h HAVE_INTTYPES_H) # again?
+check_include_files(io.h HAVE_IO_H) # again?
+check_include_files(limits.h HAVE_LIMITS_H)
+check_include_files(memory.h HAVE_MEMORY_H) # again?
+check_include_files(netdb.h HAVE_NETDB_H) # again?
+check_include_files(netinet/in.h HAVE_NETINET_IN_H) # again?
+check_include_files(poll.h HAVE_POLL_H) # again?
+check_include_files(process.h HAVE_PROCESS_H) # again?
+check_include_files(pthread.h HAVE_PTHREAD) # again?
+check_include_files(signal.h HAVE_SIGNAL_H) # again?
+check_include_files(stdint.h HAVE_STDINT_H) # again?
+check_include_files(stdio.h HAVE_STDIO_H)
+check_include_files(stdlib.h HAVE_STDLIB_H) # again?
+check_include_files(string.h HAVE_STRING_H) # again?
+check_include_files(strings.h HAVE_STRINGS_H) # again?
+check_include_files(sys/param.h HAVE_SYS_PARAM_H) # again?
+check_include_files(sys/select.h HAVE_SYS_SELECT_H) # again?
+check_include_files(sys/socket.h HAVE_SYS_SOCKET_H) # again?
+check_include_files(sys/stat.h HAVE_SYS_STAT_H) # again?
+check_include_files(sys/time.h HAVE_SYS_TIME_H) # again?
+check_include_files(sys/timeb.h HAVE_SYS_TIMEB_H) # again?
+check_include_files(sys/types.h HAVE_SYS_TYPES_H) # again?
+check_include_files(sys/unistd.h HAVE_SYS_UNISTD_H) # again?
+check_include_files(time.h HAVE_TIME_H) # again?
+check_include_files(unistd.h HAVE_UNISTD_H) # again?
+
+if(MSVC)
+  check_include_files(winsock2.h HAVE_WINSOCK2_H)
+  check_include_files(winsock.h HAVE_WINSOCK_H)
+  check_include_files(ws2tcpip.h HAVE_WS2TCPIP_H)
+  check_include_files(wspiapi.h HAVE_WSPIAPI_H)
+endif()
+
 check_function_exists("_getpid" HAVE__GETPID)
 
 check_type_size("int64_t" SIZEOF_INT64_T LANGUAGE CXX)
@@ -275,23 +281,20 @@ else()
 endif()
 
 if(OPTION_OPENSSL)
-  # NOTE: may needed on OSX! CK
-  set(OPENSSL_ROOT_DIR
-      /usr/local/opt/openssl
-      CACHE FILEPATH ""
-  )
+  if(APPLE)
+    # NOTE: may needed on OSX! CK
+    set(OPENSSL_ROOT_DIR
+        /usr/local/opt/openssl
+        CACHE FILEPATH ""
+    )
+  endif()
   find_package(OpenSSL REQUIRED)
 
-  if(OPENSSL_FOUND)
-    message(STATUS "Found OpenSSL (include: ${OPENSSL_INCLUDE_DIR}, library: ${OPENSSL_LIBRARIES})")
+  message(STATUS "Found OpenSSL (include: ${OPENSSL_INCLUDE_DIR}, library: ${OPENSSL_LIBRARIES})")
 
-    set(CRYPTO_INCLUDE_DIRS ${OPENSSL_INCLUDE_DIR})
-    set(CRYPTO_LINKLIBS ${OPENSSL_LIBRARIES})
-    set(CRYPTO_LIB OpenSSL)
-  else()
-    message(FATAL_ERROR "OpenSSL NOT found")
-  endif()
-
+  set(CRYPTO_INCLUDE_DIRS ${OPENSSL_INCLUDE_DIR})
+  set(CRYPTO_LINKLIBS ${OPENSSL_LIBRARIES})
+  set(CRYPTO_LIB OpenSSL)
   set(WITH_LIBSSL 1)
 else()
   set(WITH_LIBSSL 0)
@@ -299,12 +302,13 @@ endif()
 
 if(OPTION_LIBTOMCRYPT)
   find_package(TOMCRYPT)
+
   if(TOMCRYPT_FOUND)
     set(CRYPTO_INCLUDE_DIRS ${TOMCRYPT_INCLUDE_DIR})
     set(CRYPTO_LINKLIBS ${TOMCRYPT_LIBRARIES})
     set(CRYPTO_LIB TOMCRYPT)
   else()
-    message(FATAL_ERROR " Libtomcrypt NOT found!")
+    message(FATAL_ERROR "Libtomcrypt NOT found!")
   endif()
 
   set(WITH_LIBTOMCRYPT 1)
@@ -322,7 +326,7 @@ if(OPTION_LIBDES)
     set(CRYPTO_LINKLIBS ${DES_LIBRARIES})
     set(CRYPTO_LIB DES)
   else()
-    message(FATAL_ERROR " Libdes NOT found!")
+    message(FATAL_ERROR "Libdes NOT found!")
   endif()
 
   set(WITH_LIBDES 1)
@@ -330,11 +334,13 @@ else()
   set(WITH_LIBDES 0)
 endif()
 
-if(${LogProfile} STREQUAL "off")
-  set(WITH_LOG_PROFILES 0)
-else()
-  set(WITH_LOG_PROFILES 1)
-  set(DEFAULT_LOG_PROFILE "${LogProfile}")
+if(OPTION_LOGGING)
+  if(${LogProfile} STREQUAL "off")
+    set(WITH_LOG_PROFILES 0)
+  else()
+    set(WITH_LOG_PROFILES 1)
+    set(DEFAULT_LOG_PROFILE "${LogProfile}")
+  endif()
 endif()
 
 if(CNF_STDC_HEADERS)
@@ -419,7 +425,7 @@ set(MY_HEADER_FILES
     include/snmp_pp/vb.h
 )
 
-set(MY_HEADER_LIB_FILES ${CMAKE_BINARY_DIR}/libsnmp.h)
+set(MY_HEADER_LIB_FILES ${CMAKE_CURRENT_BINARY_DIR}/libsnmp.h)
 
 set(MY_SRC_FILES
     src/address.cpp
@@ -456,7 +462,7 @@ set(MY_SRC_FILES
 )
 
 option(BUILD_SHARED_LIBS "Global flag to cause add_library() to create shared libraries if on." ON)
-add_library(${PROJECT_NAME} ${MY_HEADER_FILES} ${MY_HEADER_LIB_FILES} ${CMAKE_BINARY_DIR}/config.h ${MY_SRC_FILES})
+add_library(${PROJECT_NAME} ${MY_HEADER_FILES} ${MY_HEADER_LIB_FILES} ${CMAKE_CURRENT_BINARY_DIR}/config.h ${MY_SRC_FILES})
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE 1)
 # Set .so version as autoconf does: snmp++ version 1.2.3 will go to .so.12.0.3!
@@ -466,8 +472,17 @@ set_target_properties(
 )
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD ${CMAKE_CXX_STANDARD})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${CRYPTO_LINKLIBS} Threads::Threads)
-target_include_directories(${PROJECT_NAME} SYSTEM BEFORE PRIVATE ${CMAKE_BINARY_DIR} ${PROJECT_SOURCE_DIR}/include)
-target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CRYPTO_INCLUDE_DIRS}> $<INSTALL_INTERFACE:include>)
+#
+# NOTE: we have to prevent the use of older installed project headers
+#
+target_include_directories(
+  ${PROJECT_NAME} SYSTEM BEFORE PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+target_include_directories(
+  ${PROJECT_NAME}
+  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+         ${CRYPTO_INCLUDE_DIRS} $<INSTALL_INTERFACE:include>
+)
 
 if(OPTION_EXAMPLES)
   set(EXAMPLE_SOURCE_FILES
@@ -491,13 +506,15 @@ if(OPTION_EXAMPLES)
     string(REPLACE "consoleExamples/" "" examplename ${examplename})
     add_executable(${examplename} ${examplesourcefile})
     target_link_libraries(${examplename} ${PROJECT_NAME})
-    target_include_directories(${examplename} SYSTEM BEFORE PRIVATE ${CMAKE_BINARY_DIR} ${PROJECT_SOURCE_DIR}/include)
+    target_include_directories(
+      ${examplename} SYSTEM BEFORE PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/include
+    )
   endforeach()
 endif()
 
 install(FILES ${MY_HEADER_LIB_FILES} DESTINATION include)
 
-## CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.7.0")
+## CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.8.0")
 include(PackageProject)
 
 packageProject(
@@ -508,7 +525,7 @@ packageProject(
   # a temporary directory to create the config files
   BINARY_DIR ${PROJECT_BINARY_DIR}
   # location of the target's public headers
-  INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include
+  INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include
   # should match the target's INSTALL_INTERFACE include directory
   INCLUDE_DESTINATION include
   # semicolon separated list of the project's dependencies
