@@ -65,9 +65,7 @@
 #define _SNMP_USERDEFINED_H_
 
 //----[ includes ]-----------------------------------------------------
-#ifdef WIN32
-#include <winsock.h>
-#else
+#ifndef WIN32
 #include <sys/types.h>
 #if !(defined CPU && CPU == PPC603)
 #include <sys/time.h>           // time stuff and fd_set

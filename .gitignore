@@ -5,6 +5,6 @@ m4/
 *.ac
 *.am
 configure
-Makefile.in
+Makefile.*
 include/snmp_pp/config_snmp_pp.h
 
