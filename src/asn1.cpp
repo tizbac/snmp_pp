@@ -60,7 +60,9 @@ char asn1_cpp_version[]="#(@) SNMP++ $Id$";
 namespace Snmp_pp {
 #endif
 
+#ifndef _NO_LOGGING
 static const char *loggerModuleName = "snmp++.asn1";
+#endif
 
 /*
  * asn_parse_int - pulls a long out of an ASN int type.
