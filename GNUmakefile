@@ -7,10 +7,11 @@ install: all
 
 build:
 	mkdir -p $@
-	cmake -B $@ -S . -G Ninja -D OPTION_OPENSSL=YES -D OPTION_LIBDES=NO -D OPTION_LIBTOMCRYPT=NO -D OPTION_LOGGING=NO # -D OPTION_SNMPv3=NO
+	cmake -B $@ -S . -G Ninja -D SNMP_PP_LOGGING=NO -D CMAKE_EXPORT_COMPILE_COMMANDS=1 -D CMAKE_CXX_COMPILER_LAUNCHER=ccache
 
 clean: build
 	rm -f include/snmp_pp/config_snmp_pp.h
+	rm -f $</*.h
 	-ninja -C $< clean
 
 distclean: clean
