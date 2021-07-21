@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.14...3.21)
 
 project(
   snmp_pp
-  VERSION 3.4.7.2
+  VERSION 3.4.7.3
   LANGUAGES CXX
 )
 
@@ -17,20 +17,20 @@ set(CMAKE_CXX_STANDARD 17)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 
-option(OPTION_EXAMPLES "Enable to build examples" OFF)
-option(OPTION_SNMPv3 "Enable support for SNMPv3" ON)
-option(OPTION_IPv6 "Enable support for IPv6" ON)
-option(OPTION_THREADS "Enable support for threads" ON)
-option(OPTION_NAMESPACE "Enable using of namespace" ON)
-option(OPTION_LOGGING "Enable logging" OFF)
-option(OPTION_MACADDR "Enable MacAddress class" OFF)
-option(OPTION_IPXADDR "Enable IpxAddress class" OFF)
-option(OPTION_OPENSSL "Search for OpenSSL library" ON)
-option(OPTION_LIBDES "Search for DES library" OFF)
-option(OPTION_LIBTOMCRYPT "Search for Tomcrypt library" OFF)
-option(OPTION_EXTENDED_DEBUG "Enable additional debug messages" OFF)
+option(SNMP_PP_EXAMPLES "Enable to build examples" OFF)
+option(SNMP_PP_SNMPv3 "Enable support for SNMPv3" ON)
+option(SNMP_PP_IPv6 "Enable support for IPv6" ON)
+option(SNMP_PP_THREADS "Enable support for threads" ON)
+option(SNMP_PP_NAMESPACE "Enable using of namespace" ON)
+option(SNMP_PP_LOGGING "Enable logging" OFF)
+option(SNMP_PP_MACADDR "Enable MacAddress class" OFF)
+option(SNMP_PP_IPXADDR "Enable IpxAddress class" OFF)
+option(SNMP_PP_OPENSSL "Search for OpenSSL library" ON)
+option(SNMP_PP_LIBDES "Search for DES library" ON)
+option(SNMP_PP_LIBTOMCRYPT "Search for Tomcrypt library" OFF)
+option(SNMP_PP_EXTENDED_DEBUG "Enable additional debug messages" OFF)
 
-if(OPTION_LOGGING)
+if(SNMP_PP_LOGGING)
   set(LogProfile
       "original"
       CACHE STRING "Log Profile"
@@ -77,9 +77,14 @@ check_include_files(stdint.h CNF_HAVE_STDINT_H)
 check_include_files(sys/time.h CNF_HAVE_SYS_TIME_H)
 check_include_files(sys/param.h CNF_HAVE_SYS_PARAM_H)
 check_include_files(sys/timeb.h CNF_HAVE_SYS_TIMEB_H)
-check_include_files(winsock2.h CNF_HAVE_WINSOCK2_H)
-check_include_files(ws2tcpip.h CNF_HAVE_WS2TCPIP_H)
-check_include_files(wspiapi.h CNF_HAVE_WSPIAPI_H)
+
+if(MSVC)
+  check_include_files(winsock2.h CNF_HAVE_WINSOCK2_H)
+  check_include_files(ws2tcpip.h CNF_HAVE_WS2TCPIP_H)
+  check_include_files(wspiapi.h CNF_HAVE_WSPIAPI_H)
+  check_function_exists("_getpid" CNF_HAVE__GETPID)
+endif()
+
 check_include_files(netdb.h CNF_HAVE_NETDB_H)
 check_include_files(sys/socket.h CNF_HAVE_SYS_SOCKET_H)
 check_include_files(arpa/inet.h CNF_HAVE_ARPA_INET_H)
@@ -92,7 +97,6 @@ check_include_files(pthread.h CNF_HAVE_PTHREAD_H)
 check_function_exists("strcasecmp" CNF_HAVE_STRCASECMP)
 check_function_exists("stricmp" CNF_HAVE_STRICMP)
 check_function_exists("getpid" CNF_HAVE_GETPID)
-check_function_exists("_getpid" CNF_HAVE__GETPID)
 
 check_function_exists("clock_gettime" HAVE_CLOCK_GETTIME)
 check_function_exists("getaddrinfo" HAVE_GETADDRINFO)
@@ -149,12 +153,11 @@ check_include_files(time.h HAVE_TIME_H) # again?
 check_include_files(unistd.h HAVE_UNISTD_H) # again?
 
 if(MSVC)
-  check_include_files(winsock2.h HAVE_WINSOCK2_H)
-  check_include_files(ws2tcpip.h HAVE_WS2TCPIP_H)
-  check_include_files(wspiapi.h HAVE_WSPIAPI_H)
+  check_include_files(winsock2.h HAVE_WINSOCK2_H) # again?
+  check_include_files(ws2tcpip.h HAVE_WS2TCPIP_H) # again?
+  check_include_files(wspiapi.h HAVE_WSPIAPI_H) # again?
+  check_function_exists("_getpid" HAVE__GETPID) # again?
 endif()
-
-check_function_exists("_getpid" HAVE__GETPID)
 
 check_type_size("int64_t" SIZEOF_INT64_T LANGUAGE CXX)
 check_type_size("long long" SIZEOF_LONG_LONG LANGUAGE CXX)
@@ -213,7 +216,7 @@ check_struct_has_member(
   "struct sockaddr_storage" __ss_family "${SOCKADDR_HEADERS}" CNF_HAVE_STRUCT_SOCKADDR_STORAGE___SS_FAMILY LANGUAGE CXX
 )
 
-if(OPTION_SNMPv3)
+if(SNMP_PP_SNMPv3)
   set(_SNMPv3 1)
   set(_NO_SNMPv3 0)
 else()
@@ -221,7 +224,7 @@ else()
   set(_NO_SNMPv3 1)
 endif()
 
-if(OPTION_IPv6)
+if(SNMP_PP_IPv6)
   set(WITH_SNMP_PP_IPv6 1)
   set(SNMP_PP_IPv6 1)
 else()
@@ -229,7 +232,7 @@ else()
   set(SNMP_PP_IPv6 0)
 endif()
 
-if(OPTION_THREADS)
+if(SNMP_PP_THREADS)
   set(CMAKE_THREAD_PREFER_PTHREAD 1)
   find_package(Threads REQUIRED)
 
@@ -245,37 +248,38 @@ else()
   set(WITH_PTHREAD 0)
 endif()
 
-if(OPTION_NAMESPACE)
+if(SNMP_PP_NAMESPACE)
   set(WITH_NAMESPACE 1)
 else()
+  message(WARNING "NO NAMESPACE?")
   set(WITH_NAMESPACE 0)
 endif()
 
-if(OPTION_LOGGING)
+if(SNMP_PP_LOGGING)
   set(WITH_LOGGING 1)
 else()
   set(WITH_LOGGING 0)
 endif()
 
-if(OPTION_MACADDR)
+if(SNMP_PP_MACADDR)
   set(WITH_MACADDRESS 1)
 else()
   set(WITH_MACADDRESS 0)
 endif()
 
-if(OPTION_IPXADDR)
+if(SNMP_PP_IPXADDR)
   set(WITH_IPXADDRESS 1)
 else()
   set(WITH_IPXADDRESS 0)
 endif()
 
-if(OPTION_EXTENDED_DEBUG)
+if(SNMP_PP_EXTENDED_DEBUG)
   set(_DEBUG 1)
 else()
   set(_DEBUG 0)
 endif()
 
-if(OPTION_OPENSSL)
+if(SNMP_PP_OPENSSL)
   if(APPLE)
     # NOTE: may needed on OSX! CK
     set(OPENSSL_ROOT_DIR
@@ -283,53 +287,65 @@ if(OPTION_OPENSSL)
         CACHE FILEPATH ""
     )
   endif()
-  find_package(OpenSSL REQUIRED)
 
-  message(STATUS "Found OpenSSL (include: ${OPENSSL_INCLUDE_DIR}, library: ${OPENSSL_LIBRARIES})")
+  find_package(OpenSSL)
 
-  set(CRYPTO_INCLUDE_DIRS ${OPENSSL_INCLUDE_DIR})
-  set(CRYPTO_LINKLIBS ${OPENSSL_LIBRARIES})
-  set(CRYPTO_LIB OpenSSL)
-  set(WITH_LIBSSL 1)
+  if(OPENSSL_FOUND)
+    message(STATUS "Found OpenSSL (include: ${OPENSSL_INCLUDE_DIR}, library: ${OPENSSL_LIBRARIES})")
+    set(CRYPTO_INCLUDE_DIRS ${OPENSSL_INCLUDE_DIR})
+    set(CRYPTO_LINKLIBS ${OPENSSL_LIBRARIES})
+    set(CRYPTO_LIB OpenSSL)
+    set(WITH_LIBSSL 1)
+  else()
+    # message(FATAL_ERROR "LibOpenSSL NOT found!")
+    set(WITH_LIBSSL 0)
+  endif()
 else()
   set(WITH_LIBSSL 0)
 endif()
 
-if(OPTION_LIBTOMCRYPT)
+if(NOT CRYPTO_LIB AND SNMP_PP_LIBTOMCRYPT)
   find_package(TOMCRYPT)
 
   if(TOMCRYPT_FOUND)
+    set(WITH_LIBSSL 0)
+
+    message(STATUS "Found TOMCRYPT (include: ${TOMCRYPT_INCLUDE_DIR}, library: ${TOMCRYPT_LIBRARIES})")
     set(CRYPTO_INCLUDE_DIRS ${TOMCRYPT_INCLUDE_DIR})
     set(CRYPTO_LINKLIBS ${TOMCRYPT_LIBRARIES})
     set(CRYPTO_LIB TOMCRYPT)
+    set(WITH_LIBTOMCRYPT 1)
   else()
-    message(FATAL_ERROR "Libtomcrypt NOT found!")
+    # message(FATAL_ERROR "Libtomcrypt NOT found!")
+    set(WITH_LIBTOMCRYPT 0)
   endif()
 
-  set(WITH_LIBTOMCRYPT 1)
 else()
   set(WITH_LIBTOMCRYPT 0)
 endif()
 
-if(OPTION_LIBDES)
+if(NOT CRYPTO_LIB AND SNMP_PP_LIBDES)
   message(STATUS "Searching for libdes...")
   find_package(DES)
 
   if(DES_FOUND)
+    set(WITH_LIBSSL 0)
+    set(WITH_LIBTOMCRYPT 0)
+
     message(STATUS "Libdes found / ${DES_INCLUDE_DIR} / ${DES_LIBRARIES} / ")
     set(CRYPTO_INCLUDE_DIRS ${DES_INCLUDE_DIR})
     set(CRYPTO_LINKLIBS ${DES_LIBRARIES})
     set(CRYPTO_LIB DES)
+    set(WITH_LIBDES 1)
   else()
     message(FATAL_ERROR "Libdes NOT found!")
   endif()
 
-  set(WITH_LIBDES 1)
 else()
   set(WITH_LIBDES 0)
 endif()
 
-if(OPTION_LOGGING)
+if(SNMP_PP_LOGGING)
   if(${LogProfile} STREQUAL "off")
     set(WITH_LOG_PROFILES 0)
   else()
@@ -348,7 +364,7 @@ endif()
 
 if(CNF_STDCXX_98_HEADERS)
   set(STDCXX_98_HEADERS 1)
-  unset(STDC_HEADERS)
+  set(STDC_HEADERS 0)
 else()
   set(STDCXX_98_HEADERS 0)
 endif()
@@ -457,10 +473,10 @@ add_library(
 
 if(MSVC)
   # warning level 4 (all warnings as errors: /WX)
-  target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
+  # FIXME target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
 else()
-  target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra)
-  # TODO: lots of warnings (-Wextra -Wpedantic)
+  target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wno-unused-parameter)
+  # TODO: lots of warnings (more: -Wpedantic)
 endif()
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE 1)
@@ -483,7 +499,7 @@ target_include_directories(
          $<BUILD_INTERFACE:${CRYPTO_INCLUDE_DIRS}> $<INSTALL_INTERFACE:include>
 )
 
-if(OPTION_EXAMPLES)
+if(SNMP_PP_EXAMPLES)
   set(EXAMPLE_SOURCE_FILES
       consoleExamples/receive_trap.cpp
       consoleExamples/snmpBulk.cpp
@@ -513,8 +529,8 @@ endif()
 
 install(FILES ${MY_HEADER_LIB_FILES} DESTINATION include)
 
-## CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.8.0")
 include(PackageProject)
+# XXX CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.8.0")
 
 packageProject(
   # the name of the target to export
@@ -531,9 +547,9 @@ packageProject(
   DEPENDENCIES "${CRYPTO_LIB}; Threads"
   # (optional) create a header containing the version info
   # Note: that the path to headers should be lowercase
-  ## VERSION_HEADER "${PROJECT_NAME}/version.h"
+  VERSION_HEADER "${PROJECT_NAME}/version.h"
   # (optional) create a export header using GenerateExportHeader module
-  ## EXPORT_HEADER "${PROJECT_NAME}/export.h"
+  EXPORT_HEADER "${PROJECT_NAME}/export.h"
   # (optional) install your library with a namespace (Note: do NOT add extra '::')
   NAMESPACE ${PROJECT_NAME}
   # (optional) define the project's version compatibility, defaults to `AnyNewerVersion`
