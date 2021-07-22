@@ -114,9 +114,6 @@
 # if @CNF_HAVE_WSPIAPI_H@
 #  include <wspiapi.h>
 # endif
-#elif @CNF_HAVE_WINSOCK_H@
-  /* IIRC winsock.h must be included before windows.h */
-# include <winsock.h>
 #else
 # if @CNF_HAVE_NETDB_H@
 #  include <netdb.h>
@@ -214,10 +211,6 @@ extern "C" int strcasecmp(const char *s1, const char *s2);
 #define NULL	0
 #endif
 
-#if @CNF_STDCXX_98_HEADERS@
 # include <iostream>
-#else
-# include <iostream.h>
-#endif
 
 #endif /* ?__LIBSNMP_H_INCLUDED__ */
