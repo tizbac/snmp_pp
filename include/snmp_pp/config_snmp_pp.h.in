@@ -43,8 +43,8 @@
 #define MAX_SNMP_PACKET 4096
 
 #ifndef DLLOPT
-#if defined (WIN32) && defined (snmp_pp_EXPORT)
-#ifdef SNMP_PP_EXPORTS
+#if defined (WIN32) && defined (snmp_pp_EXPORTS)
+#ifdef snmp_pp_EXPORTS
 #define DLLOPT __declspec(dllexport)
 #define DLLOPT_TEMPL
 #else

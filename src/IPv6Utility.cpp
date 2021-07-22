@@ -57,13 +57,12 @@
 
 #include "snmp_pp/IPv6Utility.h"
 
-//FIXME #if defined(_MSC_VER) && defined(SNMP_PP_IPv6)
 #if defined(WIN32) && defined(SNMP_PP_IPv6)
 
 #define NS_INT16SZ      2
 #define NS_INADDRSZ     4
 #define NS_IN6ADDRSZ    16
-#define EAFNOSUPPORT    WSAEAFNOSUPPORT
+// XXX alrady defined! CK #define EAFNOSUPPORT    WSAEAFNOSUPPORT
 #define ENOSPC          28
 
 /*
@@ -431,4 +430,4 @@ inet_pton6(const char *src, unsigned char *dst)
 
 #endif /* HAVE_INET_PTON */
 
-#endif // defined(_MSC_VER) && defined(SNMP_PP_IPv6)
+#endif // defined(WIN32) && defined(SNMP_PP_IPv6)

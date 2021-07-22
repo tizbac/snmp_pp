@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.14...3.21)
 
 project(
   snmp_pp
-  VERSION 3.4.7.4
+  VERSION 3.4.7.5
   LANGUAGES CXX C
 )
 
@@ -485,6 +485,7 @@ add_library(
 )
 
 if(MSVC)
+  target_link_libraries(${PROJECT_NAME} PUBLIC wsock32 ws2_32)
   # warning level 4 (all warnings as errors: /WX)
   # FIXME target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
 else()
