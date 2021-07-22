@@ -54,7 +54,6 @@
 #cmakedefine CNF_HAVE_ERRNO_H
 #cmakedefine CNF_HAVE_TIME_H
 #cmakedefine HAVE_STDIO_H
-#cmakedefine CNF_HAVE_IOSTREAM
 
 #ifdef CNF_STDCXX_98_HEADERS
 # include <cctype>
@@ -262,10 +261,6 @@ typedef @TYPE_UINT64_T@ pp_type_uint64;
 #define NULL    0
 #endif
 
-#ifdef CNF_HAVE_IOSTREAM
 # include <iostream>
-#else
-# include <iostream.h>
-#endif
 
 #endif /* ?__LIBSNMP_H_INCLUDED__ */

@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.14...3.21)
 
 project(
   snmp_pp
-  VERSION 3.4.7.3
-  LANGUAGES CXX
+  VERSION 3.4.7.4
+  LANGUAGES CXX C
 )
 
 include(CheckIncludeFiles)
@@ -56,7 +56,6 @@ message(STATUS "snmp++ Version ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 check_include_files(sys/types.h CNF_HAVE_SYS_TYPES_H)
 check_include_files(sys/stat.h CNF_HAVE_SYS_STAT_H)
 check_include_files("cctype;cerrno;climits;csignal;cstddef;cstdio;cstdlib;cstring;ctime" CNF_STDCXX_98_HEADERS)
-check_include_files("iostream" CNF_HAVE_IOSTREAM)
 
 if(NOT CNF_STDCXX_98_HEADERS)
   check_include_files("stdlib.h;stddef.h" CNF_STDC_HEADERS)
@@ -279,6 +278,11 @@ else()
   set(_DEBUG 0)
 endif()
 
+# ---- Add dependencies via CPM ----
+# see https://github.com/cpm-cmake/CPM.cmake for more info
+
+include(CPM)
+
 if(SNMP_PP_OPENSSL)
   if(APPLE)
     # NOTE: may needed on OSX! CK
@@ -325,21 +329,31 @@ else()
 endif()
 
 if(NOT CRYPTO_LIB AND SNMP_PP_LIBDES)
-  message(STATUS "Searching for libdes...")
-  find_package(DES)
+  # see https://github.com/ClausKlein/libdes/releases/tag/v4.1.1.1
+  CPMAddPackage(
+    NAME libdes
+    # GIT_TAG v4.1.1.1
+    GIT_TAG 3123cf5942c50de98b303e3bb42e74edf26c5c69
+    GITHUB_REPOSITORY ClausKlein/libdes
+  )
+  # FIXME: install(TARGETS des EXPORT ${PROJECT_NAME} LIBRARY DESTINATION lib)
+  # CMake Error: install(EXPORT "snmp_ppTargets" ...) includes target "snmp_pp" which requires target "des" that is not in any export set.
 
-  if(DES_FOUND)
+  # message(STATUS "Searching for libdes...")
+  # XXX find_package(DES)
+  # if(DES_FOUND)
     set(WITH_LIBSSL 0)
     set(WITH_LIBTOMCRYPT 0)
 
-    message(STATUS "Libdes found / ${DES_INCLUDE_DIR} / ${DES_LIBRARIES} / ")
-    set(CRYPTO_INCLUDE_DIRS ${DES_INCLUDE_DIR})
-    set(CRYPTO_LINKLIBS ${DES_LIBRARIES})
-    set(CRYPTO_LIB DES)
+    # message(STATUS "Libdes found / ${DES_INCLUDE_DIR} / ${DES_LIBRARIES} / ")
+    set(CRYPTO_INCLUDE_DIRS ${des_SOURCE_DIR})
+    set(CRYPTO_LINKLIBS des)
+
+    set(CRYPTO_LIB des) # NOTE: dummy only! CK
     set(WITH_LIBDES 1)
-  else()
-    message(FATAL_ERROR "Libdes NOT found!")
-  endif()
+  # else()
+  #   message(FATAL_ERROR "Libdes NOT found!")
+  # endif()
 
 else()
   set(WITH_LIBDES 0)
@@ -468,7 +482,7 @@ set(MY_SRC_FILES
 
 option(BUILD_SHARED_LIBS "Global flag to cause add_library() to create shared libraries if on." ON)
 add_library(
-  ${PROJECT_NAME} STATIC ${MY_HEADER_FILES} ${MY_HEADER_LIB_FILES} ${CMAKE_CURRENT_BINARY_DIR}/config.h ${MY_SRC_FILES}
+  ${PROJECT_NAME} ${MY_HEADER_FILES} ${MY_HEADER_LIB_FILES} ${CMAKE_CURRENT_BINARY_DIR}/config.h ${MY_SRC_FILES}
 )
 
 if(MSVC)
@@ -529,8 +543,8 @@ endif()
 
 install(FILES ${MY_HEADER_LIB_FILES} DESTINATION include)
 
-include(PackageProject)
-# XXX CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.8.0")
+# XXX include(PackageProject)
+CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.8.0")
 
 packageProject(
   # the name of the target to export

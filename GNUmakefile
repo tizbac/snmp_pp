@@ -3,7 +3,7 @@ all: build
 	ninja -C $< $@
 
 install: all
-	ninja -C build install
+	ninja -C build $@
 
 build:
 	mkdir -p $@

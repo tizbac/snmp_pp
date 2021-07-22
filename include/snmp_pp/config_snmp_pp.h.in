@@ -32,6 +32,8 @@
 #include <libsnmp.h>
 #endif
 
+#include <snmp_pp/export.h>
+
 #define SNMP_PP_VERSION_STRING "@VERSION@"
 #define SNMP_PP_VERSION @SNMP_PP_MAJOR_VERSION@
 #define SNMP_PP_RELEASE @SNMP_PP_MINOR_VERSION@
@@ -41,12 +43,12 @@
 #define MAX_SNMP_PACKET 4096
 
 #ifndef DLLOPT
-#if defined (WIN32) && defined (SNMP_PP_DLL)
+#if defined (WIN32) && defined (snmp_pp_EXPORT)
 #ifdef SNMP_PP_EXPORTS
 #define DLLOPT __declspec(dllexport)
 #define DLLOPT_TEMPL
 #else
-#define DLLOPT __declspec(dllimport)	
+#define DLLOPT __declspec(dllimport)
 #define DLLOPT_TEMPL extern
 #endif
 #else
