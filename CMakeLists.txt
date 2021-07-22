@@ -329,11 +329,10 @@ else()
 endif()
 
 if(NOT CRYPTO_LIB AND SNMP_PP_LIBDES)
-  # see https://github.com/ClausKlein/libdes/releases/tag/v4.1.1.1
+  # see https://github.com/ClausKlein/libdes/releases/tag/v4.1.1.2
   CPMAddPackage(
     NAME libdes
-    # GIT_TAG v4.1.1.1
-    GIT_TAG 3123cf5942c50de98b303e3bb42e74edf26c5c69
+    GIT_TAG v4.1.1.2
     GITHUB_REPOSITORY ClausKlein/libdes
   )
   # FIXME: install(TARGETS des EXPORT ${PROJECT_NAME} LIBRARY DESTINATION lib)
@@ -347,7 +346,7 @@ if(NOT CRYPTO_LIB AND SNMP_PP_LIBDES)
 
     # message(STATUS "Libdes found / ${DES_INCLUDE_DIR} / ${DES_LIBRARIES} / ")
     set(CRYPTO_INCLUDE_DIRS ${des_SOURCE_DIR})
-    set(CRYPTO_LINKLIBS des)
+    set(CRYPTO_LINKLIBS des::des)
 
     set(CRYPTO_LIB des) # NOTE: dummy only! CK
     set(WITH_LIBDES 1)

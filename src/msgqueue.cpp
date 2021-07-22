@@ -340,9 +340,13 @@ CSNMPMessage * CSNMPMessageQueue::AddEntry(unsigned long id,
     /*---------------------------------------------------------*/
   (void) new CSNMPMessageQueueElt(newMsg, m_head.GetNext(), &m_head);
   ++m_msgCount;
+
+#ifndef _NO_LOGGING
   int count = m_msgCount;
+#endif
+
   unlock();
-  
+
   LOG_BEGIN(loggerModuleName, DEBUG_LOG | 10);
   LOG("MsgQueue: Adding entry (req id) (count)");
   LOG(id);
