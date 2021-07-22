@@ -59,13 +59,13 @@
 #include <libsnmp.h>
 #include "snmp_pp/config_snmp_pp.h"
 
-//FIXME #if defined(_MSC_VER) && defined(SNMP_PP_IPv6)
 #if defined(WIN32) && defined(SNMP_PP_IPv6)
 
-//#define EAFNOSUPPORT WSAEAFNOSUPPORT
 #define ENOSPC 28
 
+#ifndef HAVE_INET_NTOP
 const char * inet_ntop(int af, const void *src, char *dst, size_t size);
+#endif
 
 //int inet_pton(int af, PCTSTR src, void *dst);
 
