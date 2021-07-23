@@ -286,7 +286,7 @@ class DLLOPT v3MP
   void inc_stats_unknown_pdu_handlers() { snmpUnknownPDUHandlers++; };
 
   // temporary pointer will be removed...
-  static v3MP *I;
+  static DLLOPT v3MP *I;
 
  protected:
 

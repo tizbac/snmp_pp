@@ -335,25 +335,14 @@ if(NOT CRYPTO_LIB AND SNMP_PP_LIBDES)
     GIT_TAG v4.1.1.2
     GITHUB_REPOSITORY ClausKlein/libdes
   )
-  # FIXME: install(TARGETS des EXPORT ${PROJECT_NAME} LIBRARY DESTINATION lib)
-  # CMake Error: install(EXPORT "snmp_ppTargets" ...) includes target "snmp_pp" which requires target "des" that is not in any export set.
+  set(WITH_LIBSSL 0)
+  set(WITH_LIBTOMCRYPT 0)
 
-  # message(STATUS "Searching for libdes...")
-  # XXX find_package(DES)
-  # if(DES_FOUND)
-    set(WITH_LIBSSL 0)
-    set(WITH_LIBTOMCRYPT 0)
+  set(CRYPTO_INCLUDE_DIRS ${des_SOURCE_DIR})
+  set(CRYPTO_LINKLIBS des::des)
 
-    # message(STATUS "Libdes found / ${DES_INCLUDE_DIR} / ${DES_LIBRARIES} / ")
-    set(CRYPTO_INCLUDE_DIRS ${des_SOURCE_DIR})
-    set(CRYPTO_LINKLIBS des::des)
-
-    set(CRYPTO_LIB des) # NOTE: dummy only! CK
-    set(WITH_LIBDES 1)
-  # else()
-  #   message(FATAL_ERROR "Libdes NOT found!")
-  # endif()
-
+  set(CRYPTO_LIB des)
+  set(WITH_LIBDES 1)
 else()
   set(WITH_LIBDES 0)
 endif()

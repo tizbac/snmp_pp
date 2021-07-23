@@ -421,10 +421,11 @@ AgentLog& AgentLogImpl::operator+=(const LogEntry* log)
 
 // define the default logs
 
-AgentLog* DefaultLog::instance = 0;
-LogEntry* DefaultLog::entry = 0;
+DLLOPT AgentLog* DefaultLog::instance = 0;
+DLLOPT LogEntry* DefaultLog::entry = 0;
+
 #ifdef _THREADS
-SnmpSynchronized DefaultLog::mutex;
+DLLOPT SnmpSynchronized DefaultLog::mutex;
 #endif
 
 void DefaultLog::cleanup()

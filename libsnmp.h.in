@@ -106,6 +106,11 @@
 #include <sys/timeb.h> // and _ftime
 #endif
 
+// TODO: wrong oder! CK
+//
+// see https://docs.microsoft.com/en-us/windows/win32/winsock/creating-a-basic-winsock-application
+// The WIN32_LEAN_AND_MEAN macro prevents the Winsock.h from being included by the Windows.h header.
+//
 #if @CNF_HAVE_WINSOCK2_H@
 # include <winsock2.h>
 # if @CNF_HAVE_WS2TCPIP_H@
