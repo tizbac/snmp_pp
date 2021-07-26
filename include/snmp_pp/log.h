@@ -602,11 +602,11 @@ public:
 
 protected:
 
-	static DLLOPT AgentLog* instance;
+	static AgentLog* instance;
+	static LogEntry* entry;
 
-	static DLLOPT LogEntry* entry;
 #ifdef _THREADS
-	static DLLOPT SnmpSynchronized mutex;
+	static SnmpSynchronized mutex;
 #endif
 
 	//XXX: unsued CK? static const char defaultName;

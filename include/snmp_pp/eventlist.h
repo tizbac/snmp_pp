@@ -56,7 +56,6 @@
         Queue for holding all event sources (snmp messages, user
         defined input sources, user defined timeouts, etc)
 =====================================================================*/
-// $Id$
 
 #ifndef _SNMP_EVENTLIST_H_
 #define _SNMP_EVENTLIST_H_
@@ -81,7 +80,7 @@
 namespace Snmp_pp {
 #endif
 
-#define MAX_UINT32 MAXLONG
+// NOTE: this may be wrong! CK #define MAX_UINT32 MAXLONG
 
 class msec;
 class Pdu;

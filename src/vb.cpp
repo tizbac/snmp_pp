@@ -51,7 +51,6 @@
 
   DESIGN + AUTHOR:  Peter E Mellquist
 =====================================================================*/
-char vb_cpp_version[]="#(@) SNMP++ $Id$";
 
 #include <libsnmp.h>
 

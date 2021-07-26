@@ -46,7 +46,6 @@
 
   DESIGN + AUTHOR:  Peter E. Mellquist
 =====================================================================*/
-char asn1_cpp_version[]="#(@) SNMP++ $Id$";
 
 #include <libsnmp.h>
 

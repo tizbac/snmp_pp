@@ -51,7 +51,6 @@
   SNMP libraries. This class is portable across any platform
   which supports C++.
 =====================================================================*/
-char octet_cpp_version[]="@(#) SNMP++ $Id$";
 
 #include <libsnmp.h>
 

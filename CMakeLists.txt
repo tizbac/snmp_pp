@@ -17,7 +17,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 
-option(SNMP_PP_EXAMPLES "Enable to build examples" OFF)
+option(SNMP_PP_EXAMPLES "Enable to build examples" ON)
 option(SNMP_PP_SNMPv3 "Enable support for SNMPv3" ON)
 option(SNMP_PP_IPv6 "Enable support for IPv6" ON)
 option(SNMP_PP_THREADS "Enable support for threads" ON)
@@ -501,6 +501,16 @@ target_include_directories(
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
          $<BUILD_INTERFACE:${CRYPTO_INCLUDE_DIRS}> $<INSTALL_INTERFACE:include>
 )
+
+# Note: for SameMajorVersion upgrade stategy
+set_target_properties(
+  ${PROJECT_NAME}
+  PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR}
+             VERSION ${PROJECT_VERSION}
+             VISIBILITY_INLINES_HIDDEN ${BUILD_SHARED_LIBS}
+             CMAKE_VISIBILITY_INLINES_HIDDEN ${BUILD_SHARED_LIBS}
+)
+
 
 if(SNMP_PP_EXAMPLES)
   set(EXAMPLE_SOURCE_FILES

@@ -53,7 +53,6 @@
   only a few functions, most info is in subclass.
 
 =====================================================================*/
-// $Id$
 
 #ifndef _SNMP_SMIVAL_H_
 #define _SNMP_SMIVAL_H_

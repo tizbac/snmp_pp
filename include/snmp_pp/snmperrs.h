@@ -50,7 +50,6 @@
 
   DESIGN + AUTHOR:  Jeff Meyer
 ============================================================================*/
-// $Id$
 
 #ifndef _SNMP_SNMPERRS_H_
 #define _SNMP_SNMPERRS_H_

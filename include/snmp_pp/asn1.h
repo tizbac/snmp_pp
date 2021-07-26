@@ -24,7 +24,6 @@
   _##  upon this software code base. 
   _##  
   _##########################################################################*/
-// $Id$
 
 #ifndef _SNMP_ASN1_H_
 #define _SNMP_ASN1_H_

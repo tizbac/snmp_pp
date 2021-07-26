@@ -51,7 +51,6 @@
   ASN.1	encoding / decoding class
       		
 =====================================================================*/
-// $Id$
 
 #ifndef _SNMP_SNMPMSG_H_
 #define _SNMP_SNMPMSG_H_

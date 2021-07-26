@@ -39,7 +39,6 @@
   or implied. User hereby grants a royalty-free license to any and all
   derivatives based upon this software code base.
 */
-char msec_cpp_version[]="@(#) SNMP++ $Id$";
 
 #include <libsnmp.h>
 

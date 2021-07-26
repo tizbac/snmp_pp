@@ -48,7 +48,6 @@
 
   DESCRIPTION:      Implementation file for Address classes.
 =====================================================================*/
-char address_cpp_version[]="@(#) SNMP++ $Id$";
 
 #include <libsnmp.h>
 

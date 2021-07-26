@@ -24,7 +24,6 @@
   _##  upon this software code base. 
   _##  
   _##########################################################################*/
-char idea_cpp_version[]="#(@) SNMP++ $Id$";
 /*
 
 idea.c
