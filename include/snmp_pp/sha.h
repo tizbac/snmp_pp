@@ -33,7 +33,6 @@
 
 #if !defined(_USE_LIBTOMCRYPT) && !defined(_USE_OPENSSL)
 
-// $Id$
 /****************************************************************
  * SHS.h  -  Secure Hash Standard (draft) FIPS 180-1            *
  *                                                              *

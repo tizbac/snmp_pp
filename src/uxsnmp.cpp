@@ -627,7 +627,7 @@ void Snmp::map_action( unsigned short action, unsigned short & pdu_action)
 Snmp::Snmp(int &status, const unsigned short port, const bool bind_ipv6)
     : SnmpSynchronized(),
 #ifdef _SNMPv3
-      mpv3(v3MP::I),
+      mpv3(v3MP::instance),
 #endif
       m_isThreadRunning(false), m_pollTimeOut(DEFAULT_TIMEOUT)
 {
@@ -657,7 +657,7 @@ Snmp::Snmp(int &status, const unsigned short port, const bool bind_ipv6)
 Snmp::Snmp( int &status, const UdpAddress& addr)
     : SnmpSynchronized(),
 #ifdef _SNMPv3
-      mpv3(v3MP::I),
+      mpv3(v3MP::instance),
 #endif
       m_isThreadRunning(false), m_pollTimeOut(DEFAULT_TIMEOUT)
 {
@@ -683,7 +683,7 @@ Snmp::Snmp( int &status,  const UdpAddress& addr_v4,
             const UdpAddress& addr_v6)
     : SnmpSynchronized(),
 #ifdef _SNMPv3
-      mpv3(v3MP::I),
+      mpv3(v3MP::instance),
 #endif
       m_isThreadRunning(false), m_pollTimeOut(DEFAULT_TIMEOUT)
 {

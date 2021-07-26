@@ -423,6 +423,7 @@ AgentLog& AgentLogImpl::operator+=(const LogEntry* log)
 
 AgentLog* DefaultLog::instance = 0;
 LogEntry* DefaultLog::entry = 0;
+
 #ifdef _THREADS
 SnmpSynchronized DefaultLog::mutex;
 #endif

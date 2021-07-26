@@ -55,7 +55,6 @@
   DESIGN + AUTHOR:  Peter E. Mellquist
 
 =====================================================================*/
-// $Id$
 
 #ifndef _SNMP_VB_H_
 #define _SNMP_VB_H_

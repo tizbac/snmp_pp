@@ -47,7 +47,6 @@
       Author:           Peter E Mellquist
 
 =====================================================================*/
-char msgqueue_version[]="#(@) SNMP++ $Id$";
 
 #include <libsnmp.h>
 

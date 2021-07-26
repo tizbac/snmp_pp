@@ -49,10 +49,6 @@
 #include "snmp_pp/snmp_pp.h"
 #include "snmp_pp/auth_priv.h"
 
-#ifdef WIN32
-#define strcasecmp _stricmp
-#endif
-
 #ifdef SNMP_PP_NAMESPACE
 using namespace Snmp_pp;
 #endif

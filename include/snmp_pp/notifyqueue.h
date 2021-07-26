@@ -56,7 +56,6 @@
         Queue for holding sessions waiting for notifiactions
 
 =====================================================================*/
-// $Id$
 
 #ifndef _SNMP_NOTIFYQUEUE_H_
 #define _SNMP_NOTIFYQUEUE_H_

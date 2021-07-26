@@ -49,7 +49,6 @@
 
   DESCRIPTION:         Implementation for Counter64 (64 bit counter class).
 =====================================================================*/
-char counter64_cpp_version[]="@(#) SNMP++ $Id$";
 
 #include <libsnmp.h>
 

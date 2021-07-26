@@ -48,10 +48,6 @@
 
 #include "snmp_pp/snmp_pp.h"
 
-#ifdef WIN32
-#define strcasecmp _stricmp
-#endif
-
 #ifdef SNMP_PP_NAMESPACE
 using namespace Snmp_pp;
 #endif

@@ -604,10 +604,12 @@ protected:
 
 	static AgentLog* instance;
 	static LogEntry* entry;
+
 #ifdef _THREADS
 	static SnmpSynchronized mutex;
 #endif
-	static const char defaultName;
+
+	//XXX: unsued CK? static const char defaultName;
 };
 
 #ifdef SNMP_PP_NAMESPACE
