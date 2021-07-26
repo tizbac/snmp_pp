@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.14...3.21)
 # NOTE: We need LANGUAGE C too for libdes. It may be required to build at Windows! CK
 project(
   snmp_pp
-  VERSION 3.4.7.5
+  VERSION 3.4.7.6
   LANGUAGES CXX C
 )
 
