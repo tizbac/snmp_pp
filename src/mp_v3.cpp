@@ -24,7 +24,6 @@
   _##  upon this software code base. 
   _##  
   _##########################################################################*/
-char mp_v3_cpp_version[]="@(#) SNMP++ $Id$";
 
 #include <libsnmp.h>
 
@@ -55,7 +54,7 @@ static const char *loggerModuleName = "snmp++.mp_v3";
 #define CACHE_LOCAL_REQ true
 #define CACHE_REMOTE_REQ false
 
-v3MP *v3MP::I = 0;
+v3MP *v3MP::instance = 0;
 
 // Use locking on access methods in an multithreaded environment.
 #ifdef _THREADS
@@ -659,7 +658,7 @@ v3MP::v3MP(const OctetStr& snmpEngineID,
            unsigned int engineBoots, int &construct_status)
   : own_engine_id(0), usm(0)
 {
-  I = this;
+  //XXX instance = this;
 
   snmpUnknownSecurityModels = 0;
   snmpInvalidMsgs = 0;
@@ -702,7 +701,7 @@ v3MP::~v3MP()
     usm = 0;
   }
 
-  I = 0;
+  //XXX instance = 0;
 }
 
 // Remove all occurrences of this engine id from v3MP and USM.

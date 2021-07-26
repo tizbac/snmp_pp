@@ -51,7 +51,6 @@
   Class definition for SMI Counter32 class.
 
 =====================================================================*/
-// $Id$
 
 #ifndef _SNMP_COUNTER_H_
 #define _SNMP_COUNTER_H_

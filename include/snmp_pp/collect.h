@@ -50,7 +50,6 @@
   DESCRIPTION: Simple Collection classes for SNMP++ classes.
 
 =====================================================================*/
-// $Id$
 
 #ifndef _SNMP_COLLECT_H_
 #define _SNMP_COLLECT_H_

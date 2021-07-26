@@ -25,7 +25,6 @@
   _##  
   _##########################################################################*/
 
-// $Id$
 
 #ifndef _SNMP_MP_V3_H_
 #define _SNMP_MP_V3_H_
@@ -286,7 +285,7 @@ class DLLOPT v3MP
   void inc_stats_unknown_pdu_handlers() { snmpUnknownPDUHandlers++; };
 
   // temporary pointer will be removed...
-  static DLLOPT v3MP *I;
+  static v3MP *instance;
 
  protected:
 

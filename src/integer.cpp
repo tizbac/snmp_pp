@@ -49,7 +49,6 @@
   DESCRIPTION:
   Class implemtation for SMI Integer classes.
 =====================================================================*/
-char integer_cpp_version[]="#(@) SNMP++ $Id$";
 
 #include <libsnmp.h>
 

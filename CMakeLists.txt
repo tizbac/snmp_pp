@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.14...3.21)
 
+# NOTE: We need LANGUAGE C too for libdes. It may be required to build at Windows! CK
 project(
   snmp_pp
-  VERSION 3.4.7.5
+  VERSION 3.4.7.6
   LANGUAGES CXX C
 )
 
@@ -17,7 +18,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 
-option(SNMP_PP_EXAMPLES "Enable to build examples" OFF)
+option(SNMP_PP_EXAMPLES "Enable to build examples" ON)
 option(SNMP_PP_SNMPv3 "Enable support for SNMPv3" ON)
 option(SNMP_PP_IPv6 "Enable support for IPv6" ON)
 option(SNMP_PP_THREADS "Enable support for threads" ON)
@@ -502,6 +503,16 @@ target_include_directories(
          $<BUILD_INTERFACE:${CRYPTO_INCLUDE_DIRS}> $<INSTALL_INTERFACE:include>
 )
 
+# Note: for SameMajorVersion upgrade stategy
+set_target_properties(
+  ${PROJECT_NAME}
+  PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR}
+             VERSION ${PROJECT_VERSION}
+             VISIBILITY_INLINES_HIDDEN ${BUILD_SHARED_LIBS}
+             CMAKE_VISIBILITY_INLINES_HIDDEN ${BUILD_SHARED_LIBS}
+)
+
+
 if(SNMP_PP_EXAMPLES)
   set(EXAMPLE_SOURCE_FILES
       consoleExamples/receive_trap.cpp
@@ -515,9 +526,12 @@ if(SNMP_PP_EXAMPLES)
       consoleExamples/snmpSet.cpp
       consoleExamples/snmpTraps.cpp
       consoleExamples/snmpWalk.cpp
-      consoleExamples/snmpWalkThreads.cpp
       consoleExamples/test_app.cpp
   )
+
+  if(NOT MSVC)
+    list(APPEND EXAMPLE_SOURCE_FILES consoleExamples/snmpWalkThreads.cpp)
+  endif()
 
   foreach(examplesourcefile ${EXAMPLE_SOURCE_FILES})
     string(REPLACE ".cpp" "" examplename ${examplesourcefile})

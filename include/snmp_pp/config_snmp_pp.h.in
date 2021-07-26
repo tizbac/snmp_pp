@@ -52,7 +52,7 @@
 #            define DLLOPT_TEMPL extern
 #        endif
 #    else
-#        define DLLOPT
+#        define DLLOPT SNMP_PP_EXPORT
 #        define DLLOPT_TEMPL
 #    endif
 #endif

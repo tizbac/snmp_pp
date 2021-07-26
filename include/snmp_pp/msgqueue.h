@@ -56,7 +56,6 @@
 	Queue for holing SNMP event sources (outstanding snmp messages)
 
 =====================================================================*/
-// $Id$
 
 #ifndef _SNMP_MSGQUEUE_H_
 #define _SNMP_MSGQUEUE_H_

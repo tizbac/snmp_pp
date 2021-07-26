@@ -57,7 +57,6 @@
         timeouts
 
 =====================================================================*/
-char notifyqueue_version[]="#(@) SNMP++ $Id$";
 
 #include <libsnmp.h>
 

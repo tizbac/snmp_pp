@@ -52,7 +52,6 @@
   Data Unit (PDU) in C++.
 
 =====================================================================*/
-char pdu_cpp_version[]="@(#) SNMP++ $Id$";
 
 #include <libsnmp.h>
 

@@ -47,7 +47,6 @@
   DESCRIPTION:      Target class defines target SNMP agents.
 
 =====================================================================*/
-char target_cpp_version[]="#(@) SNMP++ $Id$";
 
 #include <libsnmp.h>
 

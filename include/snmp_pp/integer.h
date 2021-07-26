@@ -51,7 +51,6 @@
   Class definition for Integer classes.
 
 =====================================================================*/
-// $Id$
 
 #ifndef _SNMP_INTEGER_H_
 #define _SNMP_INTEGER_H_

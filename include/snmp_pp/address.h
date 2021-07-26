@@ -51,7 +51,6 @@
   addresses into easy to use, safe and portable classes.
 
 =====================================================================*/
-// $Id$
 
 #ifndef _SNMP_ADDRESS_H_
 #define _SNMP_ADDRESS_H_
