@@ -57,7 +57,6 @@
 #include "snmp_pp/v3.h"
 
 #ifdef HAVE_INTTYPES_H
-#define __STDC_FORMAT_MACROS 1
 #include <inttypes.h>
 #endif
 

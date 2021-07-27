@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.14...3.21)
 # NOTE: We need LANGUAGE C too for libdes. It may be required to build at Windows! CK
 project(
   snmp_pp
-  VERSION 3.4.7.7
+  VERSION 3.4.7.8
   LANGUAGES CXX C
 )
 
@@ -489,6 +489,8 @@ set_target_properties(
 )
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD ${CMAKE_CXX_STANDARD})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${CRYPTO_LINKLIBS} Threads::Threads)
+target_compile_definitions(${PROJECT_NAME} PRIVATE HAVE_CONFIG_H)
+
 #
 # NOTE: we have to prevent the use of older installed project headers
 #
