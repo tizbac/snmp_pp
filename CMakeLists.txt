@@ -106,7 +106,7 @@ check_function_exists("gethostbyname" HAVE_GETHOSTBYNAME)
 check_function_exists("gethostbyname2" HAVE_GETHOSTBYNAME2)
 check_function_exists("gethostbyname_r" HAVE_GETHOSTBYNAME_R)
 check_function_exists("gethostname" HAVE_GETHOSTNAME)
-check_function_exists("getpid" HAVE_GETPID)
+check_function_exists("getpid" HAVE_GETPID) # again?
 check_function_exists("gettimeofday" HAVE_GETTIMEOFDAY)
 check_function_exists("htonl" HAVE_HTONL)
 check_function_exists("inet_aton" HAVE_INET_ATON)
@@ -121,10 +121,10 @@ check_function_exists("poll" HAVE_POLL)
 check_function_exists("realloc" HAVE_REALLOC)
 check_function_exists("select" HAVE_SELECT)
 check_function_exists("socket" HAVE_SOCKET)
-check_function_exists("strcasecmp" HAVE_STRCASECMP)
+check_function_exists("strcasecmp" HAVE_STRCASECMP) # again
 check_function_exists("strchr" HAVE_STRCHR)
 check_function_exists("strerror" HAVE_STRERROR)
-check_function_exists("stricmp" HAVE_STRICMP)
+check_function_exists("stricmp" HAVE_STRICMP) # again?
 check_function_exists("strstr" HAVE_STRSTR)
 check_include_files(inttypes.h HAVE_INTTYPES_H) # again?
 check_include_files(io.h HAVE_IO_H) # again?
@@ -383,7 +383,6 @@ endif()
 
 check_include_files(malloc.h HAVE_MALLOC_H)
 check_include_files("sys/param.h;sys/mount.h" HAVE_SYS_MOUNT_H)
-check_function_exists("strcasecmp" HAVE_STRCASECMP)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake_config.h.in config.h)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake_libsnmp.h.in libsnmp.h)
