@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.14...3.21)
 # NOTE: We need LANGUAGE C too for libdes. It may be required to build at Windows! CK
 project(
   snmp_pp
-  VERSION 3.4.7.7
+  VERSION 3.4.7.8
   LANGUAGES CXX C
 )
 
@@ -106,7 +106,7 @@ check_function_exists("gethostbyname" HAVE_GETHOSTBYNAME)
 check_function_exists("gethostbyname2" HAVE_GETHOSTBYNAME2)
 check_function_exists("gethostbyname_r" HAVE_GETHOSTBYNAME_R)
 check_function_exists("gethostname" HAVE_GETHOSTNAME)
-check_function_exists("getpid" HAVE_GETPID)
+check_function_exists("getpid" HAVE_GETPID) # again?
 check_function_exists("gettimeofday" HAVE_GETTIMEOFDAY)
 check_function_exists("htonl" HAVE_HTONL)
 check_function_exists("inet_aton" HAVE_INET_ATON)
@@ -121,10 +121,10 @@ check_function_exists("poll" HAVE_POLL)
 check_function_exists("realloc" HAVE_REALLOC)
 check_function_exists("select" HAVE_SELECT)
 check_function_exists("socket" HAVE_SOCKET)
-check_function_exists("strcasecmp" HAVE_STRCASECMP)
+check_function_exists("strcasecmp" HAVE_STRCASECMP) # again
 check_function_exists("strchr" HAVE_STRCHR)
 check_function_exists("strerror" HAVE_STRERROR)
-check_function_exists("stricmp" HAVE_STRICMP)
+check_function_exists("stricmp" HAVE_STRICMP) # again?
 check_function_exists("strstr" HAVE_STRSTR)
 check_include_files(inttypes.h HAVE_INTTYPES_H) # again?
 check_include_files(io.h HAVE_IO_H) # again?
@@ -383,7 +383,6 @@ endif()
 
 check_include_files(malloc.h HAVE_MALLOC_H)
 check_include_files("sys/param.h;sys/mount.h" HAVE_SYS_MOUNT_H)
-check_function_exists("strcasecmp" HAVE_STRCASECMP)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake_config.h.in config.h)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake_libsnmp.h.in libsnmp.h)
@@ -474,6 +473,7 @@ add_library(${PROJECT_NAME} ${MY_HEADER_FILES} ${MY_HEADER_LIB_FILES} ${CMAKE_CU
 
 if(MSVC)
   target_link_libraries(${PROJECT_NAME} PUBLIC wsock32 ws2_32)
+  target_compile_definitions(${PROJECT_NAME} PUBLIC WIN32)
   # warning level 4 (all warnings as errors: /WX)
   # FIXME target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
 else()
@@ -489,6 +489,8 @@ set_target_properties(
 )
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD ${CMAKE_CXX_STANDARD})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${CRYPTO_LINKLIBS} Threads::Threads)
+target_compile_definitions(${PROJECT_NAME} PRIVATE HAVE_CONFIG_H)
+
 #
 # NOTE: we have to prevent the use of older installed project headers
 #

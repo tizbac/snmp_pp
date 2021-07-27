@@ -97,54 +97,54 @@ initLogProfiles()
   */
 void LogEntry::init(void)
 {
-	add_timestamp();
-	add_string(": ");
+    add_timestamp();
+    add_string(": ");
 
-#if defined (CPU) && CPU == PPC603
-	int pid = taskIdSelf();
+#if defined(CPU) && CPU == PPC603
+    int pid = taskIdSelf();
 #else
-#ifdef POSIX_THREADS
-        pthread_t pid = pthread_self();
-	if (sizeof(pthread_t) == sizeof(long))
-	{
-	  add_integer(*(long*)(void*)(&pid));
-	}
-	else
-	{
-	  unsigned char *ptc = (unsigned char*)(void*)(&pid);
-	  OctetStr os;
-	  os.set_data(ptc, sizeof(pthread_t));
-	  add_string(os.get_printable_hex());
-	}
-#else
-#ifdef HAVE_GETPID
-	pid_t pid = getpid();
-#else
-        int pid = 0;
-#endif
-	add_integer(pid);
-#endif
+#    ifdef POSIX_THREADS
+    pthread_t pid = pthread_self();
+    if (sizeof(pthread_t) == sizeof(long)) {
+        add_integer(*(long*)(void*)(&pid));
+    } else {
+        unsigned char* ptc = (unsigned char*)(void*)(&pid);
+        OctetStr os;
+        os.set_data(ptc, sizeof(pthread_t));
+        add_string(os.get_printable_hex());
+    }
+#    else
+#        ifdef HAVE_GETPID
+#            ifdef _WIN32
+    typedef long pid_t;
+#            endif
+    pid_t pid = getpid();
+#        else
+    long pid = 0;
+#        endif
+    add_integer(pid);
+#    endif
 #endif
 
-	add_string(": ");
+    add_string(": ");
 
-	char buf[20];
-	sprintf(buf, "(%X)", get_level());
-	add_string(buf);
+    char buf[20];
+    sprintf(buf, "(%X)", get_level());
+    add_string(buf);
 
-	switch (type & LOG_CLASS_MASK) {
-	case DEBUG_LOG:   add_string("DEBUG  : "); break;
-	case INFO_LOG:	  add_string("INFO   : "); break;
-	case WARNING_LOG: add_string("WARNING: "); break;
-	case ERROR_LOG:	  add_string("ERROR  : "); break;
-	case EVENT_LOG:	  add_string("EVENT  : "); break;
-	case USER_LOG:	  add_string("USER   : "); break;
-	}
+    switch (type & LOG_CLASS_MASK) {
+    case DEBUG_LOG: add_string("DEBUG  : "); break;
+    case INFO_LOG: add_string("INFO   : "); break;
+    case WARNING_LOG: add_string("WARNING: "); break;
+    case ERROR_LOG: add_string("ERROR  : "); break;
+    case EVENT_LOG: add_string("EVENT  : "); break;
+    case USER_LOG: add_string("USER   : "); break;
+    }
 
 #ifdef LOG_INDENT
-	// indent log by level
-	for (int i=0; i<(type & LOG_LEVEL_MASK); i++)
-		add_string(" ");
+    // indent log by level
+    for (int i = 0; i < (type & LOG_LEVEL_MASK); i++)
+        add_string(" ");
 #endif
 }
 
