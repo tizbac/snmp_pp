@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.14...3.21)
 # NOTE: We need LANGUAGE C too for libdes. It may be required to build at Windows! CK
 project(
   snmp_pp
-  VERSION 3.4.7.6
+  VERSION 3.4.7.7
   LANGUAGES CXX C
 )
 
@@ -19,15 +19,15 @@ set(CMAKE_CXX_STANDARD 17)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 
 option(SNMP_PP_EXAMPLES "Enable to build examples" ON)
-option(SNMP_PP_SNMPv3 "Enable support for SNMPv3" ON)
+option(SNMP_PP_SNMPv3 "Enable support for SNMPv3 (needed!)" ON)
 option(SNMP_PP_IPv6 "Enable support for IPv6" ON)
-option(SNMP_PP_THREADS "Enable support for threads" ON)
-option(SNMP_PP_NAMESPACE "Enable using of namespace" ON)
+option(SNMP_PP_THREADS "Enable support for threads (needed!)" ON)
+option(SNMP_PP_NAMESPACE "Enable using of namespace (needed!)" ON)
 option(SNMP_PP_LOGGING "Enable logging" OFF)
 option(SNMP_PP_MACADDR "Enable MacAddress class" OFF)
 option(SNMP_PP_IPXADDR "Enable IpxAddress class" OFF)
 option(SNMP_PP_OPENSSL "Search for OpenSSL library" ON)
-option(SNMP_PP_LIBDES "Search for DES library" ON)
+option(SNMP_PP_LIBDES "Search for DES library (needed for WIN32!)" ON)
 option(SNMP_PP_LIBTOMCRYPT "Search for Tomcrypt library" OFF)
 option(SNMP_PP_EXTENDED_DEBUG "Enable additional debug messages" OFF)
 
@@ -470,9 +470,7 @@ set(MY_SRC_FILES
 )
 
 option(BUILD_SHARED_LIBS "Global flag to cause add_library() to create shared libraries if on." ON)
-add_library(
-  ${PROJECT_NAME} ${MY_HEADER_FILES} ${MY_HEADER_LIB_FILES} ${CMAKE_CURRENT_BINARY_DIR}/config.h ${MY_SRC_FILES}
-)
+add_library(${PROJECT_NAME} ${MY_HEADER_FILES} ${MY_HEADER_LIB_FILES} ${CMAKE_CURRENT_BINARY_DIR}/config.h ${MY_SRC_FILES})
 
 if(MSVC)
   target_link_libraries(${PROJECT_NAME} PUBLIC wsock32 ws2_32)
@@ -512,7 +510,6 @@ set_target_properties(
              CMAKE_VISIBILITY_INLINES_HIDDEN ${BUILD_SHARED_LIBS}
 )
 
-
 if(SNMP_PP_EXAMPLES)
   set(EXAMPLE_SOURCE_FILES
       consoleExamples/receive_trap.cpp
@@ -546,9 +543,7 @@ endif()
 
 install(FILES ${MY_HEADER_LIB_FILES} DESTINATION include)
 
-# XXX include(PackageProject)
 CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.8.0")
-
 packageProject(
   # the name of the target to export
   NAME ${PROJECT_NAME}

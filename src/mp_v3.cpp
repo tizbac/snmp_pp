@@ -658,7 +658,7 @@ v3MP::v3MP(const OctetStr& snmpEngineID,
            unsigned int engineBoots, int &construct_status)
   : own_engine_id(0), usm(0)
 {
-  //XXX instance = this;
+  instance = this;
 
   snmpUnknownSecurityModels = 0;
   snmpInvalidMsgs = 0;
@@ -701,7 +701,7 @@ v3MP::~v3MP()
     usm = 0;
   }
 
-  //XXX instance = 0;
+  instance = 0;
 }
 
 // Remove all occurrences of this engine id from v3MP and USM.
