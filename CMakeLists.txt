@@ -474,6 +474,7 @@ add_library(${PROJECT_NAME} ${MY_HEADER_FILES} ${MY_HEADER_LIB_FILES} ${CMAKE_CU
 
 if(MSVC)
   target_link_libraries(${PROJECT_NAME} PUBLIC wsock32 ws2_32)
+  target_compile_definitions(${PROJECT_NAME} PUBLIC WIN32)
   # warning level 4 (all warnings as errors: /WX)
   # FIXME target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
 else()

@@ -115,7 +115,7 @@ void LogEntry::init(void)
     }
 #    else
 #        ifdef HAVE_GETPID
-#            ifdef _WiN32
+#            ifdef _WIN32
     typedef long pid_t;
 #            endif
     pid_t pid = getpid();
