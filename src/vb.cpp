@@ -115,13 +115,13 @@ void Vb::free_vb()
 //---------------------[ Vb::get_value(int &i) ]----------------------
 // get value int
 // returns 0 on success and value
-int Vb::get_value(int &i) const
+int Vb::get_value(int32_t &i) const
 {
    if (iv_vb_value &&
        iv_vb_value->valid() &&
        (iv_vb_value->get_syntax() == sNMP_SYNTAX_INT32 ))
    {
-     long lval;
+     long lval = 0;
      lval = *((SnmpInt32 *)iv_vb_value);// SnmpInt32 includes cast to long,
      i = (int) lval;                    // but not to int.
      return SNMP_CLASS_SUCCESS;
@@ -131,7 +131,7 @@ int Vb::get_value(int &i) const
 
 // get the unsigned int
 // returns 0 on success and a value
-int Vb::get_value(unsigned int &i) const
+int Vb::get_value(uint32_t &i) const
 {
   if (iv_vb_value &&
       iv_vb_value->valid() &&
@@ -140,7 +140,7 @@ int Vb::get_value(unsigned int &i) const
        (iv_vb_value->get_syntax() == sNMP_SYNTAX_GAUGE32 ) ||
        (iv_vb_value->get_syntax() == sNMP_SYNTAX_TIMETICKS )))
   {
-    unsigned long lval;
+    unsigned long lval = 0;
     lval = *((SnmpUInt32 *)iv_vb_value);
     i = (unsigned int)lval;
     return SNMP_CLASS_SUCCESS;
@@ -149,6 +149,7 @@ int Vb::get_value(unsigned int &i) const
 }
 
 
+#if 0
 //--------------[ Vb::get_value(long int &i) ]-------------------------
 // get the signed long int
 // returns 0 on success and a value
@@ -182,6 +183,7 @@ int Vb::get_value(unsigned long &i) const
   }
   return SNMP_CLASS_INVALID;
 }
+#endif
 
 //-----------------[  Vb::get_value(pp_uint64 &i) ]--------------
 // get the pp_uint64
@@ -362,7 +364,7 @@ void Vb::set_syntax(const SmiUINT32 syntax)
 	}
 }
 
-static char blank_string[] = "";
+const static char blank_string[] = "";
 
 // return the printabel value
 const char *Vb::get_printable_value() const

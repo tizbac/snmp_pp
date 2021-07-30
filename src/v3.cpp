@@ -296,7 +296,7 @@ int saveBootCounter(const char *fileName,
 {
   char tmpFileName[MAXLENGTH_FILENAME];
   int len = engineId.len();
-  FILE *file_in, *file_out;
+  FILE *file_in = nullptr, *file_out = nullptr;
 
   tmpFileName[0] = 0;
   sprintf(tmpFileName, "%s.tmp",fileName);

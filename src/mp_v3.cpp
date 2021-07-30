@@ -148,7 +148,7 @@ int v3MP::EngineIdTable::add_entry(const OctetStr &engine_id,
   if (entries == max_entries)
   {
     // resize Table
-    struct Entry_T *tmp;
+    struct Entry_T *tmp = nullptr;
     tmp = new struct Entry_T[2 * max_entries];
     if (!tmp)
     {
@@ -170,9 +170,9 @@ int v3MP::EngineIdTable::add_entry(const OctetStr &engine_id,
 int v3MP::EngineIdTable::get_entry(OctetStr &engine_id,
                                    const OctetStr &hostport) const
 {
-  int port;
+  int port = 0;
   char host[MAX_HOST_NAME_LENGTH + 1];
-  char *ptr;
+  char *ptr = nullptr;
 
   /* Check length */
   if (hostport.len() > MAX_HOST_NAME_LENGTH)
@@ -211,7 +211,7 @@ int v3MP::EngineIdTable::get_entry(OctetStr &engine_id,
 
   BEGIN_REENTRANT_CODE_BLOCK_CONST;
 
-  int i, found = 0;
+  int i = 0, found = 0;
 
   for (i = 0; i < entries; i++)
     if ((table[i].port == port) &&
@@ -259,7 +259,7 @@ int v3MP::EngineIdTable::delete_entry(const OctetStr &engine_id)
   if (!table)
     return SNMPv3_MP_NOT_INITIALIZED;
 
-  int i, found = 0;
+  int i = 0, found = 0;
 
   BEGIN_REENTRANT_CODE_BLOCK;
 
@@ -294,7 +294,7 @@ int v3MP::EngineIdTable::delete_entry(const OctetStr &host, int port)
   if (!table)
     return SNMPv3_MP_NOT_INITIALIZED;
 
-  int i, found = 0;
+  int i = 0, found = 0;
 
   BEGIN_REENTRANT_CODE_BLOCK;
 
@@ -439,7 +439,7 @@ int v3MP::Cache::add_entry(int msg_id, unsigned long req_id,
   if (entries == max_entries)
   {
     // resize Table
-    struct Entry_T *tmp;
+    struct Entry_T *tmp = nullptr;
     tmp = new struct Entry_T[2 * max_entries];
     if (!tmp)
     {
@@ -672,7 +672,7 @@ v3MP::v3MP(const OctetStr& snmpEngineID,
   own_engine_id_len = length;
   own_engine_id_oct = snmpEngineID;
 
-  int result;
+  int result = 0;
   usm = new USM(engineBoots, snmpEngineID, this, &cur_msg_id, result);
 
   if (cur_msg_id >= MAX_MPMSGID)
@@ -780,7 +780,7 @@ int v3MP::send_report(unsigned char* scopedPDU, int scopedPDULength,
 
   Vb counterVb;
   Oid counterOid;
-  SmiLPOID smioid;
+  SmiLPOID smioid = nullptr;
   SmiVALUE smival;
 
   switch (errorCode) {
@@ -909,12 +909,12 @@ int v3MP::snmp_parse(Snmp *snmp_session,
   if (inBufLength > MAX_SNMP_PACKET)
     return  SNMPv3_MP_ERROR;
 
-  unsigned char type;
-  long version;
+  unsigned char type = 0;
+  long version = 0;
   int origLength = inBufLength;
   unsigned char *inBufPtr = inBuf;
-  long msgID, msgMaxSize;
-  unsigned char msgFlags;
+  long msgID = 0, msgMaxSize = 0;
+  unsigned char msgFlags = 0;
   Buffer<unsigned char> msgSecurityParameters(MAX_SNMP_PACKET);
   Buffer<unsigned char> msgData(MAX_SNMP_PACKET);
   int msgSecurityParametersLength = inBufLength,   msgDataLength = inBufLength;
@@ -922,8 +922,8 @@ int v3MP::snmp_parse(Snmp *snmp_session,
   int scopedPDULength = MAX_SNMP_PACKET;
   long  maxSizeResponseScopedPDU = 0;
   struct SecurityStateReference *securityStateReference = NULL;
-  int securityParametersPosition;
-  int rc;
+  int securityParametersPosition = 0;
+  int rc = 0;
   int errorCode = 0;
 
   // get the type
@@ -1263,8 +1263,8 @@ int v3MP::snmp_parse(Snmp *snmp_session,
 // Tests if the given buffer contains a SNMPv3-Message.
 bool v3MP::is_v3_msg(unsigned char *buffer, int length)
 {
-  unsigned char type;
-  long version;
+  unsigned char type = 0;
+  long version = 0;
 
   // get the type
   buffer = asn_parse_header(buffer, &length, &type);
@@ -1319,11 +1319,11 @@ int v3MP::snmp_build(struct snmp_pdu *pdu,
   unsigned char *scopedPDUPtr = scopedPDU.get_ptr();
   unsigned char globalData[MAXLENGTH_GLOBALDATA];
   int globalDataLength = MAXLENGTH_GLOBALDATA;
-  int scopedPDULength, maxLen = *out_length;
+  int scopedPDULength = 0, maxLen = *out_length;
   Buffer<unsigned char> buf(MAX_SNMP_PACKET);
   unsigned char *bufPtr = buf.get_ptr();
-  long bufLength = 0, rc;
-  int msgID;
+  long bufLength = 0, rc = 0;
+  int msgID = 0;
   int cachedErrorCode = SNMPv3_MP_OK;
   struct SecurityStateReference *securityStateReference = NULL;
   int isRequestMessage = 0;
@@ -1435,7 +1435,7 @@ int v3MP::snmp_build(struct snmp_pdu *pdu,
 
   // build msgGlobalData
   unsigned char *globalDataPtr = (unsigned char *)&globalData;
-  unsigned char msgFlags;
+  unsigned char msgFlags = 0;
   switch (securityLevel) {
     case SNMP_SECURITY_LEVEL_NOAUTH_NOPRIV:
       { msgFlags = 0 ; break;}

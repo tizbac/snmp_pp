@@ -93,7 +93,7 @@ const char *SnmpUInt32::get_printable() const
 
   SnmpUInt32 *nc_this = PP_CONST_CAST(SnmpUInt32*, this);
   if (valid_flag)
-    sprintf(nc_this->output_buffer, "%lu", smival.value.uNumber);
+    sprintf(nc_this->output_buffer, "%" PRIu32, smival.value.uNumber);
   else
     nc_this->output_buffer[0] = 0;
 

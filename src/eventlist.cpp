@@ -98,7 +98,7 @@ CEventList::CEventListElt::~CEventListElt()
 
 CEventList::~CEventList()
 {
-  CEventListElt *leftOver;
+  CEventListElt *leftOver = nullptr;
 
   /* walk the list deleting any elements still on the queue */
   lock();

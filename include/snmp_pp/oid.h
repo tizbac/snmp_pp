@@ -135,7 +135,7 @@ class DLLOPT Oid : public SnmpSyntax
     // in this case the size to allocate is the same size as the source oid
     if (oid.smival.value.oid.len)
     {
-      smival.value.oid.ptr = (SmiLPUINT32) new unsigned long[oid.smival.value.oid.len];
+      smival.value.oid.ptr = (SmiLPUINT32) new SmiUINT32[oid.smival.value.oid.len];
       if (smival.value.oid.ptr)
         OidCopy((SmiLPOID)&(oid.smival.value.oid), (SmiLPOID)&smival.value.oid);
     }
@@ -147,7 +147,7 @@ class DLLOPT Oid : public SnmpSyntax
    * @param raw_oid - array of oid values
    * @param oid_len - length of array
    */
-  Oid(const unsigned long *raw_oid, int oid_len)
+  Oid(const SmiUINT32* raw_oid, int oid_len)
     : iv_str(0), iv_part_str(0), m_changed(true)
   {
     smival.syntax = sNMP_SYNTAX_OID;
@@ -156,7 +156,7 @@ class DLLOPT Oid : public SnmpSyntax
 
     if (raw_oid && (oid_len > 0))
     {
-      smival.value.oid.ptr = (SmiLPUINT32) new unsigned long[oid_len];
+      smival.value.oid.ptr = (SmiLPUINT32) new SmiUINT32[oid_len];
       if (smival.value.oid.ptr)
       {
         smival.value.oid.len = oid_len;
@@ -204,7 +204,7 @@ class DLLOPT Oid : public SnmpSyntax
       return *this;
 
     // allocate some memory for the oid
-    smival.value.oid.ptr = (SmiLPUINT32) new unsigned long[oid.smival.value.oid.len];
+    smival.value.oid.ptr = (SmiLPUINT32) new SmiUINT32[oid.smival.value.oid.len];
     if (smival.value.oid.ptr)
       OidCopy((SmiLPOID)&(oid.smival.value.oid), (SmiLPOID)&smival.value.oid);
     return *this;
@@ -283,9 +283,9 @@ class DLLOPT Oid : public SnmpSyntax
    *
    * @param i - Value to add at the end of the Oid
    */
-  Oid& operator+=(const unsigned long i)
+  Oid& operator+=(const SmiUINT32 i)
   {
-    Oid other(&i, 1);
+    Oid other((SmiLPUINT32) &i, 1);
     (*this) += other;
     return *this;
   }
@@ -302,7 +302,7 @@ class DLLOPT Oid : public SnmpSyntax
     if (o.smival.value.oid.len == 0)
       return *this;
 
-    new_oid = (SmiLPUINT32) new unsigned long[smival.value.oid.len + o.smival.value.oid.len];
+    new_oid = (SmiLPUINT32) new SmiUINT32[smival.value.oid.len + o.smival.value.oid.len];
     if (new_oid == 0)
     {
       delete_oid_ptr();
@@ -340,7 +340,7 @@ class DLLOPT Oid : public SnmpSyntax
    *
    * @return Value on the given index
    */
-  unsigned long &operator[](const unsigned int index)
+  SmiUINT32 &operator[](const unsigned int index)
     { m_changed = true; return smival.value.oid.ptr[index]; }
 
   /**
@@ -352,7 +352,7 @@ class DLLOPT Oid : public SnmpSyntax
    *
    * @return Value on the given position
    */
-  unsigned long operator[](const unsigned int index) const
+  SmiUINT32 operator[](const unsigned int index) const
     { return (index >= len()) ? 0 : smival.value.oid.ptr[index]; }
 
   /**
@@ -370,7 +370,7 @@ class DLLOPT Oid : public SnmpSyntax
    * @param raw_oid - Array of new values
    * @param oid_len - Length of the array raw_oid
    */
-  void set_data(const unsigned long *raw_oid, const unsigned int oid_len);
+  void set_data(const SmiUINT32* raw_oid, const unsigned int oid_len);
 
   /**
    * Set the data from raw form.

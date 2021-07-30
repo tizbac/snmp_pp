@@ -127,7 +127,7 @@ CUDEvent *CUDEventQueue::CUDEventQueueElt::TestId(const UdId uniqueId)
 
 CUDEventQueue::~CUDEventQueue()
 {
-  CUDEventQueueElt *leftOver;
+  CUDEventQueueElt *leftOver = nullptr;
   /*--------------------------------------------------------*/
   /* walk the list deleting any elements still on the queue */
   /*--------------------------------------------------------*/
@@ -190,7 +190,7 @@ void CUDEventQueue::DeleteEntry(const UdId uniqueId)
 
 UdId CUDEventQueue::MakeId()
 {
-  UdId id;
+  UdId id = 0;
   do {
     lock();
     id = ++m_id;

@@ -750,7 +750,7 @@ int USM::remove_all_users() {
     delete usm_user_name_table;
     usm_user_name_table = NULL;
   }
-  int result;
+  int result = 0;
   usm_user_name_table = new USMUserNameTable(result);
   if (result != SNMPv3_USM_OK)
     return result;
@@ -790,7 +790,7 @@ int USM::update_key(const unsigned char* user_name,
 		    const int type_of_key)
 {
   OctetStr key(new_key, new_key_len);
-  int res;
+  int res = 0;
   res = usm_user_table->update_key(OctetStr(user_name, user_name_len),
 				   OctetStr(engine_id, engine_id_len),
 				   key, type_of_key);
@@ -828,7 +828,7 @@ int USM::add_usm_user(const OctetStr& user_name,
   if (result != SNMPv3_USM_OK)
     return result;
 
-  struct UsmUser *dummy;
+  struct UsmUser *dummy = nullptr;
   dummy = get_user(local_snmp_engine_id, security_name);
   if (dummy) free_user(dummy);
 
@@ -978,7 +978,7 @@ struct UsmUser *USM::get_user(const OctetStr &engine_id,
     name_table_entry = usm_user_name_table->get_cloned_entry(security_name);
     if (!name_table_entry)
     {
-      const struct UsmUserTableEntry *entry;
+      const struct UsmUserTableEntry *entry = nullptr;
 
       BEGIN_AUTO_LOCK(usm_user_table);
 
@@ -1191,7 +1191,7 @@ int USM::get_security_name(const unsigned char *user_name,
 			   const long int user_name_len,
 			   OctetStr &security_name)
 {
-  int result;
+  int result = 0;
 
   result = usm_user_name_table->get_security_name(user_name, user_name_len,
                                                   security_name);
@@ -1217,7 +1217,7 @@ int USM::get_user_name(unsigned char *user_name, long int *user_name_len,
 		       const unsigned char *security_name,
 		       const long int security_name_len)
 {
-  int result;
+  int result = 0;
   long int buf_len = *user_name_len;
 
   result = usm_user_name_table->get_user_name(user_name, user_name_len,
@@ -1335,7 +1335,7 @@ struct UsmKeyUpdate* USM::key_update_prepare(const OctetStr& securityName,
   }
 
   // get user
-  struct UsmUser* user;
+  struct UsmUser* user = nullptr;
   user = get_user(engineID, securityName);
 
   if (user == NULL) {
@@ -1480,7 +1480,7 @@ int USM::key_update_commit(struct UsmKeyUpdate *uku, int update_type)
 {
   if (!uku) return SNMPv3_USM_ERROR;
 
-  int result;
+  int result = 0;
   OctetStr userName;
 
   switch (update_type)
@@ -1498,7 +1498,7 @@ int USM::key_update_commit(struct UsmKeyUpdate *uku, int update_type)
 			  uku->engineID.data(), uku->engineID.len(),
 			  uku->newKey.data(), uku->newKey.len(),
 			  uku->type);
-      struct UsmUserNameTableEntry *entry;
+      struct UsmUserNameTableEntry *entry = nullptr;
       entry = usm_user_name_table->get_cloned_entry(uku->securityName);
       if (!entry || (result != SNMPv3_USM_OK)) {
         delete uku;
@@ -1534,7 +1534,7 @@ int USM::key_update_commit(struct UsmKeyUpdate *uku, int update_type)
       return result;
     }
     case USM_PasswordAllKeyUpdate: {
-      struct UsmUserNameTableEntry *entry;
+      struct UsmUserNameTableEntry *entry = nullptr;
       entry = usm_user_name_table->get_cloned_entry(uku->securityName);
       if (!entry) {
         delete uku;
@@ -1597,7 +1597,7 @@ int USM::generate_msg(
   if (!bufPtr || !buf2Ptr)
     return SNMPv3_USM_ERROR;
 
-  unsigned char *wholeMsgPtr;
+  unsigned char *wholeMsgPtr = nullptr;
   int startAuthPar = 0;
   struct UsmUser *user = NULL;
   struct UsmSecurityParameters usmSecurityParams;
@@ -1606,7 +1606,7 @@ int USM::generate_msg(
   unsigned int buf2Length = buffer2.get_len();
   int totalLength = 0;             // Bytes encoded
   int restLength = maxMessageSize; // max Bytes left in packet-buffer
-  int rc;
+  int rc = 0;
   //int responseMsg = 0;
 
   if (securityStateReference) {
@@ -1756,7 +1756,7 @@ int USM::generate_msg(
 			       usmSecurityParams.msgAuthoritativeEngineTime);
     if (enc_result != SNMPv3_USM_OK)
     {
-      int return_value;
+      int return_value = 0;
 
       if (user->privProtocol == SNMP_PRIVPROTOCOL_NONE)
       {
@@ -1904,8 +1904,8 @@ int USM::process_msg(
   (void)fromAddress;
   unsigned char* sp = securityParameters;
   int spLength = securityParametersLength;
-  unsigned char type;
-  long int engineBoots, engineTime;
+  unsigned char type = 0;
+  long int engineBoots = 0, engineTime = 0;
   unsigned char authParam[SNMPv3_AP_MAXLENGTH_AUTHPARAM];
   unsigned char privParam[SNMPv3_AP_MAXLENGTH_PRIVPARAM];
   int authParamLength = SNMPv3_AP_MAXLENGTH_AUTHPARAM;
@@ -1913,7 +1913,7 @@ int USM::process_msg(
   Buffer<unsigned char> encryptedScopedPDU(MAX_SNMP_PACKET);
   int encryptedScopedPDULength = msgDataLength;
   struct UsmUser *user = NULL;
-  int rc;
+  int rc = 0;
   int notInTime = 0;
 
   // check securityParameters
@@ -2188,7 +2188,7 @@ int USM::process_msg(
     *scopedPDULength = tmp_length;
     if (dec_result != SNMPv3_USM_OK)
     {
-      int return_value;
+      int return_value = 0;
       if (dec_result == SNMPv3_USM_UNSUPPORTED_PRIVPROTOCOL)
       {
         debugprintf(0, "usmProcessMsg: unknown PrivacyProtocol");
@@ -2256,7 +2256,7 @@ unsigned char *USM::build_sec_params(unsigned char *outBuf, int *maxLength,
   unsigned char *bufPtr = buf.get_ptr();
   unsigned char *outBufPtr = outBuf;
   int length = *maxLength;
-  int totalLength;
+  int totalLength = 0;
 
   debugprintf(5, "Coding octstr sp.msgAuthoritativeEngineID, length = 0x%lx",
 	      sp.msgAuthoritativeEngineIDLength);
@@ -2360,9 +2360,9 @@ unsigned char *USM::build_whole_msg(
   Buffer<unsigned char> secPar(MAX_SNMP_PACKET);
   unsigned char *secParPtr = secPar.get_ptr();
   unsigned char *outBufPtr = outBuf;
-  long int secParLength;
+  long int secParLength = 0;
   int length = *maxLength;
-  int totalLength;
+  int totalLength = 0;
 
   int dummy = *maxLength;
 
@@ -2549,7 +2549,7 @@ void USM::unlock_user_table()
 USMTimeTable::USMTimeTable(const USM *owner,
 			   const unsigned int engine_boots, int &result)
 {
-  time_t now;
+  time_t now = 0;
 
   table = new struct Entry_T[5];
 
@@ -2625,7 +2625,7 @@ int USMTimeTable::add_entry(const OctetStr &engine_id,
     max_entries *= 4;
   }
 
-  time_t now;
+  time_t now = 0;
   time(&now);
 
   table[entries].engine_boots = engine_boots;
@@ -2677,7 +2677,7 @@ unsigned long USMTimeTable::get_local_time()
 
   BEGIN_REENTRANT_CODE_BLOCK;
 
-  time_t now;
+  time_t now = 0;
   time(&now);
 
   return table[0].time_diff + SAFE_ULONG_CAST(now);
@@ -2691,7 +2691,7 @@ int USMTimeTable::get_local_time(long int &engine_boots,
 
   BEGIN_REENTRANT_CODE_BLOCK;
 
-  time_t now;
+  time_t now = 0;
   time(&now);
 
   engine_boots = table[0].engine_boots;
@@ -2719,7 +2719,7 @@ int USMTimeTable::get_time(const OctetStr &engine_id,
                             engine_id.data(), engine_id.len()))
     {
       /* Entry found */
-      time_t now;
+      time_t now = 0;
       time(&now);
 
       engine_boots = table[i].engine_boots;
@@ -2757,7 +2757,7 @@ int USMTimeTable::check_time(const OctetStr &engine_id,
 
   BEGIN_REENTRANT_CODE_BLOCK;
 
-  time_t now;
+  time_t now = 0;
   time(&now);
 
   /* table[0] contains the local engine_id and time */
@@ -2767,7 +2767,7 @@ int USMTimeTable::check_time(const OctetStr &engine_id,
     /* Entry found, we are authoritative */
     if ((table[0].engine_boots == 2147483647) ||
         (table[0].engine_boots != engine_boots) ||
-        (labs(static_cast<pp_int64>(now) + table[0].time_diff - engine_time) > 150))
+        (std::abs(static_cast<pp_int64>(now) + table[0].time_diff - engine_time) > 150))
     {
       LOG_BEGIN(loggerModuleName, DEBUG_LOG | 9);
       LOG("USMTimeTable: Check time failed, authoritative (id) (boot) (time)");
@@ -2919,7 +2919,7 @@ int USMUserNameTable::add_entry(const OctetStr& user_name,
   BEGIN_REENTRANT_CODE_BLOCK;
 
   int found=0;
-  int i;
+  int i = 0;
   for (i = 0; i < entries; i++)
     if (table[i].usmUserName == user_name)
     {
@@ -2955,7 +2955,7 @@ int USMUserNameTable::add_entry(const OctetStr& user_name,
     if (entries == max_entries)
     {
       /* resize Table */
-      struct UsmUserNameTableEntry *tmp;
+      struct UsmUserNameTableEntry *tmp = nullptr;
       tmp = new struct UsmUserNameTableEntry[4 * max_entries];
       if (!tmp)
         return SNMPv3_USM_ERROR;
@@ -3770,7 +3770,7 @@ int USMUserTable::add_entry(
   if (entries == max_entries)
   {
     /* resize Table */
-    struct UsmUserTableEntry *tmp;
+    struct UsmUserTableEntry *tmp = nullptr;
     tmp = new struct UsmUserTableEntry[4 * max_entries];
     if (!tmp) return SNMPv3_USM_ERROR;
     for (int i = 0; i < entries; i++)
@@ -4079,7 +4079,7 @@ int USMUserTable::save_to_file(const char *name, AuthPriv *ap)
 int USMUserTable::load_from_file(const char *name, AuthPriv *ap)
 {
   char decoded[MAX_LINE_LEN];
-  FILE *file_in;
+  FILE *file_in = nullptr;
   unsigned char line[MAX_LINE_LEN * 2];
 
   if (!name || !ap)

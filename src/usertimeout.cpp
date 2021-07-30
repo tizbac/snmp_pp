@@ -128,7 +128,7 @@ CUTEvent *CUTEventQueue::CUTEventQueueElt::TestId(const UtId uniqueId)
 
 CUTEventQueue::~CUTEventQueue()
 {
-  CUTEventQueueElt *leftOver;
+  CUTEventQueueElt *leftOver = nullptr;
   /*--------------------------------------------------------*/
   /* walk the list deleting any elements still on the queue */
   /*--------------------------------------------------------*/
@@ -190,7 +190,7 @@ void CUTEventQueue::DeleteEntry(const UtId uniqueId)
 
 UtId CUTEventQueue::MakeId()
 {
-  UtId id;
+  UtId id = 0;
   do {
     lock();
     id = ++m_id;
@@ -239,7 +239,7 @@ int CUTEventQueue::GetNextTimeout(msec &sendTime)
 
 int CUTEventQueue::DoRetries(const msec &sendtime)
 {
-  CUTEvent *msg;
+  CUTEvent *msg = nullptr;
   msec timeout(0, 0); // no need to be initialized...
 
   while ((msg = GetNextTimeoutEntry()))

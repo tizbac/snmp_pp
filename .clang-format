@@ -1,0 +1,74 @@
+---
+# This configuration requires clang-format 7 or higher.
+BasedOnStyle:  WebKit
+#< ColumnLimit: 0
+ColumnLimit: 79
+IndentWidth: 4
+UseTab: Never
+# ---
+### see BinPack... too
+AllowShortLoopsOnASingleLine: true
+AllowAllArgumentsOnNextLine: true
+AllowAllConstructorInitializersOnNextLine: true
+#
+AllowShortBlocksOnASingleLine: true
+AllowShortFunctionsOnASingleLine: All
+#XXX AllowShortFunctionsOnASingleLine: Inline
+# ---
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterClass:      false
+  AfterControlStatement: false
+  AfterEnum:       false
+  AfterFunction:   true
+  AfterNamespace:  true
+  AfterObjCDeclaration: false
+  AfterStruct:     false
+  AfterUnion:      false
+  BeforeCatch:     false
+  BeforeElse:      false
+  IndentBraces:    false
+  SplitEmptyFunction: false
+  SplitEmptyRecord: true
+  SplitEmptyNamespace: true
+
+FixNamespaceComments: true
+#TODO: The preprocessor directive indenting style to use.
+IndentPPDirectives: AfterHash
+# ---
+AlignAfterOpenBracket: DontAlign
+AlignConsecutiveAssignments: true
+AlignEscapedNewlines: DontAlign
+AlignTrailingComments: true
+AllowAllParametersOfDeclarationOnNextLine: true
+AlwaysBreakTemplateDeclarations: MultiLine
+### BinPack... args will all be on the same line
+BinPackArguments: true
+BinPackParameters: true
+BreakBeforeBinaryOperators: NonAssignment
+BreakConstructorInitializers: BeforeColon
+BreakInheritanceList: BeforeColon
+ContinuationIndentWidth: 4
+DerivePointerAlignment: false
+MaxEmptyLinesToKeep: 1
+PenaltyReturnTypeOnItsOwnLine: 60
+PointerAlignment: Left
+SpaceAfterTemplateKeyword: true
+Standard: Cpp11
+# ---
+SortIncludes:    true
+SortUsingDeclarations: true
+IncludeBlocks:   Regroup
+IncludeCategories:
+  - Regex:           '^"(llvm|llvm-c|clang|clang-c)/'
+    Priority:        2
+  - Regex:           '^<(Poco|asio|doctest|zmqpp|boost|fmt|json|spdlog|openssl)/'
+    Priority:        3
+  - Regex:           '<[_[:alnum:]./]+>'
+    Priority:        4
+# all other headers first!
+  - Regex:           '.*'
+    Priority:        1
+IncludeIsMainRegex: '(_test)?$'
+#
+---

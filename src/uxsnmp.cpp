@@ -141,7 +141,7 @@ void v3CallBack(int reason, Snmp *snmp, Pdu &pdu, SnmpTarget &target, void *v3cd
        ((tmpvb.get_oid() == oidUsmStatsNotInTimeWindows) &&
 	(cbData->reports_received <= 1)))) {
     // hide those reports from user
-    int rc;
+    int rc = 0;
     if ((cbData->pdu) && (cbData->target)) {
       rc = snmp->snmp_engine(*(cbData->pdu), cbData->non_reps,
                              cbData->max_reps, *(cbData->target),
@@ -156,14 +156,14 @@ void v3CallBack(int reason, Snmp *snmp, Pdu &pdu, SnmpTarget &target, void *v3cd
     if (rc != SNMP_CLASS_SUCCESS) {
       // call callback if snmp_engine failed or pdu or target was 0
       debugprintf(3,"v3CallBack: calling user callback");
-      snmp_callback tmp_callBack;
+      snmp_callback tmp_callBack = nullptr;
       tmp_callBack = (snmp_callback)(cbData->oldCallback);
       tmp_callBack(rc, snmp, pdu, target, (void *)cbData->cbd);
     }
   }
   else {
     debugprintf(3,"v3CallBack: calling user callback");
-    snmp_callback tmp_callBack;
+    snmp_callback tmp_callBack = nullptr;
     tmp_callBack = (snmp_callback)(cbData->oldCallback);
     tmp_callBack(reason, snmp, pdu, target, (void *)cbData->cbd);
   }
@@ -210,7 +210,7 @@ bool setCloseOnExecFlag(SnmpSocket fd)
 // return a unique rid, clock can be too slow , so use current_rid
 long Snmp::MyMakeReqId()
 {
-  long rid;
+  long rid = 0;
   eventListHolder->snmpEventList()->lock();
   do {
     rid = ++current_rid;
@@ -250,7 +250,7 @@ DLLOPT int send_snmp_request(SnmpSocket sock, unsigned char *send_buf,
               ((UdpAddress &)address).UdpAddress::get_printable());
   debughexprintf(5, send_buf, SAFE_UINT_CAST(send_len));
 
-  int send_result;
+  int send_result = 0;
 
   if (((UdpAddress &)address).get_ip_version() == Address::version_ipv4)
   {
@@ -333,7 +333,7 @@ int receive_snmp_response(SnmpSocket sock, Snmp &snmp_session,
 			  OctetStr &engine_id, bool process_msg = true)
 {
   unsigned char receive_buffer[MAX_SNMP_PACKET + 1];
-  long receive_buffer_len; // len of received data
+  long receive_buffer_len = 0; // len of received data
   SocketAddrType from_addr;
   SocketLengthType fromlen = sizeof(from_addr);
   memset(&from_addr, 0, sizeof(from_addr));
@@ -401,11 +401,11 @@ int receive_snmp_response(SnmpSocket sock, Snmp &snmp_session,
     return SNMP_CLASS_ERROR;
 
   OctetStr community_name;
-  snmp_version version;
+  snmp_version version = version1;
   OctetStr security_name;
 
 #ifdef _SNMPv3
-  long int security_model;
+  long int security_model = 0;
   if (snmpmsg.is_v3_message())
   {
     int returncode = snmpmsg.unloadv3(pdu, version, engine_id,
@@ -453,7 +453,7 @@ int receive_snmp_notification(SnmpSocket sock, Snmp &snmp_session,
                               Pdu &pdu, SnmpTarget **target)
 {
   unsigned char receive_buffer[MAX_SNMP_PACKET + 1];
-  long receive_buffer_len; // len of received data
+  long receive_buffer_len = 0; // len of received data
   SocketAddrType from_addr;
   SocketLengthType fromlen = sizeof(from_addr);
   memset(&from_addr, 0, sizeof(from_addr));
@@ -516,7 +516,7 @@ int receive_snmp_notification(SnmpSocket sock, Snmp &snmp_session,
     return SNMP_CLASS_ERROR;
 
   OctetStr community_name;
-  snmp_version version;
+  snmp_version version = version1;
   OctetStr engine_id;
   OctetStr security_name;
 
@@ -1225,10 +1225,10 @@ int Snmp::trap(Pdu &pdu,                        // pdu to send
   OctetStr my_get_community;
   OctetStr my_set_community;
   GenAddress address;
-  unsigned long my_timeout;
-  int my_retry;
-  unsigned char version;
-  int status;
+  unsigned long my_timeout = 0;
+  int my_retry = 0;
+  unsigned char version = 0;
+  int status = 0;
 
   debugprintf(1, "++ SNMP++, Send a Trap");
   //---------[ make sure pdu is valid ]---------------------------------
@@ -1248,7 +1248,7 @@ int Snmp::trap(Pdu &pdu,                        // pdu to send
   CTarget* ctarget = NULL;
   UTarget* utarget = NULL;
   OctetStr security_name;
-  int security_model;
+  int security_model = 0;
 
   switch (target.get_type()) {
     case SnmpTarget::type_ctarget:
@@ -1537,7 +1537,7 @@ int Snmp::snmp_engine( Pdu &pdu,              // pdu to use
 
 {
   long req_id = 0;                   // pdu request id
-  int status;                        // send status
+  int status = 0;                        // send status
 
 #ifdef _SNMPv3
   // save original PDU for later reference
@@ -1547,15 +1547,15 @@ int Snmp::snmp_engine( Pdu &pdu,              // pdu to use
   {
 #endif
 
-    unsigned short pdu_action;        // type of pdu to build
-    unsigned short action;        // type of pdu to build
-    unsigned long my_timeout;        // target specific timeout
-    int my_retry;                // target specific retry
+    unsigned short pdu_action = 0;        // type of pdu to build
+    unsigned short action = 0;        // type of pdu to build
+    unsigned long my_timeout = 0;        // target specific timeout
+    int my_retry = 0;                // target specific retry
 
     OctetStr my_get_community;
     OctetStr my_set_community;
     GenAddress address;
-    unsigned char version;
+    unsigned char version = 0;
 
     //---------[ make sure pdu is valid ]--------------------------
     if ( !pdu.valid())
@@ -1594,7 +1594,7 @@ int Snmp::snmp_engine( Pdu &pdu,              // pdu to use
 
     OctetStr community_string;
     OctetStr security_name;
-    int security_model;
+    int security_model = 0;
     const CTarget* ctarget = NULL;
     const UTarget* utarget = NULL;
 
@@ -1976,9 +1976,9 @@ int Snmp::engine_id_discovery(OctetStr &engine_id,
 			      const int timeout_sec,
 			      const UdpAddress &addr)
 {
-  unsigned char *message;
-  int message_length;
-  SnmpSocket sock;
+  unsigned char *message = nullptr;
+  int message_length = 0;
+  SnmpSocket sock = 0;
   SnmpMessage snmpmsg;
 
   unsigned char snmpv3_message[60] = {
@@ -2106,9 +2106,9 @@ int Snmp::broadcast_discovery(UdpAddressCollection &addresses,
 			      const snmp_version version,
 			      const OctetStr *community)
 {
-  unsigned char *message;
-  int message_length;
-  SnmpSocket sock;
+  unsigned char *message = nullptr;
+  int message_length = 0;
+  SnmpSocket sock = 0;
   SnmpMessage snmpmsg;
 
 #ifdef _SNMPv3

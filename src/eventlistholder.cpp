@@ -81,7 +81,7 @@ int EventListHolder::SNMPBlockForResponse(const unsigned long req_id,
   CSNMPMessage *msg = m_snmpMessageQueue->GetEntry(req_id);
   if (msg) {
     // we found our response
-    int status;
+    int status = 0;
     msg->GetPdu(status, pdu);
 
     // Dequeue the message
@@ -204,14 +204,14 @@ int EventListHolder::SNMPProcessEvents(const int max_block_milliseconds)
 
 int EventListHolder::SNMPProcessPendingEvents()
 {
-  int maxfds;
+  int maxfds = 0;
   fd_set readfds;
   fd_set writefds;
   fd_set exceptfds;
   int nfound = 0;
   struct timeval fd_timeout;
   msec now(0, 0);
-  int status;
+  int status = 0;
 
   pevents_mutex.lock();
 
@@ -254,7 +254,7 @@ int EventListHolder::SNMPProcessPendingEvents()
 // Block until an event shows up - then handle the event(s)
 int EventListHolder::SNMPProcessEvents(const int max_block_milliseconds)
 {
-  int maxfds;
+  int maxfds = 0;
   fd_set readfds;
   fd_set writefds;
   fd_set exceptfds;

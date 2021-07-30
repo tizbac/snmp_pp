@@ -199,28 +199,9 @@ typedef struct sockaddr_in SocketAddrType;
 #endif
 
 // Define a unsigned 64 bit integer:
-#ifdef WIN32
-#    include <windows.h>
-#    if defined(HAVE_WINSOCK2_H)
-#        include <winsock2.h>
-#    endif
-#    ifdef HAVE_WSTCPIP_H
-#        include <ws2tcpip.h>
-#    endif
-#    ifdef HAVE_WSPIAPI_H
-#        include <wspiapi.h>
-#    endif
-#    ifdef __BCPLUSPLUS__
-typedef unsigned __int64 pp_uint64;
-typedef __int64 pp_int64;
-#    else
-typedef ULONGLONG pp_uint64;
-typedef LONGLONG pp_int64;
-#    endif
-#else // not WIN32
-typedef unsigned long long pp_uint64;
-typedef long long pp_int64;
-#endif
+typedef uint64_t pp_uint64;
+typedef int64_t pp_int64;
+
 
 // Define a type used for sockets
 #ifdef _MSC_VER

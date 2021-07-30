@@ -235,7 +235,7 @@ class DLLOPT Vb
    *
    * @return SNMP_CLASS_SUCCESS on success, else SNMP_CLASS_INVALID.
    */
-  int get_value(int &i) const;
+  int get_value(int32_t &i) const;
 
   /**
    * Get the value.
@@ -248,8 +248,9 @@ class DLLOPT Vb
    *
    * @return SNMP_CLASS_SUCCESS on success, else SNMP_CLASS_INVALID.
    */
-  int get_value(unsigned int &i) const;
+  int get_value(uint32_t &i) const;
 
+#if 0
   /**
    * Get the value.
    *
@@ -273,6 +274,7 @@ class DLLOPT Vb
    * @return SNMP_CLASS_SUCCESS on success, else SNMP_CLASS_INVALID.
    */
   int get_value(unsigned long &i) const;
+#endif
 
   /**
    * Get the value.

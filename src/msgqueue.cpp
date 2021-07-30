@@ -291,7 +291,7 @@ CSNMPMessageQueue::CSNMPMessageQueue(EventListHolder *holder, Snmp *session)
 
 CSNMPMessageQueue::~CSNMPMessageQueue()
 {
-  CSNMPMessageQueueElt *leftOver;
+  CSNMPMessageQueueElt *leftOver = nullptr;
   lock();
     /*--------------------------------------------------------*/
     /* walk the list deleting any elements still on the queue */
@@ -372,7 +372,7 @@ CSNMPMessage *CSNMPMessageQueue::GetEntry(const unsigned long uniqueId)
 
 int CSNMPMessageQueue::DeleteEntry(const unsigned long uniqueId)
 {
-  bool loopAgain;
+  bool loopAgain = 0;
   do
   {
     loopAgain = false;
@@ -448,7 +448,7 @@ CSNMPMessage * CSNMPMessageQueue::GetNextTimeoutEntry()
   CSNMPMessageQueueElt *msgEltPtr = m_head.GetNext();
   msec bestTime;
   msec sendTime(bestTime);
-  CSNMPMessage *msg;
+  CSNMPMessage *msg = nullptr;
   CSNMPMessage *bestmsg = NULL;
 
   if (msgEltPtr) {
@@ -691,8 +691,8 @@ int CSNMPMessageQueue::HandleEvents(const int maxfds,
     {
       UdpAddress fromaddress;
       Pdu tmppdu;
-      int status;
-      int recv_status;
+      int status = 0;
+      int recv_status = 0;
       OctetStr engine_id;
 
       tmppdu.set_request_id(0);
@@ -706,7 +706,7 @@ int CSNMPMessageQueue::HandleEvents(const int maxfds,
         continue;
 
       CSNMPMessage *msg = 0;
-      bool redoGetEntry;
+      bool redoGetEntry = 0;
       do
       {
         redoGetEntry = false;
@@ -793,7 +793,7 @@ int CSNMPMessageQueue::HandleEvents(const int maxfds,
 
 int CSNMPMessageQueue::DoRetries(const msec &now)
 {
-  CSNMPMessage *msg;
+  CSNMPMessage *msg = nullptr;
   msec sendTime(0, 0);
   int status = SNMP_CLASS_SUCCESS;
   lock();

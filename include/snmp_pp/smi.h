@@ -54,6 +54,9 @@
 #include <libsnmp.h>
 #include "snmp_pp/config_snmp_pp.h"
 
+#include <cstdint>
+#include <type_traits>
+
 #ifdef SNMP_PP_NAMESPACE
 namespace Snmp_pp {
 #endif
@@ -139,21 +142,25 @@ namespace Snmp_pp {
 //------[ smi typedefs ]---------------------------------------------------
 /** @name SMI typedefs
  *
- * SNMP-related types from RFC1442 (SMI).
+ * SNMP-related types from RFC1442 (SMI). (obsoleted)
+ *
+ * https://datatracker.ietf.org/doc/html/rfc2578#section-7.1.10
  */
 //@{
 
 // byte
 typedef unsigned char    SmiBYTE,       WINFAR *SmiLPBYTE;
 
-// int
-typedef long             SmiINT,        WINFAR *SmiLPINT;
+// TODO: int32_t (was long)! CK
+typedef int32_t          SmiINT,        WINFAR *SmiLPINT;
 
-// int 32
+// int32_t
 typedef SmiINT           SmiINT32,      WINFAR *SmiLPINT32;
+static_assert(sizeof(SmiINT32) == sizeof(int32_t));
 
-// unit32
-typedef unsigned long    SmiUINT32,     WINFAR *SmiLPUINT32;
+// TODO uint32_t (was unsigned long)! CK
+typedef uint32_t         SmiUINT32,     WINFAR *SmiLPUINT32;
+static_assert(sizeof(SmiUINT32) == sizeof(uint32_t));
 
 // octet struct
 typedef struct {
@@ -191,9 +198,10 @@ typedef struct {
         SmiUINT32 hipart;
         SmiUINT32 lopart;} SmiCNTR64,   WINFAR *SmiLPCNTR64;
 //@}
+static_assert(sizeof(SmiCNTR64) == sizeof(uint64_t));
 
 #ifdef SNMP_PP_NAMESPACE
 } // end of namespace Snmp_pp
-#endif 
+#endif
 
 #endif // _SNMP_SMI_H_

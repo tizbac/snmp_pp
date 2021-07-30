@@ -1123,7 +1123,7 @@ int AuthMD5::password_to_key(const unsigned char *password,
               OctetStr(engine_id, engine_id_len).get_printable());
 #endif
 
-  MD5HashStateType md5_hash_state;
+  MD5HashStateType md5_hash_state{};
   unsigned char password_buf[65];
   unsigned long password_index = 0;
   unsigned long count = 0;
@@ -1176,7 +1176,7 @@ int AuthMD5::hash(const unsigned char *data,
                   const unsigned int   data_len,
                   unsigned char       *digest) const
 {
-  MD5HashStateType md5_hash_state;
+  MD5HashStateType md5_hash_state{};
 
   MD5_INIT(&md5_hash_state);
   MD5_PROCESS(&md5_hash_state, data, data_len);
@@ -1190,7 +1190,7 @@ int AuthMD5::auth_out_msg(const unsigned char *key,
                           const int      msg_len,
                           unsigned char *auth_par_ptr)
 {
-  MD5HashStateType md5_hash_state;
+  MD5HashStateType md5_hash_state{};
   int           key_len = 16; /* We use only 16 Byte Key! */
   unsigned char digest[16];
   unsigned char k_ipad[65];   /* inner padding - key XORd with ipad */
@@ -1760,7 +1760,7 @@ int PrivAES::decrypt(const unsigned char *key,
     return SNMPv3_USM_DECRYPTION_ERROR;
 
   /* build IV */
-  unsigned int *tmp;
+  unsigned int *tmp = nullptr;
   tmp = (unsigned int *)initVect;
   *tmp++ = htonl(engine_boots);
   *tmp = htonl(engine_time);
@@ -2461,23 +2461,23 @@ public:
   HasherSHA1() {}
   virtual ~HasherSHA1() {}
 
-  int init()
+  int init() override
   {
     return SHA1_INIT(&sha_hash_state);
   }
 
   int update(const unsigned char *data,
-             const unsigned int   data_len)
+             const unsigned int   data_len) override
   {
     return SHA1_PROCESS(&sha_hash_state, data, data_len);
   }
 
-  int final(unsigned char *digest)
+  int final(unsigned char *digest) override
   {
     return SHA1_DONE(&sha_hash_state, digest);
   }
-  int get_key_length() const { return 20; }
-  int get_block_size() const { return 64; }
+  int get_key_length() const override { return 20; }
+  int get_block_size() const override { return 64; }
 
 private:
   SHAHashStateType sha_hash_state;
@@ -2496,23 +2496,23 @@ public:
   Hasher224() {}
   virtual ~Hasher224() {}
 
-  int init()
+  int init() override
   {
     return evpAllocAndInit(&ctx, EVP_sha224());
   }
 
   int update(const unsigned char *data,
-             const unsigned int   data_len)
+             const unsigned int   data_len) override
   {
     return evpDigestUpdate(&ctx, data, data_len);
   }
 
-  int final(unsigned char *digest)
+  int final(unsigned char *digest) override
   {
     return evpDigestFinalAndFree(&ctx, digest);
   }
-  int get_key_length() const { return 28; }
-  int get_block_size() const { return 64; }
+  int get_key_length() const override { return 28; }
+  int get_block_size() const override { return 64; }
 
 private:
   EVPHashStateType ctx;
@@ -2531,23 +2531,23 @@ public:
   Hasher256() {}
   virtual ~Hasher256() {}
 
-  int init()
+  int init() override
   {
     return evpAllocAndInit(&ctx, EVP_sha256());
   }
 
   int update(const unsigned char *data,
-             const unsigned int   data_len)
+             const unsigned int   data_len) override
   {
     return evpDigestUpdate(&ctx, data, data_len);
   }
 
-  int final(unsigned char *digest)
+  int final(unsigned char *digest) override
   {
     return evpDigestFinalAndFree(&ctx, digest);
   }
-  int get_key_length() const { return 32; }
-  int get_block_size() const { return 64; }
+  int get_key_length() const override { return 32; }
+  int get_block_size() const override { return 64; }
 
 private:
   EVPHashStateType ctx;
@@ -2567,23 +2567,23 @@ public:
   Hasher384() {}
   virtual ~Hasher384() {}
 
-  int init()
+  int init() override
   {
     return evpAllocAndInit(&ctx, EVP_sha384());
   }
 
   int update(const unsigned char *data,
-             const unsigned int   data_len)
+             const unsigned int   data_len) override
   {
     return evpDigestUpdate(&ctx, data, data_len);
   }
 
-  int final(unsigned char *digest)
+  int final(unsigned char *digest) override
   {
     return evpDigestFinalAndFree(&ctx, digest);
   }
-  int get_key_length() const { return 48; }
-  int get_block_size() const { return 128; }
+  int get_key_length() const override { return 48; }
+  int get_block_size() const override { return 128; }
 
 private:
   EVPHashStateType ctx;
@@ -2604,23 +2604,23 @@ public:
   Hasher512() {}
   virtual ~Hasher512() {}
 
-  int init()
+  int init() override
   {
     return evpAllocAndInit(&ctx, EVP_sha512());
   }
 
   int update(const unsigned char *data,
-             const unsigned int   data_len)
+             const unsigned int   data_len) override
   {
     return evpDigestUpdate(&ctx, data, data_len);
   }
 
-  int final(unsigned char *digest)
+  int final(unsigned char *digest) override
   {
     return evpDigestFinalAndFree(&ctx, digest);
   }
-  int get_key_length() const { return 64; }
-  int get_block_size() const { return 128; }
+  int get_key_length() const override { return 64; }
+  int get_block_size() const override { return 128; }
 
 private:
   EVPHashStateType ctx;

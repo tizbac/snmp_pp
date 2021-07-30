@@ -36,14 +36,8 @@
 namespace Snmp_pp {
 #endif
 
-#ifndef EIGHTBIT_SUBIDS
-typedef unsigned long oid;
+typedef SmiUINT32   oid;
 #define MAX_SUBID   0xFFFFFFFF
-#else
-typedef unsigned char oid;
-#define MAX_SUBID   0xFF
-#endif
-
 #define MAX_OID_LEN      128 /* max subid's in an oid */
 
 // asn.1 values

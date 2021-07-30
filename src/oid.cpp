@@ -114,7 +114,7 @@ Oid& Oid::operator=(const char *dotted_oid_string)
 // delete allocated space
 Oid& Oid::operator+=(const char *a)
 {
-  unsigned int n;
+  unsigned int n = 0;
 
   if (!a) return *this;
 
@@ -141,7 +141,7 @@ Oid& Oid::operator+=(const char *a)
 
 //===============[Oid::set_data ]==---=====================================
 // copy data from raw form...
-void Oid::set_data(const unsigned long *raw_oid,
+void Oid::set_data(const SmiUINT32* raw_oid,
                    const unsigned int oid_len)
 {
   if (smival.value.oid.len < oid_len)
@@ -189,7 +189,7 @@ const char *Oid::get_printable(const unsigned long start,
 {
   if (!m_changed && (buffer == iv_str))  return buffer;
 
-  unsigned long nz;
+  unsigned long nz = 0;
   unsigned long my_start = start - 1;
   unsigned long my_end   = my_start + n;
 
@@ -220,7 +220,7 @@ const char *Oid::get_printable(const unsigned long start,
       *cur_ptr++ = '.';
 
     // convert data element to a string
-    cur_ptr += sprintf(cur_ptr, "%lu", smival.value.oid.ptr[index]);
+    cur_ptr += sprintf(cur_ptr, "%" PRIu32, smival.value.oid.ptr[index]);
   }
 
   if (buffer == iv_str)
@@ -240,8 +240,8 @@ int Oid::StrToOid(const char *str, SmiLPOID dstOid) const
   unsigned int index = 0;
 
   // make a temp buffer to copy the data into first
-  SmiLPUINT32 temp;
-  unsigned int nz;
+  SmiLPUINT32 temp = nullptr;
+  unsigned int nz = 0;
 
   if (str && *str)
   {
@@ -363,7 +363,7 @@ int Oid::OidToStr(const SmiOID *srcOid,
   for (unsigned long index = 0; index < srcOid->len; ++index)
   {
     // convert data element to a string
-    int cur_len = sprintf(szNumber, "%lu", srcOid->ptr[index]);
+    int cur_len = sprintf(szNumber, "%" PRIu32, srcOid->ptr[index]);
 
     // verify len is not over
     if (totLen + cur_len + 1 >= size)

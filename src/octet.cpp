@@ -88,7 +88,7 @@ OctetStr::OctetStr(const char *str)
   smival.value.string.ptr = 0;
   smival.value.string.len = 0;
 
-  size_t z;
+  size_t z = 0;
 
   // check for null string
   if (!str || !((z = strlen(str))))
@@ -329,8 +329,8 @@ int operator>=(const OctetStr &lhs, const char *rhs)
 //===============[ append operator, appends a string ]================
 OctetStr& OctetStr::operator+=(const char *a)
 {
-  unsigned char *tmp;
-  size_t slen, nlen;
+  unsigned char *tmp = nullptr;
+  size_t slen = 0, nlen = 0;
 
   // get len of string
   if (!a || ((slen = strlen(a)) == 0))
@@ -361,8 +361,8 @@ OctetStr& OctetStr::operator+=(const char *a)
 //================[ append one OctetStr to another ]==================
 OctetStr& OctetStr::operator+=(const OctetStr& octet)
 {
-  unsigned char *tmp;
-  size_t slen, nlen;
+  unsigned char *tmp = nullptr;
+  size_t slen = 0, nlen = 0;
 
   if (!octet.validity || !((slen = (size_t)octet.len())))
     return *this;
@@ -392,7 +392,7 @@ OctetStr& OctetStr::operator+=(const OctetStr& octet)
 //================[ appends a char ]==================================
 OctetStr& OctetStr::operator+=(const unsigned char c)
 {
-  unsigned char *tmp;
+  unsigned char *tmp = nullptr;
 
   // get the memory needed plus one extra byte
   tmp = (SmiLPBYTE) new unsigned char[smival.value.string.len + 1];
@@ -417,8 +417,8 @@ OctetStr& OctetStr::operator+=(const unsigned char c)
 //================[ compare n elements of an Octet ]==================
 int OctetStr::nCompare(const unsigned long n, const OctetStr &o) const
 {
-  unsigned long n_max;
-  unsigned long w,str_len;
+  unsigned long n_max = 0;
+  unsigned long w = 0,str_len = 0;
 
   if (n == 0) return 0; // Nothing to compare, strings are equal
 
@@ -594,14 +594,14 @@ SnmpSyntax& OctetStr::operator=(const SnmpSyntax &val)
 OctetStr OctetStr::from_hex_string(const OctetStr &hex_string)
 {
   OctetStr val;
-  unsigned int p;
+  unsigned int p = 0;
   unsigned int hex_len = 0;
 
   // make sure the string has at least one byte
   if (hex_string.len() == 0) return val;
 
   // allocate max needed space for copy without spaces
-  unsigned char *hex, *hex_ptr;
+  unsigned char *hex = nullptr, *hex_ptr = nullptr;
   hex = hex_ptr = new unsigned char[hex_string.len()];
   if (!hex) return val;
 
@@ -653,11 +653,11 @@ const char *OctetStr::get_printable_hex() const
       (output_last_function == OutputFunctionHex))
     return output_buffer;
 
-  int cnt;
+  int cnt = 0;
   char char_buf[80];              // holds ASCII representation of data
-  char *buf_ptr;                  // pointer into ASCII listing
-  char *line_ptr;                 // pointer into Hex listing
-  unsigned int  storageNeeded;    // how much space do we need ?
+  char *buf_ptr = nullptr;                  // pointer into ASCII listing
+  char *line_ptr = nullptr;                 // pointer into Hex listing
+  unsigned int  storageNeeded = 0;    // how much space do we need ?
   int  local_len = (int) smival.value.string.len;
   unsigned char *bytes = smival.value.string.ptr;
 

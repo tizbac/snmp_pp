@@ -253,7 +253,7 @@ bool LogEntryImpl::add_string(const char* s)
  */
 AgentLog::AgentLog()
 {
-        int *log_profile;
+        int *log_profile = nullptr;
 #if defined(WITH_LOG_PROFILES) && defined(DEFAULT_LOG_PROFILE)
         map<string, int *>::const_iterator item = logfilter_profiles.find(DEFAULT_LOG_PROFILE);
         if( item != logfilter_profiles.end() )
@@ -302,7 +302,7 @@ const char* AgentLog::now(char* buf)
 {
 	if (buf == NULL) buf = static_buf;
 
-	time_t t;
+	time_t t = 0;
 	time(&t);
 #ifdef HAVE_LOCALTIME_R
         struct tm tm_buffer;

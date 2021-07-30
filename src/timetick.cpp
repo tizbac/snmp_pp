@@ -99,7 +99,7 @@ const char *TimeTicks::get_printable() const
     return output_buffer;
   }
 
-  unsigned long hseconds, seconds, minutes, hours, days;
+  unsigned long hseconds = 0, seconds = 0, minutes = 0, hours = 0, days = 0;
   unsigned long tt = smival.value.uNumber;
 
   days = tt / 8640000;

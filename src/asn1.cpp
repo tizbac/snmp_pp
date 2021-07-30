@@ -83,7 +83,7 @@ unsigned char *asn_parse_int(unsigned char *data,
    *       timestamp   0x43 asnlength byte {byte}*
    */
   unsigned char *bufp = data;
-  unsigned long	 asn_length;
+  unsigned long	 asn_length = 0;
   long value = 0;
 
   *type = *bufp++;
@@ -135,7 +135,7 @@ unsigned char *asn_parse_unsigned_int(unsigned char *data,
    *                   0x43 asnlength byte {byte}*
    */
   unsigned char *bufp = data;
-  unsigned long	asn_length;
+  unsigned long	asn_length = 0;
   unsigned long value = 0;
 
   // get the type
@@ -203,7 +203,7 @@ unsigned char *asn_build_int(unsigned char *data, int *datalength,
    * ASN.1 integer ::= 0x02 asnlength byte {byte}*
    */
   long integer = *intp;
-  unsigned long mask;
+  unsigned long mask = 0;
   int intsize = sizeof(long);
 
   /* Truncate "unnecessary" bytes off of the most significant end of this
@@ -251,8 +251,8 @@ unsigned char *asn_build_unsigned_int(unsigned char *data, // modified data
    * ASN.1 integer ::= 0x02 asnlength byte {byte}*
    */
   unsigned long u_integer = *intp;
-  long u_integer_len;
-  long x;
+  long u_integer_len = 0;
+  long x = 0;
 
   // figure out the len
   if (((u_integer >> 24) & 0xFF) != 0)
@@ -315,7 +315,7 @@ unsigned char *asn_parse_string(unsigned char	*data,
    * ipaddress  ::= 0x40 4 byte byte byte byte
    */
   unsigned char *bufp = data;
-  unsigned long	 asn_length;
+  unsigned long	 asn_length = 0;
 
   *type = *bufp++;
   if ((*type != 0x04) && (*type != 0x24) &&
@@ -389,7 +389,7 @@ unsigned char *asn_parse_header(unsigned char *data,
                                 unsigned char *type)
 {
   unsigned char *bufp = data;
-  unsigned long asn_length;
+  unsigned long asn_length = 0;
 
   /* this only works on data types < 30, i.e. no extension octets */
   if (IS_EXTENSION_ID(*bufp)) {
@@ -587,9 +587,9 @@ unsigned char *asn_parse_objid(unsigned char *data,
    */
   unsigned char *bufp = data;
   oid *oidp = objid + 1;
-  unsigned long subidentifier;
-  long length;
-  unsigned long asn_length;
+  unsigned long subidentifier = 0;
+  long length = 0;
+  unsigned long asn_length = 0;
 
   *type = *bufp++;
   if (*type != 0x06) {
@@ -676,7 +676,7 @@ unsigned char *asn_build_objid(unsigned char *data,
   unsigned char buf[MAX_OID_LEN*5];
   unsigned char *bp = buf;
   oid *op = objid;
-  int    asnlength;
+  int    asnlength = 0;
 
   if (objidlength > MAX_OID_LEN) {
       ASNERROR("Too many sub-identifiers.");
@@ -717,8 +717,8 @@ void asn_build_subid(unsigned long subid, unsigned char*& bp) {
   if (subid < 127) { /* off by one? */
       *bp++ = (unsigned char)subid;
   } else {
-      unsigned long testmask;
-      int testbits;
+      unsigned long testmask = 0;
+      int testbits = 0;
       unsigned long mask = 0x7F; /* handle subid == 0 case */
       int bits = 0;
       /* testmask *MUST* !!!! be of an unsigned type */
@@ -758,7 +758,7 @@ unsigned char *asn_parse_null(unsigned char	*data,
    * ASN.1 null ::= 0x05 0x00
    */
   unsigned char   *bufp = data;
-  unsigned long	    asn_length;
+  unsigned long	    asn_length = 0;
 
   *type = *bufp++;
   if (*type != 0x05) {
@@ -819,7 +819,7 @@ unsigned char *asn_parse_bitstring(unsigned char *data,
    * bitstring ::= 0x03 asnlength unused {byte}*
    */
   unsigned char *bufp = data;
-  unsigned long	    asn_length;
+  unsigned long	    asn_length = 0;
 
   *type = *bufp++;
   if (*type != 0x03) {
@@ -907,7 +907,7 @@ unsigned char *asn_parse_unsigned_int64(unsigned char *data,
    * ASN.1 integer ::= 0x02 asnlength byte {byte}*
    */
   unsigned char *bufp = data;
-  unsigned long	    asn_length;
+  unsigned long	    asn_length = 0;
   unsigned long low = 0, high = 0;
 
   *type = *bufp++;
@@ -1009,7 +1009,7 @@ unsigned char *asn_build_unsigned_int64(unsigned char *data,
 // create a pdu
 struct snmp_pdu *snmp_pdu_create(int command)
 {
-  struct snmp_pdu *pdu;
+  struct snmp_pdu *pdu = nullptr;
 
   pdu = (struct snmp_pdu *)malloc(sizeof(struct snmp_pdu));
   if (!pdu) return pdu;
@@ -1076,7 +1076,7 @@ void snmp_add_var(struct snmp_pdu *pdu,
 		  int name_length,
 		  SmiVALUE *smival)
 {
-  struct variable_list *vars;
+  struct variable_list *vars = nullptr;
 
   // if we don't have a vb list ,create one
   if (pdu->variables == NULL)
@@ -1150,7 +1150,7 @@ void snmp_add_var(struct snmp_pdu *pdu,
     case sNMP_SYNTAX_GAUGE32:
       //    case sNMP_SYNTAX_UINT32:
       {
-	long templong;
+	long templong = 0;
 	vars->type = (unsigned char) smival->syntax;
 	vars->val.integer = (long *)malloc(sizeof(long));
 	vars->val_len = sizeof(long);
@@ -1163,7 +1163,7 @@ void snmp_add_var(struct snmp_pdu *pdu,
 
     case sNMP_SYNTAX_INT32:
       {
-	long templong;
+	long templong = 0;
 	vars->type = (unsigned char) smival->syntax;
 	vars->val.integer = (long *)malloc(sizeof(long));
 	vars->val_len = sizeof(long);
@@ -1232,7 +1232,7 @@ unsigned char * snmp_build_var_op(unsigned char *data,
 				  unsigned char *var_val,
 				  int *listlength)
 {
-  int valueLen;
+  int valueLen = 0;
   Buffer<unsigned char> buffer(MAX_SNMP_PACKET);
   unsigned char *buffer_pos = buffer.get_ptr();
   int bufferLen = MAX_SNMP_PACKET;
@@ -1342,8 +1342,8 @@ unsigned char *build_vb(struct snmp_pdu *pdu,
 {
   Buffer<unsigned char> tmp_buf(MAX_SNMP_PACKET);
   unsigned char *cp = tmp_buf.get_ptr();
-  struct   variable_list *vp;
-  int vb_length;
+  struct   variable_list *vp = nullptr;
+  int vb_length = 0;
   int length = MAX_SNMP_PACKET;
 
   // build varbinds into packet buffer
@@ -1375,7 +1375,7 @@ unsigned char *build_data_pdu(struct snmp_pdu *pdu,
 {
   Buffer<unsigned char> tmp_buf(MAX_SNMP_PACKET);
   unsigned char *cp = tmp_buf.get_ptr();
-  int totallength;
+  int totallength = 0;
   int length = MAX_SNMP_PACKET;
 
   // build data of pdu into tmp_buf
@@ -1447,9 +1447,9 @@ int snmp_build(struct snmp_pdu	*pdu,
                const unsigned char* community, const int community_len)
 {
   Buffer<unsigned char> buf(MAX_SNMP_PACKET);
-  unsigned char  *cp;
-  int	     length;
-  int	 totallength;
+  unsigned char  *cp = nullptr;
+  int	     length = 0;
+  int	 totallength = 0;
 
   // encode vbs with header into packet
   length = *out_length;
@@ -1488,7 +1488,7 @@ static unsigned char *snmp_auth_parse(unsigned char *data,
 				      int *community_len,
 				      long	*version)
 {
-  unsigned char type;
+  unsigned char type = 0;
 
   // get the type
   data = asn_parse_header(data, length, &type);
@@ -1528,7 +1528,7 @@ snmp_parse_var_op(unsigned char *data,  // IN - pointer to the start of object
 		   unsigned char  **var_val,	 // OUT - pointer to ASN1 encoded value of variable
 		   int	    *listlength)         // IN/OUT - number of valid bytes left in var_op_list
 {
-  unsigned char var_op_type;
+  unsigned char var_op_type = 0;
   int	var_op_len = *listlength;
   unsigned char *var_op_start = data;
 
@@ -1566,11 +1566,11 @@ snmp_parse_var_op(unsigned char *data,  // IN - pointer to the start of object
 
 int snmp_parse_vb(struct snmp_pdu *pdu, unsigned char *&data, int &data_len)
 {
-  unsigned char  *var_val;
-  int len;
+  unsigned char  *var_val = nullptr;
+  int len = 0;
   struct variable_list *vp = 0;
-  oid	    objid[ASN_MAX_NAME_LEN], *op;
-  unsigned char type;
+  oid	    objid[ASN_MAX_NAME_LEN], *op = nullptr;
+  unsigned char type = 0;
 
   // get the vb list from received data
   data = asn_parse_header(data, &data_len, &type);
@@ -1661,7 +1661,7 @@ int snmp_parse_data_pdu(snmp_pdu *pdu, unsigned char *&data, int &length)
 {
   oid	    objid[ASN_MAX_NAME_LEN];
   int	    four = 4;
-  unsigned char  type;
+  unsigned char  type = 0;
 
   data = asn_parse_header(data, &length, &type);
   if (data == NULL) return SNMP_CLASS_ASN1ERROR;
@@ -1761,7 +1761,7 @@ unsigned char *asn1_parse_header_data(unsigned char *buf, int *buf_len,
 {
   unsigned char *buf_ptr = buf;
   int length = *buf_len;
-  unsigned char type;
+  unsigned char type = 0;
 
   buf = asn_parse_header(buf, &length, &type);
   if (!buf)
@@ -1826,7 +1826,7 @@ unsigned char *asn1_build_header_data(unsigned char *outBuf, int *maxLength,
   unsigned char *bufPtr = (unsigned char*)&buf;
   unsigned char *outBufPtr = outBuf;
   int length = *maxLength;
-  int totalLength;
+  int totalLength = 0;
 
 #ifdef INVALID_MAXMSGSIZE
   debugprintf(-10, "\nWARNING: Using constant MaxMessageSize!\n");
@@ -1896,7 +1896,7 @@ unsigned char *asn1_parse_scoped_pdu(
          unsigned char *context_engine_id, int *context_engine_id_len,
          unsigned char *context_name, int *context_name_len)
 {
-  unsigned char type;
+  unsigned char type = 0;
 
   scoped_pdu = asn_parse_header(scoped_pdu, scoped_pdu_len, &type);
   if (!scoped_pdu) {

@@ -787,7 +787,7 @@ int IpAddress::parse_coloned_ipstring(const char *inaddr)
     int len_first  = SAFE_INT_CAST(end_first_part - (char*)tmp_address_buffer);
     int len_second = SAFE_INT_CAST(out_ptr - second);
 
-    int i;
+    int i = 0;
     for (i=0; i<IP6LEN_NO_SCOPE-(len_first + len_second); i++)
       *end_first_part++ = 0;
     for (i=0; i<len_second; i++)
@@ -1063,7 +1063,7 @@ int IpAddress::addr_to_friendly()
 
 #ifdef HAVE_GETADDRINFO
   struct addrinfo hints,*res = 0;
-  int error;
+  int error = 0;
   char ds[MAX_FRIENDLY_NAME];
 
   strcpy(ds, this->IpAddress::get_printable());
@@ -1227,7 +1227,7 @@ unsigned int IpAddress::get_scope() const
 
   if (valid_flag)
   {
-    const unsigned int *scope;
+    const unsigned int *scope = nullptr;
     if ((ip_version == version_ipv6) && (have_ipv6_scope))
       scope = (const unsigned int*)(address_buffer + IP6LEN_NO_SCOPE);
     else
@@ -1312,7 +1312,7 @@ void IpAddress::mask(const IpAddress& ipaddr)
 
 
 // Get the count of matching bits from the left.
-int IpAddress::get_match_bits(const IpAddress match_ip) const
+int IpAddress::get_match_bits(const IpAddress& match_ip) const
 {
   ADDRESS_TRACE;
 
@@ -1754,8 +1754,8 @@ bool UdpAddress::parse_address(const char *inaddr)
     buffer[0] = ' ';
   }
 
-  bool result;
-  unsigned short port;
+  bool result = 0;
+  unsigned short port = 0;
 
   if (found)
   {
@@ -1787,7 +1787,7 @@ void UdpAddress::set_port(const unsigned short p)
 {
   ADDRESS_TRACE;
 
-  unsigned short *port_nbo;
+  unsigned short *port_nbo = nullptr;
   if (ip_version == version_ipv4)
     port_nbo = (unsigned short*)(address_buffer + IPLEN);
   else
@@ -1806,7 +1806,7 @@ unsigned short UdpAddress::get_port() const
 
   if (valid_flag)
   {
-    const unsigned short *port_nbo;
+    const unsigned short *port_nbo = nullptr;
     if (ip_version == version_ipv4)
       port_nbo = (const unsigned short*)(address_buffer + IPLEN);
     else
@@ -2916,7 +2916,7 @@ SnmpSyntax& GenAddress::operator=(const SnmpSyntax &val)
       // OSI which use variable length addresses!
       case sNMP_SYNTAX_OCTETS:
       {
-        unsigned long val_len;
+        unsigned long val_len = 0;
         val_len = ((GenAddress &)val).smival.value.string.len;
 
         if ((val_len == UDPIPLEN) || IS_UDPIP6LEN(val_len))

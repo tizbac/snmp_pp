@@ -415,7 +415,7 @@ class DLLOPT IpAddress : public Address
    *
    * @param match_ip - address to match with
    */
-  int get_match_bits(const IpAddress match_ip) const;
+  int get_match_bits(const IpAddress& match_ip) const;
 
   /**
    * Get the length of the binary address (accessible through operator[]).

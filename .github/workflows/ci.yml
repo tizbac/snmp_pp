@@ -53,27 +53,27 @@ jobs:
       - name: Install
         run: cmake --install build --config Release --prefix stage
 
-        #       - name: BuildWithInstalledVersion
-        #         shell: bash
-        #         run: |
-        #           cmake -S examples -B build/test -D CMAKE_PREFIX_PATH=$PWD/stage -D CMAKE_EXPORT_COMPILE_COMMANDS=1
-        #           cmake --build build/test --config Release -j 4
+        #      - name: BuildWithInstalledVersion
+        #        shell: bash
+        #        run: |
+        #          cmake -S examples -B build/test -D CMAKE_PREFIX_PATH=$PWD/stage -D CMAKE_EXPORT_COMPILE_COMMANDS=1
+        #          cmake --build build/test --config Release -j 4
+        #
+        #      - name: TestWithInstalledVersion
+        #        working-directory: build/test
+        #        run: ctest -C Release --output-on-failure
 
-        #       - name: TestWithInstalledVersion
-        #         working-directory: build/test
-        #         run: ctest -C Release --output-on-failure
+      - name: Run clang-tidy on MacOS Host
+        if: startsWith(matrix.os, 'macos') && contains(matrix.type, 'static')
+        shell: bash
+        run: |
+          export PATH=/usr/local/opt/llvm/bin/:${PATH}
+          perl -i.bak -pe 's#-I($CPM_SOURCE_CACHE)#-isystem $1#g' build/compile_commands.json
+          /usr/local/opt/llvm/share/clang/run-clang-tidy.py -p build src
 
-        #       - name: Run clang-tidy on MacOS Host
-        #         if: startsWith(matrix.os, 'macos')
-        #         shell: bash
-        #         run: |
-        #           export PATH=/usr/local/opt/llvm/bin/:${PATH}
-        #           perl -i.bak -pe 's#-I($CPM_SOURCE_CACHE)#-isystem $1#g' build/test/compile_commands.json
-        #           /usr/local/opt/llvm/share/clang/run-clang-tidy.py -p build/test examples
-
-        #       - name: Run clang-tidy on Ubuntu Host
-        #         if: startsWith(matrix.os, 'ubuntu')
-        #         shell: bash
-        #         run: |
-        #           perl -i.bak -pe 's#-I($CPM_SOURCE_CACHE)#-isystem $1#g' build/test/compile_commands.json
-        #           run-clang-tidy-10 -p build/test examples
+      - name: Run clang-tidy on Ubuntu Host
+        if: startsWith(matrix.os, 'ubuntu') && contains(matrix.type, 'static')
+        shell: bash
+        run: |
+          perl -i.bak -pe 's#-I($CPM_SOURCE_CACHE)#-isystem $1#g' build/compile_commands.json
+          run-clang-tidy-10 -p build src
