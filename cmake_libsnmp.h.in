@@ -58,13 +58,17 @@
 #ifdef CNF_STDCXX_98_HEADERS
 # include <cctype>
 # include <cerrno>
+# include <cinttypes>
 # include <climits>
 # include <csignal>
 # include <cstddef>
+# include <cstdint>
 # include <cstdio>
 # include <cstdlib>
 # include <cstring>
 # include <ctime>
+# include <memory>
+# include <string> // std::stoi() used
 #else
 # ifdef HAVE_STDIO_H
 #  include <stdio.h>

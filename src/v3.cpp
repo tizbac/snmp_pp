@@ -266,7 +266,7 @@ int getBootCounter(const char *fileName,
 
         return SNMPv3_FILE_ERROR;
       }
-      boot = atoi(ptr);
+      boot = std::stoi(ptr);
       fclose(file);
 
       LOG_BEGIN(loggerModuleName, DEBUG_LOG | 3);

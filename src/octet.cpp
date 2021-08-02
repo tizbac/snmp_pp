@@ -771,7 +771,7 @@ bool OctetStr::set_linefeed_chars(const char* lf_chars)
     if (!lf_chars) return false;
     if (strlen(lf_chars) > 2) return false;
 
-    strcpy(linefeed_chars, lf_chars);
+    strncpy(linefeed_chars, lf_chars, sizeof(linefeed_chars));
 
     return true;
 }

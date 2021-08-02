@@ -58,7 +58,8 @@ message(STATUS "snmp++ Version ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 
 check_include_files(sys/types.h CNF_HAVE_SYS_TYPES_H)
 check_include_files(sys/stat.h CNF_HAVE_SYS_STAT_H)
-check_include_files("cctype;cerrno;climits;csignal;cstddef;cstdio;cstdlib;cstring;ctime" CNF_STDCXX_98_HEADERS)
+set(CNF_STDCXX_98_HEADERS YES)
+# check_include_files("cctype;cerrno;cinttypes;climits;csignal;cstddef;cstdint;cstdio;cstdlib;cstring;ctime;string;memory" CNF_STDCXX_98_HEADERS)
 
 if(NOT CNF_STDCXX_98_HEADERS)
   check_include_files("stdlib.h;stddef.h" CNF_STDC_HEADERS)
@@ -543,6 +544,10 @@ if(SNMP_PP_EXAMPLES)
       ${examplename} SYSTEM BEFORE PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/include
     )
   endforeach()
+
+  enable_testing()
+  add_test(NAME test_app COMMAND test_app 127.0.0.1 trap)
+  add_test(NAME send_trap COMMAND test_app localhost trap)
 endif()
 
 install(FILES ${MY_HEADER_LIB_FILES} DESTINATION include)
