@@ -203,7 +203,7 @@ bool setCloseOnExecFlag(SnmpSocket fd)
 long Snmp::MyMakeReqId()
 {
     long rid = 0;
-    eventListHolder->snmpEventList()->lock();
+    eventListHolder->snmpEventList()->lock(); // FIXME: not exception save! CK
     do {
         rid = ++current_rid;
 
@@ -392,7 +392,7 @@ int receive_snmp_response(SnmpSocket sock, Snmp& snmp_session, Pdu& pdu,
     OctetStr     security_name;
 
 #ifdef _SNMPv3
-    long int security_model = 0;
+    SmiINT32 security_model = 0;
     if (snmpmsg.is_v3_message())
     {
         int returncode = snmpmsg.unloadv3(pdu, version, engine_id,
@@ -504,7 +504,7 @@ int receive_snmp_notification(
     OctetStr     security_name;
 
 #ifdef _SNMPv3
-    long int security_model = SecurityModel_any;
+    SmiINT32 security_model = SecurityModel_any;
     if (snmpmsg.is_v3_message())
     {
         int returncode = snmpmsg.unloadv3(pdu, version, engine_id,
@@ -690,7 +690,7 @@ void Snmp::init(int& status, IpAddress* addresses[2],
 
     eventListHolder = new EventListHolder(this);
     // initialize the request_id
-    eventListHolder->snmpEventList()->lock();
+    eventListHolder->snmpEventList()->lock(); // FIXME: not exception save! CK
     //  srand(time(0)); // better than nothing
     current_rid = (rand() % (PDU_MAX_RID - PDU_MIN_RID + 1)) + PDU_MIN_RID;
     debugprintf(4, "Initialized request_id to %i.", current_rid);
@@ -1355,7 +1355,7 @@ int Snmp::trap(Pdu&   pdu,    // pdu to send
         return status;
     }
 
-    lock();
+    lock(); // FIXME: not exception save! CK
     //------[ send the trap ]
 #ifdef SNMP_PP_IPv6
     if (udp_address.get_ip_version() == Address::version_ipv4)
@@ -1836,7 +1836,7 @@ int Snmp::snmp_engine(Pdu& pdu,      // pdu to use
         }
 
         //------[ send the request ]
-        lock();
+        lock(); // FIXME: not exception save! CK
         status = send_snmp_request(iv_session_used, snmpmsg.data(),
             (size_t)snmpmsg.len(), udp_address);
         unlock();
@@ -1992,7 +1992,7 @@ int Snmp::engine_id_discovery(
     sock = iv_snmp_session;
 #    endif
 
-    lock();
+    lock(); // FIXME: not exception save! CK
     if (send_snmp_request(sock, message, message_length, uaddr) < 0)
     {
         debugprintf(0, "Error sending message.");
@@ -2145,7 +2145,7 @@ int Snmp::broadcast_discovery(UdpAddressCollection& addresses,
     sock = iv_snmp_session;
 #endif
 
-    lock();
+    lock(); // FIXME: not exception save! CK
     if (send_snmp_request(sock, message, message_length, uaddr) < 0)
     {
         debugprintf(0, "Error sending broadast.");

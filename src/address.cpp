@@ -395,7 +395,7 @@ Address& IpAddress::operator=(const Address& val)
             if ((((IpAddress&)val).smival.value.string.len == IPLEN)
                 || (((IpAddress&)val).smival.value.string.len == UDPIPLEN))
             {
-                MEMCPY(address_buffer,
+                memcpy(address_buffer,
                     ((IpAddress&)val).smival.value.string.ptr, IPLEN);
                 valid_flag              = true;
                 ip_version              = version_ipv4;
@@ -406,7 +406,7 @@ Address& IpAddress::operator=(const Address& val)
                 || (((IpAddress&)val).smival.value.string.len
                     == UDPIP6LEN_NO_SCOPE))
             {
-                MEMCPY(address_buffer,
+                memcpy(address_buffer,
                     ((IpAddress&)val).smival.value.string.ptr,
                     IP6LEN_NO_SCOPE);
                 valid_flag              = true;
@@ -419,7 +419,7 @@ Address& IpAddress::operator=(const Address& val)
                 || (((IpAddress&)val).smival.value.string.len
                     == UDPIP6LEN_WITH_SCOPE))
             {
-                MEMCPY(address_buffer,
+                memcpy(address_buffer,
                     ((IpAddress&)val).smival.value.string.ptr,
                     IP6LEN_WITH_SCOPE);
                 valid_flag              = true;
@@ -523,7 +523,7 @@ int IpAddress::parse_dotted_ipstring(const char* inaddr)
     // XXX.XXX.XXX.XXX
     if (!inaddr || (strlen(inaddr) >= sizeof(temp))) return false;
 
-    strncpy(temp, inaddr, sizeof(temp));
+    strlcpy(temp, inaddr, sizeof(temp));
     trim_white_space(temp);
     if (strlen(temp) > 15) return false;
 
@@ -603,7 +603,7 @@ int IpAddress::parse_coloned_ipstring(const char* inaddr)
     // 123456789012345678901234567890123456789
     // 1BCD:2BCD:3BCD:4BCD:5BCD:6BCD:7BCD:8BCD%4123456789
     if (!inaddr || (strlen(inaddr) >= sizeof(temp))) return false;
-    strncpy(temp, inaddr, sizeof(temp));
+    strlcpy(temp, inaddr, sizeof(temp));
     trim_white_space(temp);
 
     // first check for ipv6 scope
@@ -918,7 +918,7 @@ bool IpAddress::parse_address(const char* inaddr)
         return false;
     }
     // now lets check out the dotted string
-    strcpy(ds, inet_ntoa(lookupResult)); // TODO: CWE-119
+    strlcpy(ds, inet_ntoa(lookupResult) sizeof(ds)); // TODO: CWE-119! CK
 
     if (!parse_dotted_ipstring(ds)) return false;
 
@@ -1016,7 +1016,7 @@ bool IpAddress::parse_address(const char* inaddr)
                 (void*)&ipAddr, (void*)lookupResult->h_addr, sizeof(in_addr));
 
             // now lets check out the dotted string
-            strcpy(ds, inet_ntoa(ipAddr)); // TODO: CWE-119
+            strlcpy(ds, inet_ntoa(ipAddr), sizeof(ds)); // TODO: CWE-119! CK
 
             if (!parse_dotted_ipstring(ds)) return false;
 
@@ -1055,7 +1055,7 @@ int IpAddress::addr_to_friendly()
     int             error = 0;
     char            ds[MAX_FRIENDLY_NAME];
 
-    strncpy(ds, this->IpAddress::get_printable(), sizeof(ds));
+    strlcpy(ds, this->IpAddress::get_printable(), sizeof(ds));
     memset(&hints, 0, sizeof(hints));
     hints.ai_flags = AI_CANONNAME;
 #    ifdef AI_ADDRCONFIG
@@ -1100,7 +1100,7 @@ int IpAddress::addr_to_friendly()
     char            ds[61];
 
     // lets try and get the friendly name from the DNS
-    strcpy(ds, this->IpAddress::get_printable()); // TODO: CWE-119
+    strlcpy(ds, this->IpAddress::get_printable(), sizeof(ds)); // TODO: CWE-119! CK
 
 #    if !(defined(CPU) && CPU == PPC603) && defined HAVE_GETHOSTBYADDR_R
     int     herrno = 0;
@@ -1249,10 +1249,10 @@ void IpAddress::format_output() const
     if (valid_flag)
     {
         if (ip_version == version_ipv4)
-            sprintf((char*)output_buffer, "%d.%d.%d.%d", address_buffer[0],
+            snprintf((char*)output_buffer, sizeof(output_buffer), "%d.%d.%d.%d", address_buffer[0],
                 address_buffer[1], address_buffer[2], address_buffer[3]);
         else if (have_ipv6_scope)
-            sprintf((char*)output_buffer,
+            snprintf((char*)output_buffer, sizeof(output_buffer),
                 "%02x%02x:%02x%02x:%02x%02x:%02x%02x:"
                 "%02x%02x:%02x%02x:%02x%02x:%02x%02x%%%d",
                 address_buffer[0], address_buffer[1], address_buffer[2],
@@ -1262,7 +1262,7 @@ void IpAddress::format_output() const
                 address_buffer[12], address_buffer[13], address_buffer[14],
                 address_buffer[15], get_scope());
         else
-            sprintf((char*)output_buffer,
+            snprintf((char*)output_buffer, sizeof(output_buffer),
                 "%02x%02x:%02x%02x:%02x%02x:%02x%02x:"
                 "%02x%02x:%02x%02x:%02x%02x:%02x%02x",
                 address_buffer[0], address_buffer[1], address_buffer[2],
@@ -1551,7 +1551,7 @@ Address& UdpAddress::operator=(const Address& val)
         case sNMP_SYNTAX_OCTETS:
             if (((UdpAddress&)val).smival.value.string.len == UDPIPLEN)
             {
-                MEMCPY(address_buffer,
+                memcpy(address_buffer,
                     ((UdpAddress&)val).smival.value.string.ptr, UDPIPLEN);
                 iv_friendly_name.clear();
                 valid_flag              = true;
@@ -1561,7 +1561,7 @@ Address& UdpAddress::operator=(const Address& val)
             else if (((UdpAddress&)val).smival.value.string.len
                 == UDPIP6LEN_NO_SCOPE)
             {
-                MEMCPY(address_buffer,
+                memcpy(address_buffer,
                     ((UdpAddress&)val).smival.value.string.ptr,
                     UDPIP6LEN_NO_SCOPE);
                 iv_friendly_name.clear();
@@ -1573,7 +1573,7 @@ Address& UdpAddress::operator=(const Address& val)
             else if (((UdpAddress&)val).smival.value.string.len
                 == UDPIP6LEN_WITH_SCOPE)
             {
-                MEMCPY(address_buffer,
+                memcpy(address_buffer,
                     ((UdpAddress&)val).smival.value.string.ptr,
                     UDPIP6LEN_WITH_SCOPE);
                 iv_friendly_name.clear();
@@ -1650,7 +1650,7 @@ bool UdpAddress::parse_address(const char* inaddr)
 
     if (inaddr && (strlen(inaddr) < MAX_FRIENDLY_NAME))
     {
-        strncpy(buffer, inaddr, sizeof(buffer));
+        strlcpy(buffer, inaddr, sizeof(buffer));
         trim_white_space(buffer);
     }
     else
@@ -1807,13 +1807,13 @@ void UdpAddress::format_output() const
     if (valid_flag)
     {
         if (ip_version == version_ipv4)
-            sprintf((char*)output_buffer, "%s%c%d", IpAddress::get_printable(),
-                '/', // TODO:look for problems in old code and change to "sep"
+            snprintf((char*)output_buffer, sizeof(output_buffer), "%s%c%d", IpAddress::get_printable(),
+                '/', // TODO: look for problems in old code and change to "sep"
                 get_port());
         else
-            sprintf((char*)output_buffer, "[%s]%c%d",
+            snprintf((char*)output_buffer, sizeof(output_buffer), "[%s]%c%d",
                 IpAddress::get_printable(),
-                '/', // TODO:look for problems in old code and change to "sep"
+                '/', // TODO: look for problems in old code and change to "sep"
                 get_port());
     }
     else
@@ -2030,7 +2030,7 @@ bool IpxAddress::parse_address(const char* inaddr)
 
     // save the orginal source
     if (!inaddr || (strlen(inaddr) >= sizeof(temp))) return false;
-    strcpy(temp, inaddr); // TODO: CWE-119
+    strlcpy(temp, inaddr, sizeof(ds)); // TODO: CWE-119! CK
     trim_white_space(temp);
     tmplen = strlen(temp);
 
@@ -2133,7 +2133,7 @@ bool IpxAddress::parse_address(const char* inaddr)
 void IpxAddress::format_output() const
 {
     if (valid_flag)
-        sprintf((char*)output_buffer,
+        snprintf((char*)output_buffer, sizeof(output_buffer),
             "%02x%02x%02x%02x%c%02x%02x%02x%02x%02x%02x", address_buffer[0],
             address_buffer[1], address_buffer[2], address_buffer[3], '-',
             address_buffer[4], address_buffer[5], address_buffer[6],
@@ -2151,7 +2151,8 @@ int IpxAddress::get_hostid(MacAddress& mac) const
     if (valid_flag)
     {
         char buffer[18];
-        sprintf(buffer, "%02x:%02x:%02x:%02x:%02x:%02x", address_buffer[4],
+        snprintf(buffer, sizeof(buffer),
+            "%02x:%02x:%02x:%02x:%02x:%02x", address_buffer[4],
             address_buffer[5], address_buffer[6], address_buffer[7],
             address_buffer[8], address_buffer[9]);
         MacAddress temp(buffer);
@@ -2340,7 +2341,8 @@ void IpxSockAddress::format_output() const
     IpxAddress::format_output(); // allow ancestors to format their buffers
 
     if (valid_flag)
-        sprintf((char*)output_buffer, "%s/%d", IpxAddress::get_printable(),
+        snprintf((char*)output_buffer, sizeof(output_buffer), "%s/%d",
+            IpxAddress::get_printable(),
             get_socket());
     else
         *(char*)output_buffer = 0;
@@ -2355,7 +2357,7 @@ bool IpxSockAddress::parse_address(const char* inaddr)
     unsigned short socketid = 0;
 
     if (inaddr && (strlen(inaddr) < MAX_FRIENDLY_NAME))
-        strcpy(buffer, inaddr); // TODO: CWE-119
+        strlcpy(buffer, inaddr, sizeof(buffer)); // TODO: CWE-119! CK
     else
     {
         valid_flag = false;
@@ -2546,7 +2548,7 @@ bool MacAddress::parse_address(const char* inaddr)
 
     // save the orginal source
     if (!inaddr || (strlen(inaddr) >= sizeof(temp))) return false;
-    strcpy(temp, inaddr); // TODO: CWE-119
+    strlcpy(temp, inaddr, sizeof(temp)); // TODO: CWE-119! CK
     trim_white_space(temp);
 
     // bad total length check
@@ -2608,7 +2610,7 @@ bool MacAddress::parse_address(const char* inaddr)
 void MacAddress::format_output() const
 {
     if (valid_flag)
-        sprintf((char*)output_buffer, "%02x:%02x:%02x:%02x:%02x:%02x",
+        snprintf((char*)output_buffer, sizeof(output_buffer), "%02x:%02x:%02x:%02x:%02x:%02x",
             address_buffer[0], address_buffer[1], address_buffer[2],
             address_buffer[3], address_buffer[4], address_buffer[5]);
     else

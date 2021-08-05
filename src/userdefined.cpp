@@ -131,7 +131,7 @@ CUDEventQueue::~CUDEventQueue()
   /*--------------------------------------------------------*/
   /* walk the list deleting any elements still on the queue */
   /*--------------------------------------------------------*/
-  lock();
+  lock(); // FIXME: not exception save! CK
   while ((leftOver = m_head.GetNext()))
     delete leftOver;
   unlock();
@@ -149,7 +149,7 @@ UdId CUDEventQueue::AddEntry(const int fd,
   /* Insert entry at head of list, done automagically by the */
   /* constructor function, so don't use the return value.    */
   /*---------------------------------------------------------*/
-  lock();
+  lock(); // FIXME: not exception save! CK
   (void) new CUDEventQueueElt(newEvent, m_head.GetNext(), &m_head);
   m_msgCount++;
   unlock();

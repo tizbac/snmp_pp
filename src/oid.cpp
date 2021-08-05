@@ -107,7 +107,7 @@ Oid& Oid::operator=(const char* dotted_oid_string)
 // delete allocated space
 Oid& Oid::operator+=(const char* a)
 {
-    unsigned int n = 0;
+    size_t n = 0;
 
     if (!a) return *this;
 
@@ -118,10 +118,11 @@ Oid& Oid::operator+=(const char* a)
     char* ptr = new char[n];
     if (ptr)
     {
-        /// @todo optimize this function (avoid conversion to string)
+        // TODO: optimize this function (use std::string and save result for
+        // get_printable() too)! CK
         OidToStr(&smival.value.oid, n, ptr);
-        if (ptr[0]) strcat(ptr, "."); // TODO: CWE-119
-        strcat(ptr, a); // TODO: CWE-119
+        if (ptr[0]) strlcat(ptr, ".", n); // TODO: CWE-119! CK
+        strlcat(ptr, a, n);               // TODO: CWE-119! CK
 
         delete_oid_ptr();
 
@@ -205,8 +206,9 @@ const char* Oid::get_printable(
         else
             *cur_ptr++ = '.';
 
-        // convert data element to a string
-        cur_ptr += sprintf(cur_ptr, "%" PRIu32, smival.value.oid.ptr[index]);
+        // TODO: convert data element to a string, but use std::string! CK
+        cur_ptr +=
+            snprintf(cur_ptr, nz, "%" PRIu32, smival.value.oid.ptr[index]);
     }
 
     if (buffer == iv_str)
@@ -326,7 +328,7 @@ int Oid::StrToOid(const char* str, SmiLPOID dstOid) const
 
 //================[Oid::OidToStr ]=========================================
 // convert an oid to a string
-int Oid::OidToStr(const SmiOID* srcOid, SmiUINT32 size, char* str) const
+int Oid::OidToStr(const SmiOID* srcOid, size_t size, char* str) const
 {
     unsigned totLen = 0;
     char     szNumber[SNMPBUFFSIZE];
@@ -339,8 +341,9 @@ int Oid::OidToStr(const SmiOID* srcOid, SmiUINT32 size, char* str) const
     // loop through and build up a string
     for (unsigned long index = 0; index < srcOid->len; ++index)
     {
-        // convert data element to a string
-        int cur_len = sprintf(szNumber, "%" PRIu32, srcOid->ptr[index]);
+        // TODO: convert data element to a string, but use std::string! CK
+        int cur_len = snprintf(
+            szNumber, sizeof(szNumber), "%" PRIu32, srcOid->ptr[index]);
 
         // verify len is not over
         if (totLen + cur_len + 1 >= size) return -2;
@@ -349,7 +352,7 @@ int Oid::OidToStr(const SmiOID* srcOid, SmiUINT32 size, char* str) const
         if (totLen) str[totLen++] = '.';
 
         // copy the string token into the main string
-        strcpy(str + totLen, szNumber); // TODO: CWE-119
+        strlcpy(str + totLen, szNumber, size); // TODO: CWE-119! CK
 
         // adjust the total len
         totLen += cur_len;

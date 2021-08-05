@@ -77,7 +77,7 @@ int EventListHolder::SNMPBlockForResponse(const unsigned long req_id,
     SNMPProcessEvents(DEFAULT_MAX_BLOCK_EVENT_TIME);
   } while (!m_snmpMessageQueue->Done(req_id));
 
-  m_snmpMessageQueue->lock();
+  m_snmpMessageQueue->lock(); // FIXME: not exception save! CK
   CSNMPMessage *msg = m_snmpMessageQueue->GetEntry(req_id);
   if (msg) {
     // we found our response
@@ -213,7 +213,7 @@ int EventListHolder::SNMPProcessPendingEvents()
   msec now(0, 0);
   int status = 0;
 
-  pevents_mutex.lock();
+  pevents_mutex.lock(); // FIXME: not exception save! CK
 
   do
   {

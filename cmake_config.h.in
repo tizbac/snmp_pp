@@ -24,8 +24,8 @@
   _##  upon this software code base. 
   _##  
   _##########################################################################*/
-/* Define if you want the debug output support compiled in. */
-#cmakedefine DEBUG
+/* Define if you want full debug output support compiled in. */
+#cmakedefine __DEBUG
 
 /* Defines default log profile to use */
 #cmakedefine DEFAULT_LOG_PROFILE "@DEFAULT_LOG_PROFILE@"

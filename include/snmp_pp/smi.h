@@ -1,28 +1,28 @@
 /*_############################################################################
-  _## 
-  _##  smi.h  
+  _##
+  _##  smi.h
   _##
   _##  SNMP++ v3.4
   _##  -----------------------------------------------
   _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
   _##
   _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##  
+  _##
   _##    Copyright (c) 1996
   _##    Hewlett-Packard Company
-  _##  
+  _##
   _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software 
-  _##  and/or its documentation is hereby granted without fee. User agrees 
-  _##  to display the above copyright notice and this license notice in all 
-  _##  copies of the software and any documentation of the software. User 
-  _##  agrees to assume all liability for the use of the software; 
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations 
-  _##  about the suitability of this software for any purpose. It is provided 
-  _##  "AS-IS" without warranty of any kind, either express or implied. User 
+  _##  Permission to use, copy, modify, distribute and/or sell this software
+  _##  and/or its documentation is hereby granted without fee. User agrees
+  _##  to display the above copyright notice and this license notice in all
+  _##  copies of the software and any documentation of the software. User
+  _##  agrees to assume all liability for the use of the software;
+  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+  _##  about the suitability of this software for any purpose. It is provided
+  _##  "AS-IS" without warranty of any kind, either express or implied. User
   _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base. 
-  _##  
+  _##  upon this software code base.
+  _##
   _##########################################################################*/
 /*===================================================================
 
@@ -51,23 +51,16 @@
 #ifndef _SNMP_SMI_H_
 #define _SNMP_SMI_H_
 
-#include <libsnmp.h>
 #include "snmp_pp/config_snmp_pp.h"
 
 #include <cstdint>
+#include <libsnmp.h>
 #include <type_traits>
 
 #ifdef SNMP_PP_NAMESPACE
-namespace Snmp_pp {
+namespace Snmp_pp
+{
 #endif
-
-#define WINFAR
-#define STRCAT strcat
-#define STRLEN strlen
-#define MEMCPY memcpy
-#define STRCPY strcpy
-#define MEMCMP memcmp
-#define XPORT
 
 //----------[ ASN/BER Base Types ]-----------------------------------------
 /** @name ASN/BER Base Types
@@ -76,16 +69,16 @@ namespace Snmp_pp {
  * SNMP types/values).
  */
 //@{
-#define aSN_UNIVERSAL    (0x00)
-#define aSN_APPLICATION  (0x40)
-#define aSN_CONTEXT      (0x80)
-#define aSN_PRIVATE      (0xC0)
-#define aSN_PRIMITIVE    (0x00)
-#define aSN_CONSTRUCTOR  (0x20)
+#define aSN_UNIVERSAL   (0x00)
+#define aSN_APPLICATION (0x40)
+#define aSN_CONTEXT     (0x80)
+#define aSN_PRIVATE     (0xC0)
+#define aSN_PRIMITIVE   (0x00)
+#define aSN_CONSTRUCTOR (0x20)
 //@}
 
 //------[ SNMP ObjectSyntax Values ]---------------------------------------
-#define sNMP_SYNTAX_SEQUENCE  (aSN_CONTEXT | aSN_CONSTRUCTOR | 0x10)
+#define sNMP_SYNTAX_SEQUENCE (aSN_CONTEXT | aSN_CONSTRUCTOR | 0x10)
 
 /** @name Syntax Types
  *
@@ -99,19 +92,19 @@ namespace Snmp_pp {
  * @note NsapAddr is obsoleted as unique SMI type per SNMPv2 Draft Standard
  */
 //@{
-#define sNMP_SYNTAX_INT		(aSN_UNIVERSAL | aSN_PRIMITIVE | 0x02)
-#define sNMP_SYNTAX_BITS	(aSN_UNIVERSAL | aSN_PRIMITIVE | 0x03)
-#define sNMP_SYNTAX_OCTETS	(aSN_UNIVERSAL | aSN_PRIMITIVE | 0x04)
-#define sNMP_SYNTAX_NULL	(aSN_UNIVERSAL | aSN_PRIMITIVE | 0x05)
-#define sNMP_SYNTAX_OID		(aSN_UNIVERSAL | aSN_PRIMITIVE | 0x06)
-#define sNMP_SYNTAX_INT32	sNMP_SYNTAX_INT
-#define sNMP_SYNTAX_IPADDR	(aSN_APPLICATION | aSN_PRIMITIVE | 0x00)
-#define sNMP_SYNTAX_CNTR32	(aSN_APPLICATION | aSN_PRIMITIVE | 0x01)
-#define sNMP_SYNTAX_GAUGE32	(aSN_APPLICATION | aSN_PRIMITIVE | 0x02)
-#define sNMP_SYNTAX_TIMETICKS	(aSN_APPLICATION | aSN_PRIMITIVE | 0x03)
-#define sNMP_SYNTAX_OPAQUE	(aSN_APPLICATION | aSN_PRIMITIVE | 0x04)
-#define sNMP_SYNTAX_CNTR64	(aSN_APPLICATION | aSN_PRIMITIVE | 0x06)
-#define sNMP_SYNTAX_UINT32	sNMP_SYNTAX_GAUGE32
+#define sNMP_SYNTAX_INT       (aSN_UNIVERSAL | aSN_PRIMITIVE | 0x02)
+#define sNMP_SYNTAX_BITS      (aSN_UNIVERSAL | aSN_PRIMITIVE | 0x03)
+#define sNMP_SYNTAX_OCTETS    (aSN_UNIVERSAL | aSN_PRIMITIVE | 0x04)
+#define sNMP_SYNTAX_NULL      (aSN_UNIVERSAL | aSN_PRIMITIVE | 0x05)
+#define sNMP_SYNTAX_OID       (aSN_UNIVERSAL | aSN_PRIMITIVE | 0x06)
+#define sNMP_SYNTAX_INT32     sNMP_SYNTAX_INT
+#define sNMP_SYNTAX_IPADDR    (aSN_APPLICATION | aSN_PRIMITIVE | 0x00)
+#define sNMP_SYNTAX_CNTR32    (aSN_APPLICATION | aSN_PRIMITIVE | 0x01)
+#define sNMP_SYNTAX_GAUGE32   (aSN_APPLICATION | aSN_PRIMITIVE | 0x02)
+#define sNMP_SYNTAX_TIMETICKS (aSN_APPLICATION | aSN_PRIMITIVE | 0x03)
+#define sNMP_SYNTAX_OPAQUE    (aSN_APPLICATION | aSN_PRIMITIVE | 0x04)
+#define sNMP_SYNTAX_CNTR64    (aSN_APPLICATION | aSN_PRIMITIVE | 0x06)
+#define sNMP_SYNTAX_UINT32    sNMP_SYNTAX_GAUGE32
 //@}
 
 //-------------------------------------------------------------------------
@@ -119,25 +112,24 @@ namespace Snmp_pp {
 //---------------[ Exception conditions for SNMPv2 ]-----------------------
 /** @name Exception conditions for SNMPv2 */
 //@{
-#define sNMP_SYNTAX_NOSUCHOBJECT    (aSN_CONTEXT | aSN_PRIMITIVE | 0x00)
-#define sNMP_SYNTAX_NOSUCHINSTANCE  (aSN_CONTEXT | aSN_PRIMITIVE | 0x01)
-#define sNMP_SYNTAX_ENDOFMIBVIEW    (aSN_CONTEXT | aSN_PRIMITIVE | 0x02)
+#define sNMP_SYNTAX_NOSUCHOBJECT   (aSN_CONTEXT | aSN_PRIMITIVE | 0x00)
+#define sNMP_SYNTAX_NOSUCHINSTANCE (aSN_CONTEXT | aSN_PRIMITIVE | 0x01)
+#define sNMP_SYNTAX_ENDOFMIBVIEW   (aSN_CONTEXT | aSN_PRIMITIVE | 0x02)
 //@}
 
 //--------------[ different types of PDU's ]-------------------------------
 /** @name Pdu types */
 //@{
-#define sNMP_PDU_GET	    (aSN_CONTEXT | aSN_CONSTRUCTOR | 0x0)
-#define sNMP_PDU_GETNEXT    (aSN_CONTEXT | aSN_CONSTRUCTOR | 0x1)
-#define sNMP_PDU_RESPONSE   (aSN_CONTEXT | aSN_CONSTRUCTOR | 0x2)
-#define sNMP_PDU_SET	    (aSN_CONTEXT | aSN_CONSTRUCTOR | 0x3)
-#define sNMP_PDU_V1TRAP     (aSN_CONTEXT | aSN_CONSTRUCTOR | 0x4)
-#define sNMP_PDU_GETBULK    (aSN_CONTEXT | aSN_CONSTRUCTOR | 0x5)
-#define sNMP_PDU_INFORM     (aSN_CONTEXT | aSN_CONSTRUCTOR | 0x6)
-#define sNMP_PDU_TRAP       (aSN_CONTEXT | aSN_CONSTRUCTOR | 0x7)
-#define sNMP_PDU_REPORT     (aSN_CONTEXT | aSN_CONSTRUCTOR | 0x8)
+#define sNMP_PDU_GET      (aSN_CONTEXT | aSN_CONSTRUCTOR | 0x0)
+#define sNMP_PDU_GETNEXT  (aSN_CONTEXT | aSN_CONSTRUCTOR | 0x1)
+#define sNMP_PDU_RESPONSE (aSN_CONTEXT | aSN_CONSTRUCTOR | 0x2)
+#define sNMP_PDU_SET      (aSN_CONTEXT | aSN_CONSTRUCTOR | 0x3)
+#define sNMP_PDU_V1TRAP   (aSN_CONTEXT | aSN_CONSTRUCTOR | 0x4)
+#define sNMP_PDU_GETBULK  (aSN_CONTEXT | aSN_CONSTRUCTOR | 0x5)
+#define sNMP_PDU_INFORM   (aSN_CONTEXT | aSN_CONSTRUCTOR | 0x6)
+#define sNMP_PDU_TRAP     (aSN_CONTEXT | aSN_CONSTRUCTOR | 0x7)
+#define sNMP_PDU_REPORT   (aSN_CONTEXT | aSN_CONSTRUCTOR | 0x8)
 //@}
-
 
 //------[ smi typedefs ]---------------------------------------------------
 /** @name SMI typedefs
@@ -149,54 +141,57 @@ namespace Snmp_pp {
 //@{
 
 // byte
-typedef unsigned char    SmiBYTE,       WINFAR *SmiLPBYTE;
+typedef unsigned char SmiBYTE, *SmiLPBYTE;
 
 // TODO: int32_t (was long)! CK
-typedef int32_t          SmiINT,        WINFAR *SmiLPINT;
+typedef int32_t SmiINT, *SmiLPINT;
 
 // int32_t
-typedef SmiINT           SmiINT32,      WINFAR *SmiLPINT32;
+typedef SmiINT SmiINT32, *SmiLPINT32;
 static_assert(sizeof(SmiINT32) == sizeof(int32_t));
 
 // TODO uint32_t (was unsigned long)! CK
-typedef uint32_t         SmiUINT32,     WINFAR *SmiLPUINT32;
+typedef uint32_t SmiUINT32, *SmiLPUINT32;
 static_assert(sizeof(SmiUINT32) == sizeof(uint32_t));
 
 // octet struct
 typedef struct {
-     SmiUINT32 len;
-     SmiLPBYTE ptr;}     SmiOCTETS,     WINFAR *SmiLPOCTETS;
+    SmiUINT32 len;
+    SmiLPBYTE ptr;
+} SmiOCTETS, *SmiLPOCTETS;
 
 // bits
-typedef SmiOCTETS        SmiBITS,       WINFAR *SmiLPBITS;
+typedef SmiOCTETS SmiBITS, *SmiLPBITS;
 
 // SMI oid struct
 typedef struct {
-     SmiUINT32   len;
-     SmiLPUINT32 ptr;}   SmiOID,        WINFAR *SmiLPOID;
+    SmiUINT32   len;
+    SmiLPUINT32 ptr;
+} SmiOID, *SmiLPOID;
 
 // ipaddr
-typedef SmiOCTETS        SmiIPADDR,     WINFAR *SmiLPIPADDR;
+typedef SmiOCTETS SmiIPADDR, *SmiLPIPADDR;
 
 // 32bit counter
-typedef SmiUINT32        SmiCNTR32,     WINFAR *SmiLPCNTR32;
+typedef SmiUINT32 SmiCNTR32, *SmiLPCNTR32;
 
 // gauge
-typedef SmiUINT32        SmiGAUGE32,    WINFAR *SmiLPGAUGE32;
+typedef SmiUINT32 SmiGAUGE32, *SmiLPGAUGE32;
 
 // timeticks
-typedef SmiUINT32        SmiTIMETICKS,  WINFAR *SmiLPTIMETICKS;
+typedef SmiUINT32 SmiTIMETICKS, *SmiLPTIMETICKS;
 
 // opaque
-typedef SmiOCTETS        SmiOPAQUE,     WINFAR *SmiLPOPAQUE;
+typedef SmiOCTETS SmiOPAQUE, *SmiLPOPAQUE;
 
 // nsapaddr
-typedef SmiOCTETS        SmiNSAPADDR,   WINFAR *SmiLPNSAPADDR;
+typedef SmiOCTETS SmiNSAPADDR, *SmiLPNSAPADDR;
 
 // 64 bit counter
 typedef struct {
-        SmiUINT32 hipart;
-        SmiUINT32 lopart;} SmiCNTR64,   WINFAR *SmiLPCNTR64;
+    SmiUINT32 hipart;
+    SmiUINT32 lopart;
+} SmiCNTR64, *SmiLPCNTR64;
 //@}
 static_assert(sizeof(SmiCNTR64) == sizeof(uint64_t));
 

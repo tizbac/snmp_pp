@@ -132,7 +132,7 @@ void LogEntry::init(void)
     add_string(": ");
 
     char buf[20];
-    sprintf(buf, "(%X)", get_level());
+    snprintf(buf, sizeof(buf), "(%X)", get_level());
     add_string(buf);
 
     switch (type & LOG_CLASS_MASK)
@@ -207,7 +207,7 @@ LogEntry& LogEntry::operator+=(const long l)
 bool LogEntry::add_integer(long l)
 {
     char buf[40];
-    sprintf(buf, "%ld", l);
+    snprintf(buf, sizeof(buf), "%ld", l);
     return add_string(buf);
 }
 
@@ -235,14 +235,14 @@ bool LogEntryImpl::add_string(const char* s)
     size_t len = strlen(s);
     if (len <= bytes_left())
     {
-        strncat(ptr, s, MAX_LOG_SIZE);
+        strlcat(ptr, s, MAX_LOG_SIZE);
         ptr += len;
         return true;
     }
 
     if (bytes_left() >= 3)
     {
-        strncat(ptr, "...", MAX_LOG_SIZE);
+        strlcat(ptr, "...", MAX_LOG_SIZE);
         ptr += 3;
     }
     output_stopped = true;

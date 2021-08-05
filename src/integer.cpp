@@ -93,7 +93,7 @@ const char *SnmpUInt32::get_printable() const
 
   SnmpUInt32 *nc_this = PP_CONST_CAST(SnmpUInt32*, this);
   if (valid_flag)
-    sprintf(nc_this->output_buffer, "%" PRIu32, smival.value.uNumber);
+    snprintf(nc_this->output_buffer, sizeof(output_buffer), "%" PRIu32, smival.value.uNumber);
   else
     nc_this->output_buffer[0] = 0;
 
@@ -154,7 +154,7 @@ const char *SnmpInt32::get_printable() const
 
   SnmpInt32 *nc_this = PP_CONST_CAST(SnmpInt32*, this);
   if (valid_flag)
-    sprintf(nc_this->output_buffer, "%ld", (long)smival.value.sNumber);
+    snprintf(nc_this->output_buffer, sizeof(output_buffer), "%ld", (long)smival.value.sNumber);
   else
     nc_this->output_buffer[0] = 0;
 

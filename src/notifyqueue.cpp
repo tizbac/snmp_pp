@@ -307,7 +307,7 @@ CNotifyEventQueue::~CNotifyEventQueue()
   CNotifyEventQueueElt *leftOver = nullptr;
 
   /* walk the list deleting any elements still on the queue */
-  lock();
+  lock(); // FIXME: not exception save! CK
   while ((leftOver = m_head.GetNext()))
     delete leftOver;
   unlock();

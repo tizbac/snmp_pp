@@ -274,8 +274,9 @@ const char* msec::get_printable() const
         nc_this->m_output_buffer, sizeof(m_output_buffer), "%H:%M:%S.", tmptr);
 #endif
 
-    sprintf(msec_buffer, "%.3ld", (long)m_time.tv_usec % 1000); // NOTE: should be millisec! CK
-    strncat(nc_this->m_output_buffer, msec_buffer, MSECOUTBUF);
+    snprintf(msec_buffer, sizeof(msec_buffer), "%.3ld",
+        (long) m_time.tv_usec % 1000); // NOTE: should be millisec! CK
+    strlcat(nc_this->m_output_buffer, msec_buffer, MSECOUTBUF);
 
     nc_this->m_changed = false;
 

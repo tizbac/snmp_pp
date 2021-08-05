@@ -71,7 +71,7 @@
 # include <string> // std::stoi() used
 #else
 # ifdef HAVE_STDIO_H
-#  include <stdio.h>
+#   include <stdio.h>
 # endif
 # ifdef CNF_STDC_HEADERS
 #  include <stdlib.h>
@@ -104,7 +104,7 @@
 # endif
 # ifdef CNF_HAVE_TIME_H
 #  include <time.h>
-#endif
+# endif
 #endif
 
 #cmakedefine CNF_HAVE_UNISTD_H
@@ -263,4 +263,39 @@ typedef @TYPE_UINT64_T@ pp_type_uint64;
 
 # include <iostream>
 
-#endif /* ?__LIBSNMP_H_INCLUDED__ */
+#if !(defined(__APPLE__) || defined(__BSD__))
+#include <cassert>
+
+namespace {
+
+// see https://www.freebsd.org/cgi/man.cgi?query=strlcat&sektion=3
+// and
+// https://us-cert.cisa.gov/bsi/articles/knowledge/coding-practices/strncpy-and-strncat
+
+/// Like snprintf(3), the strlcpy() and strlcat() functions return the
+/// total length of the string they tried to create.
+inline size_t strlcpy(char* dst, const char* src, size_t capacity)
+{
+    assert(dst != nullptr);
+    return snprintf(dst, capacity, "%s", src);
+}
+
+/// If the return value is >= capacity, the output string has been
+/// truncated.  It is the caller's responsibility to handle this
+inline size_t strlcat(char* dst, const char* src, size_t capacity)
+{
+    assert(dst != nullptr);
+    size_t actual_used = strlen(dst);
+    assert(actual_used < capacity);
+
+    if (capacity > (actual_used + 1)) {
+        return strlcpy(dst + actual_used, src, capacity - actual_used);
+    }
+
+    return actual_used + strlen(src); // NOTE: total_len
+}
+
+} // namespace
+#endif
+
+#endif /* __LIBSNMP_H_INCLUDED__ */

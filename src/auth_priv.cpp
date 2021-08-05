@@ -1084,7 +1084,7 @@ int AuthPriv::auth_inc_msg(const int            auth_prot,
   if (!a)
     return SNMPv3_USM_UNSUPPORTED_AUTHPROTOCOL;
 
-  /* @todo check if auth par is inside msg
+  /* TODO: check if auth par is inside msg
   if ((auth_par_ptr < msg) ||
       (msg + msg_len < auth_par_ptr + auth_par_len))
   {
