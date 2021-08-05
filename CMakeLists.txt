@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 3.14...3.21)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # NOTE: We need LANGUAGE C too for libdes. It may be required to build at Windows! CK
 project(
   snmp_pp
-  VERSION 3.4.7.8
+  VERSION 3.4.7.9
   LANGUAGES CXX C
 )
 
@@ -15,6 +17,8 @@ include(CheckStructHasMember)
 include(CheckTypeSize)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CNF_STDCXX_98_HEADERS YES)
+set(HAVE_INTTYPES_H YES)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 
@@ -56,7 +60,7 @@ message(STATUS "snmp++ Version ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 
 check_include_files(sys/types.h CNF_HAVE_SYS_TYPES_H)
 check_include_files(sys/stat.h CNF_HAVE_SYS_STAT_H)
-check_include_files("cctype;cerrno;climits;csignal;cstddef;cstdio;cstdlib;cstring;ctime" CNF_STDCXX_98_HEADERS)
+#NO! CK check_include_files("cctype;cerrno;cinttypes;climits;csignal;cstddef;cstdint;cstdio;cstdlib;cstring;ctime;string;memory" CNF_STDCXX_98_HEADERS)
 
 if(NOT CNF_STDCXX_98_HEADERS)
   check_include_files("stdlib.h;stddef.h" CNF_STDC_HEADERS)
@@ -94,9 +98,12 @@ check_include_files(sys/select.h CNF_HAVE_SYS_SELECT_H)
 check_include_files(io.h CNF_HAVE_IO_H)
 check_include_files(process.h CNF_HAVE_PROCESS_H)
 check_include_files(pthread.h CNF_HAVE_PTHREAD_H)
+set(HAVE_PTHREAD ${CNF_HAVE_PTHREAD_H})
+
 check_function_exists("strcasecmp" CNF_HAVE_STRCASECMP)
 check_function_exists("stricmp" CNF_HAVE_STRICMP)
 check_function_exists("getpid" CNF_HAVE_GETPID)
+set(HAVE_GETPID ${CNF_HAVE_GETPID})
 
 check_function_exists("clock_gettime" HAVE_CLOCK_GETTIME)
 check_function_exists("getaddrinfo" HAVE_GETADDRINFO)
@@ -106,7 +113,6 @@ check_function_exists("gethostbyname" HAVE_GETHOSTBYNAME)
 check_function_exists("gethostbyname2" HAVE_GETHOSTBYNAME2)
 check_function_exists("gethostbyname_r" HAVE_GETHOSTBYNAME_R)
 check_function_exists("gethostname" HAVE_GETHOSTNAME)
-check_function_exists("getpid" HAVE_GETPID) # again?
 check_function_exists("gettimeofday" HAVE_GETTIMEOFDAY)
 check_function_exists("htonl" HAVE_HTONL)
 check_function_exists("inet_aton" HAVE_INET_ATON)
@@ -115,49 +121,49 @@ check_function_exists("inet_ntop" HAVE_INET_NTOP)
 check_function_exists("inet_pton" HAVE_INET_PTON)
 check_function_exists("isdigit" HAVE_ISDIGIT)
 check_function_exists("localtime_r" HAVE_LOCALTIME_R)
+check_include_files(malloc.h HAVE_MALLOC_H)
 check_function_exists("malloc" HAVE_MALLOC)
 check_function_exists("memset" HAVE_MEMSET)
 check_function_exists("poll" HAVE_POLL)
 check_function_exists("realloc" HAVE_REALLOC)
 check_function_exists("select" HAVE_SELECT)
 check_function_exists("socket" HAVE_SOCKET)
-check_function_exists("strcasecmp" HAVE_STRCASECMP) # again
+#check_function_exists("strcasecmp" HAVE_STRCASECMP) # again
 check_function_exists("strchr" HAVE_STRCHR)
 check_function_exists("strerror" HAVE_STRERROR)
-check_function_exists("stricmp" HAVE_STRICMP) # again?
+#check_function_exists("stricmp" HAVE_STRICMP) # again?
 check_function_exists("strstr" HAVE_STRSTR)
-check_include_files(inttypes.h HAVE_INTTYPES_H) # again?
-check_include_files(io.h HAVE_IO_H) # again?
-check_include_files(limits.h HAVE_LIMITS_H)
-check_include_files(memory.h HAVE_MEMORY_H) # again?
-check_include_files(netdb.h HAVE_NETDB_H) # again?
-check_include_files(netinet/in.h HAVE_NETINET_IN_H) # again?
-check_include_files(poll.h HAVE_POLL_H) # again?
-check_include_files(process.h HAVE_PROCESS_H) # again?
-check_include_files(pthread.h HAVE_PTHREAD) # again?
-check_include_files(signal.h HAVE_SIGNAL_H) # again?
-check_include_files(stdint.h HAVE_STDINT_H) # again?
-check_include_files(stdio.h HAVE_STDIO_H)
-check_include_files(stdlib.h HAVE_STDLIB_H) # again?
-check_include_files(string.h HAVE_STRING_H) # again?
-check_include_files(strings.h HAVE_STRINGS_H) # again?
-check_include_files(sys/param.h HAVE_SYS_PARAM_H) # again?
-check_include_files(sys/select.h HAVE_SYS_SELECT_H) # again?
-check_include_files(sys/socket.h HAVE_SYS_SOCKET_H) # again?
-check_include_files(sys/stat.h HAVE_SYS_STAT_H) # again?
-check_include_files(sys/time.h HAVE_SYS_TIME_H) # again?
-check_include_files(sys/timeb.h HAVE_SYS_TIMEB_H) # again?
-check_include_files(sys/types.h HAVE_SYS_TYPES_H) # again?
-check_include_files(sys/unistd.h HAVE_SYS_UNISTD_H) # again?
-check_include_files(time.h HAVE_TIME_H) # again?
-check_include_files(unistd.h HAVE_UNISTD_H) # again?
+#check_include_files(inttypes.h HAVE_INTTYPES_H) # again?
+#check_include_files(io.h HAVE_IO_H) # again?
+#check_include_files(limits.h HAVE_LIMITS_H)
+#check_include_files(memory.h HAVE_MEMORY_H) # again?
+#check_include_files(netdb.h HAVE_NETDB_H) # again?
+#check_include_files(netinet/in.h HAVE_NETINET_IN_H) # again?
+#check_include_files(poll.h HAVE_POLL_H) # again?
+#check_include_files(process.h HAVE_PROCESS_H) # again?
+#check_include_files(signal.h HAVE_SIGNAL_H) # again?
+#check_include_files(stdint.h HAVE_STDINT_H) # again?
+#check_include_files(stdio.h HAVE_STDIO_H)
+#check_include_files(stdlib.h HAVE_STDLIB_H) # again?
+#check_include_files(string.h HAVE_STRING_H) # again?
+#check_include_files(strings.h HAVE_STRINGS_H) # again?
+#check_include_files(sys/param.h HAVE_SYS_PARAM_H) # again?
+#check_include_files(sys/select.h HAVE_SYS_SELECT_H) # again?
+#check_include_files(sys/socket.h HAVE_SYS_SOCKET_H) # again?
+#check_include_files(sys/stat.h HAVE_SYS_STAT_H) # again?
+#check_include_files(sys/time.h HAVE_SYS_TIME_H) # again?
+#check_include_files(sys/timeb.h HAVE_SYS_TIMEB_H) # again?
+#check_include_files(sys/types.h HAVE_SYS_TYPES_H) # again?
+#check_include_files(sys/unistd.h HAVE_SYS_UNISTD_H) # again?
+#check_include_files(time.h HAVE_TIME_H) # again?
+#check_include_files(unistd.h HAVE_UNISTD_H) # again?
 
-if(MSVC)
-  check_include_files(winsock2.h HAVE_WINSOCK2_H) # again?
-  check_include_files(ws2tcpip.h HAVE_WS2TCPIP_H) # again?
-  check_include_files(wspiapi.h HAVE_WSPIAPI_H) # again?
-  check_function_exists("_getpid" HAVE__GETPID) # again?
-endif()
+#if(MSVC)
+#  check_include_files(winsock2.h HAVE_WINSOCK2_H) # again?
+#  check_include_files(ws2tcpip.h HAVE_WS2TCPIP_H) # again?
+#  check_include_files(wspiapi.h HAVE_WSPIAPI_H) # again?
+#  check_function_exists("_getpid" HAVE__GETPID) # again?
+#endif()
 
 check_type_size("int64_t" SIZEOF_INT64_T LANGUAGE CXX)
 check_type_size("long long" SIZEOF_LONG_LONG LANGUAGE CXX)
@@ -381,8 +387,7 @@ if(NOT HAVE_SIZE_T)
   endif("${CMAKE_SIZEOF_VOID_P}" EQUAL 8)
 endif()
 
-check_include_files(malloc.h HAVE_MALLOC_H)
-check_include_files("sys/param.h;sys/mount.h" HAVE_SYS_MOUNT_H)
+check_include_files("sys/mount.h" HAVE_SYS_MOUNT_H)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake_config.h.in config.h)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake_libsnmp.h.in libsnmp.h)
@@ -477,7 +482,7 @@ if(MSVC)
   # warning level 4 (all warnings as errors: /WX)
   # FIXME target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
 else()
-  target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wno-unused-parameter)
+  target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Werror -Wno-unused-parameter)
   # TODO: lots of warnings (more: -Wpedantic)
 endif()
 
@@ -514,22 +519,22 @@ set_target_properties(
 
 if(SNMP_PP_EXAMPLES)
   set(EXAMPLE_SOURCE_FILES
-      consoleExamples/receive_trap.cpp
-      consoleExamples/snmpBulk.cpp
-      consoleExamples/snmpDiscover.cpp
-      consoleExamples/snmpGet.cpp
-      consoleExamples/snmpInform.cpp
-      consoleExamples/snmpNext.cpp
-      consoleExamples/snmpNextAsync.cpp
-      consoleExamples/snmpPasswd.cpp
-      consoleExamples/snmpSet.cpp
-      consoleExamples/snmpTraps.cpp
-      consoleExamples/snmpWalk.cpp
+      # consoleExamples/receive_trap.cpp
+      # consoleExamples/snmpBulk.cpp
+      # consoleExamples/snmpDiscover.cpp
+      # consoleExamples/snmpGet.cpp
+      # consoleExamples/snmpInform.cpp
+      # consoleExamples/snmpNext.cpp
+      # consoleExamples/snmpNextAsync.cpp
+      # consoleExamples/snmpPasswd.cpp
+      # consoleExamples/snmpSet.cpp
+      # consoleExamples/snmpTraps.cpp
+      # consoleExamples/snmpWalk.cpp
       consoleExamples/test_app.cpp
   )
 
   if(NOT MSVC)
-    list(APPEND EXAMPLE_SOURCE_FILES consoleExamples/snmpWalkThreads.cpp)
+    # list(APPEND EXAMPLE_SOURCE_FILES consoleExamples/snmpWalkThreads.cpp)
   endif()
 
   foreach(examplesourcefile ${EXAMPLE_SOURCE_FILES})
@@ -537,10 +542,16 @@ if(SNMP_PP_EXAMPLES)
     string(REPLACE "consoleExamples/" "" examplename ${examplename})
     add_executable(${examplename} ${examplesourcefile})
     target_link_libraries(${examplename} ${PROJECT_NAME})
-    target_include_directories(
-      ${examplename} SYSTEM BEFORE PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/include
-    )
+    #    target_include_directories(
+    #      ${examplename} SYSTEM BEFORE PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/include
+    #    )
   endforeach()
+
+  enable_testing()
+  add_test(NAME test_app COMMAND test_app 127.0.0.1 trap)
+  add_test(NAME send_trap COMMAND test_app localhost trap)
+  add_test(NAME env_test COMMAND ${CMAKE_COMMAND} -E echo $ENV{CMAKE_CONFIG_TYPE})
+  add_test(NAME basename_test COMMAND ${CMAKE_COMMAND} -E echo $<TARGET_FILE_DIR:test_app>)
 endif()
 
 install(FILES ${MY_HEADER_LIB_FILES} DESTINATION include)

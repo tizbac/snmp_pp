@@ -114,8 +114,8 @@ int CNotifyEvent::notify_filter(const Oid &trapid, SnmpTarget &target) const
 {
   bool has_target = false, target_matches = false;
   bool has_trapid = false, trapid_matches = false;
-  int target_count;
-  int trapid_count;
+  int target_count = 0;
+  int trapid_count = 0;
   GenAddress targetaddr, tmpaddr;
 
   // figure out how many targets, handle empty case as all targets
@@ -129,7 +129,7 @@ int CNotifyEvent::notify_filter(const Oid &trapid, SnmpTarget &target) const
     if (targetaddr.valid()) {
       // loop through all targets in the collection
       SnmpTarget::target_type target_type = target.get_type();
-      SnmpTarget::target_type tmptarget_type;
+      SnmpTarget::target_type tmptarget_type = CTarget::type_base;
 
       for ( int x = 0; x < target_count; x++)       // for all targets
       {
@@ -242,7 +242,7 @@ int CNotifyEvent::Callback(SnmpTarget &target, Pdu &pdu, SnmpSocket fd, int stat
   // Make the callback if the trap passed the filters
   if ((m_snmp) && (notify_filter(trapid, target)))
   {
-    int reason;
+    int reason = 0;
 
     if (SNMP_CLASS_TL_FAILED == status)
       reason = SNMP_CLASS_TL_FAILED;
@@ -304,10 +304,10 @@ CNotifyEventQueue::CNotifyEventQueue(EventListHolder *holder, Snmp *session)
 
 CNotifyEventQueue::~CNotifyEventQueue()
 {
-  CNotifyEventQueueElt *leftOver;
+  CNotifyEventQueueElt *leftOver = nullptr;
 
   /* walk the list deleting any elements still on the queue */
-  lock();
+  lock(); // FIXME: not exception save! CK
   while ((leftOver = m_head.GetNext()))
     delete leftOver;
   unlock();

@@ -99,7 +99,7 @@ const char *TimeTicks::get_printable() const
     return output_buffer;
   }
 
-  unsigned long hseconds, seconds, minutes, hours, days;
+  unsigned long hseconds = 0, seconds = 0, minutes = 0, hours = 0, days = 0;
   unsigned long tt = smival.value.uNumber;
 
   days = tt / 8640000;
@@ -117,13 +117,13 @@ const char *TimeTicks::get_printable() const
   hseconds = tt;
 
   if (days == 0)
-    sprintf(nc_this->output_buffer, "%lu:%02lu:%02lu.%02lu",
+    snprintf(nc_this->output_buffer, sizeof(output_buffer), "%lu:%02lu:%02lu.%02lu",
             hours, minutes, seconds, hseconds);
   else if (days == 1)
-    sprintf(nc_this->output_buffer, "1 day %lu:%02lu:%02lu.%02lu",
+    snprintf(nc_this->output_buffer, sizeof(output_buffer), "1 day %lu:%02lu:%02lu.%02lu",
 	    hours, minutes, seconds, hseconds);
   else
-    sprintf(nc_this->output_buffer, "%lu days, %lu:%02lu:%02lu.%02lu",
+    snprintf(nc_this->output_buffer, sizeof(output_buffer), "%lu days, %lu:%02lu:%02lu.%02lu",
 	    days, hours, minutes, seconds, hseconds);
 
   nc_this->m_changed = false;

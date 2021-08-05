@@ -88,7 +88,7 @@ OctetStr::OctetStr(const char *str)
   smival.value.string.ptr = 0;
   smival.value.string.len = 0;
 
-  size_t z;
+  size_t z = 0;
 
   // check for null string
   if (!str || !((z = strlen(str))))
@@ -329,8 +329,8 @@ int operator>=(const OctetStr &lhs, const char *rhs)
 //===============[ append operator, appends a string ]================
 OctetStr& OctetStr::operator+=(const char *a)
 {
-  unsigned char *tmp;
-  size_t slen, nlen;
+  unsigned char *tmp = nullptr;
+  size_t slen = 0, nlen = 0;
 
   // get len of string
   if (!a || ((slen = strlen(a)) == 0))
@@ -361,8 +361,8 @@ OctetStr& OctetStr::operator+=(const char *a)
 //================[ append one OctetStr to another ]==================
 OctetStr& OctetStr::operator+=(const OctetStr& octet)
 {
-  unsigned char *tmp;
-  size_t slen, nlen;
+  unsigned char *tmp = nullptr;
+  size_t slen = 0, nlen = 0;
 
   if (!octet.validity || !((slen = (size_t)octet.len())))
     return *this;
@@ -392,7 +392,7 @@ OctetStr& OctetStr::operator+=(const OctetStr& octet)
 //================[ appends a char ]==================================
 OctetStr& OctetStr::operator+=(const unsigned char c)
 {
-  unsigned char *tmp;
+  unsigned char *tmp = nullptr;
 
   // get the memory needed plus one extra byte
   tmp = (SmiLPBYTE) new unsigned char[smival.value.string.len + 1];
@@ -417,8 +417,8 @@ OctetStr& OctetStr::operator+=(const unsigned char c)
 //================[ compare n elements of an Octet ]==================
 int OctetStr::nCompare(const unsigned long n, const OctetStr &o) const
 {
-  unsigned long n_max;
-  unsigned long w,str_len;
+  unsigned long n_max = 0;
+  unsigned long w = 0,str_len = 0;
 
   if (n == 0) return 0; // Nothing to compare, strings are equal
 
@@ -594,14 +594,14 @@ SnmpSyntax& OctetStr::operator=(const SnmpSyntax &val)
 OctetStr OctetStr::from_hex_string(const OctetStr &hex_string)
 {
   OctetStr val;
-  unsigned int p;
+  unsigned int p = 0;
   unsigned int hex_len = 0;
 
   // make sure the string has at least one byte
   if (hex_string.len() == 0) return val;
 
   // allocate max needed space for copy without spaces
-  unsigned char *hex, *hex_ptr;
+  unsigned char *hex = nullptr, *hex_ptr = nullptr;
   hex = hex_ptr = new unsigned char[hex_string.len()];
   if (!hex) return val;
 
@@ -646,96 +646,96 @@ OctetStr OctetStr::from_hex_string(const OctetStr &hex_string)
 #undef ATOI
 
 //================[ format the output into hex ]========================
-const char *OctetStr::get_printable_hex() const
+const char* OctetStr::get_printable_hex() const
 {
-  if ((m_changed == false) && (output_last_type == hex_output_type) &&
-      (output_last_np_char == nonprintable_char) &&
-      (output_last_function == OutputFunctionHex))
+    if ((m_changed == false) && (output_last_type == hex_output_type)
+        && (output_last_np_char == nonprintable_char)
+        && (output_last_function == OutputFunctionHex))
+        return output_buffer;
+
+    int            cnt = 0;
+    char           char_buf[80]; // holds ASCII representation of data
+    char*          buf_ptr       = nullptr; // pointer into ASCII listing
+    char*          line_ptr      = nullptr; // pointer into Hex listing
+    unsigned int   storageNeeded = 0;       // how much space do we need ?
+    int            local_len     = (int)smival.value.string.len;
+    unsigned char* bytes         = smival.value.string.ptr;
+
+    storageNeeded =
+        (unsigned int)((smival.value.string.len / 16) + 1) * 72 + 1;
+    OctetStr* ncthis = PP_CONST_CAST(OctetStr*, this);
+
+    if (output_buffer_len < storageNeeded)
+    {
+        if (output_buffer) delete[] ncthis->output_buffer;
+
+        ncthis->output_buffer = new char[storageNeeded];
+        if (!ncthis->output_buffer)
+        {
+            ncthis->output_buffer_len = 0;
+            return output_buffer;
+        }
+        ncthis->output_buffer_len = storageNeeded;
+        output_buffer[0]          = 0;
+    }
+
+    line_ptr = ncthis->output_buffer;
+
+    /*----------------------------------------*/
+    /* processing loop for entire data buffer */
+    /*----------------------------------------*/
+    while (local_len > 0)
+    {
+        cnt     = 16; /* print 16 bytes per line */
+        buf_ptr = char_buf;
+        sprintf(line_ptr, "  "); // FIXME: use std::string! CK
+        line_ptr += 2;           /* indent */
+
+        /*-----------------------*/
+        /* process a single line */
+        /*-----------------------*/
+        while (cnt-- > 0 && local_len-- > 0)
+        {
+            sprintf(line_ptr, "%2.2X ", *bytes); // FIXME: use std::string! CK
+
+            line_ptr += 3; /* the display of a byte always 3 chars long */
+            if (isprint(*bytes))
+                *buf_ptr++ = *bytes;
+            else
+                *buf_ptr++ = nonprintable_char;
+            ++bytes;
+        }
+        ++cnt;
+        *buf_ptr = 0; // null terminate string
+
+        /*----------------------------------------------------------*/
+        /* this is to make sure that the ASCII displays line up for */
+        /* incomplete lines of hex                                  */
+        /*----------------------------------------------------------*/
+        while (cnt-- > 0)
+        {
+            *line_ptr++ = ' ';
+            *line_ptr++ = ' ';
+            *line_ptr++ = ' ';
+        }
+
+        /*------------------------------------------*/
+        /* append the ASCII display to the Hex line */
+        /*------------------------------------------*/
+        if (hex_output_type == OutputHex) char_buf[0] = 0;
+
+        sprintf(line_ptr, "   %s%s", char_buf,
+            linefeed_chars); // FIXME: use std::string! CK
+        line_ptr += 3 + strlen(char_buf) + strlen(linefeed_chars);
+    }
+
+    ncthis->output_last_type     = hex_output_type;
+    ncthis->output_last_np_char  = nonprintable_char;
+    ncthis->m_changed            = false;
+    ncthis->output_last_function = OutputFunctionHex;
+
     return output_buffer;
-
-  int cnt;
-  char char_buf[80];              // holds ASCII representation of data
-  char *buf_ptr;                  // pointer into ASCII listing
-  char *line_ptr;                 // pointer into Hex listing
-  unsigned int  storageNeeded;    // how much space do we need ?
-  int  local_len = (int) smival.value.string.len;
-  unsigned char *bytes = smival.value.string.ptr;
-
-  storageNeeded = (unsigned int) ((smival.value.string.len/16)+1) * 72 + 1;
-  OctetStr *ncthis = PP_CONST_CAST(OctetStr*, this);
-
-  if (output_buffer_len < storageNeeded)
-  {
-    if (output_buffer)  delete [] ncthis->output_buffer;
-
-    ncthis->output_buffer = new char[storageNeeded];
-    if (!ncthis->output_buffer)
-    {
-      ncthis->output_buffer_len = 0;
-      return output_buffer;
-    }
-    ncthis->output_buffer_len = storageNeeded;
-    output_buffer[0] = 0;
-  }
-
-  line_ptr = ncthis->output_buffer;
-
-  /*----------------------------------------*/
-  /* processing loop for entire data buffer */
-  /*----------------------------------------*/
-  while (local_len > 0)
-  {
-    cnt	     = 16;	  /* print 16 bytes per line */
-    buf_ptr  = char_buf;
-    sprintf(line_ptr, "  ");
-    line_ptr += 2;  /* indent */
-
-    /*-----------------------*/
-    /* process a single line */
-    /*-----------------------*/
-    while (cnt-- > 0 && local_len-- > 0)
-    {
-      sprintf(line_ptr, "%2.2X ", *bytes);
-
-      line_ptr +=3;   /* the display of a byte always 3 chars long */
-      if (isprint(*bytes))
-	*buf_ptr++ = *bytes;
-      else
-	*buf_ptr++ = nonprintable_char;
-      ++bytes;
-    }
-    ++cnt;
-    *buf_ptr = 0; // null terminate string
-
-    /*----------------------------------------------------------*/
-    /* this is to make sure that the ASCII displays line up for */
-    /* incomplete lines of hex                                  */
-    /*----------------------------------------------------------*/
-    while (cnt-- > 0)
-    {
-      *line_ptr++ = ' ';
-      *line_ptr++ = ' ';
-      *line_ptr++ = ' ';
-    }
-
-    /*------------------------------------------*/
-    /* append the ASCII display to the Hex line */
-    /*------------------------------------------*/
-    if (hex_output_type == OutputHex)
-      char_buf[0] = 0;
-
-    sprintf(line_ptr,"   %s%s", char_buf, linefeed_chars);
-    line_ptr += 3 + strlen(char_buf) + strlen(linefeed_chars);
-  }
-
-  ncthis->output_last_type = hex_output_type;
-  ncthis->output_last_np_char = nonprintable_char;
-  ncthis->m_changed = false;
-  ncthis->output_last_function = OutputFunctionHex;
-
-  return output_buffer;
 }
-
 
 //==============[ Null out the contents of the string ]===================
 void OctetStr::clear()
@@ -771,7 +771,7 @@ bool OctetStr::set_linefeed_chars(const char* lf_chars)
     if (!lf_chars) return false;
     if (strlen(lf_chars) > 2) return false;
 
-    strcpy(linefeed_chars, lf_chars);
+    strlcpy(linefeed_chars, lf_chars, sizeof(linefeed_chars));
 
     return true;
 }

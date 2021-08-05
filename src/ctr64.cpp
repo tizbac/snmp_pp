@@ -56,11 +56,6 @@
 #include "snmp_pp/asn1.h"
 #include "snmp_pp/v3.h"
 
-#ifdef HAVE_INTTYPES_H
-#include <inttypes.h>
-#endif
-
-
 #ifdef SNMP_PP_NAMESPACE
 namespace Snmp_pp {
 #endif
@@ -73,13 +68,9 @@ const char *Counter64::get_printable() const
 
   char *buf = PP_CONST_CAST(char*, output_buffer);
   if ( high() != 0 )
-#ifdef HAVE_INTTYPES_H
-    sprintf(buf, "%" PRIu64, (pp_uint64) high()<<32|low());
-#else
-    sprintf(buf, "0x%lX%08lX", high(), low());
-#endif
+    snprintf(buf, sizeof(output_buffer), "%" PRIu64, (pp_uint64) high()<<32|low());
   else
-    sprintf(buf, "%lu", low());
+    snprintf(buf, sizeof(output_buffer), "%lu", low());
 
   Counter64 *nc_this = PP_CONST_CAST(Counter64*, this);
   nc_this->m_changed = false;
