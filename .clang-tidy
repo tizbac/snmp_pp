@@ -5,6 +5,8 @@ cert-*,\
 -cert-err58-cpp,\
 -cert-dcl37-c,\
 -cert-dcl51-cpp,\
+-cert-msc30-c,\
+-cert-msc50-cpp,\
 clang-analyzer-*,\
 -clang-analyzer-security.insecureAPI.*,\
 -cppcoreguidelines-*,\

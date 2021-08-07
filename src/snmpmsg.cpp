@@ -751,8 +751,9 @@ int SnmpMessage::unload(Pdu& pdu,           // Pdu object
                     vp->val.string[12], vp->val.string[13], vp->val.string[14],
                     vp->val.string[15]);
             else if (vp->val_len == 4)
-                snprintf(buffer, sizeof(buffer), "%d.%d.%d.%d", vp->val.string[0],
-                    vp->val.string[1], vp->val.string[2], vp->val.string[3]);
+                snprintf(buffer, sizeof(buffer), "%d.%d.%d.%d",
+                    vp->val.string[0], vp->val.string[1], vp->val.string[2],
+                    vp->val.string[3]);
             IpAddress ipaddress(buffer);
             tempvb.set_value(ipaddress);
         }

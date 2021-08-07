@@ -1100,7 +1100,8 @@ int IpAddress::addr_to_friendly()
     char            ds[61];
 
     // lets try and get the friendly name from the DNS
-    strlcpy(ds, this->IpAddress::get_printable(), sizeof(ds)); // TODO: CWE-119! CK
+    strlcpy(
+        ds, this->IpAddress::get_printable(), sizeof(ds)); // TODO: CWE-119! CK
 
 #    if !(defined(CPU) && CPU == PPC603) && defined HAVE_GETHOSTBYADDR_R
     int     herrno = 0;
@@ -1249,8 +1250,9 @@ void IpAddress::format_output() const
     if (valid_flag)
     {
         if (ip_version == version_ipv4)
-            snprintf((char*)output_buffer, sizeof(output_buffer), "%d.%d.%d.%d", address_buffer[0],
-                address_buffer[1], address_buffer[2], address_buffer[3]);
+            snprintf((char*)output_buffer, sizeof(output_buffer),
+                "%d.%d.%d.%d", address_buffer[0], address_buffer[1],
+                address_buffer[2], address_buffer[3]);
         else if (have_ipv6_scope)
             snprintf((char*)output_buffer, sizeof(output_buffer),
                 "%02x%02x:%02x%02x:%02x%02x:%02x%02x:"
@@ -1807,7 +1809,8 @@ void UdpAddress::format_output() const
     if (valid_flag)
     {
         if (ip_version == version_ipv4)
-            snprintf((char*)output_buffer, sizeof(output_buffer), "%s%c%d", IpAddress::get_printable(),
+            snprintf((char*)output_buffer, sizeof(output_buffer), "%s%c%d",
+                IpAddress::get_printable(),
                 '/', // TODO: look for problems in old code and change to "sep"
                 get_port());
         else
@@ -2151,10 +2154,9 @@ int IpxAddress::get_hostid(MacAddress& mac) const
     if (valid_flag)
     {
         char buffer[18];
-        snprintf(buffer, sizeof(buffer),
-            "%02x:%02x:%02x:%02x:%02x:%02x", address_buffer[4],
-            address_buffer[5], address_buffer[6], address_buffer[7],
-            address_buffer[8], address_buffer[9]);
+        snprintf(buffer, sizeof(buffer), "%02x:%02x:%02x:%02x:%02x:%02x",
+            address_buffer[4], address_buffer[5], address_buffer[6],
+            address_buffer[7], address_buffer[8], address_buffer[9]);
         MacAddress temp(buffer);
         mac = temp;
         if (mac.valid()) return true;
@@ -2342,8 +2344,7 @@ void IpxSockAddress::format_output() const
 
     if (valid_flag)
         snprintf((char*)output_buffer, sizeof(output_buffer), "%s/%d",
-            IpxAddress::get_printable(),
-            get_socket());
+            IpxAddress::get_printable(), get_socket());
     else
         *(char*)output_buffer = 0;
     IpxSockAddress* nc_this = PP_CONST_CAST(IpxSockAddress*, this);
@@ -2610,9 +2611,10 @@ bool MacAddress::parse_address(const char* inaddr)
 void MacAddress::format_output() const
 {
     if (valid_flag)
-        snprintf((char*)output_buffer, sizeof(output_buffer), "%02x:%02x:%02x:%02x:%02x:%02x",
-            address_buffer[0], address_buffer[1], address_buffer[2],
-            address_buffer[3], address_buffer[4], address_buffer[5]);
+        snprintf((char*)output_buffer, sizeof(output_buffer),
+            "%02x:%02x:%02x:%02x:%02x:%02x", address_buffer[0],
+            address_buffer[1], address_buffer[2], address_buffer[3],
+            address_buffer[4], address_buffer[5]);
     else
         *(char*)output_buffer = 0;
     MacAddress* nc_this   = PP_CONST_CAST(MacAddress*, this);

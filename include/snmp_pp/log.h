@@ -65,11 +65,12 @@ namespace Snmp_pp
 
 #else
 
-#    define LOG_BEGIN(name, level)                            \
-        {                                                     \
-            if (DefaultLog::log()->log_needed(name, level)) { \
-                DefaultLog::lock();                           \
-            DefaultLog::create_log_entry(name, level)
+#    define LOG_BEGIN(name, level)                          \
+        {                                                   \
+            if (DefaultLog::log()->log_needed(name, level)) \
+            {                                               \
+                DefaultLog::lock();                         \
+                DefaultLog::create_log_entry(name, level)
 
 #    define LOG(item) *DefaultLog::log_entry() += item
 
@@ -556,7 +557,8 @@ public:
      */
     static void create_log_entry(const char* name, unsigned char type)
     {
-        if (!entry) {
+        if (!entry)
+        {
             entry = log()->create_log_entry(name, type);
             entry->init();
         }

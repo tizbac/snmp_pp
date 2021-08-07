@@ -221,7 +221,8 @@ long Snmp::MyMakeReqId()
             tv.tv_sec  = 0;
             tv.tv_usec = 100;
             select(0, 0, 0, 0, &tv);
-            eventListHolder->snmpEventList()->lock(); // FIXME: not exception save! CK
+            eventListHolder->snmpEventList()
+                ->lock(); // FIXME: not exception save! CK
         }
     } while (eventListHolder->snmpEventList()->GetEntry(rid));
     eventListHolder->snmpEventList()->unlock();

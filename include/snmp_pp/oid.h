@@ -356,7 +356,8 @@ public:
         m_changed = true;
         assert(smival.value.oid.ptr != nullptr);
 
-        return smival.value.oid.ptr[index]; // NOLINT(clang-analyzer-core.uninitialized.UndefReturn)
+        return smival.value.oid.ptr
+            [index]; // NOLINT(clang-analyzer-core.uninitialized.UndefReturn)
     }
 
     /**
@@ -430,7 +431,7 @@ public:
     int nCompare(const uint32_t n, const Oid& o) const
     {
         uint32_t length      = n;
-        bool          reduced_len = false;
+        bool     reduced_len = false;
 
         // If both oids are too short, decrease len
         if ((smival.value.oid.len < length)
@@ -482,7 +483,7 @@ public:
     int nCompare(const Oid& o) const
     {
         uint32_t length;
-        bool          reduced_len = false;
+        bool     reduced_len = false;
 
         length = smival.value.oid.len < o.smival.value.oid.len
             ? o.smival.value.oid.len
@@ -573,8 +574,7 @@ public:
      *
      * @return Dotted oid string (for example "3.6.1.6")
      */
-    const char* get_printable(
-        const uint32_t start, const uint32_t n) const
+    const char* get_printable(const uint32_t start, const uint32_t n) const
     {
         return get_printable(start, n, (char*&)iv_part_str);
     };

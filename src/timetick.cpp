@@ -1,28 +1,28 @@
 /*_############################################################################
-  _## 
-  _##  timetick.cpp  
+  _##
+  _##  timetick.cpp
   _##
   _##  SNMP++ v3.4
   _##  -----------------------------------------------
   _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
   _##
   _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##  
+  _##
   _##    Copyright (c) 1996
   _##    Hewlett-Packard Company
-  _##  
+  _##
   _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software 
-  _##  and/or its documentation is hereby granted without fee. User agrees 
-  _##  to display the above copyright notice and this license notice in all 
-  _##  copies of the software and any documentation of the software. User 
-  _##  agrees to assume all liability for the use of the software; 
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations 
-  _##  about the suitability of this software for any purpose. It is provided 
-  _##  "AS-IS" without warranty of any kind, either express or implied. User 
+  _##  Permission to use, copy, modify, distribute and/or sell this software
+  _##  and/or its documentation is hereby granted without fee. User agrees
+  _##  to display the above copyright notice and this license notice in all
+  _##  copies of the software and any documentation of the software. User
+  _##  agrees to assume all liability for the use of the software;
+  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+  _##  about the suitability of this software for any purpose. It is provided
+  _##  "AS-IS" without warranty of any kind, either express or implied. User
   _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base. 
-  _##  
+  _##  upon this software code base.
+  _##
   _##########################################################################*/
 /*===================================================================
 
@@ -50,12 +50,13 @@
   Class implentation for SMI Timeticks class.
 =====================================================================*/
 
+#include "snmp_pp/timetick.h" // include header file for timetick class
+
 #include <libsnmp.h>
 
-#include "snmp_pp/timetick.h"	       // include header file for timetick class
-
 #ifdef SNMP_PP_NAMESPACE
-namespace Snmp_pp {
+namespace Snmp_pp
+{
 #endif
 
 #if 0
@@ -86,50 +87,51 @@ SnmpSyntax& TimeTicks::operator=(const SnmpSyntax &in_val)
 #endif
 
 // ASCII format return
-const char *TimeTicks::get_printable() const
+const char* TimeTicks::get_printable() const
 {
-  if (m_changed == false) return output_buffer;
+    if (m_changed == false) return output_buffer;
 
-  TimeTicks *nc_this = PP_CONST_CAST(TimeTicks*, this);
+    TimeTicks* nc_this = PP_CONST_CAST(TimeTicks*, this);
 
-  if (!valid_flag)
-  {
-    nc_this->output_buffer[0] = 0;
+    if (!valid_flag)
+    {
+        nc_this->output_buffer[0] = 0;
+        nc_this->m_changed        = false;
+        return output_buffer;
+    }
+
+    unsigned long hseconds = 0, seconds = 0, minutes = 0, hours = 0, days = 0;
+    unsigned long tt = smival.value.uNumber;
+
+    days = tt / 8640000;
+    tt %= 8640000;
+
+    hours = tt / 360000;
+    tt %= 360000;
+
+    minutes = tt / 6000;
+    tt %= 6000;
+
+    seconds = tt / 100;
+    tt %= 100;
+
+    hseconds = tt;
+
+    if (days == 0)
+        snprintf(nc_this->output_buffer, sizeof(output_buffer),
+            "%lu:%02lu:%02lu.%02lu", hours, minutes, seconds, hseconds);
+    else if (days == 1)
+        snprintf(nc_this->output_buffer, sizeof(output_buffer),
+            "1 day %lu:%02lu:%02lu.%02lu", hours, minutes, seconds, hseconds);
+    else
+        snprintf(nc_this->output_buffer, sizeof(output_buffer),
+            "%lu days, %lu:%02lu:%02lu.%02lu", days, hours, minutes, seconds,
+            hseconds);
+
     nc_this->m_changed = false;
     return output_buffer;
-  }
-
-  unsigned long hseconds = 0, seconds = 0, minutes = 0, hours = 0, days = 0;
-  unsigned long tt = smival.value.uNumber;
-
-  days = tt / 8640000;
-  tt %= 8640000;
-
-  hours = tt / 360000;
-  tt %= 360000;
-
-  minutes = tt / 6000;
-  tt %= 6000;
-
-  seconds = tt / 100;
-  tt %= 100;
-
-  hseconds = tt;
-
-  if (days == 0)
-    snprintf(nc_this->output_buffer, sizeof(output_buffer), "%lu:%02lu:%02lu.%02lu",
-            hours, minutes, seconds, hseconds);
-  else if (days == 1)
-    snprintf(nc_this->output_buffer, sizeof(output_buffer), "1 day %lu:%02lu:%02lu.%02lu",
-	    hours, minutes, seconds, hseconds);
-  else
-    snprintf(nc_this->output_buffer, sizeof(output_buffer), "%lu days, %lu:%02lu:%02lu.%02lu",
-	    days, hours, minutes, seconds, hseconds);
-
-  nc_this->m_changed = false;
-  return output_buffer;
 }
 
 #ifdef SNMP_PP_NAMESPACE
 } // end of namespace Snmp_pp
-#endif 
+#endif

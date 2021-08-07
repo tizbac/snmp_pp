@@ -1,28 +1,28 @@
 /*_############################################################################
-  _## 
-  _##  integer.cpp  
+  _##
+  _##  integer.cpp
   _##
   _##  SNMP++ v3.4
   _##  -----------------------------------------------
   _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
   _##
   _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##  
+  _##
   _##    Copyright (c) 1996
   _##    Hewlett-Packard Company
-  _##  
+  _##
   _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software 
-  _##  and/or its documentation is hereby granted without fee. User agrees 
-  _##  to display the above copyright notice and this license notice in all 
-  _##  copies of the software and any documentation of the software. User 
-  _##  agrees to assume all liability for the use of the software; 
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations 
-  _##  about the suitability of this software for any purpose. It is provided 
-  _##  "AS-IS" without warranty of any kind, either express or implied. User 
+  _##  Permission to use, copy, modify, distribute and/or sell this software
+  _##  and/or its documentation is hereby granted without fee. User agrees
+  _##  to display the above copyright notice and this license notice in all
+  _##  copies of the software and any documentation of the software. User
+  _##  agrees to assume all liability for the use of the software;
+  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+  _##  about the suitability of this software for any purpose. It is provided
+  _##  "AS-IS" without warranty of any kind, either express or implied. User
   _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base. 
-  _##  
+  _##  upon this software code base.
+  _##
   _##########################################################################*/
 /*===================================================================
 
@@ -50,70 +50,72 @@
   Class implemtation for SMI Integer classes.
 =====================================================================*/
 
+#include "snmp_pp/integer.h" // header file for gauge class
+
 #include <libsnmp.h>
 
-#include "snmp_pp/integer.h"   // header file for gauge class
-
 #ifdef SNMP_PP_NAMESPACE
-namespace Snmp_pp {
+namespace Snmp_pp
+{
 #endif
 
 // general assignment from any Value
-SnmpSyntax& SnmpUInt32::operator=(const SnmpSyntax &in_val)
+SnmpSyntax& SnmpUInt32::operator=(const SnmpSyntax& in_val)
 {
-  if (this == &in_val) return *this; // handle assignement from itself
+    if (this == &in_val) return *this; // handle assignement from itself
 
-  valid_flag = false;		// will get set true if really valid
-  if (in_val.valid())
-  {
-    switch (in_val.get_syntax())
+    valid_flag = false; // will get set true if really valid
+    if (in_val.valid())
     {
-      case sNMP_SYNTAX_UINT32:
-   // case sNMP_SYNTAX_GAUGE32:  	.. indistinquishable from UINT32
-      case sNMP_SYNTAX_CNTR32:
-      case sNMP_SYNTAX_TIMETICKS:
-      case sNMP_SYNTAX_INT32:		// implied cast int -> uint
-	  smival.value.uNumber =
-	      ((SnmpUInt32 &)in_val).smival.value.uNumber;
-  	  valid_flag = true;
-	  break;
-      // XXX default: throw std::bad_cast();
+        switch (in_val.get_syntax())
+        {
+        case sNMP_SYNTAX_UINT32:
+            // case sNMP_SYNTAX_GAUGE32:  	.. indistinquishable from
+            // UINT32
+        case sNMP_SYNTAX_CNTR32:
+        case sNMP_SYNTAX_TIMETICKS:
+        case sNMP_SYNTAX_INT32: // implied cast int -> uint
+            smival.value.uNumber = ((SnmpUInt32&)in_val).smival.value.uNumber;
+            valid_flag           = true;
+            break;
+            // XXX default: throw std::bad_cast();
+        }
     }
-  }
-  else
-    smival.value.uNumber = 0;
-  m_changed = true;
-  return *this;
+    else
+        smival.value.uNumber = 0;
+    m_changed = true;
+    return *this;
 }
 
 // ASCII format return
-const char *SnmpUInt32::get_printable() const
+const char* SnmpUInt32::get_printable() const
 {
-  if (m_changed == false) return output_buffer;
+    if (m_changed == false) return output_buffer;
 
-  SnmpUInt32 *nc_this = PP_CONST_CAST(SnmpUInt32*, this);
-  if (valid_flag)
-    snprintf(nc_this->output_buffer, sizeof(output_buffer), "%" PRIu32, smival.value.uNumber);
-  else
-    nc_this->output_buffer[0] = 0;
+    SnmpUInt32* nc_this = PP_CONST_CAST(SnmpUInt32*, this);
+    if (valid_flag)
+        snprintf(nc_this->output_buffer, sizeof(output_buffer), "%" PRIu32,
+            smival.value.uNumber);
+    else
+        nc_this->output_buffer[0] = 0;
 
-  nc_this->m_changed = false;
+    nc_this->m_changed = false;
 
-  return output_buffer;
+    return output_buffer;
 }
 
 // Return the space needed for serialization
 int SnmpUInt32::get_asn1_length() const
 {
-  if (smival.value.uNumber < 0x80)
-    return 3;
-  else if (smival.value.uNumber < 0x8000)
-    return 4;
-  else if (smival.value.uNumber < 0x800000)
-    return 5;
-  else if (smival.value.uNumber < 0x80000000)
-    return 6;
-  return 7;
+    if (smival.value.uNumber < 0x80)
+        return 3;
+    else if (smival.value.uNumber < 0x8000)
+        return 4;
+    else if (smival.value.uNumber < 0x800000)
+        return 5;
+    else if (smival.value.uNumber < 0x80000000)
+        return 6;
+    return 7;
 }
 
 //====================================================================
@@ -121,63 +123,63 @@ int SnmpUInt32::get_asn1_length() const
 //====================================================================
 
 // general assignment from any Value
-SnmpSyntax& SnmpInt32::operator=(const SnmpSyntax &in_val)
+SnmpSyntax& SnmpInt32::operator=(const SnmpSyntax& in_val)
 {
-  if (this == &in_val) return *this; // handle assignement from itself
+    if (this == &in_val) return *this; // handle assignement from itself
 
-  valid_flag = false;		// will get set true if really valid
-  if (in_val.valid())
-  {
-    switch (in_val.get_syntax())
+    valid_flag = false; // will get set true if really valid
+    if (in_val.valid())
     {
-      case sNMP_SYNTAX_INT32:
-      case sNMP_SYNTAX_UINT32:		// implied cast uint -> int
-   // case sNMP_SYNTAX_GAUGE32:  	.. indistinquishable from UINT32
-      case sNMP_SYNTAX_CNTR32:		// implied cast uint -> int
-      case sNMP_SYNTAX_TIMETICKS:	// implied cast uint -> int
-	  smival.value.sNumber =
-		((SnmpInt32 &)in_val).smival.value.sNumber;
-  	  valid_flag = true;
-	  break;
+        switch (in_val.get_syntax())
+        {
+        case sNMP_SYNTAX_INT32:
+        case sNMP_SYNTAX_UINT32: // implied cast uint -> int
+            // case sNMP_SYNTAX_GAUGE32:  	.. indistinquishable from
+            // UINT32
+        case sNMP_SYNTAX_CNTR32:    // implied cast uint -> int
+        case sNMP_SYNTAX_TIMETICKS: // implied cast uint -> int
+            smival.value.sNumber = ((SnmpInt32&)in_val).smival.value.sNumber;
+            valid_flag           = true;
+            break;
+        }
     }
-  }
-  else
-    smival.value.sNumber = 0;
-  m_changed = true;
-  return *this;
+    else
+        smival.value.sNumber = 0;
+    m_changed = true;
+    return *this;
 }
 
 // ASCII format return
-const char *SnmpInt32::get_printable() const
+const char* SnmpInt32::get_printable() const
 {
-  if (m_changed == false) return output_buffer;
+    if (m_changed == false) return output_buffer;
 
-  SnmpInt32 *nc_this = PP_CONST_CAST(SnmpInt32*, this);
-  if (valid_flag)
-    snprintf(nc_this->output_buffer, sizeof(output_buffer), "%ld", (long)smival.value.sNumber);
-  else
-    nc_this->output_buffer[0] = 0;
+    SnmpInt32* nc_this = PP_CONST_CAST(SnmpInt32*, this);
+    if (valid_flag)
+        snprintf(nc_this->output_buffer, sizeof(output_buffer), "%ld",
+            (long)smival.value.sNumber);
+    else
+        nc_this->output_buffer[0] = 0;
 
-  nc_this->m_changed = false;
+    nc_this->m_changed = false;
 
-  return output_buffer;
+    return output_buffer;
 }
 
 // Return the space needed for serialization
 int SnmpInt32::get_asn1_length() const
 {
-  if ((smival.value.sNumber <   0x80) &&
-      (smival.value.sNumber >= -0x80))
-    return 3;
-  else if ((smival.value.sNumber <   0x8000) &&
-	   (smival.value.sNumber >= -0x8000))
-    return 4;
-  else if ((smival.value.sNumber <   0x800000) &&
-	   (smival.value.sNumber >= -0x800000))
-    return 5;
-  return 6;
+    if ((smival.value.sNumber < 0x80) && (smival.value.sNumber >= -0x80))
+        return 3;
+    else if ((smival.value.sNumber < 0x8000)
+        && (smival.value.sNumber >= -0x8000))
+        return 4;
+    else if ((smival.value.sNumber < 0x800000)
+        && (smival.value.sNumber >= -0x800000))
+        return 5;
+    return 6;
 }
 
 #ifdef SNMP_PP_NAMESPACE
 } // end of namespace Snmp_pp
-#endif 
+#endif
