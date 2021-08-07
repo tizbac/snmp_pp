@@ -284,7 +284,7 @@ public:
     void unset_discovery_mode() { discovery_mode = false; };
 
     /**
-     * Return TRUE if the USM discovery mode is enabled, FALSE else.
+     * Return true if the USM discovery mode is enabled, false else.
      */
     bool is_discovery_enabled() const { return discovery_mode; };
 

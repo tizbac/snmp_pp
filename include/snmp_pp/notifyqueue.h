@@ -167,7 +167,7 @@ class DLLOPT CNotifyEventQueue: public CEvents
 			   CNotifyEventQueueElt *previous);
 
       ~CNotifyEventQueueElt();
-      CNotifyEventQueueElt *GetNext() { return m_Next; };
+      CNotifyEventQueueElt *GetNext() { return m_Next; }; // NOLINT(clang-analyzer-cplusplus.NewDelete)
       CNotifyEvent *GetNotifyEvent() { return m_notifyevent; };
       CNotifyEvent *TestId(Snmp *snmp);
 

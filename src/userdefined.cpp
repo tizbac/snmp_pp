@@ -172,7 +172,7 @@ CUDEvent *CUDEventQueue::GetEntry(const UdId uniqueId) REENTRANT (
 
 void CUDEventQueue::DeleteEntry(const UdId uniqueId)
 {
-  lock();
+  lock(); // FIXME: not exception save! CK
   CUDEventQueueElt *msgEltPtr = m_head.GetNext();
 
   while (msgEltPtr)
@@ -192,7 +192,7 @@ UdId CUDEventQueue::MakeId()
 {
   UdId id = 0;
   do {
-    lock();
+    lock(); // FIXME: not exception save! CK
     id = ++m_id;
     unlock();
   } while (GetEntry(id));

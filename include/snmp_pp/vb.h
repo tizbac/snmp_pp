@@ -436,7 +436,7 @@ public:
     /**
      * Return the validity of a Vb object.
      *
-     * @return TRUE if oid and value have been set.
+     * @return true if oid and value have been set.
      */
     bool valid() const;
 

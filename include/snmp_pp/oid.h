@@ -354,7 +354,9 @@ public:
     SmiUINT32& operator[](const unsigned int index)
     {
         m_changed = true;
-        return smival.value.oid.ptr[index];
+        assert(smival.value.oid.ptr != nullptr);
+
+        return smival.value.oid.ptr[index]; // NOLINT(clang-analyzer-core.uninitialized.UndefReturn)
     }
 
     /**
@@ -399,14 +401,14 @@ public:
     /**
      * Get the length of the oid.
      */
-    unsigned long len() const { return smival.value.oid.len; }
+    uint32_t len() const { return smival.value.oid.len; }
 
     /**
      * Trim off the rightmost values of an oid.
      *
      * @param n - Trim off n values from the right (default is one)
      */
-    void trim(const unsigned long n = 1)
+    void trim(const uint32_t n = 1)
     {
         // verify that n is legal
         if ((n <= smival.value.oid.len) && (n > 0))
@@ -425,9 +427,9 @@ public:
      *
      * @return 0 if equal / -1 if less / 1 if greater
      */
-    int nCompare(const unsigned long n, const Oid& o) const
+    int nCompare(const uint32_t n, const Oid& o) const
     {
-        unsigned long length      = n;
+        uint32_t length      = n;
         bool          reduced_len = false;
 
         // If both oids are too short, decrease len
@@ -451,7 +453,7 @@ public:
             reduced_len = true;
         }
 
-        unsigned long z = 0;
+        uint32_t z = 0;
         while (z < length)
         {
             if (smival.value.oid.ptr[z] < o.smival.value.oid.ptr[z])
@@ -479,7 +481,7 @@ public:
      */
     int nCompare(const Oid& o) const
     {
-        unsigned long length;
+        uint32_t length;
         bool          reduced_len = false;
 
         length = smival.value.oid.len < o.smival.value.oid.len
@@ -500,7 +502,7 @@ public:
             reduced_len = true;
         }
 
-        unsigned long z = 0;
+        uint32_t z = 0;
         while (z < length)
         {
             if (smival.value.oid.ptr[z] < o.smival.value.oid.ptr[z])
@@ -541,7 +543,7 @@ public:
      *
      * @return Dotted oid string (for example "6.0")
      */
-    const char* get_printable(const unsigned long n) const
+    const char* get_printable(const uint32_t n) const
     {
         return get_printable(
             smival.value.oid.len - n + 1, n, (char*&)iv_part_str);
@@ -561,7 +563,7 @@ public:
      * @return Dotted oid string (for example "3.6.1.6")
      */
     const char* get_printable(
-        const unsigned long start, const unsigned long n, char*& buffer) const;
+        const uint32_t start, const uint32_t n, char*& buffer) const;
 
     /**
      * Get a printable ASCII string of a part of the value.
@@ -572,7 +574,7 @@ public:
      * @return Dotted oid string (for example "3.6.1.6")
      */
     const char* get_printable(
-        const unsigned long start, const unsigned long n) const
+        const uint32_t start, const uint32_t n) const
     {
         return get_printable(start, n, (char*&)iv_part_str);
     };

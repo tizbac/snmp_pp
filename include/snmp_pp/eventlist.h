@@ -173,7 +173,7 @@ class DLLOPT CEventList: public SnmpSynchronized {
 		   CEventListElt *previous);
 
      ~CEventListElt();
-     CEventListElt *GetNext() { return m_Next; }
+     CEventListElt *GetNext() { return m_Next; } // NOLINT(clang-analyzer-cplusplus.NewDelete)
      CEvents *GetEvents() { return m_events; }
 
     private:

@@ -146,7 +146,7 @@ class DLLOPT Pdu
    * @param pvbs - Array of empty pointers of size pvb_count
    * @param pvb_count - Amount of Vb pointers to get
    *
-   * @return TRUE on success
+   * @return true on success
    */
   int get_vblist(Vb* pvbs, const int pvb_count) const;
 
@@ -155,12 +155,12 @@ class DLLOPT Pdu
    *
    * The vb objects of the pdu will be freed and the objects from the
    * array will be cloned and added to the pdu. If this method returns
-   * FALSE, the pdu will not conatin any Vb objects.
+   * false, the pdu will not conatin any Vb objects.
    *
    * @param pvbs - Array of valid pointers of size pvb_count
    * @param pvb_count - Amount of Vb pointers i the array
    *
-   * @return TRUE on success
+   * @return true on success
    */
   int set_vblist(Vb const * pvbs, const int pvb_count);
 
@@ -170,7 +170,7 @@ class DLLOPT Pdu
    * @param vb - Object to store the vb
    * @param index - The vb to get (zero is the first vb)
    *
-   * @return TRUE on success
+   * @return true on success
    */
   int get_vb(Vb &vb, const int index) const;
 
@@ -188,12 +188,12 @@ class DLLOPT Pdu
   /**
    * Set a particular vb.
    *
-   * If this method returns FALSE, the pdu has not been modified.
+   * If this method returns false, the pdu has not been modified.
    *
    * @param vb - Source vb
    * @param index - The vb to set (zero is the first vb)
    *
-   * @return TRUE on success
+   * @return true on success
    */
   int set_vb(Vb const &vb, const int index);
 
@@ -289,7 +289,7 @@ class DLLOPT Pdu
    * Trim off vbs.
    *
    * @param count - number of vbs to trim of, starting with the last
-   * @return TRUE on success, FALSE if nothing was done
+   * @return true on success, false if nothing was done
    */
   int trim(const int count=1);
 
@@ -297,7 +297,7 @@ class DLLOPT Pdu
    * Delete a Vb anywhere within the Pdu.
    *
    * @param position - Delete the Vb at this position (starting with 0)
-   * @return TRUE on success
+   * @return true on success
    */
   int delete_vb(const int position);
 

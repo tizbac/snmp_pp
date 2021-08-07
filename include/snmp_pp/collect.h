@@ -292,7 +292,7 @@ template <class T> class SnmpCollection
   /**
    * Looks for an element in the collection.
    *
-   * @return TRUE if found.
+   * @return true if found.
    */
   int find(const T& i, int &pos) const
   {

@@ -468,7 +468,7 @@ class DLLOPT IpAddress : public Address
   /**
    * Map a IPv4 address to a IPv6 address.
    *
-   * @return - TRUE if no error occured.
+   * @return - true if no error occured.
    */
   virtual bool map_to_ipv6();
 
@@ -661,7 +661,7 @@ class DLLOPT UdpAddress : public IpAddress
   /**
    * Map a IPv4 UDP address to a IPv6 UDP address.
    *
-   * @return - TRUE if no error occured.
+   * @return - true if no error occured.
    */
   virtual bool map_to_ipv6();
 

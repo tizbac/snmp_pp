@@ -109,7 +109,7 @@ int EventListHolder::SNMPProcessPendingEvents()
   msec now(0, 0);
   int status;
 
-  pevents_mutex.lock();
+  pevents_mutex.lock(); // FIXME: not exception save! CK
 
   timeout = 1;  // chosen a very small timeout
   // in order to avoid busy looping but keep overall performance
@@ -232,7 +232,7 @@ int EventListHolder::SNMPProcessPendingEvents()
     if (nfound > 0)
     { // found something on select
       status = m_eventList.HandleEvents(maxfds, readfds, writefds, exceptfds);
-      // TM should we do anything with bad status?
+      // TODO: TM should we do anything with bad status?
     }
 #ifdef WIN32
     /* On Win32 select immediately returns -1 if all fd_sets are empty */

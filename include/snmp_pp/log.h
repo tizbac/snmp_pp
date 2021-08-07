@@ -191,7 +191,7 @@ protected:
      * Add a string to the log.
      *
      * @param s - A string value.
-     * @return TRUE if the value has been added and FALSE if the log
+     * @return true if the value has been added and false if the log
      *         entry is full.
      */
     virtual bool add_string(const char* s) = 0;
@@ -200,7 +200,7 @@ protected:
      * Add an integer to the log.
      *
      * @param s - An integer value.
-     * @return TRUE if the value has been added and FALSE if the log
+     * @return true if the value has been added and false if the log
      *         entry is full.
      */
     virtual bool add_integer(long s);
@@ -275,7 +275,7 @@ protected:
      * Add a string to the log.
      *
      * @param s - A string value.
-     * @return TRUE if the value has been added and FALSE if the log
+     * @return true if the value has been added and false if the log
      *         entry is full.
      */
     bool add_string(const char* s);
@@ -367,7 +367,7 @@ public:
      *    by logical or the log entry class with a level
      *    of 0 up to 15.
      * @return
-     *    TRUE if logging is needed, FALSE otherwise.
+     *    true if logging is needed, false otherwise.
      */
     virtual bool log_needed(const char* const, unsigned char t) const
     {
@@ -505,7 +505,7 @@ public:
      */
     static void init(AgentLog* logger)
     {
-        lock();
+        lock(); // FIXME: not exception save! CK
         if (instance) delete instance;
         instance = logger;
         unlock();

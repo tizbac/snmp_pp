@@ -132,7 +132,7 @@ CUTEventQueue::~CUTEventQueue()
   /*--------------------------------------------------------*/
   /* walk the list deleting any elements still on the queue */
   /*--------------------------------------------------------*/
-  lock();
+  lock(); // FIXME: not exception save! CK
   while ((leftOver = m_head.GetNext()))
     delete leftOver;
   unlock();
@@ -149,7 +149,7 @@ UtId CUTEventQueue::AddEntry(const msec &timeout,
   /* Insert entry at head of list, done automagically by the */
   /* constructor function, so don't use the return value.    */
   /*---------------------------------------------------------*/
-  lock();
+  lock(); // FIXME: not exception save! CK
   (void) new CUTEventQueueElt(newEvent, m_head.GetNext(), &m_head);
   m_msgCount++;
   unlock();
@@ -172,7 +172,7 @@ CUTEvent *CUTEventQueue::GetEntry(const UtId uniqueId) REENTRANT (
 
 void CUTEventQueue::DeleteEntry(const UtId uniqueId)
 {
-  lock();
+  lock(); // FIXME: not exception save! CK
   CUTEventQueueElt *msgEltPtr = m_head.GetNext();
 
   while (msgEltPtr)
@@ -192,7 +192,7 @@ UtId CUTEventQueue::MakeId()
 {
   UtId id = 0;
   do {
-    lock();
+    lock(); // FIXME: not exception save! CK
     id = ++m_id;
     unlock();
   } while (GetEntry(id));

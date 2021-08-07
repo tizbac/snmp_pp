@@ -333,8 +333,8 @@ protected:
      * @param buffer - The message
      * @param length - The length of the message
      *
-     * @return - TRUE if the version could be extracted and it
-     *           is a SNMPv3 message. On any error: FALSE.
+     * @return - true if the version could be extracted and it
+     *           is a SNMPv3 message. On any error: false.
      *
      */
     static bool is_v3_msg(unsigned char* buffer, int length);

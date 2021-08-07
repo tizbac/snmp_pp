@@ -172,7 +172,7 @@ class DLLOPT CUDEventQueue : public CEvents
 		       CUDEventQueueElt *previous);
 
       ~CUDEventQueueElt();
-      CUDEventQueueElt *GetNext() { return m_Next; }
+      CUDEventQueueElt *GetNext() { return m_Next; } // NOLINT(clang-analyzer-cplusplus.NewDelete)
       CUDEvent *GetUDEvent() { return m_udevent ; }
       CUDEvent *TestId(const UdId uniqueId);
 

@@ -422,7 +422,7 @@ class DLLOPT CTarget: public SnmpTarget
    * @param r          - Retries value
    * @param v          - The SNMP version of this target
    *
-   * @return true on success and FALSE on failure.
+   * @return true on success and false on failure.
    */
   bool resolve_to_C(OctetStr& read_comm, 
                     OctetStr& write_comm,
@@ -637,7 +637,7 @@ class DLLOPT UTarget: public SnmpTarget
    * @param r          - Retries value
    * @param v          - The SNMP version of this target
    *
-   * @return TRUE on success and FALSE on failure.
+   * @return true on success and false on failure.
    */
   bool resolve_to_U(OctetStr&  sec_name,
 		   int &sec_model,

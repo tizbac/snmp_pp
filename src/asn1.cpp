@@ -110,7 +110,11 @@ unsigned char* asn_parse_int(
     }
     *datalength -= (int)asn_length + SAFE_INT_CAST(bufp - data);
     if (*bufp & 0x80) value = -1; /* integer is negative */
+
+    // FIXME: The result of the left shift is undefined because the left operand is negative! CK
+    // [clang-analyzer-core.UndefinedBinaryOperatorResult]
     while (asn_length--) value = (value << 8) | *bufp++;
+
     *intp = value;
     return bufp;
 }

@@ -323,7 +323,7 @@ SnmpSyntax& IpAddress::operator=(const SnmpSyntax& val)
     if (this == &val) return *this; // protect against assignment from itself
 
     addr_changed = true;
-    valid_flag   = false; // will get set TRUE if really valid
+    valid_flag   = false; // will get set true if really valid
     iv_friendly_name.clear();
 
     if (val.valid())
@@ -383,7 +383,7 @@ Address& IpAddress::operator=(const Address& val)
     if (this == &val) return *this; // protect against assignment from itself
 
     addr_changed = true;
-    valid_flag   = false; // will get set TRUE if really valid
+    valid_flag   = false; // will get set true if really valid
     iv_friendly_name.clear();
 
     if (val.valid())
@@ -1478,7 +1478,7 @@ SnmpSyntax& UdpAddress::operator=(const SnmpSyntax& val)
 
     if (this == &val) return *this; // protect against assignment from itself
 
-    valid_flag   = false; // will get set TRUE if really valid
+    valid_flag   = false; // will get set true if really valid
     addr_changed = true;
     if (val.valid())
     {
@@ -1537,7 +1537,7 @@ Address& UdpAddress::operator=(const Address& val)
 
     if (this == &val) return *this; // protect against assignment from itself
 
-    valid_flag   = false; // will get set TRUE if really valid
+    valid_flag   = false; // will get set true if really valid
     addr_changed = true;
     if (val.valid())
     {
@@ -1841,7 +1841,7 @@ bool UdpAddress::set_scope(const unsigned int scope)
 /**
  * Map a IPv4 UDP address to a IPv6 UDP address.
  *
- * @return - TRUE if no error occured.
+ * @return - true if no error occured.
  */
 bool UdpAddress::map_to_ipv6()
 {
@@ -1938,7 +1938,7 @@ SnmpSyntax& IpxAddress::operator=(const SnmpSyntax& val)
     // protect against assignment from itself
     if (this == &val) return *this;
 
-    valid_flag = false; // will set to TRUE if really valid
+    valid_flag = false; // will set to true if really valid
     if (val.valid())
     {
         switch (val.get_syntax())
@@ -1962,7 +1962,7 @@ Address& IpxAddress::operator=(const Address& val)
     // protect against assignment from itself
     if (this == &val) return *this;
 
-    valid_flag = false; // will set to TRUE if really valid
+    valid_flag = false; // will set to true if really valid
     if (val.valid())
     {
         switch (val.get_syntax())
@@ -1995,7 +1995,7 @@ IpxAddress& IpxAddress::operator=(const IpxAddress& ipxaddress)
 
 //-----[ IPX Address parse Address ]-----------------------------------
 // Convert a string to a ten byte ipx address
-// On success sets validity  TRUE or FALSE
+// On success sets validity  true or false
 //
 //     IPX address format
 //
@@ -2259,7 +2259,7 @@ SnmpSyntax& IpxSockAddress::operator=(const SnmpSyntax& val)
 {
     if (this == &val) return *this; // protect against assignment from itself
 
-    valid_flag = false; // will set to TRUE if really valid
+    valid_flag = false; // will set to true if really valid
     if (val.valid())
     {
         switch (val.get_syntax())
@@ -2293,7 +2293,7 @@ Address& IpxSockAddress::operator=(const Address& val)
 {
     if (this == &val) return *this; // protect against assignment from itself
 
-    valid_flag = false; // will set to TRUE if really valid
+    valid_flag = false; // will set to true if really valid
     if (val.valid())
     {
         switch (val.get_syntax())
@@ -2481,7 +2481,7 @@ Address& MacAddress::operator=(const Address& val)
 {
     if (this == &val) return *this; // protect against assignment from itself
 
-    valid_flag = false; // will set to TRUE if really valid
+    valid_flag = false; // will set to true if really valid
     if (val.valid())
     {
         switch (val.get_syntax())
@@ -2505,7 +2505,7 @@ SnmpSyntax& MacAddress::operator=(const SnmpSyntax& val)
 {
     if (this == &val) return *this; // protect against assignment from itself
 
-    valid_flag = false; // will set to TRUE if really valid
+    valid_flag = false; // will set to true if really valid
     if (val.valid())
     {
         switch (val.get_syntax())
@@ -2526,7 +2526,7 @@ SnmpSyntax& MacAddress::operator=(const SnmpSyntax& val)
 
 //-----[ MAC Address parse Address ]--------------------------------------
 // Convert a string to a six byte MAC address
-// On success sets validity TRUE or FALSE
+// On success sets validity true or false
 //
 //     MAC address format
 //
@@ -2664,15 +2664,16 @@ GenAddress::GenAddress(const char* addr, const Address::addr_type use_type)
     smival.value.string.ptr = address_buffer;   // constant
 
     address = 0;
-    parse_address(addr, use_type);
+    bool OK = parse_address(addr, use_type);
 
     // Copy real address smival info into GenAddr smival
     // BOK: smival is generally not used for GenAddress, but
     //      we need this to be a replica of the real address'
     //      smival info so that <class>::operator=SnmpSyntax
     //      will work.
-    if (valid_flag)
+    if (OK && valid_flag && address != nullptr)
     {
+        // NOLINTNEXTLINE(clang-analyzer-core.NullDereference)
         smival.syntax = ((GenAddress*)address)->smival.syntax;
         smival.value.string.len =
             ((GenAddress*)address)->smival.value.string.len;
@@ -2851,7 +2852,7 @@ SnmpSyntax& GenAddress::operator=(const SnmpSyntax& val)
 
     if (this == &val) return *this; // protect against assignment from itself
 
-    valid_flag = false; // will get set to TRUE if really valid
+    valid_flag = false; // will get set to true if really valid
     if (address)
     {
         delete address;

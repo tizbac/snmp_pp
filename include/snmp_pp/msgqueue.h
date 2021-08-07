@@ -193,7 +193,7 @@ class DLLOPT CSNMPMessageQueue: public CEvents
 			   CSNMPMessageQueueElt *previous);
 
       ~CSNMPMessageQueueElt();
-      CSNMPMessageQueueElt *GetNext() { return m_Next; }
+      CSNMPMessageQueueElt *GetNext() { return m_Next; } // NOLINT(clang-analyzer-cplusplus.NewDelete)
       CSNMPMessage *GetMessage() { return m_message; }
       CSNMPMessage *TestId(const unsigned long uniqueId);
 

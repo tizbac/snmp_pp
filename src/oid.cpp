@@ -140,7 +140,7 @@ void Oid::set_data(const SmiUINT32* raw_oid, const unsigned int oid_len)
     {
         delete_oid_ptr();
 
-        smival.value.oid.ptr = (SmiLPUINT32) new unsigned long[oid_len];
+        smival.value.oid.ptr = (SmiLPUINT32) new uint32_t[oid_len];
         if (!smival.value.oid.ptr) return;
     }
     memcpy((SmiLPBYTE)smival.value.oid.ptr, (SmiLPBYTE)raw_oid,
@@ -156,7 +156,7 @@ void Oid::set_data(const char* str, const unsigned int str_len)
     {
         delete_oid_ptr();
 
-        smival.value.oid.ptr = (SmiLPUINT32) new unsigned long[str_len];
+        smival.value.oid.ptr = (SmiLPUINT32) new uint32_t[str_len];
         if (!smival.value.oid.ptr) return;
     }
 
@@ -174,13 +174,13 @@ void Oid::set_data(const char* str, const unsigned int str_len)
 // going n positions to the left
 // NOTE, start is 1 based (the first id is at position #1)
 const char* Oid::get_printable(
-    const unsigned long start, const unsigned long n, char*& buffer) const
+    const uint32_t start, const uint32_t n, char*& buffer) const
 {
     if (!m_changed && (buffer == iv_str)) return buffer;
 
-    unsigned long nz       = 0;
-    unsigned long my_start = start - 1;
-    unsigned long my_end   = my_start + n;
+    uint32_t nz       = 0;
+    uint32_t my_start = start - 1;
+    uint32_t my_end   = my_start + n;
 
     nz = (smival.value.oid.len * (SNMPCHARSIZE + 1)) + 1;
 
@@ -198,7 +198,7 @@ const char* Oid::get_printable(
     bool  first   = true;
 
     // loop through and build up a string
-    for (unsigned long index = my_start; index < my_end; ++index)
+    for (uint32_t index = my_start; index < my_end; ++index)
     {
         // if not at begin, pad with a dot
         if (first)
@@ -237,7 +237,7 @@ int Oid::StrToOid(const char* str, SmiLPOID dstOid) const
         dstOid->ptr = 0;
         return -1;
     }
-    temp = (SmiLPUINT32) new unsigned long[nz];
+    temp = (SmiLPUINT32) new uint32_t[nz];
 
     if (temp == 0) return -1; // return if can't get the mem
 
@@ -249,9 +249,9 @@ int Oid::StrToOid(const char* str, SmiLPOID dstOid) const
         // convert digits
         if (isdigit(*str))
         {
-            unsigned long number = 0;
+            uint32_t number = 0;
 
-            // grab a digit token and convert it to a long int
+            // grab a digit token and convert it to a int32_t int
             while (isdigit(*str)) number = (number * 10) + *(str++) - '0';
 
             // stuff the value into the array and bump the counter
@@ -305,7 +305,7 @@ int Oid::StrToOid(const char* str, SmiLPOID dstOid) const
     }
 
     // get some space for the real oid
-    dstOid->ptr = (SmiLPUINT32) new unsigned long[index];
+    dstOid->ptr = (SmiLPUINT32) new uint32_t[index];
     // return if can't get the mem needed
     if (dstOid->ptr == 0)
     {
@@ -339,7 +339,7 @@ int Oid::OidToStr(const SmiOID* srcOid, size_t size, char* str) const
     if (srcOid->len == 0) return -1;
 
     // loop through and build up a string
-    for (unsigned long index = 0; index < srcOid->len; ++index)
+    for (uint32_t index = 0; index < srcOid->len; ++index)
     {
         // TODO: convert data element to a string, but use std::string! CK
         int cur_len = snprintf(
@@ -387,7 +387,7 @@ int Oid::get_asn1_length() const
 
     for (unsigned int i = 2; i < smival.value.oid.len; ++i)
     {
-        unsigned long v = smival.value.oid.ptr[i];
+        uint32_t v = smival.value.oid.ptr[i];
 
         if (v < 0x80) //  7 bits long subid
             length += 1;
