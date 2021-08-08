@@ -238,12 +238,12 @@ public:
      *
      * @return true if the object is valid
      */
-    virtual bool valid() const { return valid_flag; }
+    bool valid() const override { return valid_flag; }
 
     /**
      * Return the space needed for serialization.
      */
-    virtual int get_asn1_length() const = 0;
+    int get_asn1_length() const override = 0;
 
     /**
      * Access as an array (read and write).
@@ -327,7 +327,7 @@ protected:
     /**
      * Reset the object.
      */
-    void clear();
+    void clear() override;
 };
 
 //-----------------------------------------------------------------------
@@ -377,12 +377,12 @@ public:
     /**
      * Map other SnmpSyntax objects to IpAddress.
      */
-    virtual SnmpSyntax& operator=(const SnmpSyntax& val);
+    SnmpSyntax& operator=(const SnmpSyntax& val) override;
 
     /**
      * Map other Address objects to IpAddress.
      */
-    virtual Address& operator=(const Address& val);
+    Address& operator=(const Address& val) override;
 
     /**
      * Overloaded assignment operator for other IP addresses.
@@ -394,7 +394,10 @@ public:
      *
      * @return Pointer to the newly created object (allocated through new).
      */
-    SnmpSyntax* clone() const { return (SnmpSyntax*)new IpAddress(*this); }
+    SnmpSyntax* clone() const override
+    {
+        return (SnmpSyntax*)new IpAddress(*this);
+    }
 
     /**
      * Return the friendly name. Does a reverse DNS lookup for the IP address.
@@ -410,7 +413,7 @@ public:
      *
      * @return String containing the numerical address
      */
-    virtual const char* get_printable() const
+    const char* get_printable() const override
     {
         if (addr_changed) format_output();
         return output_buffer;
@@ -421,7 +424,7 @@ public:
      *
      * @return String containing the numerical address
      */
-    virtual operator const char*() const
+    operator const char*() const override
     {
         if (addr_changed) format_output();
         return output_buffer;
@@ -444,7 +447,7 @@ public:
     /**
      * Get the length of the binary address (accessible through operator[]).
      */
-    virtual int get_length() const
+    int get_length() const override
     {
         return (ip_version == version_ipv4)
             ? IPLEN
@@ -466,14 +469,14 @@ public:
      * @see Address::addr_type
      * @return Always Address:type_ip
      */
-    virtual addr_type get_type() const { return type_ip; }
+    addr_type get_type() const override { return type_ip; }
 
     /**
      * Return the syntax.
      *
      * @return This method always returns sNMP_SYNTAX_IPADDR.
      */
-    virtual SmiUINT32 get_syntax() const { return sNMP_SYNTAX_IPADDR; }
+    SmiUINT32 get_syntax() const override { return sNMP_SYNTAX_IPADDR; }
 
     /**
      * Return clone as binary string
@@ -485,7 +488,7 @@ public:
     /**
      * Return the space needed for serialization.
      */
-    virtual int get_asn1_length() const { return get_length() + 2; }
+    int get_asn1_length() const override { return get_length() + 2; }
 
     /**
      * Return the IP version of the address.
@@ -514,7 +517,7 @@ public:
     /**
      * Reset the object.
      */
-    void clear();
+    void clear() override;
 
     bool has_ipv6_scope() const
     {
@@ -530,11 +533,11 @@ protected:
 
     // redefined parse address
     // specific to IP addresses
-    virtual bool parse_address(const char* inaddr);
+    bool parse_address(const char* inaddr) override;
 
     // redefined format output
     // specific to IP addresses
-    virtual void format_output() const;
+    void format_output() const override;
 
     // parse a dotted string
     int parse_dotted_ipstring(const char* inaddr);
@@ -608,12 +611,12 @@ public:
     /**
      * Map other SnmpSyntax objects to UdpAddress.
      */
-    virtual SnmpSyntax& operator=(const SnmpSyntax& val);
+    SnmpSyntax& operator=(const SnmpSyntax& val) override;
 
     /**
      * Map other Address objects to UdpAddress.
      */
-    virtual Address& operator=(const Address& val);
+    Address& operator=(const Address& val) override;
 
     /**
      * Overloaded assignment operator for UdpAddress.
@@ -623,33 +626,36 @@ public:
     /**
      * Overloaded assignment operator for IpAddress.
      */
-    virtual UdpAddress& operator=(const IpAddress& ipaddr);
+    UdpAddress& operator=(const IpAddress& ipaddr) override;
 
     /**
      * Return the syntax.
      *
      * @return This method always returns sNMP_SYNTAX_OCTETS.
      */
-    SmiUINT32 get_syntax() const { return sNMP_SYNTAX_OCTETS; }
+    SmiUINT32 get_syntax() const override { return sNMP_SYNTAX_OCTETS; }
 
     /**
      * Return the space needed for serialization.
      */
-    virtual int get_asn1_length() const { return get_length() + 2; }
+    int get_asn1_length() const override { return get_length() + 2; }
 
     /**
      * Clone this object.
      *
      * @return Pointer to the newly created object (allocated through new).
      */
-    SnmpSyntax* clone() const { return (SnmpSyntax*)new UdpAddress(*this); }
+    SnmpSyntax* clone() const override
+    {
+        return (SnmpSyntax*)new UdpAddress(*this);
+    }
 
     /**
      * Get a printable ASCII value of the address.
      *
      * @return String containing the numerical address
      */
-    virtual const char* get_printable() const
+    const char* get_printable() const override
     {
         if (addr_changed) format_output();
         return output_buffer;
@@ -660,7 +666,7 @@ public:
      *
      * @return String containing the numerical address
      */
-    virtual operator const char*() const
+    operator const char*() const override
     {
         if (addr_changed) format_output();
         return output_buffer;
@@ -683,7 +689,7 @@ public:
     /**
      * Get the length of the binary address (accessible through operator[]).
      */
-    virtual int get_length() const
+    int get_length() const override
     {
         return (ip_version == version_ipv4)
             ? UDPIPLEN
@@ -695,19 +701,19 @@ public:
      * @see Address::addr_type
      * @return Always Address:type_udp
      */
-    virtual addr_type get_type() const { return type_udp; }
+    addr_type get_type() const override { return type_udp; }
 
     /**
      * Map a IPv4 UDP address to a IPv6 UDP address.
      *
      * @return - true if no error occured.
      */
-    virtual bool map_to_ipv6();
+    bool map_to_ipv6() override;
 
     /**
      * Reset the object.
      */
-    void clear()
+    void clear() override
     {
         Address::clear();
         memset(output_buffer, 0, sizeof(output_buffer));
@@ -716,7 +722,7 @@ public:
     /**
      * Set the IPv6 scope
      */
-    virtual bool set_scope(const unsigned int scope);
+    bool set_scope(const unsigned int scope) override;
 
 protected:
     SNMP_PP_MUTABLE char output_buffer[OUTBUFF_UDP]; // output buffer
@@ -724,11 +730,11 @@ protected:
 
     // redefined parse address
     // specific to IP addresses
-    virtual bool parse_address(const char* inaddr);
+    bool parse_address(const char* inaddr) override;
 
     // redefined format output
     // specific to IP addresses
-    virtual void format_output() const;
+    void format_output() const override;
 };
 
 #ifdef _MAC_ADDRESS
@@ -1134,7 +1140,7 @@ public:
      *         or sNMP_SYNTAX_NULL if the generic address does not have
      *         an address object.
      */
-    SmiUINT32 get_syntax() const
+    SmiUINT32 get_syntax() const override
     {
         return address ? address->get_syntax() : sNMP_SYNTAX_NULL;
     }
@@ -1142,7 +1148,7 @@ public:
     /**
      * Return the space needed for serialization.
      */
-    virtual int get_asn1_length() const
+    int get_asn1_length() const override
     {
         return address ? address->get_asn1_length() : 2;
     }
@@ -1152,7 +1158,10 @@ public:
      *
      * @return Pointer to the newly created object (allocated through new).
      */
-    SnmpSyntax* clone() const { return (SnmpSyntax*)new GenAddress(*this); }
+    SnmpSyntax* clone() const override
+    {
+        return (SnmpSyntax*)new GenAddress(*this);
+    }
 
     using Address::operator=;
     /**
@@ -1163,19 +1172,19 @@ public:
     /**
      * Overloaded assignment operator for a Address.
      */
-    virtual Address& operator=(const Address& addr);
+    Address& operator=(const Address& addr) override;
 
     /**
      * Map other SnmpSyntax objects to GenAddress.
      */
-    virtual SnmpSyntax& operator=(const SnmpSyntax& val);
+    SnmpSyntax& operator=(const SnmpSyntax& val) override;
 
     /**
      * Get a printable ASCII value of the address.
      *
      * @return String containing the numerical address
      */
-    virtual const char* get_printable() const
+    const char* get_printable() const override
     {
         return (address) ? address->get_printable() : output_buffer;
     }
@@ -1185,7 +1194,7 @@ public:
      *
      * @return String containing the numerical address
      */
-    virtual operator const char*() const
+    operator const char*() const override
     {
         return address ? (const char*)*address : output_buffer;
     }
@@ -1193,7 +1202,7 @@ public:
     /**
      * Get the length of the binary address (accessible through operator[]).
      */
-    virtual int get_length() const
+    int get_length() const override
     {
         return (address) ? address->get_length() : 0;
     }
@@ -1201,7 +1210,7 @@ public:
     /**
      * Reset the object.
      */
-    void clear()
+    void clear() override
     {
         if (address) address->clear();
     }
@@ -1212,7 +1221,7 @@ public:
      * @return Type of the contained address object or Address::type_invalid
      *         if it is not valid().
      */
-    virtual addr_type get_type() const
+    addr_type get_type() const override
     {
         return (valid()) ? address->get_type() : type_invalid;
     }
@@ -1265,7 +1274,7 @@ protected:
     char     output_buffer[1]; // output buffer
 
     // redefined parse address for generic address
-    virtual bool parse_address(const char* addr)
+    bool parse_address(const char* addr) override
     {
         return parse_address(addr, Address::type_invalid);
     }
@@ -1274,12 +1283,12 @@ protected:
         const char* addr, const Address::addr_type use_type);
 
     // format output for a generic address
-    virtual void format_output() const { }
+    void format_output() const override { }
 
     /**
      * Is this a GenAddress object.
      */
-    virtual bool is_gen_address() const { return true; }
+    bool is_gen_address() const override { return true; }
 };
 
 // create AddressCollection type

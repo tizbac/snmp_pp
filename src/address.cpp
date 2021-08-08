@@ -558,7 +558,7 @@ int IpAddress::parse_dotted_ipstring(const char* inaddr)
     ptr = temp;
     while (*ptr)
     {
-        unsigned long number = 0;
+        uint32_t number = 0;
 
         if (*ptr == '.') ++ptr; // skip over the dot
 
@@ -746,7 +746,7 @@ int IpAddress::parse_coloned_ipstring(const char* inaddr)
                     *out_ptr++      = (c * 16 + d);
                 }
             }
-            digit_count = 0;
+            // Note: DeadStores: digit_count = 0;! CK
         }
         else if (last_deliminiter == '.')
         {
@@ -764,7 +764,7 @@ int IpAddress::parse_coloned_ipstring(const char* inaddr)
                 else
                     return false;
             }
-            // digit_count = 0;
+            // Note: DeadStores: digit_count = 0;! CK
         }
         else
             return false;
@@ -2886,8 +2886,8 @@ SnmpSyntax& GenAddress::operator=(const SnmpSyntax& val)
         // (e.g., UDPIPLEN == MACLEN).  It gets worse if we add AppleTalk or
         // OSI which use variable length addresses!
         case sNMP_SYNTAX_OCTETS: {
-            unsigned long val_len = 0;
-            val_len               = ((GenAddress&)val).smival.value.string.len;
+            uint32_t val_len = 0;
+            val_len          = ((GenAddress&)val).smival.value.string.len;
 
             if ((val_len == UDPIPLEN) || IS_UDPIP6LEN(val_len))
                 address = new UdpAddress;

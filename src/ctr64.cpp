@@ -72,7 +72,7 @@ const char* Counter64::get_printable() const
         snprintf(buf, sizeof(output_buffer), "%" PRIu64,
             (pp_uint64)high() << 32 | low());
     else
-        snprintf(buf, sizeof(output_buffer), "%lu", low());
+        snprintf(buf, sizeof(output_buffer), "%u", low());
 
     Counter64* nc_this = PP_CONST_CAST(Counter64*, this);
     nc_this->m_changed = false;

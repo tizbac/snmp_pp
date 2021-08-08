@@ -106,7 +106,7 @@ OctetStr::OctetStr(const char* str)
 }
 
 //============[ constructor using an unsigned char * ]================
-OctetStr::OctetStr(const unsigned char* str, unsigned long len)
+OctetStr::OctetStr(const unsigned char* str, uint32_t len)
     : output_buffer(0), output_buffer_len(0), m_changed(true), validity(true)
 {
     smival.syntax           = sNMP_SYNTAX_OCTETS;
@@ -171,7 +171,7 @@ OctetStr::~OctetStr()
 }
 
 //============[ set the data on an already constructed Octet ]============
-void OctetStr::set_data(const unsigned char* str, unsigned long len)
+void OctetStr::set_data(const unsigned char* str, uint32_t len)
 {
     // free up already used space
     if (smival.value.string.ptr)
@@ -240,7 +240,7 @@ int operator!=(const OctetStr& lhs, const OctetStr& rhs)
 //==============[ less than < overloaded ]============================
 int operator<(const OctetStr& lhs, const OctetStr& rhs)
 {
-    int maxlen = lhs.smival.value.string.len > rhs.smival.value.string.len
+    uint32_t maxlen = lhs.smival.value.string.len > rhs.smival.value.string.len
         ? lhs.smival.value.string.len
         : rhs.smival.value.string.len;
     return (lhs.nCompare(maxlen, rhs) < 0);
@@ -249,7 +249,7 @@ int operator<(const OctetStr& lhs, const OctetStr& rhs)
 //==============[ less than <= overloaded ]===========================
 int operator<=(const OctetStr& lhs, const OctetStr& rhs)
 {
-    int maxlen = lhs.smival.value.string.len > rhs.smival.value.string.len
+    uint32_t maxlen = lhs.smival.value.string.len > rhs.smival.value.string.len
         ? lhs.smival.value.string.len
         : rhs.smival.value.string.len;
     return (lhs.nCompare(maxlen, rhs) <= 0);
@@ -258,7 +258,7 @@ int operator<=(const OctetStr& lhs, const OctetStr& rhs)
 //===============[ greater than > overloaded ]========================
 int operator>(const OctetStr& lhs, const OctetStr& rhs)
 {
-    int maxlen = lhs.smival.value.string.len > rhs.smival.value.string.len
+    uint32_t maxlen = lhs.smival.value.string.len > rhs.smival.value.string.len
         ? lhs.smival.value.string.len
         : rhs.smival.value.string.len;
     return (lhs.nCompare(maxlen, rhs) > 0);
@@ -267,7 +267,7 @@ int operator>(const OctetStr& lhs, const OctetStr& rhs)
 //===============[ greater than >= overloaded ]=======================
 int operator>=(const OctetStr& lhs, const OctetStr& rhs)
 {
-    int maxlen = lhs.smival.value.string.len > rhs.smival.value.string.len
+    uint32_t maxlen = lhs.smival.value.string.len > rhs.smival.value.string.len
         ? lhs.smival.value.string.len
         : rhs.smival.value.string.len;
     return (lhs.nCompare(maxlen, rhs) >= 0);
@@ -294,9 +294,9 @@ int operator!=(const OctetStr& lhs, const char* rhs)
 int operator<(const OctetStr& lhs, const char* rhs)
 {
     OctetStr to(rhs);
-    int      maxlen = lhs.smival.value.string.len > to.smival.value.string.len
-             ? lhs.smival.value.string.len
-             : to.smival.value.string.len;
+    uint32_t maxlen = lhs.smival.value.string.len > to.smival.value.string.len
+        ? lhs.smival.value.string.len
+        : to.smival.value.string.len;
     return (lhs.nCompare(maxlen, to) < 0);
 }
 
@@ -304,9 +304,9 @@ int operator<(const OctetStr& lhs, const char* rhs)
 int operator<=(const OctetStr& lhs, const char* rhs)
 {
     OctetStr to(rhs);
-    int      maxlen = lhs.smival.value.string.len > to.smival.value.string.len
-             ? lhs.smival.value.string.len
-             : to.smival.value.string.len;
+    uint32_t maxlen = lhs.smival.value.string.len > to.smival.value.string.len
+        ? lhs.smival.value.string.len
+        : to.smival.value.string.len;
     return (lhs.nCompare(maxlen, to) <= 0);
 }
 
@@ -314,9 +314,9 @@ int operator<=(const OctetStr& lhs, const char* rhs)
 int operator>(const OctetStr& lhs, const char* rhs)
 {
     OctetStr to(rhs);
-    int      maxlen = lhs.smival.value.string.len > to.smival.value.string.len
-             ? lhs.smival.value.string.len
-             : to.smival.value.string.len;
+    uint32_t maxlen = lhs.smival.value.string.len > to.smival.value.string.len
+        ? lhs.smival.value.string.len
+        : to.smival.value.string.len;
     return (lhs.nCompare(maxlen, to) > 0);
 }
 
@@ -324,9 +324,9 @@ int operator>(const OctetStr& lhs, const char* rhs)
 int operator>=(const OctetStr& lhs, const char* rhs)
 {
     OctetStr to(rhs);
-    int      maxlen = lhs.smival.value.string.len > to.smival.value.string.len
-             ? lhs.smival.value.string.len
-             : to.smival.value.string.len;
+    uint32_t maxlen = lhs.smival.value.string.len > to.smival.value.string.len
+        ? lhs.smival.value.string.len
+        : to.smival.value.string.len;
     return (lhs.nCompare(maxlen, to) >= 0);
 }
 
@@ -415,10 +415,10 @@ OctetStr& OctetStr::operator+=(const unsigned char c)
 }
 
 //================[ compare n elements of an Octet ]==================
-int OctetStr::nCompare(const unsigned long n, const OctetStr& o) const
+int OctetStr::nCompare(const uint32_t n, const OctetStr& o) const
 {
-    unsigned long n_max = 0;
-    unsigned long w = 0, str_len = 0;
+    uint32_t n_max = 0;
+    uint32_t w = 0, str_len = 0;
 
     if (n == 0) return 0; // Nothing to compare, strings are equal
 
@@ -443,7 +443,7 @@ int OctetStr::nCompare(const unsigned long n, const OctetStr& o) const
         : o.smival.value.string.len;
     w       = (n <= str_len) ? n : str_len;
 
-    unsigned long z = 0;
+    uint32_t z = 0;
     while (z < w)
     {
         if (smival.value.string.ptr[z] < o.smival.value.string.ptr[z])
@@ -477,7 +477,7 @@ const char* OctetStr::get_printable() const
         && (output_last_function == OutputFunctionDefault))
         return output_buffer;
 
-    for (unsigned long i = 0; i < smival.value.string.len; i++)
+    for (uint32_t i = 0; i < smival.value.string.len; i++)
     {
         if ((smival.value.string.ptr[i] != '\r')
             && (smival.value.string.ptr[i] != '\n')
@@ -538,7 +538,7 @@ const char* OctetStr::get_printable_clear() const
 
     if (smival.value.string.len)
     {
-        for (unsigned long i = 0; i < smival.value.string.len; i++)
+        for (uint32_t i = 0; i < smival.value.string.len; i++)
         {
             if (isprint((int)(smival.value.string.ptr[i])) == 0)
                 ncthis->output_buffer[i] = nonprintable_char;
@@ -783,7 +783,7 @@ bool OctetStr::set_linefeed_chars(const char* lf_chars)
 }
 
 //===============[ append or shorten the data buffer ]================
-bool OctetStr::set_len(const unsigned long new_len)
+bool OctetStr::set_len(const uint32_t new_len)
 {
     if (new_len <= smival.value.string.len)
     {

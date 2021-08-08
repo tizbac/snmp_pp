@@ -72,7 +72,7 @@ EventListHolder::EventListHolder(Snmp* snmp_session)
 //---------[ Block For Response ]-----------------------------------
 // Wait for the completion of an outstanding SNMP event (msg).
 // Handle any other events as they occur.
-int EventListHolder::SNMPBlockForResponse(const unsigned long req_id, Pdu& pdu)
+int EventListHolder::SNMPBlockForResponse(const uint32_t req_id, Pdu& pdu)
 {
     do {
         SNMPProcessEvents(DEFAULT_MAX_BLOCK_EVENT_TIME);
@@ -323,7 +323,7 @@ void EventListHolder::SNMPGetFdSets(
 
 #endif // HAVE_POLL_SYSCALL
 
-unsigned long EventListHolder::SNMPGetNextTimeout()
+uint32_t EventListHolder::SNMPGetNextTimeout()
 {
     msec now;
     msec sendTime(now);
@@ -332,7 +332,7 @@ unsigned long EventListHolder::SNMPGetNextTimeout()
     //    would simply call eventList.GetNextTimeout(sendTime) and
     //    return the status.  However, to avoid exposing the msec
     //    class we now convert the msec to hundreths of seconds
-    //    and return that as a unsigned long.
+    //    and return that as a uint32_t.
     // 25-Jan-96 TM
 
     m_eventList.GetNextTimeout(sendTime);
@@ -360,15 +360,15 @@ unsigned long EventListHolder::SNMPGetNextTimeout()
         if (sendTime > now)
         {
             sendTime -= now;
-            return ((((unsigned long)sendTime) / 10) + 1);
+            return ((((uint32_t)sendTime) / 10) + 1);
         }
         else
             return 0;
     }
 }
 #ifdef _USER_DEFINED_TIMEOUTS
-UtId EventListHolder::SNMPAddTimeOut(const unsigned long interval,
-    const ut_callback callBack, const void* callData)
+UtId EventListHolder::SNMPAddTimeOut(
+    const uint32_t interval, const ut_callback callBack, const void* callData)
 {
     msec now;
     now += interval;

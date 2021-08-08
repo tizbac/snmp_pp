@@ -181,7 +181,7 @@ public:
      *
      * @return always sNMP_SYNTAX_OID
      */
-    SmiUINT32 get_syntax() const { return sNMP_SYNTAX_OID; }
+    SmiUINT32 get_syntax() const override { return sNMP_SYNTAX_OID; }
 
     /**
      * Assignment from a string.
@@ -214,7 +214,7 @@ public:
     /**
      * Return the space needed for serialization.
      */
-    int get_asn1_length() const;
+    int get_asn1_length() const override;
 
     /**
      * Overloaded equal operator.
@@ -239,7 +239,7 @@ public:
      */
     bool operator<(const Oid& rhs) const
     {
-        int result;
+        int result = 0;
         // call nCompare with the current
         // Oidx, Oidy and len of Oidx
         if ((result = nCompare(rhs)) < 0) return 1;
@@ -309,7 +309,7 @@ public:
      */
     Oid& operator+=(const Oid& o)
     {
-        SmiLPUINT32 new_oid;
+        SmiLPUINT32 new_oid = nullptr;
 
         if (o.smival.value.oid.len == 0) return *this;
 
@@ -482,7 +482,7 @@ public:
      */
     int nCompare(const Oid& o) const
     {
-        uint32_t length;
+        uint32_t length      = 0;
         bool     reduced_len = false;
 
         length = smival.value.oid.len < o.smival.value.oid.len
@@ -525,14 +525,17 @@ public:
     /**
      * Return validity of the object.
      */
-    bool valid() const { return (smival.value.oid.ptr ? true : false); }
+    bool valid() const override
+    {
+        return (smival.value.oid.ptr ? true : false);
+    }
 
     /**
      * Get a printable ASCII string of the whole value.
      *
      * @return Dotted oid string (for example "1.3.6.1.6.0")
      */
-    const char* get_printable() const
+    const char* get_printable() const override
     {
         return get_printable(1, smival.value.oid.len, (char*&)iv_str);
     };
@@ -584,17 +587,17 @@ public:
      *
      * @return Pointer to the newly created object (allocated through new).
      */
-    SnmpSyntax* clone() const { return (SnmpSyntax*)new Oid(*this); }
+    SnmpSyntax* clone() const override { return (SnmpSyntax*)new Oid(*this); }
 
     /**
      * Map other SnmpSyntax objects to Oid.
      */
-    SnmpSyntax& operator=(const SnmpSyntax& val);
+    SnmpSyntax& operator=(const SnmpSyntax& val) override;
 
     /**
      * Clear the Oid.
      */
-    void clear() { delete_oid_ptr(); }
+    void clear() override { delete_oid_ptr(); }
 
 protected:
     /**

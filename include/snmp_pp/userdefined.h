@@ -136,26 +136,26 @@ public:
     UdId MakeId();
 
     // find the next timeout
-    int GetNextTimeout(msec& /*sendTime*/)
+    int GetNextTimeout(msec& /*sendTime*/) override
     {
         return SNMP_CLASS_INVALID_OPERATION;
     }; // We never have a timeout
 
     // set up parameters for select
-    void GetFdSets(
-        int& maxfds, fd_set& readfds, fd_set& writefds, fd_set& exceptfds);
+    void GetFdSets(int& maxfds, fd_set& readfds, fd_set& writefds,
+        fd_set& exceptfds) override;
     // return number of user-defined event handlers
-    int GetCount() { return m_msgCount; };
+    int GetCount() override { return m_msgCount; };
 
     int HandleEvents(const int maxfds, const fd_set& readfds,
-        const fd_set& writefds, const fd_set& exceptfds);
+        const fd_set& writefds, const fd_set& exceptfds) override;
 
-    int DoRetries(const msec& /*sendtime*/)
+    int DoRetries(const msec& /*sendtime*/) override
     {
         return SNMP_CLASS_SUCCESS;
     }; // no timeouts, so just return;
 
-    int Done() { return 0; }; // we are never done
+    int Done() override { return 0; }; // we are never done
 
 protected:
     /*-----------------------------------------------------------*/
@@ -171,8 +171,8 @@ protected:
         ~CUDEventQueueElt();
         CUDEventQueueElt* GetNext()
         {
-            return m_Next;
-        } // NOLINT(clang-analyzer-cplusplus.NewDelete)
+            return m_Next; // NOLINT(clang-analyzer-cplusplus.NewDelete)
+        }
         CUDEvent* GetUDEvent() { return m_udevent; }
         CUDEvent* TestId(const UdId uniqueId);
 

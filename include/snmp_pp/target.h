@@ -162,14 +162,14 @@ public:
      *
      * @param t - Timeout in 10ms, so 100 will set the timeout to 1 second.
      */
-    void set_timeout(const unsigned long t) { timeout = t; };
+    void set_timeout(const uint32_t t) { timeout = t; };
 
     /**
      * Get the timeout.
      *
      * @return The timeout for requests sent using this target object.
      */
-    unsigned long get_timeout() const { return timeout; };
+    uint32_t get_timeout() const { return timeout; };
 
     /**
      * Change the default timeout.
@@ -179,10 +179,7 @@ public:
      *
      * @param t - The new default timeout value
      */
-    static void set_default_timeout(const unsigned long t)
-    {
-        default_timeout = t;
-    };
+    static void set_default_timeout(const uint32_t t) { default_timeout = t; };
 
     /**
      * Change the default retries vlaue.
@@ -261,15 +258,15 @@ public:
     virtual void clear();
 
 protected:
-    bool          validity;   ///< Validity of the object
-    unsigned long timeout;    ///< xmit timeout in 10 milli secs
-    int           retries;    ///< number of retries
-    snmp_version  version;    ///< SNMP version to use
-    target_type   ttype;      ///< Type of the target
-    GenAddress    my_address; ///< Address object
+    bool         validity;   ///< Validity of the object
+    uint32_t     timeout;    ///< xmit timeout in 10 milli secs
+    int          retries;    ///< number of retries
+    snmp_version version;    ///< SNMP version to use
+    target_type  ttype;      ///< Type of the target
+    GenAddress   my_address; ///< Address object
 
-    static unsigned long default_timeout; ///< default timeout for new objects
-    static int           default_retries; ///< default retries for new objects
+    static uint32_t default_timeout; ///< default timeout for new objects
+    static int      default_retries; ///< default retries for new objects
 };
 
 //----[  CTarget class ]----------------------------------------------
@@ -335,7 +332,10 @@ public:
      *
      * @return A pointer to the new object on success, 0 on failure.
      */
-    SnmpTarget* clone() const { return (SnmpTarget*)new CTarget(*this); };
+    SnmpTarget* clone() const override
+    {
+        return (SnmpTarget*)new CTarget(*this);
+    };
 
     /**
      * Get the read community name.
@@ -427,12 +427,12 @@ public:
      * @return true on success and false on failure.
      */
     bool resolve_to_C(OctetStr& read_comm, OctetStr& write_comm,
-        GenAddress& address, unsigned long& t, int& r, unsigned char& v) const;
+        GenAddress& address, uint32_t& t, int& r, unsigned char& v) const;
 
     /**
      * Reset the object.
      */
-    void clear();
+    void clear() override;
 
 protected:
     OctetStr read_community;  //  get community
@@ -514,7 +514,10 @@ public:
      *
      * @return A pointer to the new object on success, 0 on failure.
      */
-    SnmpTarget* clone() const { return (SnmpTarget*)new UTarget(*this); };
+    SnmpTarget* clone() const override
+    {
+        return (SnmpTarget*)new UTarget(*this);
+    };
 
     /**
      * Set the address object.
@@ -524,7 +527,7 @@ public:
      * @param address - The address that this target should use.
      * @return true on success.
      */
-    bool set_address(const Address& address);
+    bool set_address(const Address& address) override;
 
     /**
      * Get the security name.
@@ -636,12 +639,12 @@ public:
      * @return true on success and false on failure.
      */
     bool resolve_to_U(OctetStr& sec_name, int& sec_model, GenAddress& address,
-        unsigned long& t, int& r, unsigned char& v) const;
+        uint32_t& t, int& r, unsigned char& v) const;
 
     /**
      * Reset the object.
      */
-    void clear();
+    void clear() override;
 
 protected:
     OctetStr security_name;

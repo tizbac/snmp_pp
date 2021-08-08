@@ -75,7 +75,7 @@ public:
      *
      * @param i - unsigned 32 bit value
      */
-    Counter32(const unsigned long i = 0) : SnmpUInt32(i)
+    Counter32(const uint32_t i = 0) : SnmpUInt32(i)
     {
         smival.syntax = sNMP_SYNTAX_CNTR32;
     }
@@ -95,14 +95,17 @@ public:
      *
      * @return Returns always sNMP_SYNTAX_CNTR32
      */
-    SmiUINT32 get_syntax() const { return sNMP_SYNTAX_CNTR32; }
+    SmiUINT32 get_syntax() const override { return sNMP_SYNTAX_CNTR32; }
 
     /**
      * Clone operator.
      *
      * @return Pointer to a newly created copy of the object.
      */
-    SnmpSyntax* clone() const { return (SnmpSyntax*)new Counter32(*this); }
+    SnmpSyntax* clone() const override
+    {
+        return (SnmpSyntax*)new Counter32(*this);
+    }
 
     /**
      * Map other SnmpSyntax objects to Counter32.
@@ -130,7 +133,7 @@ public:
      * @param ul - new value
      * @return self reference
      */
-    Counter32& operator=(const unsigned long ul)
+    Counter32& operator=(const uint32_t ul)
     {
         SnmpUInt32::operator=(ul);
         return *this;

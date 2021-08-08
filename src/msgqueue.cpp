@@ -77,7 +77,7 @@ extern int receive_snmp_response(SnmpSocket sock, Snmp& snmp_session, Pdu& pdu,
 
 //----[ CSNMPMessage class ]-------------------------------------------
 
-CSNMPMessage::CSNMPMessage(unsigned long id, Snmp* snmp, SnmpSocket socket,
+CSNMPMessage::CSNMPMessage(uint32_t id, Snmp* snmp, SnmpSocket socket,
     const SnmpTarget& target, Pdu& pdu, unsigned char* rawPdu,
     size_t rawPduLen, const Address& address, snmp_callback callBack,
     void* callData)
@@ -267,7 +267,7 @@ CSNMPMessageQueue::CSNMPMessageQueueElt::~CSNMPMessageQueueElt()
 }
 
 CSNMPMessage* CSNMPMessageQueue::CSNMPMessageQueueElt::TestId(
-    const unsigned long uniqueId)
+    const uint32_t uniqueId)
 {
     if (m_message && (m_message->GetId() == uniqueId)) return m_message;
     return 0;
@@ -300,7 +300,7 @@ CSNMPMessageQueue::~CSNMPMessageQueue()
     unlock();
 }
 
-CSNMPMessage* CSNMPMessageQueue::AddEntry(unsigned long id, Snmp* snmp,
+CSNMPMessage* CSNMPMessageQueue::AddEntry(uint32_t id, Snmp* snmp,
     SnmpSocket socket, const SnmpTarget& target, Pdu& pdu,
     unsigned char* rawPdu, size_t rawPduLen, const Address& address,
     snmp_callback callBack, void* callData)
@@ -338,7 +338,7 @@ CSNMPMessage* CSNMPMessageQueue::AddEntry(unsigned long id, Snmp* snmp,
     return newMsg;
 }
 
-CSNMPMessage* CSNMPMessageQueue::GetEntry(const unsigned long uniqueId)
+CSNMPMessage* CSNMPMessageQueue::GetEntry(const uint32_t uniqueId)
 {
     CSNMPMessageQueueElt* msgEltPtr = m_head.GetNext();
 
@@ -351,7 +351,7 @@ CSNMPMessage* CSNMPMessageQueue::GetEntry(const unsigned long uniqueId)
     return 0;
 }
 
-int CSNMPMessageQueue::DeleteEntry(const unsigned long uniqueId)
+int CSNMPMessageQueue::DeleteEntry(const uint32_t uniqueId)
 {
     bool loopAgain = 0;
     do {
@@ -549,7 +549,7 @@ int CSNMPMessageQueue::HandleEvents(
             recv_status = receive_snmp_response(
                 readfds[i].fd, *m_snmpSession, tmppdu, fromaddress, engine_id);
 
-            unsigned long temp_req_id = tmppdu.get_request_id();
+            uint32_t temp_req_id = tmppdu.get_request_id();
             if (!temp_req_id) continue;
 
             CSNMPMessage* msg = 0;
@@ -678,7 +678,7 @@ int CSNMPMessageQueue::HandleEvents(
             recv_status = receive_snmp_response(
                 fd, *m_snmpSession, tmppdu, fromaddress, engine_id);
 
-            unsigned long temp_req_id = tmppdu.get_request_id();
+            uint32_t temp_req_id = tmppdu.get_request_id();
             if (!temp_req_id) continue;
 
             CSNMPMessage* msg          = 0;
@@ -797,7 +797,7 @@ int CSNMPMessageQueue::DoRetries(const msec& now)
         {
             if (status == SNMP_CLASS_TIMEOUT)
             {
-                unsigned long req_id = msg->GetId();
+                uint32_t req_id = msg->GetId();
 
                 // Dequeue the message
                 DeleteEntry(req_id);
@@ -828,7 +828,7 @@ int CSNMPMessageQueue::DoRetries(const msec& now)
 
 int CSNMPMessageQueue::Done() { return 0; }
 
-int CSNMPMessageQueue::Done(unsigned long id)
+int CSNMPMessageQueue::Done(uint32_t id)
 {
     SnmpSynchronize _synchronize(*this); // instead of REENTRANT()
 

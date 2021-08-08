@@ -134,7 +134,7 @@ bool determine_vb(SmiUINT32 val, Vb& vb)
         std::cout << "TimeTicks\n";
         std::cout << "Please enter new value: ";
         std::cin >> buffer;
-        unsigned long i;
+        uint32_t i;
         i = atol(buffer);
         TimeTicks timeticks(i);
         if (timeticks.valid())
@@ -154,7 +154,7 @@ bool determine_vb(SmiUINT32 val, Vb& vb)
         std::cout << "Gauge32\n";
         std::cout << "Please enter new value: ";
         std::cin >> buffer;
-        unsigned long i;
+        uint32_t i;
         i = atol(buffer);
         Gauge32 gauge32(i);
         if (gauge32.valid())
@@ -173,7 +173,7 @@ bool determine_vb(SmiUINT32 val, Vb& vb)
         std::cout << "Counter32\n";
         std::cout << "Please enter new value: ";
         std::cin >> buffer;
-        unsigned long i;
+        uint32_t i;
         i = atol(buffer);
         Counter32 counter32(i);
         if (counter32.valid())
@@ -192,7 +192,7 @@ bool determine_vb(SmiUINT32 val, Vb& vb)
         std::cout << "Counter64\n";
         std::cout << "Please enter value (low 32 bit): ";
         std::cin >> buffer;
-        unsigned long i;
+        uint32_t i;
         i = atol(buffer);
         Counter64 counter64;
         counter64.set_low(i);
@@ -218,7 +218,7 @@ bool determine_vb(SmiUINT32 val, Vb& vb)
         std::cout << "Integer\n";
         std::cout << "Please enter new value: ";
         std::cin >> buffer;
-        unsigned long i;
+        uint32_t i;
         i = atol(buffer);
         long l;
         l = (long)i;

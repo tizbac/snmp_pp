@@ -738,7 +738,7 @@ void Snmp::init(int& status, IpAddress* addresses[2],
         else
         {
             // set up the manager socket attributes
-            unsigned long inaddr = inet_addr(addresses[0]->get_printable());
+            uint32_t inaddr = inet_addr(addresses[0]->get_printable());
             struct sockaddr_in mgr_addr;
             memset(&mgr_addr, 0, sizeof(mgr_addr));
             mgr_addr.sin_family      = AF_INET;
@@ -1123,7 +1123,7 @@ int Snmp::send_raw_data(unsigned char* send_buf, size_t send_len,
 }
 
 //-----------------------[ cancel ]--------------------------------------
-int Snmp::cancel(const unsigned long request_id)
+int Snmp::cancel(const uint32_t request_id)
 {
     eventListHolder->snmpEventList()->lock();
     int status = eventListHolder->snmpEventList()->DeleteEntry(request_id);
@@ -1185,7 +1185,7 @@ int Snmp::trap(Pdu&   pdu,    // pdu to send
     OctetStr      my_get_community;
     OctetStr      my_set_community;
     GenAddress    address;
-    unsigned long my_timeout = 0;
+    uint32_t      my_timeout = 0;
     int           my_retry   = 0;
     unsigned char version    = 0;
     int           status     = 0;
@@ -1515,7 +1515,7 @@ int Snmp::snmp_engine(Pdu& pdu,      // pdu to use
 
         unsigned short pdu_action = 0; // type of pdu to build
         unsigned short action     = 0; // type of pdu to build
-        unsigned long  my_timeout = 0; // target specific timeout
+        uint32_t       my_timeout = 0; // target specific timeout
         int            my_retry   = 0; // target specific retry
 
         OctetStr      my_get_community;

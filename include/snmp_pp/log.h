@@ -259,7 +259,7 @@ public:
      *
      * @return Current contents of this log entry.
      */
-    virtual const char* get_value() const { return value; }
+    const char* get_value() const override { return value; }
 
 protected:
     /**
@@ -279,7 +279,7 @@ protected:
      * @return true if the value has been added and false if the log
      *         entry is full.
      */
-    bool add_string(const char* s);
+    bool add_string(const char* s) override;
 
 private:
     char* value;
@@ -460,8 +460,8 @@ public:
      * @param t - The type of the log entry.
      * @return A new instance of LogEntry (or of a derived class).
      */
-    virtual LogEntry* create_log_entry(
-        const char* const name, unsigned char t) const;
+    LogEntry* create_log_entry(
+        const char* const name, unsigned char t) const override;
 
     /**
      * Add a LogEntry to the receiver Log.
@@ -469,7 +469,7 @@ public:
      * @param log - A log entry.
      * @return The receiver log itself.
      */
-    virtual AgentLog& operator+=(const LogEntry* log);
+    AgentLog& operator+=(const LogEntry* log) override;
 
 protected:
     FILE* logfile;

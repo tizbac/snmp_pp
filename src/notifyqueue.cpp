@@ -397,7 +397,7 @@ int CNotifyEventQueue::AddEntry(
             setCloseOnExecFlag(m_notify_fd);
 
             // set up the manager socket attributes
-            unsigned long inaddr =
+            uint32_t inaddr =
                 inet_addr(IpAddress(m_notify_addr).get_printable());
             memset(&mgr_addr, 0, sizeof(mgr_addr));
             mgr_addr.sin_family      = AF_INET;

@@ -111,7 +111,7 @@ public:
     // load up message using ASN.1 data stream
     // status is returned
     int load(unsigned char* data, // data to be loaded
-        unsigned long       len);       // len of data to be loaded
+        uint32_t            len);            // len of data to be loaded
 
     // unload ( unserialize ) into SNMP++ Pdu, community and version
     // status is returned
@@ -162,7 +162,7 @@ public:
 
     // returns len
     // check validity
-    unsigned long len() const { return bufflen; };
+    uint32_t len() const { return bufflen; };
 
 protected:
     unsigned char databuff[MAX_SNMP_PACKET];

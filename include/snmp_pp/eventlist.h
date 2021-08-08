@@ -166,8 +166,8 @@ private:
         ~CEventListElt();
         CEventListElt* GetNext()
         {
-            return m_Next;
-        } // NOLINT(clang-analyzer-cplusplus.NewDelete)
+            return m_Next; // NOLINT(clang-analyzer-cplusplus.NewDelete)
+        }
         CEvents* GetEvents() { return m_events; }
 
     private:

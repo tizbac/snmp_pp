@@ -79,7 +79,7 @@ public:
      *
      * @param val - time in hundredths of seconds.
      */
-    TimeTicks(const unsigned long val = 0) : SnmpUInt32(val)
+    TimeTicks(const uint32_t val = 0) : SnmpUInt32(val)
     {
         smival.syntax = sNMP_SYNTAX_TIMETICKS;
     }
@@ -104,19 +104,22 @@ public:
      *
      * @return Always returns sNMP_SYNTAX_TIMETICKS.
      */
-    SmiUINT32 get_syntax() const { return sNMP_SYNTAX_TIMETICKS; }
+    SmiUINT32 get_syntax() const override { return sNMP_SYNTAX_TIMETICKS; }
 
     /**
      * Get a printable ASCII value.
      */
-    const char* get_printable() const;
+    const char* get_printable() const override;
 
     /**
      * Clone operator.
      *
      * @return Pointer to a newly created copy of the object.
      */
-    SnmpSyntax* clone() const { return (SnmpSyntax*)new TimeTicks(*this); }
+    SnmpSyntax* clone() const override
+    {
+        return (SnmpSyntax*)new TimeTicks(*this);
+    }
 
     /**
      * Map other SnmpSyntax objects to TimeTicks.
@@ -143,7 +146,7 @@ public:
      * @param ul - new value in hundrets of seconds
      * @return self reference
      */
-    TimeTicks& operator=(const unsigned long ul)
+    TimeTicks& operator=(const uint32_t ul)
     {
         SnmpUInt32::operator=(ul);
         return *this;

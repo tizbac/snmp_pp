@@ -211,7 +211,7 @@ public:
         const unsigned char* buffer, const unsigned int buffer_len,
         unsigned char* out_buffer, unsigned int* out_buffer_len,
         unsigned char* privacy_params, unsigned int* privacy_params_len,
-        const unsigned long engine_boots, const unsigned long engine_time) = 0;
+        const uint32_t engine_boots, const uint32_t engine_time) = 0;
 
     /**
      * Decrypt the buffer with the given key.
@@ -238,8 +238,8 @@ public:
         const unsigned char* buffer, const unsigned int buffer_len,
         unsigned char* out_buffer, unsigned int* out_buffer_len,
         const unsigned char* privacy_params,
-        const unsigned int   privacy_params_len,
-        const unsigned long engine_boots, const unsigned long engine_time) = 0;
+        const unsigned int privacy_params_len, const uint32_t engine_boots,
+        const uint32_t engine_time) = 0;
 
     /**
      * Extend a localized key that is too short.
@@ -438,8 +438,8 @@ public:
         const unsigned int key_len, const unsigned char* buffer,
         const unsigned int buffer_len, unsigned char* out_buffer,
         unsigned int* out_buffer_len, unsigned char* privacy_params,
-        unsigned int* privacy_params_len, const unsigned long engine_boots,
-        const unsigned long engine_time);
+        unsigned int* privacy_params_len, const uint32_t engine_boots,
+        const uint32_t engine_time);
 
     /**
      * Decrypt a message.
@@ -448,8 +448,8 @@ public:
         const unsigned int key_len, const unsigned char* buffer,
         const unsigned int buffer_len, unsigned char* out_buffer,
         unsigned int* out_buffer_len, const unsigned char* privacy_params,
-        const unsigned int  privacy_params_len,
-        const unsigned long engine_boots, const unsigned long engine_time);
+        const unsigned int privacy_params_len, const uint32_t engine_boots,
+        const uint32_t engine_time);
 
     /**
      * Get the length of the authentication parameters field of the given
@@ -494,25 +494,25 @@ public:
     int password_to_key(const unsigned char* password,
         const unsigned int password_len, const unsigned char* engine_id,
         const unsigned int engine_id_len, unsigned char* key,
-        unsigned int* key_len);
+        unsigned int* key_len) override;
 
     int hash(const unsigned char* data, const unsigned int data_len,
-        unsigned char* digest) const;
+        unsigned char* digest) const override;
 
     int auth_out_msg(const unsigned char* key, unsigned char* msg,
-        const int msg_len, unsigned char* auth_par_ptr);
+        const int msg_len, unsigned char* auth_par_ptr) override;
 
     int auth_inc_msg(const unsigned char* key, unsigned char* msg,
         const int msg_len, unsigned char* auth_par_ptr,
-        const int auth_par_len);
+        const int auth_par_len) override;
 
-    int get_id() const { return SNMP_AUTHPROTOCOL_HMACMD5; };
+    int get_id() const override { return SNMP_AUTHPROTOCOL_HMACMD5; };
 
-    const char* get_id_string() const { return "HMAC-MD5"; };
+    const char* get_id_string() const override { return "HMAC-MD5"; };
 
-    int get_auth_params_len() const { return 12; };
+    int get_auth_params_len() const override { return 12; };
 
-    int get_hash_len() const { return SNMPv3_AP_OUTPUT_LENGTH_MD5; };
+    int get_hash_len() const override { return SNMPv3_AP_OUTPUT_LENGTH_MD5; };
 };
 
 /**
@@ -534,19 +534,20 @@ public:
         const unsigned char* buffer, const unsigned int buffer_len,
         unsigned char* out_buffer, unsigned int* out_buffer_len,
         unsigned char* privacy_params, unsigned int* privacy_params_len,
-        const unsigned long engine_boots, const unsigned long engine_time);
+        const uint32_t engine_boots, const uint32_t engine_time) override;
 
     int decrypt(const unsigned char* key, const unsigned int key_len,
         const unsigned char* buffer, const unsigned int buffer_len,
         unsigned char* out_buffer, unsigned int* out_buffer_len,
         const unsigned char* privacy_params,
-        const unsigned int   privacy_params_len,
-        const unsigned long engine_boots, const unsigned long engine_time);
+        const unsigned int privacy_params_len, const uint32_t engine_boots,
+        const uint32_t engine_time) override;
 
     int extend_short_key(const unsigned char* password,
         const unsigned int password_len, const unsigned char* engine_id,
         const unsigned int engine_id_len, unsigned char* key,
-        unsigned int* key_len, const unsigned int max_key_len, Auth* auth)
+        unsigned int* key_len, const unsigned int max_key_len,
+        Auth* auth) override
     {
         (void)password;
         (void)password_len;
@@ -559,11 +560,11 @@ public:
         return SNMPv3_USM_ERROR; /* not needed for DES! */
     }
 
-    int         get_id() const { return SNMP_PRIVPROTOCOL_DES; };
-    const char* get_id_string() const { return "DES"; };
-    int         get_priv_params_len() const { return 8; };
-    int         get_min_key_len() const { return 16; };
-    void        fix_key_len(unsigned int& key_len) const
+    int         get_id() const override { return SNMP_PRIVPROTOCOL_DES; };
+    const char* get_id_string() const override { return "DES"; };
+    int         get_priv_params_len() const override { return 8; };
+    int         get_min_key_len() const override { return 16; };
+    void        fix_key_len(unsigned int& key_len) const override
     {
         key_len = (key_len >= 16 ? 16 : 0);
     };
@@ -581,14 +582,14 @@ public:
         const unsigned char* buffer, const unsigned int buffer_len,
         unsigned char* out_buffer, unsigned int* out_buffer_len,
         unsigned char* privacy_params, unsigned int* privacy_params_len,
-        const unsigned long engine_boots, const unsigned long engine_time);
+        const uint32_t engine_boots, const uint32_t engine_time);
 
     int decrypt(const unsigned char* key, const unsigned int key_len,
         const unsigned char* buffer, const unsigned int buffer_len,
         unsigned char* out_buffer, unsigned int* out_buffer_len,
         const unsigned char* privacy_params,
-        const unsigned int   privacy_params_len,
-        const unsigned long engine_boots, const unsigned long engine_time);
+        const unsigned int privacy_params_len, const uint32_t engine_boots,
+        const uint32_t engine_time);
 
     int extend_short_key(const unsigned char* password,
         const unsigned int password_len, const unsigned char* engine_id,
@@ -625,25 +626,26 @@ public:
         const unsigned char* buffer, const unsigned int buffer_len,
         unsigned char* out_buffer, unsigned int* out_buffer_len,
         unsigned char* privacy_params, unsigned int* privacy_params_len,
-        const unsigned long engine_boots, const unsigned long engine_time);
+        const uint32_t engine_boots, const uint32_t engine_time) override;
 
     int decrypt(const unsigned char* key, const unsigned int key_len,
         const unsigned char* buffer, const unsigned int buffer_len,
         unsigned char* out_buffer, unsigned int* out_buffer_len,
         const unsigned char* privacy_params,
-        const unsigned int   privacy_params_len,
-        const unsigned long engine_boots, const unsigned long engine_time);
+        const unsigned int privacy_params_len, const uint32_t engine_boots,
+        const uint32_t engine_time) override;
 
     int extend_short_key(const unsigned char* password,
         const unsigned int password_len, const unsigned char* engine_id,
         const unsigned int engine_id_len, unsigned char* key,
-        unsigned int* key_len, const unsigned int max_key_len, Auth* auth);
+        unsigned int* key_len, const unsigned int max_key_len,
+        Auth* auth) override;
 
-    int         get_id() const { return aes_type; };
-    const char* get_id_string() const;
-    int         get_priv_params_len() const { return 8; };
-    int         get_min_key_len() const { return key_bytes; };
-    void        fix_key_len(unsigned int& key_len) const
+    int         get_id() const override { return aes_type; };
+    const char* get_id_string() const override;
+    int         get_priv_params_len() const override { return 8; };
+    int         get_min_key_len() const override { return key_bytes; };
+    void        fix_key_len(unsigned int& key_len) const override
     {
         key_len = (key_len >= (unsigned)key_bytes ? key_bytes : 0);
     };
@@ -673,10 +675,11 @@ public:
     int extend_short_key(const unsigned char* password,
         const unsigned int password_len, const unsigned char* engine_id,
         const unsigned int engine_id_len, unsigned char* key,
-        unsigned int* key_len, const unsigned int max_key_len, Auth* auth);
+        unsigned int* key_len, const unsigned int max_key_len,
+        Auth* auth) override;
 
-    const char* get_id_string() const;
-    int         get_id() const { return own_aes_type; }
+    const char* get_id_string() const override;
+    int         get_id() const override { return own_aes_type; }
 
     static int map_aes_type(const int t);
 
@@ -710,14 +713,14 @@ public:
         const unsigned char* buffer, const unsigned int buffer_len,
         unsigned char* out_buffer, unsigned int* out_buffer_len,
         unsigned char* privacy_params, unsigned int* privacy_params_len,
-        const unsigned long engine_boots, const unsigned long engine_time);
+        const uint32_t engine_boots, const uint32_t engine_time);
 
     int decrypt(const unsigned char* key, const unsigned int key_len,
         const unsigned char* buffer, const unsigned int buffer_len,
         unsigned char* out_buffer, unsigned int* out_buffer_len,
         const unsigned char* privacy_params,
-        const unsigned int   privacy_params_len,
-        const unsigned long engine_boots, const unsigned long engine_time);
+        const unsigned int privacy_params_len, const uint32_t engine_boots,
+        const uint32_t engine_time);
 
     int extend_short_key(const unsigned char* password,
         const unsigned int password_len, const unsigned char* engine_id,
@@ -753,17 +756,17 @@ public:
     int password_to_key(const unsigned char* password,
         const unsigned int password_len, const unsigned char* engine_id,
         const unsigned int engine_id_len, unsigned char* key,
-        unsigned int* key_len);
+        unsigned int* key_len) override;
 
     int hash(const unsigned char* data, const unsigned int data_len,
-        unsigned char* digest) const;
+        unsigned char* digest) const override;
 
     int auth_out_msg(const unsigned char* key, unsigned char* msg,
-        const int msg_len, unsigned char* auth_par_ptr);
+        const int msg_len, unsigned char* auth_par_ptr) override;
 
     int auth_inc_msg(const unsigned char* key, unsigned char* msg,
         const int msg_len, unsigned char* auth_par_ptr,
-        const int auth_par_len);
+        const int auth_par_len) override;
 
 protected:
     class Hasher {
@@ -792,18 +795,18 @@ protected:
 class DLLOPT AuthSHA : public AuthSHABase {
 private:
 public:
-    int get_id() const { return SNMP_AUTHPROTOCOL_HMACSHA; };
+    int get_id() const override { return SNMP_AUTHPROTOCOL_HMACSHA; };
 
-    const char* get_id_string() const { return "HMAC-SHA"; };
+    const char* get_id_string() const override { return "HMAC-SHA"; };
 
-    int get_auth_params_len() const { return 12; };
+    int get_auth_params_len() const override { return 12; };
 
-    int get_hash_len() const { return SNMPv3_AP_OUTPUT_LENGTH_SHA; };
+    int get_hash_len() const override { return SNMPv3_AP_OUTPUT_LENGTH_SHA; };
 
 protected:
     class HasherSHA1;
 
-    Hasher* get_hasher() const;
+    Hasher* get_hasher() const override;
 };
 
 #    if defined(_USE_OPENSSL)
@@ -816,18 +819,21 @@ protected:
 class DLLOPT AuthHMAC128SHA224 : public AuthSHABase {
 private:
 public:
-    int get_id() const { return SNMP_AUTHPROTOCOL_HMAC128SHA224; };
+    int get_id() const override { return SNMP_AUTHPROTOCOL_HMAC128SHA224; };
 
-    const char* get_id_string() const { return "HMAC-128-SHA-224"; };
+    const char* get_id_string() const override { return "HMAC-128-SHA-224"; };
 
-    int get_auth_params_len() const { return 16; };
+    int get_auth_params_len() const override { return 16; };
 
-    int get_hash_len() const { return SNMPv3_AP_OUTPUT_LENGTH_SHA224; };
+    int get_hash_len() const override
+    {
+        return SNMPv3_AP_OUTPUT_LENGTH_SHA224;
+    };
 
 protected:
     class Hasher224;
 
-    Hasher* get_hasher() const;
+    Hasher* get_hasher() const override;
 };
 
 /**
@@ -837,18 +843,21 @@ protected:
  */
 class DLLOPT AuthHMAC192SHA256 : public AuthSHABase {
 public:
-    int get_id() const { return SNMP_AUTHPROTOCOL_HMAC192SHA256; };
+    int get_id() const override { return SNMP_AUTHPROTOCOL_HMAC192SHA256; };
 
-    const char* get_id_string() const { return "HMAC-192-SHA-256"; };
+    const char* get_id_string() const override { return "HMAC-192-SHA-256"; };
 
-    int get_auth_params_len() const { return 24; };
+    int get_auth_params_len() const override { return 24; };
 
-    int get_hash_len() const { return SNMPv3_AP_OUTPUT_LENGTH_SHA256; };
+    int get_hash_len() const override
+    {
+        return SNMPv3_AP_OUTPUT_LENGTH_SHA256;
+    };
 
 protected:
     class Hasher256;
 
-    Hasher* get_hasher() const;
+    Hasher* get_hasher() const override;
 };
 
 /**
@@ -858,18 +867,21 @@ protected:
  */
 class DLLOPT AuthHMAC256SHA384 : public AuthSHABase {
 public:
-    int get_id() const { return SNMP_AUTHPROTOCOL_HMAC256SHA384; };
+    int get_id() const override { return SNMP_AUTHPROTOCOL_HMAC256SHA384; };
 
-    const char* get_id_string() const { return "HMAC-256-SHA-384"; };
+    const char* get_id_string() const override { return "HMAC-256-SHA-384"; };
 
-    int get_auth_params_len() const { return 32; };
+    int get_auth_params_len() const override { return 32; };
 
-    int get_hash_len() const { return SNMPv3_AP_OUTPUT_LENGTH_SHA384; };
+    int get_hash_len() const override
+    {
+        return SNMPv3_AP_OUTPUT_LENGTH_SHA384;
+    };
 
 protected:
     class Hasher384;
 
-    Hasher* get_hasher() const;
+    Hasher* get_hasher() const override;
 };
 
 /**
@@ -879,17 +891,20 @@ protected:
  */
 class DLLOPT AuthHMAC384SHA512 : public AuthSHABase {
 public:
-    int get_id() const { return SNMP_AUTHPROTOCOL_HMAC384SHA512; };
+    int get_id() const override { return SNMP_AUTHPROTOCOL_HMAC384SHA512; };
 
-    const char* get_id_string() const { return "HMAC-384-SHA-512"; };
+    const char* get_id_string() const override { return "HMAC-384-SHA-512"; };
 
-    int get_auth_params_len() const { return 48; };
+    int get_auth_params_len() const override { return 48; };
 
-    int get_hash_len() const { return SNMPv3_AP_OUTPUT_LENGTH_SHA512; };
+    int get_hash_len() const override
+    {
+        return SNMPv3_AP_OUTPUT_LENGTH_SHA512;
+    };
 
 protected:
     class Hasher512;
-    Hasher* get_hasher() const;
+    Hasher* get_hasher() const override;
 };
 
 #    endif // defined(_USE_OPENSSL)

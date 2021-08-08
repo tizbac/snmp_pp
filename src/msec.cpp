@@ -175,8 +175,8 @@ msec& msec::operator=(const timeval& t1)
 #if defined(CPU) && CPU == PPC603
 
 struct SCommTimer {
-    unsigned long NumMS;
-    unsigned long FractMS;
+    uint32_t NumMS;
+    uint32_t FractMS;
 };
 
 extern "C" {

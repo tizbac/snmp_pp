@@ -93,7 +93,7 @@ public:
      * @param str - string that may contain null bytes
      * @param len - length of the string
      */
-    OctetStr(const unsigned char* str, unsigned long len);
+    OctetStr(const unsigned char* str, uint32_t len);
 
     /**
      * Construct a OctetStr from another OctetStr.
@@ -222,29 +222,32 @@ public:
      *
      * @return This method always returns sNMP_SYNTAX_OCTETS.
      */
-    SmiUINT32 get_syntax() const { return sNMP_SYNTAX_OCTETS; };
+    SmiUINT32 get_syntax() const override { return sNMP_SYNTAX_OCTETS; };
 
     /**
      * Return the space needed for serialization.
      */
-    int get_asn1_length() const;
+    int get_asn1_length() const override;
 
     /**
      * Return validity of the object.
      */
-    bool valid() const { return validity; };
+    bool valid() const override { return validity; };
 
     /**
      * Clone this object.
      *
      * @return Pointer to the newly created object (allocated through new).
      */
-    SnmpSyntax* clone() const { return (SnmpSyntax*)new OctetStr(*this); };
+    SnmpSyntax* clone() const override
+    {
+        return (SnmpSyntax*)new OctetStr(*this);
+    };
 
     /**
      * Map other SnmpSyntax objects to OctetStr.
      */
-    SnmpSyntax& operator=(const SnmpSyntax& val);
+    SnmpSyntax& operator=(const SnmpSyntax& val) override;
 
     /**
      * Get a printable ASCII value of the string.
@@ -255,7 +258,7 @@ public:
      *
      * @return Printable, null terminated string
      */
-    const char* get_printable() const;
+    const char* get_printable() const override;
 
     /**
      * Get an ASCII formatted hex dump of the contents.
@@ -304,12 +307,12 @@ public:
      * @param str - The new string value
      * @param len - Length of the given string
      */
-    void set_data(const unsigned char* str, unsigned long len);
+    void set_data(const unsigned char* str, uint32_t len);
 
     /**
      * Get the length of the string.
      */
-    unsigned long len() const { return smival.value.string.len; };
+    uint32_t len() const { return smival.value.string.len; };
 
     /**
      * Get a pointer to internal data.
@@ -317,7 +320,7 @@ public:
     unsigned char* data() const { return smival.value.string.ptr; };
 
     // compare n elements of an octet
-    int nCompare(const unsigned long n, const OctetStr& o) const;
+    int nCompare(const uint32_t n, const OctetStr& o) const;
 
     /**
      * Build an OctetStr from a hex string.
@@ -343,7 +346,7 @@ public:
      * Null out the contents of the string. The string will be empty
      * after calling this method
      */
-    void clear();
+    void clear() override;
 
     /**
      * Append or shorten the internal data buffer.
@@ -354,7 +357,7 @@ public:
      * @param new_len - The new length for the string
      * @return true on success
      */
-    bool set_len(const unsigned long new_len);
+    bool set_len(const uint32_t new_len);
 
 protected:
     enum OutputFunction {
@@ -410,7 +413,7 @@ public:
      * @param str - string that may contain null bytes
      * @param len - length of the string
      */
-    OpaqueStr(const unsigned char* str, unsigned long length)
+    OpaqueStr(const unsigned char* str, uint32_t length)
         : OctetStr(str, length)
     {
         smival.syntax = sNMP_SYNTAX_OPAQUE;
@@ -443,19 +446,19 @@ public:
      *
      * @return Pointer to the newly created object (allocated through new).
      */
-    virtual SnmpSyntax* clone() const { return new OpaqueStr(*this); }
+    SnmpSyntax* clone() const override { return new OpaqueStr(*this); }
 
     /**
      * Return the syntax.
      *
      * @return This method always returns sNMP_SYNTAX_OPAQUE.
      */
-    virtual SmiUINT32 get_syntax() const { return sNMP_SYNTAX_OPAQUE; };
+    SmiUINT32 get_syntax() const override { return sNMP_SYNTAX_OPAQUE; };
 
     /**
      * Map other SnmpSyntax objects to OpaqueStr.
      */
-    SnmpSyntax& operator=(const SnmpSyntax& val)
+    SnmpSyntax& operator=(const SnmpSyntax& val) override
     {
         return OctetStr::operator=(val);
     }

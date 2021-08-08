@@ -693,7 +693,7 @@ public:
      *
      * @return - usmStatsUnsupportedSecLevels
      */
-    unsigned long get_stats_unsupported_sec_levels() const
+    uint32_t get_stats_unsupported_sec_levels() const
     {
         return usmStatsUnsupportedSecLevels;
     };
@@ -703,7 +703,7 @@ public:
      *
      * @return - usmStatsNotInTimeWindows
      */
-    unsigned long get_stats_not_in_time_windows() const
+    uint32_t get_stats_not_in_time_windows() const
     {
         return usmStatsNotInTimeWindows;
     };
@@ -713,7 +713,7 @@ public:
      *
      * @return - usmStatsUnknownUserNames
      */
-    unsigned long get_stats_unknown_user_names() const
+    uint32_t get_stats_unknown_user_names() const
     {
         return usmStatsUnknownUserNames;
     };
@@ -723,7 +723,7 @@ public:
      *
      * @return - usmStatsUnknownEngineIDs
      */
-    unsigned long get_stats_unknown_engine_ids() const
+    uint32_t get_stats_unknown_engine_ids() const
     {
         return usmStatsUnknownEngineIDs;
     };
@@ -733,17 +733,14 @@ public:
      *
      * @return - usmStatsWrongDigests
      */
-    unsigned long get_stats_wrong_digests() const
-    {
-        return usmStatsWrongDigests;
-    };
+    uint32_t get_stats_wrong_digests() const { return usmStatsWrongDigests; };
 
     /**
      * Get the number of received messages with decryption errors
      *
      * @return - usmStatsDecryptionErrors
      */
-    unsigned long get_stats_decryption_errors() const
+    uint32_t get_stats_decryption_errors() const
     {
         return usmStatsDecryptionErrors;
     };

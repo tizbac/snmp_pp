@@ -654,7 +654,7 @@ int AuthPriv::get_keychange_value(const int auth_prot, const OctetStr& old_key,
     // algorithm according to USM-document textual convention KeyChange
 
     keychange_value.clear();
-    int key_len = old_key.len();
+    unsigned int key_len = old_key.len();
 
     Auth* a = get_auth(auth_prot);
 
@@ -663,7 +663,7 @@ int AuthPriv::get_keychange_value(const int auth_prot, const OctetStr& old_key,
     // compute random value
     OctetStr random = "";
 
-    for (int i = 0; i < key_len; i++)
+    for (unsigned int i = 0; i < key_len; i++)
     {
 #    ifdef _TEST
         // do not use random values for testing
@@ -810,8 +810,8 @@ int AuthPriv::encrypt_msg(const int priv_prot, const unsigned char* key,
     const unsigned int key_len, const unsigned char* buffer,
     const unsigned int buffer_len, unsigned char* out_buffer,
     unsigned int* out_buffer_len, unsigned char* privacy_params,
-    unsigned int* privacy_params_len, const unsigned long engine_boots,
-    const unsigned long engine_time)
+    unsigned int* privacy_params_len, const uint32_t engine_boots,
+    const uint32_t engine_time)
 {
     /* check for priv protocol */
     Priv* p = get_priv(priv_prot);
@@ -827,8 +827,8 @@ int AuthPriv::decrypt_msg(const int priv_prot, const unsigned char* key,
     const unsigned int key_len, const unsigned char* buffer,
     const unsigned int buffer_len, unsigned char* out_buffer,
     unsigned int* out_buffer_len, const unsigned char* privacy_params,
-    const unsigned int privacy_params_len, const unsigned long engine_boots,
-    const unsigned long engine_time)
+    const unsigned int privacy_params_len, const uint32_t engine_boots,
+    const uint32_t engine_time)
 {
     /* check for priv protocol */
     Priv* p = get_priv(priv_prot);
@@ -1051,8 +1051,8 @@ int AuthMD5::password_to_key(const unsigned char* password,
 
     MD5HashStateType md5_hash_state {};
     unsigned char    password_buf[65];
-    unsigned long    password_index = 0;
-    unsigned long    count          = 0;
+    uint32_t         password_index = 0;
+    uint32_t         count          = 0;
 
     MD5_INIT(&md5_hash_state); /* initialize MD5 */
 
@@ -1116,7 +1116,7 @@ int AuthMD5::auth_out_msg(const unsigned char* key, unsigned char* msg,
     const int msg_len, unsigned char* auth_par_ptr)
 {
     MD5HashStateType md5_hash_state {};
-    int              key_len = 16; /* We use only 16 Byte Key! */
+    unsigned int     key_len = 16; /* We use only 16 Byte Key! */
     unsigned char    digest[16];
     unsigned char    k_ipad[65]; /* inner padding - key XORd with ipad */
     unsigned char    k_opad[65]; /* outer padding - key XORd with opad */
@@ -1226,7 +1226,7 @@ int PrivDES::encrypt(const unsigned char* key, const unsigned int /*key_len*/,
     const unsigned char* buffer, const unsigned int buffer_len,
     unsigned char* out_buffer, unsigned int* out_buffer_len,
     unsigned char* privacy_params, unsigned int* privacy_params_len,
-    const unsigned long engine_boots, const unsigned long /*engine_time*/)
+    const uint32_t engine_boots, const uint32_t /*engine_time*/)
 {
     unsigned char initVect[8];
     pp_uint64     my_salt = (*salt)++;
@@ -1308,7 +1308,7 @@ int PrivDES::decrypt(const unsigned char* key, const unsigned int /*key_len*/,
     const unsigned char* buffer, const unsigned int buffer_len,
     unsigned char* outBuffer, unsigned int* outBuffer_len,
     const unsigned char* privacy_params, const unsigned int privacy_params_len,
-    const unsigned long /*engine_boots*/, const unsigned long /*engine_time*/)
+    const uint32_t /*engine_boots*/, const uint32_t /*engine_time*/)
 {
     unsigned char initVect[8];
 
@@ -1358,7 +1358,7 @@ int PrivIDEA::encrypt(const unsigned char* key, const unsigned int /*key_len*/,
     const unsigned char* buffer, const unsigned int buffer_len,
     unsigned char* out_buffer, unsigned int* out_buffer_len,
     unsigned char* privacy_params, unsigned int* privacy_params_len,
-    const unsigned long engine_boots, const unsigned long /*engine_time*/)
+    const uint32_t engine_boots, const uint32_t /*engine_time*/)
 {
     IDEAContext CFB_Context;
     pp_uint64   my_salt = (*salt)++;
@@ -1419,7 +1419,7 @@ int PrivIDEA::decrypt(const unsigned char* key, const unsigned int /*key_len*/,
     const unsigned char* buffer, const unsigned int buffer_len,
     unsigned char* out_buffer, unsigned int* out_buffer_len,
     const unsigned char* privacy_params, const unsigned int privacy_params_len,
-    const unsigned long /*engine_boots*/, const unsigned long /*engine_time*/)
+    const uint32_t /*engine_boots*/, const uint32_t /*engine_time*/)
 {
     unsigned char iv[8];
     IDEAContext   CFB_Context;
@@ -1509,7 +1509,7 @@ int PrivAES::encrypt(const unsigned char* key, const unsigned int key_len,
     const unsigned char* buffer, const unsigned int buffer_len,
     unsigned char* out_buffer, unsigned int* out_buffer_len,
     unsigned char* privacy_params, unsigned int* privacy_params_len,
-    const unsigned long engine_boots, const unsigned long engine_time)
+    const uint32_t engine_boots, const uint32_t engine_time)
 {
     if (*out_buffer_len < buffer_len)
     {
@@ -1629,7 +1629,7 @@ int PrivAES::decrypt(const unsigned char* key, const unsigned int key_len,
     const unsigned char* buffer, const unsigned int buffer_len,
     unsigned char* out_buffer, unsigned int* out_buffer_len,
     const unsigned char* privacy_params, const unsigned int privacy_params_len,
-    const unsigned long engine_boots, const unsigned long engine_time)
+    const uint32_t engine_boots, const uint32_t engine_time)
 {
     if (*out_buffer_len < buffer_len)
     {
@@ -1833,7 +1833,7 @@ int Priv3DES_EDE::encrypt(const unsigned char* key, const unsigned int key_len,
     const unsigned char* buffer, const unsigned int buffer_len,
     unsigned char* out_buffer, unsigned int* out_buffer_len,
     unsigned char* privacy_params, unsigned int* privacy_params_len,
-    const unsigned long engine_boots, const unsigned long /* engine_time */)
+    const uint32_t engine_boots, const uint32_t /* engine_time */)
 {
     unsigned char initVect[8];
     pp_uint64     my_salt = (*salt)++;
@@ -1965,8 +1965,7 @@ int Priv3DES_EDE::decrypt(const unsigned char* key, const unsigned int key_len,
     const unsigned char* buffer, const unsigned int buffer_len,
     unsigned char* out_buffer, unsigned int* out_buffer_len,
     const unsigned char* privacy_params, const unsigned int privacy_params_len,
-    const unsigned long /* engine_boots */,
-    const unsigned long /* engine_time */)
+    const uint32_t /* engine_boots */, const uint32_t /* engine_time */)
 {
     unsigned char initVect[8];
 
@@ -2129,8 +2128,8 @@ int AuthSHABase::password_to_key(const unsigned char* password,
 #    endif
 
     unsigned char password_buf[72];
-    unsigned long password_index = 0;
-    unsigned long count          = 0;
+    uint32_t      password_index = 0;
+    uint32_t      count          = 0;
 
     std::unique_ptr<Hasher> h(get_hasher());
     h->init(); /* initialize SHA */

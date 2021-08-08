@@ -91,18 +91,18 @@ namespace Snmp_pp
 /*-----------------------------------------------------------*/
 class DLLOPT CSNMPMessage {
 public:
-    CSNMPMessage(unsigned long id, Snmp* snmp, SnmpSocket socket,
+    CSNMPMessage(uint32_t id, Snmp* snmp, SnmpSocket socket,
         const SnmpTarget& target, Pdu& pdu, unsigned char* rawPdu,
         size_t rawPduLen, const Address& address, snmp_callback callBack,
         void* callData);
     virtual ~CSNMPMessage();
-    unsigned long GetId() const { return m_uniqueId; };
-    void          ResetId(const unsigned long newId) { m_uniqueId = newId; };
-    void          SetSendTime();
-    void          GetSendTime(msec& sendTime) const { sendTime = m_sendTime; };
-    SnmpSocket    GetSocket() const { return m_socket; };
-    int           SetPdu(
-                  const int reason, const Pdu& pdu, const UdpAddress& fromaddress);
+    uint32_t   GetId() const { return m_uniqueId; };
+    void       ResetId(const uint32_t newId) { m_uniqueId = newId; };
+    void       SetSendTime();
+    void       GetSendTime(msec& sendTime) const { sendTime = m_sendTime; };
+    SnmpSocket GetSocket() const { return m_socket; };
+    int        SetPdu(
+               const int reason, const Pdu& pdu, const UdpAddress& fromaddress);
     int GetPdu(int& reason, Pdu& pdu)
     {
         pdu    = m_pdu;
@@ -117,7 +117,7 @@ public:
     void        SetLocked(const bool l) { m_locked = l; };
 
 protected:
-    unsigned long  m_uniqueId;
+    uint32_t       m_uniqueId;
     msec           m_sendTime;
     Snmp*          m_snmp;
     SnmpSocket     m_socket;
@@ -141,36 +141,36 @@ class DLLOPT CSNMPMessageQueue : public CEvents {
 public:
     CSNMPMessageQueue(EventListHolder* holder, Snmp* session);
     virtual ~CSNMPMessageQueue();
-    CSNMPMessage* AddEntry(unsigned long id, Snmp* snmp, SnmpSocket socket,
+    CSNMPMessage* AddEntry(uint32_t id, Snmp* snmp, SnmpSocket socket,
         const SnmpTarget& target, Pdu& pdu, unsigned char* rawPdu,
         size_t rawPduLen, const Address& address, snmp_callback callBack,
         void* callData);
-    CSNMPMessage* GetEntry(const unsigned long uniqueId);
-    int           DeleteEntry(const unsigned long uniqueId);
+    CSNMPMessage* GetEntry(const uint32_t uniqueId);
+    int           DeleteEntry(const uint32_t uniqueId);
     void          DeleteSocketEntry(const SnmpSocket socket);
     // find the next msg that will timeout
     CSNMPMessage* GetNextTimeoutEntry();
     // find the next timeout
-    int GetNextTimeout(msec& sendTime);
+    int GetNextTimeout(msec& sendTime) override;
 #ifdef HAVE_POLL_SYSCALL
     int  GetFdCount();
     bool GetFdArray(struct pollfd* readfds, int& remaining);
     int  HandleEvents(const struct pollfd* readfds, const int fds);
 #else
     // set up parameters for select
-    void GetFdSets(
-        int& maxfds, fd_set& readfds, fd_set& writefds, fd_set& exceptfds);
-    int HandleEvents(const int maxfds, const fd_set& readfds,
-        const fd_set& writefds, const fd_set& exceptfds);
+    void GetFdSets(int& maxfds, fd_set& readfds, fd_set& writefds,
+        fd_set& exceptfds) override;
+    int  HandleEvents(const int maxfds, const fd_set& readfds,
+         const fd_set& writefds, const fd_set& exceptfds) override;
 #endif
 
     // return number of outstanding messages
-    int GetCount() { return m_msgCount; };
+    int GetCount() override { return m_msgCount; };
 
-    int DoRetries(const msec& sendtime);
+    int DoRetries(const msec& sendtime) override;
 
-    int Done();
-    int Done(unsigned long);
+    int Done() override;
+    int Done(uint32_t);
 
 protected:
     /*---------------------------------------------------------*/
@@ -186,10 +186,10 @@ protected:
         ~CSNMPMessageQueueElt();
         CSNMPMessageQueueElt* GetNext()
         {
-            return m_Next;
-        } // NOLINT(clang-analyzer-cplusplus.NewDelete)
+            return m_Next; // NOLINT(clang-analyzer-cplusplus.NewDelete)
+        }
         CSNMPMessage* GetMessage() { return m_message; }
-        CSNMPMessage* TestId(const unsigned long uniqueId);
+        CSNMPMessage* TestId(const uint32_t uniqueId);
 
     private:
         CSNMPMessage*               m_message;

@@ -97,9 +97,9 @@ public:
         if (c.count == 0) return;
 
         // load up the new collection
-        cBlock* current = &data;
-        cBlock* nextBlock;
-        int     cn = 0;
+        cBlock* current   = &data;
+        cBlock* nextBlock = nullptr;
+        int     cn        = 0;
 
         while (count < c.count)
         {
@@ -167,10 +167,10 @@ public:
         if (c.count == 0) return *this;
 
         // load up the new collection
-        cBlock* current = &data;
-        cBlock* nextBlock;
-        int     cn = 0;
-        count      = 0;
+        cBlock* current   = &data;
+        cBlock* nextBlock = nullptr;
+        int     cn        = 0;
+        count             = 0;
         while (count < c.count)
         {
             if (cn >= MAXT)
@@ -304,7 +304,7 @@ public:
     int remove(const T& i)
     {
         // first see if we have it
-        int pos;
+        int pos = 0;
         if (find(i, pos))
         {
             SnmpCollection<T> newCollection;

@@ -64,7 +64,7 @@ public:
     CUTEventQueue*& utEventList() { return m_utEventQueue; };
 #endif
 
-    unsigned long SNMPGetNextTimeout();
+    uint32_t SNMPGetNextTimeout();
 
 #ifdef HAVE_POLL_SYSCALL
     int  GetFdCount();
@@ -105,13 +105,13 @@ public:
     //---------[ Block For Response ]-----------------------------------
     // Wait for the completion of an outstanding SNMP event (msg).
     // Handle any other events as they occur.
-    int SNMPBlockForResponse(const unsigned long req_id, Pdu& pdu);
+    int SNMPBlockForResponse(const uint32_t req_id, Pdu& pdu);
 
     //--------[ usertimeout
     //]---------------------------------------------------
 #ifdef _USER_DEFINED_TIMEOUTS
-    UtId SNMPAddTimeOut(const unsigned long interval,
-        const ut_callback callBack, const void* callData);
+    UtId SNMPAddTimeOut(const uint32_t interval, const ut_callback callBack,
+        const void* callData);
     void SNMPRemoveTimeOut(const UtId utId)
     {
         m_utEventQueue->DeleteEntry(utId);

@@ -127,24 +127,30 @@ public:
     void          DeleteEntry(Snmp* snmp);
 
     // find the next timeout
-    int GetNextTimeout(msec& /*timeout*/) { return 1; }; // we have no timeouts
+    int GetNextTimeout(msec& /*timeout*/) override
+    {
+        return 1;
+    };  // we have no timeouts
         // set up parameters for select
 #ifdef HAVE_POLL_SYSCALL
     int  GetFdCount();
     bool GetFdArray(struct pollfd* readfds, int& remaining);
     int  HandleEvents(const struct pollfd* readfds, const int fds);
 #else
-    void GetFdSets(
-        int& maxfds, fd_set& readfds, fd_set& writefds, fd_set& exceptfds);
-    int HandleEvents(const int maxfds, const fd_set& readfds,
-        const fd_set& writefds, const fd_set& exceptfds);
+    void GetFdSets(int& maxfds, fd_set& readfds, fd_set& writefds,
+        fd_set& exceptfds) override;
+    int  HandleEvents(const int maxfds, const fd_set& readfds,
+         const fd_set& writefds, const fd_set& exceptfds) override;
 #endif
     // return number of outstanding messages
-    int GetCount() { return m_msgCount; };
+    int GetCount() override { return m_msgCount; };
 
-    int DoRetries(const msec& /*sendtime*/) { return 0; }; // nothing to retry
+    int DoRetries(const msec& /*sendtime*/) override
+    {
+        return 0;
+    }; // nothing to retry
 
-    int        Done() { return 0; }; // we are never done
+    int        Done() override { return 0; }; // we are never done
     void       set_listen_port(int port) { m_listen_port = port; };
     int        get_listen_port() { return m_listen_port; };
     SnmpSocket get_notify_fd() const;
@@ -163,8 +169,8 @@ protected:
         ~CNotifyEventQueueElt();
         CNotifyEventQueueElt* GetNext()
         {
-            return m_Next;
-        }; // NOLINT(clang-analyzer-cplusplus.NewDelete)
+            return m_Next; // NOLINT(clang-analyzer-cplusplus.NewDelete)
+        };
         CNotifyEvent* GetNotifyEvent() { return m_notifyevent; };
         CNotifyEvent* TestId(Snmp* snmp);
 

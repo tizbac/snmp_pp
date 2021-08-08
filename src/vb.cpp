@@ -138,9 +138,9 @@ int Vb::get_value(uint32_t& i) const
             || (iv_vb_value->get_syntax() == sNMP_SYNTAX_GAUGE32)
             || (iv_vb_value->get_syntax() == sNMP_SYNTAX_TIMETICKS)))
     {
-        unsigned long lval = 0;
-        lval               = *((SnmpUInt32*)iv_vb_value);
-        i                  = (unsigned int)lval;
+        uint32_t lval = 0;
+        lval          = *((SnmpUInt32*)iv_vb_value);
+        i             = (unsigned int)lval;
         return SNMP_CLASS_SUCCESS;
     }
     return SNMP_CLASS_INVALID;
@@ -163,10 +163,10 @@ int Vb::get_value(long &i) const
 }
 
 
-//-----------------[  Vb::get_value(unsigned long int &i) ]--------------
-// get the unsigned long int
+//-----------------[  Vb::get_value(uint32_t int &i) ]--------------
+// get the uint32_t int
 // returns 0 on success and a value
-int Vb::get_value(unsigned long &i) const
+int Vb::get_value(uint32_t &i) const
 {
   if (iv_vb_value &&
       iv_vb_value->valid() &&
@@ -196,14 +196,14 @@ int Vb::get_value(pp_uint64& i) const
     return SNMP_CLASS_INVALID;
 }
 
-//--------------[ Vb::get_value(unsigned char * ptr, unsigned long &len)
+//--------------[ Vb::get_value(unsigned char * ptr, uint32_t &len)
 // get a unsigned char string value
 // destructive, copies into given ptr
 // also returned is the length
 //
 // Note!! The user must provide a target string
 // which is big enough to hold the string
-int Vb::get_value(unsigned char* ptr, unsigned long& len) const
+int Vb::get_value(unsigned char* ptr, uint32_t& len) const
 {
     if (iv_vb_value && iv_vb_value->valid()
         && (iv_vb_value->get_syntax() == sNMP_SYNTAX_OCTETS))
@@ -223,8 +223,8 @@ int Vb::get_value(unsigned char* ptr, unsigned long& len) const
 //---------------[ Vb::get_value ]-------------------------------------
 // get an unsigned char array
 // caller specifies max len of target space
-int Vb::get_value(unsigned char* ptr, unsigned long& len,
-    const unsigned long maxlen, const bool add_null_byte) const
+int Vb::get_value(unsigned char* ptr, uint32_t& len, const uint32_t maxlen,
+    const bool add_null_byte) const
 {
     if (iv_vb_value && iv_vb_value->valid()
         && (iv_vb_value->get_syntax() == sNMP_SYNTAX_OCTETS) && (maxlen > 0))
@@ -270,8 +270,8 @@ int Vb::get_value(char* ptr) const
     if (iv_vb_value && iv_vb_value->valid()
         && (iv_vb_value->get_syntax() == sNMP_SYNTAX_OCTETS))
     {
-        OctetStr*     p_os = (OctetStr*)iv_vb_value;
-        unsigned long len  = p_os->len();
+        OctetStr* p_os = (OctetStr*)iv_vb_value;
+        uint32_t  len  = p_os->len();
         memcpy(ptr, p_os->data(), len);
         ptr[len] = 0;
         return SNMP_CLASS_SUCCESS;

@@ -83,7 +83,7 @@ public:
      *
      * @param i - initial value
      */
-    SnmpUInt32(const unsigned long i = 0)
+    SnmpUInt32(const uint32_t i = 0)
         : SnmpSyntax(), valid_flag(true), m_changed(true)
     {
         smival.value.uNumber = i;
@@ -112,7 +112,7 @@ public:
      *
      * @return This method always returns sNMP_SYNTAX_UINT32.
      */
-    virtual SmiUINT32 get_syntax() const { return sNMP_SYNTAX_UINT32; }
+    SmiUINT32 get_syntax() const override { return sNMP_SYNTAX_UINT32; }
 
     /**
      * Overloaded assignment for unsigned longs.
@@ -120,7 +120,7 @@ public:
      * @param i - new value
      * @return self reference
      */
-    SnmpUInt32& operator=(const unsigned long i)
+    SnmpUInt32& operator=(const uint32_t i)
     {
         smival.value.uNumber = i;
         valid_flag           = true;
@@ -147,26 +147,26 @@ public:
     /**
      * Map other SnmpSyntax objects to SnmpUInt32.
      */
-    SnmpSyntax& operator=(const SnmpSyntax& val);
+    SnmpSyntax& operator=(const SnmpSyntax& val) override;
 
     /**
-     * Behave like an unsigned long.
+     * Behave like an uint32_t.
      *
-     * @return value as unsigned long
+     * @return value as uint32_t
      */
-    operator unsigned long() const { return smival.value.uNumber; };
+    operator uint32_t() const { return smival.value.uNumber; };
 
     /**
      * Get a printable ASCII value.
      */
-    virtual const char* get_printable() const;
+    const char* get_printable() const override;
 
     /**
      * Clone operator.
      *
      * @return Pointer to a newly created copy of the object.
      */
-    virtual SnmpSyntax* clone() const
+    SnmpSyntax* clone() const override
     {
         return (SnmpSyntax*)new SnmpUInt32(*this);
     };
@@ -176,17 +176,17 @@ public:
      * An SnmpUInt32 will only be invalid after a failed asignment
      * of another SnmpSyntax object.
      */
-    bool valid() const { return valid_flag; }
+    bool valid() const override { return valid_flag; }
 
     /**
      * Return the space needed for serialization.
      */
-    int get_asn1_length() const;
+    int get_asn1_length() const override;
 
     /**
      * Reset the object.
      */
-    void clear()
+    void clear() override
     {
         smival.value.uNumber = 0;
         valid_flag           = true;
@@ -238,7 +238,7 @@ public:
      *
      * @return This method always returns sNMP_SYNTAX_INT32.
      */
-    virtual SmiUINT32 get_syntax() const { return sNMP_SYNTAX_INT32; }
+    SmiUINT32 get_syntax() const override { return sNMP_SYNTAX_INT32; }
 
     /**
      * Overloaded assignment for longs.
@@ -273,7 +273,7 @@ public:
     /**
      * Map other SnmpSyntax objects to SnmpInt32.
      */
-    SnmpSyntax& operator=(const SnmpSyntax& val);
+    SnmpSyntax& operator=(const SnmpSyntax& val) override;
 
     /**
      * Behave like an long.
@@ -285,31 +285,34 @@ public:
     /**
      * Get a printable ASCII value.
      */
-    const char* get_printable() const;
+    const char* get_printable() const override;
 
     /**
      * Clone operator.
      *
      * @return Pointer to a newly created copy of the object.
      */
-    SnmpSyntax* clone() const { return (SnmpSyntax*)new SnmpInt32(*this); };
+    SnmpSyntax* clone() const override
+    {
+        return (SnmpSyntax*)new SnmpInt32(*this);
+    };
 
     /**
      * Return validity of the object.
      * An SnmpUInt32 will only be invalid after a failed asignment
      * of another SnmpSyntax object.
      */
-    bool valid() const { return valid_flag; }
+    bool valid() const override { return valid_flag; }
 
     /**
      * Return the space needed for serialization.
      */
-    int get_asn1_length() const;
+    int get_asn1_length() const override;
 
     /**
      * Reset the object.
      */
-    void clear()
+    void clear() override
     {
         smival.value.sNumber = 0;
         valid_flag           = true;

@@ -134,8 +134,8 @@ SnmpSyntax& SnmpInt32::operator=(const SnmpSyntax& in_val)
         {
         case sNMP_SYNTAX_INT32:
         case sNMP_SYNTAX_UINT32: // implied cast uint -> int
-            // case sNMP_SYNTAX_GAUGE32:  	.. indistinquishable from
-            // UINT32
+                                 // case sNMP_SYNTAX_GAUGE32:  	..
+                                 // indistinquishable from UINT32
         case sNMP_SYNTAX_CNTR32:    // implied cast uint -> int
         case sNMP_SYNTAX_TIMETICKS: // implied cast uint -> int
             smival.value.sNumber = ((SnmpInt32&)in_val).smival.value.sNumber;

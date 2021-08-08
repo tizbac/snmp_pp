@@ -83,7 +83,7 @@ public:
      * @param hi - value for the high 32 bits (0..MAX_UINT32)
      * @param lo - value for the low  32 bits (0..MAX_UINT32)
      */
-    Counter64(unsigned long hi, unsigned long lo) : m_changed(true)
+    Counter64(uint32_t hi, uint32_t lo) : m_changed(true)
     {
         smival.syntax               = sNMP_SYNTAX_CNTR64;
         smival.value.hNumber.hipart = hi;
@@ -132,21 +132,21 @@ public:
      *
      * @return The high part of the Counter64
      */
-    unsigned long high() const { return smival.value.hNumber.hipart; }
+    uint32_t high() const { return smival.value.hNumber.hipart; }
 
     /**
      * Get the low 32 bit part.
      *
      * @return The low part of the Counter64
      */
-    unsigned long low() const { return smival.value.hNumber.lopart; }
+    uint32_t low() const { return smival.value.hNumber.lopart; }
 
     /**
      * Set the high 32 bit part. The low part will stay unchanged.
      *
      * @param h - The new high part of the Counter64
      */
-    void set_high(const unsigned long h)
+    void set_high(const uint32_t h)
     {
         smival.value.hNumber.hipart = h;
         m_changed                   = true;
@@ -157,7 +157,7 @@ public:
      *
      * @param l - The new low part of the Counter64
      */
-    void set_low(const unsigned long l)
+    void set_low(const uint32_t l)
     {
         smival.value.hNumber.lopart = l;
         m_changed                   = true;
@@ -173,21 +173,24 @@ public:
      *
      * @return Null terminated string.
      */
-    const char* get_printable() const;
+    const char* get_printable() const override;
 
     /**
      * Get the Syntax of the object.
      *
      * @return This method always returns sNMP_SYNTAX_CNTR64.
      */
-    SmiUINT32 get_syntax() const { return sNMP_SYNTAX_CNTR64; }
+    SmiUINT32 get_syntax() const override { return sNMP_SYNTAX_CNTR64; }
 
     /**
      * Clone the object.
      *
      * @return A cloned Counter64 object allocated through new.
      */
-    SnmpSyntax* clone() const { return (SnmpSyntax*)new Counter64(*this); }
+    SnmpSyntax* clone() const override
+    {
+        return (SnmpSyntax*)new Counter64(*this);
+    }
 
     /**
      * Overloaded assignment operator.
@@ -195,26 +198,26 @@ public:
      * @param val - Try to map the given value to a Counter64 and assign it
      * @return Always *this with the new value.
      */
-    SnmpSyntax& operator=(const SnmpSyntax& val);
+    SnmpSyntax& operator=(const SnmpSyntax& val) override;
 
     /**
      * Return validity of the object.
      *
      * @return Always true
      */
-    bool valid() const { return true; }
+    bool valid() const override { return true; }
 
     /**
      * Return the space needed for serialization.
      *
      * @return The needed space that depends on the current value.
      */
-    int get_asn1_length() const;
+    int get_asn1_length() const override;
 
     /**
      * Reset the object.
      */
-    void clear()
+    void clear() override
     {
         smival.value.hNumber.hipart = 0;
         smival.value.hNumber.lopart = 0;
@@ -237,7 +240,7 @@ public:
     }
 
     /**
-     * Assign a unsigned long to a Counter64.
+     * Assign a uint32_t to a Counter64.
      *
      * @param i - The new low part. The high part is cleared.
      */

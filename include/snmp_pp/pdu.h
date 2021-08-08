@@ -265,14 +265,14 @@ public:
      *
      * @return The SNMP request id
      */
-    unsigned long get_request_id() const { return request_id; };
+    uint32_t get_request_id() const { return request_id; };
 
     /**
      * Set the request id.
      *
      * @param rid - The new SNMP request id
      */
-    void set_request_id(const unsigned long rid) { request_id = rid; };
+    void set_request_id(const uint32_t rid) { request_id = rid; };
 
     /**
      * Get the pdu type.
@@ -466,14 +466,14 @@ public:
      *
      * @param msg_id - the message id of the received message
      */
-    void set_message_id(const unsigned long msg_id) { message_id = msg_id; }
+    void set_message_id(const uint32_t msg_id) { message_id = msg_id; }
 
     /**
      * Get the SNMPv3 message id (msgID)
      *
      * @return - the message id of the received message
      */
-    unsigned long get_message_id() const { return message_id; }
+    uint32_t get_message_id() const { return message_id; }
 
     /**
      * Set the maximum size of the scoped pdu to be included in a
@@ -481,7 +481,7 @@ public:
      *
      * @param l - the maximum size
      */
-    void set_maxsize_scopedpdu(unsigned long l) { maxsize_scopedpdu = l; };
+    void set_maxsize_scopedpdu(uint32_t l) { maxsize_scopedpdu = l; };
 
     /**
      * Get the maximum size of the scoped pdu to be included in a
@@ -489,7 +489,7 @@ public:
      *
      * @return - the maximum size
      */
-    unsigned long get_maxsize_scopedpdu() const { return maxsize_scopedpdu; };
+    uint32_t get_maxsize_scopedpdu() const { return maxsize_scopedpdu; };
 
 #endif // _SNMPv3
 
@@ -537,7 +537,7 @@ protected:
     int            error_status; // SMI error status
     int            error_index;  // SMI error index
     bool           validity;     // valid boolean
-    unsigned long  request_id;   // SMI request id
+    uint32_t       request_id;   // SMI request id
     unsigned short pdu_type;     // derived at run time based on request type
     // for notify Pdu objects only
     // traps & notifies
@@ -550,10 +550,10 @@ protected:
     // specific Objects for SNMPv3
     int security_level; // the securityLevel with which this Pdu
                         // should be sent or was received
-    unsigned long message_id;
-    unsigned long maxsize_scopedpdu;
-    OctetStr      context_name;
-    OctetStr      context_engine_id;
+    uint32_t message_id;
+    uint32_t maxsize_scopedpdu;
+    OctetStr context_name;
+    OctetStr context_engine_id;
 #endif // _SNMPv3
 };
 

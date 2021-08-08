@@ -118,15 +118,15 @@ namespace Snmp_pp
 
 /*------------ macros for storing/extracting msb first words -------------*/
 
-#    define GET_32BIT(cp)                                   \
-        (((unsigned long)(unsigned char)(cp)[0] << 24)      \
-            | ((unsigned long)(unsigned char)(cp)[1] << 16) \
-            | ((unsigned long)(unsigned char)(cp)[2] << 8)  \
-            | ((unsigned long)(unsigned char)(cp)[3]))
+#    define GET_32BIT(cp)                              \
+        (((uint32_t)(unsigned char)(cp)[0] << 24)      \
+            | ((uint32_t)(unsigned char)(cp)[1] << 16) \
+            | ((uint32_t)(unsigned char)(cp)[2] << 8)  \
+            | ((uint32_t)(unsigned char)(cp)[3]))
 
-#    define GET_16BIT(cp)                             \
-        (((unsigned long)(unsigned char)(cp)[0] << 8) \
-            | ((unsigned long)(unsigned char)(cp)[1]))
+#    define GET_16BIT(cp)                        \
+        (((uint32_t)(unsigned char)(cp)[0] << 8) \
+            | ((uint32_t)(unsigned char)(cp)[1]))
 
 #    define PUT_32BIT(cp, value)     \
         do {                         \
@@ -144,15 +144,15 @@ namespace Snmp_pp
 
 /*------------ macros for storing/extracting lsb first words -------------*/
 
-#    define GET_32BIT_LSB_FIRST(cp)                         \
-        (((unsigned long)(unsigned char)(cp)[0])            \
-            | ((unsigned long)(unsigned char)(cp)[1] << 8)  \
-            | ((unsigned long)(unsigned char)(cp)[2] << 16) \
-            | ((unsigned long)(unsigned char)(cp)[3] << 24))
+#    define GET_32BIT_LSB_FIRST(cp)                    \
+        (((uint32_t)(unsigned char)(cp)[0])            \
+            | ((uint32_t)(unsigned char)(cp)[1] << 8)  \
+            | ((uint32_t)(unsigned char)(cp)[2] << 16) \
+            | ((uint32_t)(unsigned char)(cp)[3] << 24))
 
-#    define GET_16BIT_LSB_FIRST(cp)              \
-        (((unsigned long)(unsigned char)(cp)[0]) \
-            | ((unsigned long)(unsigned char)(cp)[1] << 8))
+#    define GET_16BIT_LSB_FIRST(cp)         \
+        (((uint32_t)(unsigned char)(cp)[0]) \
+            | ((uint32_t)(unsigned char)(cp)[1] << 8))
 
 #    define PUT_32BIT_LSB_FIRST(cp, value) \
         do {                               \

@@ -33,7 +33,7 @@ $(BUILD_DIR):
 
 check: $(BUILD_DIR)/compile_commands.json
 	# run-clang-tidy.py -p $(BUILD_DIR) -checks='-*,cppcoreguidelines-init-variables' -j1 -fix src
-	# run-clang-tidy.py -p $(BUILD_DIR) -checks='-*,cppcoreguidelines-explicit-virtual-functions' -j1 -fix src
+	# clang-tidy -p $(BUILD_DIR) --checks='-*,cppcoreguidelines-explicit-virtual-functions' --fix include/snmp_pp/*.h
 	run-clang-tidy.py -p $(BUILD_DIR) -checks='-clang-analyzer-optin.*' src/*.cpp consoleExamples
 
 clean:

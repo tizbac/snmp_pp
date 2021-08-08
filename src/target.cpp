@@ -68,8 +68,8 @@ namespace Snmp_pp
 #endif
 
 // class variables for default behavior control
-unsigned long SnmpTarget::default_timeout = 100;
-int           SnmpTarget::default_retries = 1;
+uint32_t SnmpTarget::default_timeout = 100;
+int      SnmpTarget::default_retries = 1;
 
 //----------------------------------------------------------------------
 //--------[ Abstract SnmpTarget Member Functions ]----------------------
@@ -186,7 +186,7 @@ CTarget::CTarget(const CTarget& target)
 // resolve entity
 // common interface for Community based targets
 bool CTarget::resolve_to_C(OctetStr& read_comm, OctetStr& write_comm,
-    GenAddress& address, unsigned long& t, int& r, unsigned char& v) const
+    GenAddress& address, uint32_t& t, int& r, unsigned char& v) const
 {
     // if the target is invalid then return false
     if (!validity) return false;
@@ -325,7 +325,7 @@ bool UTarget::set_address(const Address& address)
 }
 
 bool UTarget::resolve_to_U(OctetStr& sec_name, int& sec_model,
-    GenAddress& address, unsigned long& t, int& r, unsigned char& v) const
+    GenAddress& address, uint32_t& t, int& r, unsigned char& v) const
 {
     // if the target is invalid then return false
     if (!validity) return false;

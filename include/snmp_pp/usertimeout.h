@@ -133,26 +133,26 @@ public:
     CUTEvent* GetNextTimeoutEntry();
 
     // find the next timeout
-    int GetNextTimeout(msec& timeout);
+    int GetNextTimeout(msec& timeout) override;
 
     // set up parameters for select
     void GetFdSets(int& /*maxfds*/, fd_set& /*readfds*/, fd_set& /*writefds*/,
-        fd_set& /*exceptfds*/)
+        fd_set& /*exceptfds*/) override
     { } // we never have any event sources
 
     // return number of outstanding messages
-    int GetCount() { return m_msgCount; };
+    int GetCount() override { return m_msgCount; };
 
     int HandleEvents(const int /*maxfds*/, const fd_set& /*readfds*/,
-        const fd_set& /*writefds*/, const fd_set& /*exceptfds*/)
+        const fd_set& /*writefds*/, const fd_set& /*exceptfds*/) override
     {
         msec now;
         return DoRetries(now);
     };
 
-    int DoRetries(const msec& sendtime);
+    int DoRetries(const msec& sendtime) override;
 
-    int Done() { return 0; }; // we are never done
+    int Done() override { return 0; }; // we are never done
 
 protected:
     /*-----------------------------------------------------------*/
@@ -168,8 +168,8 @@ protected:
         ~CUTEventQueueElt();
         CUTEventQueueElt* GetNext()
         {
-            return m_Next;
-        }; // NOLINT(clang-analyzer-cplusplus.NewDelete)
+            return m_Next; // NOLINT(clang-analyzer-cplusplus.NewDelete)
+        };
         CUTEvent* GetUTEvent() { return m_utevent; };
         CUTEvent* TestId(const UtId uniqueId);
 

@@ -76,7 +76,7 @@ public:
      *
      * @param ul - value (0..MAX_UINT32)
      */
-    Gauge32(const unsigned long ul = 0) : SnmpUInt32(ul)
+    Gauge32(const uint32_t ul = 0) : SnmpUInt32(ul)
     {
         smival.syntax = sNMP_SYNTAX_GAUGE32;
     }
@@ -103,14 +103,17 @@ public:
      *
      * @return This method always returns sNMP_SYNTAX_GAUGE32.
      */
-    SmiUINT32 get_syntax() const { return sNMP_SYNTAX_GAUGE32; }
+    SmiUINT32 get_syntax() const override { return sNMP_SYNTAX_GAUGE32; }
 
     /**
      * Clone the object.
      *
      * @return A cloned Gauge32 object allocated through new.
      */
-    SnmpSyntax* clone() const { return (SnmpSyntax*)new Gauge32(*this); }
+    SnmpSyntax* clone() const override
+    {
+        return (SnmpSyntax*)new Gauge32(*this);
+    }
 
     //-----------[ Overload some operators ]----------------------
 
@@ -128,11 +131,11 @@ public:
     }
 
     /**
-     * Assign a unsigned long to a Gauge32.
+     * Assign a uint32_t to a Gauge32.
      *
      * @param ul - New value
      */
-    Gauge32& operator=(const unsigned long ul)
+    Gauge32& operator=(const uint32_t ul)
     {
         SnmpUInt32::operator=(ul);
         return *this;
