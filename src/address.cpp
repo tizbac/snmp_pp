@@ -136,7 +136,7 @@ void Address::clear()
 
 //-----------------------------------------------------------------------
 // overloaded equivalence operator, are two addresses equal?
-int operator==(const Address& lhs, const Address& rhs)
+bool operator==(const Address& lhs, const Address& rhs)
 {
     ADDRESS_TRACE2;
 
@@ -145,7 +145,7 @@ int operator==(const Address& lhs, const Address& rhs)
 
 //------------------------------------------------------------------
 // overloaded > operator, is a1 > a2
-int operator>(const Address& lhs, const Address& rhs)
+bool operator>(const Address& lhs, const Address& rhs)
 {
     ADDRESS_TRACE2;
 
@@ -154,7 +154,7 @@ int operator>(const Address& lhs, const Address& rhs)
 
 //-----------------------------------------------------------------
 // overloaded < operator, is a1 < a2
-int operator<(const Address& lhs, const Address& rhs)
+bool operator<(const Address& lhs, const Address& rhs)
 {
     ADDRESS_TRACE2;
 
@@ -163,7 +163,7 @@ int operator<(const Address& lhs, const Address& rhs)
 
 //------------------------------------------------------------------
 // equivlence operator overloaded, are an address and a string equal?
-int operator==(const Address& lhs, const char* rhs)
+bool operator==(const Address& lhs, const char* rhs)
 {
     ADDRESS_TRACE2;
 
@@ -179,7 +179,7 @@ int operator==(const Address& lhs, const char* rhs)
 
 //------------------------------------------------------------------
 // overloaded > , is a > inaddr
-int operator>(const Address& lhs, const char* rhs)
+bool operator>(const Address& lhs, const char* rhs)
 {
     ADDRESS_TRACE2;
 
@@ -191,7 +191,7 @@ int operator>(const Address& lhs, const char* rhs)
 
 //------------------------------------------------------------------
 // overloaded >= , is a >= inaddr
-int operator>=(const Address& lhs, const char* rhs)
+bool operator>=(const Address& lhs, const char* rhs)
 {
     ADDRESS_TRACE2;
 
@@ -202,7 +202,7 @@ int operator>=(const Address& lhs, const char* rhs)
 
 //-----------------------------------------------------------------
 // overloaded < , are an address and a string equal?
-int operator<(const Address& lhs, const char* rhs)
+bool operator<(const Address& lhs, const char* rhs)
 {
     ADDRESS_TRACE2;
 
@@ -213,7 +213,7 @@ int operator<(const Address& lhs, const char* rhs)
 
 //-----------------------------------------------------------------
 // overloaded <= , is a <= inaddr
-int operator<=(const Address& lhs, const char* rhs)
+bool operator<=(const Address& lhs, const char* rhs)
 {
     ADDRESS_TRACE2;
 
@@ -493,7 +493,7 @@ const char* IpAddress::friendly_name(int& status)
 {
     ADDRESS_TRACE;
 
-    if ((iv_friendly_name.length() == 0) && (valid_flag))
+    if ((iv_friendly_name.empty()) && (valid_flag))
         this->addr_to_friendly();
     status = iv_friendly_name_status;
     return iv_friendly_name.c_str();
@@ -596,7 +596,7 @@ int IpAddress::parse_coloned_ipstring(const char* inaddr)
 {
     ADDRESS_TRACE;
 
-    unsigned char tmp_address_buffer[ADDRBUF];
+    unsigned char tmp_address_buffer[ADDRBUF]{};
     char          temp[60]; // temp buffer for destruction
 
     // check len, an ipv6 can never be bigger than 39 + 11
@@ -629,7 +629,7 @@ int IpAddress::parse_coloned_ipstring(const char* inaddr)
     char* in_ptr         = temp;
     char* out_ptr        = (char*)tmp_address_buffer;
     char* end_first_part = NULL;
-    char  second[39];
+    char  second[39]{};
     int   second_used      = false;
     int   colon_count      = 0;
     int   had_double_colon = false;
@@ -637,7 +637,7 @@ int IpAddress::parse_coloned_ipstring(const char* inaddr)
     int   had_dot          = false;
     int   dot_count        = 0;
     int   digit_count      = 0;
-    char  digits[4];
+    char  digits[4]{};
     char  last_deliminiter = 0;
 
     while (*in_ptr != 0)
@@ -965,14 +965,14 @@ bool IpAddress::parse_address(const char* inaddr)
     }
 #            endif // SNMP_PP_IPv6
 #        else      // not HAVE_GETHOSTBYNAME_R
-    lookupResult = gethostbyname(inaddr);
+    lookupResult = gethostbyname(inaddr); // TODO: Use getaddrinfo()! CK
 #            ifdef SNMP_PP_IPv6
     if (!lookupResult)
     {
 #                ifdef HAVE_GETHOSTBYNAME2
         lookupResult = gethostbyname2(inaddr, AF_INET6);
 #                else
-        lookupResult = gethostbyname(inaddr);
+        lookupResult = gethostbyname(inaddr); // TODO: Use getaddrinfo()! CK
 #                endif // HAVE_GETHOSTBYNAME2
     }
 #            endif     // SNMP_PP_IPv6
@@ -1016,7 +1016,7 @@ bool IpAddress::parse_address(const char* inaddr)
                 (void*)&ipAddr, (void*)lookupResult->h_addr, sizeof(in_addr));
 
             // now lets check out the dotted string
-            strlcpy(ds, inet_ntoa(ipAddr), sizeof(ds)); // TODO: CWE-119! CK
+            strlcpy(ds, inet_ntoa(ipAddr), sizeof(ds)); // TODO: use inet_ntop()! CK
 
             if (!parse_dotted_ipstring(ds)) return false;
 
@@ -1110,7 +1110,7 @@ int IpAddress::addr_to_friendly()
 #    endif
     if (ip_version == version_ipv4)
     {
-        in_addr ipAddr;
+        in_addr ipAddr{};
 
 #    if defined   HAVE_INET_ATON
         if (inet_aton((char*)ds, &ipAddr) == 0) return -1; // bad address
@@ -1118,7 +1118,7 @@ int IpAddress::addr_to_friendly()
         if (inet_pton(AF_INET, (char*)ds, &ipAddr) <= 0)
             return -1; // bad address
 #    else
-        ipAddr.s_addr = inet_addr((char*)ds);
+        ipAddr.s_addr = inet_addr((char*)ds); // TODO: use inet_pton()! CK
         if (ipAddr.s_addr == INADDR_NONE) return -1; // bad address
 #    endif
 
@@ -1133,7 +1133,7 @@ int IpAddress::addr_to_friendly()
             2048, &lookupResult, &herrno);
 #        endif
 #    else
-        lookupResult = gethostbyaddr((char*)&ipAddr, sizeof(in_addr), AF_INET);
+        lookupResult = gethostbyaddr((char*)&ipAddr, sizeof(in_addr), AF_INET);  // TODO: Use getaddrinfo()! CK
 #    endif
     }
     else
@@ -1150,7 +1150,7 @@ int IpAddress::addr_to_friendly()
                 }
         }
 
-        in6_addr ipAddr;
+        in6_addr ipAddr{};
 
         if (inet_pton(AF_INET6, (char*)ds, &ipAddr) <= 0)
             return -1; // bad address
@@ -1167,7 +1167,7 @@ int IpAddress::addr_to_friendly()
 #            endif
 #        else
         lookupResult =
-            gethostbyaddr((char*)&ipAddr, sizeof(in6_addr), AF_INET6);
+            gethostbyaddr((char*)&ipAddr, sizeof(in6_addr), AF_INET6);  // TODO: Use getaddrinfo()! CK
 #        endif // HAVE_GETHOSTBYADDR_R
 #    else
         return -1;
@@ -1734,13 +1734,13 @@ bool UdpAddress::parse_address(const char* inaddr)
         buffer[0]       = ' ';
     }
 
-    bool           result = 0;
-    unsigned short port   = 0;
+    bool     result = 0;
+    uint16_t port   = 0;
 
     if (found)
     {
         buffer[pos] = 0;
-        port        = std::stoul(&buffer[pos + 1]);
+        port        = (uint16_t) std::stoul(&buffer[pos + 1]);
         result      = IpAddress::parse_address(buffer);
     }
     else

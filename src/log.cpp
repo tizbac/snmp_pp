@@ -121,7 +121,7 @@ void LogEntry::init(void)
 #            ifdef _WIN32
     typedef long pid_t;
 #            endif
-    pid_t        pid = getpid();
+    pid_t        pid = _getpid();
 #        else
     long pid = 0;
 #        endif

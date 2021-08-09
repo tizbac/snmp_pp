@@ -176,55 +176,55 @@ public:
     virtual ~Address() { }
 
     /// overloaded equivlence operator, are two addresses equal?
-    DLLOPT friend int operator==(const Address& lhs, const Address& rhs);
+    DLLOPT friend bool operator==(const Address& lhs, const Address& rhs);
 
     /// overloaded not equivlence operator, are two addresses not equal?
-    DLLOPT friend int operator!=(const Address& lhs, const Address& rhs)
+    DLLOPT friend bool operator!=(const Address& lhs, const Address& rhs)
     {
         return !(lhs == rhs);
     }
 
     /// overloaded > operator, is a1 > a2
-    DLLOPT friend int operator>(const Address& lhs, const Address& rhs);
+    DLLOPT friend bool operator>(const Address& lhs, const Address& rhs);
 
     /// overloaded >= operator, is a1 >= a2
-    DLLOPT friend int operator>=(const Address& lhs, const Address& rhs)
+    DLLOPT friend bool operator>=(const Address& lhs, const Address& rhs)
     {
         if ((lhs > rhs) || (lhs == rhs)) return true;
         return false;
     }
 
     /// overloaded < operator, is a1 < a2
-    DLLOPT friend int operator<(const Address& lhs, const Address& rhs);
+    DLLOPT friend bool operator<(const Address& lhs, const Address& rhs);
 
     /// overloaded <= operator, is a1 <= a2
-    DLLOPT friend int operator<=(const Address& lhs, const Address& rhs)
+    DLLOPT friend bool operator<=(const Address& lhs, const Address& rhs)
     {
         if ((lhs < rhs) || (lhs == rhs)) return true;
         return false;
     }
 
     /// equivlence operator overloaded, are an address and a string equal?
-    DLLOPT friend int operator==(const Address& lhs, const char* rhs);
+    DLLOPT friend bool operator==(const Address& lhs, const char* rhs);
 
     /// overloaded not equivlence operator, are an address and string not
     /// equal?
-    DLLOPT friend int operator!=(const Address& lhs, const char* rhs)
+    DLLOPT friend bool operator!=(const Address& lhs, const char* rhs)
     {
         return !(lhs == rhs);
     }
 
     /// overloaded < , is an address greater than a string?
-    DLLOPT friend int operator>(const Address& lhs, const char* rhs);
+    DLLOPT friend bool operator>(const Address& lhs, const char* rhs);
 
     /// overloaded >=, is an address greater than or equal to a string?
-    DLLOPT friend int operator>=(const Address& lhs, const char* rhs);
+    DLLOPT friend bool operator>=(const Address& lhs, const char* rhs);
 
     /// overloaded < , is an address less than a string?
-    DLLOPT friend int operator<(const Address& lhs, const char* rhs);
+    DLLOPT friend bool operator<(const Address& lhs, const char* rhs);
 
     /// overloaded <=, is an address less than or equal to a string?
-    DLLOPT friend int operator<=(const Address& lhs, const char* rhs);
+    DLLOPT friend bool operator<=(const Address& lhs, const char* rhs);
 
     /**
      * Overloaded operator for streaming output.
@@ -525,7 +525,7 @@ public:
     }
 
 protected:
-    SNMP_PP_MUTABLE char output_buffer[OUTBUFF_IP]; // output buffer
+    SNMP_PP_MUTABLE char output_buffer[OUTBUFF_IP]{}; // output buffer
 
     // friendly name storage
     std::string iv_friendly_name;
@@ -725,7 +725,7 @@ public:
     bool set_scope(const unsigned int scope) override;
 
 protected:
-    SNMP_PP_MUTABLE char output_buffer[OUTBUFF_UDP]; // output buffer
+    SNMP_PP_MUTABLE char output_buffer[OUTBUFF_UDP]{}; // output buffer
     char                 sep;                        // separator
 
     // redefined parse address
@@ -1271,7 +1271,7 @@ public:
 protected:
     // pointer to a concrete address
     Address* address;
-    char     output_buffer[1]; // output buffer
+    char     output_buffer[1]; // TODO: output buffer? only 1 byte? CK
 
     // redefined parse address for generic address
     bool parse_address(const char* addr) override

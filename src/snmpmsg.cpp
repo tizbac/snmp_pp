@@ -283,7 +283,7 @@ int SnmpMessage::load(
         if (addr_set)
         {
             agent_addr.sin_addr.s_addr =
-                inet_addr(((IpAddress&)ip_addr).IpAddress::get_printable());
+                inet_addr(((IpAddress&)ip_addr).IpAddress::get_printable()); // TODO: Use inet_pton()! CK
             LOG_BEGIN(loggerModuleName, INFO_LOG | 7);
             LOG("SNMPMessage: Setting v1 trap address");
             LOG(((IpAddress&)ip_addr).IpAddress::get_printable());
@@ -605,7 +605,7 @@ int SnmpMessage::unload(Pdu& pdu,           // Pdu object
         pdu.set_notify_timestamp(timestamp);
 
         // set the agent address
-        IpAddress agent_addr(inet_ntoa(raw_pdu->agent_addr.sin_addr));
+        IpAddress agent_addr(inet_ntoa(raw_pdu->agent_addr.sin_addr)); // TODO: Use inet_ntop()! CK
         if (agent_addr != "0.0.0.0")
         {
             pdu.set_v1_trap_address(agent_addr);

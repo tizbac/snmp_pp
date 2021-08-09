@@ -252,7 +252,7 @@ DLLOPT int send_snmp_request(SnmpSocket sock, unsigned char* send_buf,
         memset(&agent_addr, 0, sizeof(agent_addr));
         agent_addr.sin_family = AF_INET;
         agent_addr.sin_addr.s_addr =
-            inet_addr(((IpAddress&)address).IpAddress::get_printable());
+            inet_addr(((IpAddress&)address).IpAddress::get_printable()); // TODO: Use inet_pton()! CK
         agent_addr.sin_port = htons(((UdpAddress&)address).get_port());
 
         send_result = sendto(sock, (char*)send_buf, SAFE_INT_CAST(send_len), 0,
@@ -353,7 +353,7 @@ int receive_snmp_response(SnmpSocket sock, Snmp& snmp_session, Pdu& pdu,
     if (((sockaddr_in&)from_addr).sin_family == AF_INET)
     {
         // IPv4
-        fromaddress = inet_ntoa(((sockaddr_in&)from_addr).sin_addr);
+        fromaddress = inet_ntoa(((sockaddr_in&)from_addr).sin_addr); // TODO: Use inet_ntop()! CK
         fromaddress.set_port(ntohs(((sockaddr_in&)from_addr).sin_port));
     }
 #ifdef SNMP_PP_IPv6
@@ -466,7 +466,7 @@ int receive_snmp_notification(
     if (((sockaddr_in&)from_addr).sin_family == AF_INET)
     {
         // IPv4
-        fromaddress = inet_ntoa(((sockaddr_in&)from_addr).sin_addr);
+        fromaddress = inet_ntoa(((sockaddr_in&)from_addr).sin_addr); // TODO: Use inet_ntop()! CK
         fromaddress.set_port(ntohs(((sockaddr_in&)from_addr).sin_port));
     }
 #ifdef SNMP_PP_IPv6
@@ -738,7 +738,7 @@ void Snmp::init(int& status, IpAddress* addresses[2],
         else
         {
             // set up the manager socket attributes
-            uint32_t inaddr = inet_addr(addresses[0]->get_printable());
+            uint32_t inaddr = inet_addr(addresses[0]->get_printable()); // TODO: Use inet_pton()! CK
             struct sockaddr_in mgr_addr;
             memset(&mgr_addr, 0, sizeof(mgr_addr));
             mgr_addr.sin_family      = AF_INET;
