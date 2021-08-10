@@ -149,7 +149,7 @@ int convertVbToSmival(const Vb& tempvb, SmiVALUE* smival)
         if (smival->value.oid.len > 0)
         {
             smival->value.oid.ptr =
-                (SmiLPUINT32) new unsigned long[smival->value.oid.len];
+                (SmiLPUINT32) new uint32_t[smival->value.oid.len];
             if (smival->value.oid.ptr)
             {
                 for (int i = 0; i < (int)smival->value.oid.len; i++)
@@ -227,8 +227,8 @@ int SnmpMessage::load(
 #ifdef _SNMPv3
     raw_pdu->msgid = pdu->get_message_id();
 #endif
-    raw_pdu->errstat  = (unsigned long)pdu->get_error_status();
-    raw_pdu->errindex = (unsigned long)pdu->get_error_index();
+    raw_pdu->errstat  = (uint32_t)pdu->get_error_status();
+    raw_pdu->errindex = (uint32_t)pdu->get_error_index();
 
     // if its a V1 trap then load up other values
     // for v2, use normal pdu format
@@ -282,8 +282,9 @@ int SnmpMessage::load(
         agent_addr.sin_family = AF_INET;
         if (addr_set)
         {
-            agent_addr.sin_addr.s_addr =
-                inet_addr(((IpAddress&)ip_addr).IpAddress::get_printable());
+            agent_addr.sin_addr.s_addr = inet_addr(
+                ((IpAddress&)ip_addr)
+                    .IpAddress::get_printable()); // TODO: Use inet_pton()! CK
             LOG_BEGIN(loggerModuleName, INFO_LOG | 7);
             LOG("SNMPMessage: Setting v1 trap address");
             LOG(((IpAddress&)ip_addr).IpAddress::get_printable());
@@ -349,7 +350,7 @@ int SnmpMessage::load(
         // timestamp
         TimeTicks timestamp;
         pdu->get_notify_timestamp(timestamp);
-        raw_pdu->time = (unsigned long)timestamp;
+        raw_pdu->time = (uint32_t)timestamp;
     }
 
     // if its a v2 trap then we need to make a few adjustments
@@ -518,7 +519,7 @@ int SnmpMessage::load(
 }
 
 // load up a SnmpMessage
-int SnmpMessage::load(unsigned char* data, unsigned long len)
+int SnmpMessage::load(unsigned char* data, uint32_t len)
 {
     bufflen    = MAX_SNMP_PACKET;
     valid_flag = false;
@@ -605,7 +606,8 @@ int SnmpMessage::unload(Pdu& pdu,           // Pdu object
         pdu.set_notify_timestamp(timestamp);
 
         // set the agent address
-        IpAddress agent_addr(inet_ntoa(raw_pdu->agent_addr.sin_addr));
+        IpAddress agent_addr(inet_ntoa(
+            raw_pdu->agent_addr.sin_addr)); // TODO: Use inet_ntop()! CK
         if (agent_addr != "0.0.0.0")
         {
             pdu.set_v1_trap_address(agent_addr);
@@ -678,13 +680,13 @@ int SnmpMessage::unload(Pdu& pdu,           // Pdu object
             // octet string
         case sNMP_SYNTAX_OCTETS: {
             OctetStr octets(
-                (unsigned char*)vp->val.string, (unsigned long)vp->val_len);
+                (unsigned char*)vp->val.string, (uint32_t)vp->val_len);
             tempvb.set_value(octets);
         }
         break;
         case sNMP_SYNTAX_OPAQUE: {
             OpaqueStr octets(
-                (unsigned char*)vp->val.string, (unsigned long)vp->val_len);
+                (unsigned char*)vp->val.string, (uint32_t)vp->val_len);
             tempvb.set_value(octets);
         }
         break;
@@ -707,7 +709,7 @@ int SnmpMessage::unload(Pdu& pdu,           // Pdu object
 
             // timeticks
         case sNMP_SYNTAX_TIMETICKS: {
-            TimeTicks timeticks((unsigned long)*(vp->val.integer));
+            TimeTicks timeticks((uint32_t) * (vp->val.integer));
             tempvb.set_value(timeticks);
             if ((vb_nr == 1)
                 && ((raw_pdu->command == sNMP_PDU_TRAP)
@@ -723,14 +725,14 @@ int SnmpMessage::unload(Pdu& pdu,           // Pdu object
 
             // 32 bit counter
         case sNMP_SYNTAX_CNTR32: {
-            Counter32 counter32((unsigned long)*(vp->val.integer));
+            Counter32 counter32((uint32_t) * (vp->val.integer));
             tempvb.set_value(counter32);
         }
         break;
 
             // 32 bit gauge
         case sNMP_SYNTAX_GAUGE32: {
-            Gauge32 gauge32((unsigned long)*(vp->val.integer));
+            Gauge32 gauge32((uint32_t) * (vp->val.integer));
             tempvb.set_value(gauge32);
         }
         break;
@@ -751,8 +753,9 @@ int SnmpMessage::unload(Pdu& pdu,           // Pdu object
                     vp->val.string[12], vp->val.string[13], vp->val.string[14],
                     vp->val.string[15]);
             else if (vp->val_len == 4)
-                snprintf(buffer, sizeof(buffer), "%d.%d.%d.%d", vp->val.string[0],
-                    vp->val.string[1], vp->val.string[2], vp->val.string[3]);
+                snprintf(buffer, sizeof(buffer), "%d.%d.%d.%d",
+                    vp->val.string[0], vp->val.string[1], vp->val.string[2],
+                    vp->val.string[3]);
             IpAddress ipaddress(buffer);
             tempvb.set_value(ipaddress);
         }
@@ -769,7 +772,7 @@ int SnmpMessage::unload(Pdu& pdu,           // Pdu object
             /* Not distinguishable from Gauge32
                 case sNMP_SYNTAX_UINT32:
                   {
-                    SnmpUInt32 uint32((unsigned long) *(vp->val.integer));
+                    SnmpUInt32 uint32((uint32_t) *(vp->val.integer));
                     tempvb.set_value(uint32);
                   }
                   break;

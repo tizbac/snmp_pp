@@ -1,28 +1,28 @@
 /*_############################################################################
-  _## 
-  _##  notifyqueue.h  
+  _##
+  _##  notifyqueue.h
   _##
   _##  SNMP++ v3.4
   _##  -----------------------------------------------
   _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
   _##
   _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##  
+  _##
   _##    Copyright (c) 1996
   _##    Hewlett-Packard Company
-  _##  
+  _##
   _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software 
-  _##  and/or its documentation is hereby granted without fee. User agrees 
-  _##  to display the above copyright notice and this license notice in all 
-  _##  copies of the software and any documentation of the software. User 
-  _##  agrees to assume all liability for the use of the software; 
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations 
-  _##  about the suitability of this software for any purpose. It is provided 
-  _##  "AS-IS" without warranty of any kind, either express or implied. User 
+  _##  Permission to use, copy, modify, distribute and/or sell this software
+  _##  and/or its documentation is hereby granted without fee. User agrees
+  _##  to display the above copyright notice and this license notice in all
+  _##  copies of the software and any documentation of the software. User
+  _##  agrees to assume all liability for the use of the software;
+  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+  _##  about the suitability of this software for any purpose. It is provided
+  _##  "AS-IS" without warranty of any kind, either express or implied. User
   _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base. 
-  _##  
+  _##  upon this software code base.
+  _##
   _##########################################################################*/
 /*===================================================================
 
@@ -64,20 +64,21 @@
 #include <libsnmp.h>
 #include <sys/types.h>
 #ifndef WIN32
-#if !(defined CPU && CPU == PPC603)
-#include <sys/time.h>	// time stuff and fd_set
-#endif
+#    if !(defined CPU && CPU == PPC603)
+#        include <sys/time.h> // time stuff and fd_set
+#    endif
 #endif
 
 //----[ snmp++ includes ]----------------------------------------------
 
 #include "snmp_pp/config_snmp_pp.h"
+#include "snmp_pp/eventlist.h"
 #include "snmp_pp/oid.h"
 #include "snmp_pp/target.h"
-#include "snmp_pp/eventlist.h"
 
 #ifdef SNMP_PP_NAMESPACE
-namespace Snmp_pp {
+namespace Snmp_pp
+{
 #endif
 
 class Snmp; // instead of snmp_pp.h
@@ -92,90 +93,91 @@ class EventListHolder;
 /* CNotifyEvent                                                   */
 /*   a description of a sessions waiting for async notifiactions. */
 /*----------------------------------------------------------------*/
-class DLLOPT CNotifyEvent
-{
- public:
+class DLLOPT CNotifyEvent {
+public:
+    CNotifyEvent(Snmp* snmp, const OidCollection& trapids,
+        const TargetCollection& targets);
+    ~CNotifyEvent();
+    Snmp* GetId() { return m_snmp; };
+    int   notify_filter(const Oid& trapid, SnmpTarget& target) const;
+    int   Callback(SnmpTarget& target, Pdu& pdu, SnmpSocket fd, int status);
+    void  get_filter(OidCollection& o, TargetCollection& t)
+    {
+        o = *notify_ids;
+        t = *notify_targets;
+    };
 
-  CNotifyEvent(Snmp* snmp,
-	       const OidCollection &trapids,
-	       const TargetCollection &targets);
-  ~CNotifyEvent();
-  Snmp * GetId() { return m_snmp; };
-  int notify_filter(const Oid &trapid, SnmpTarget &target) const;
-  int Callback(SnmpTarget &target, Pdu &pdu, SnmpSocket fd, int status);
-  void get_filter(OidCollection &o, TargetCollection &t)
-    { o = *notify_ids; t = *notify_targets; };
-
- protected:
-  Snmp              *m_snmp;
-  TargetCollection  *notify_targets;
-  OidCollection     *notify_ids;
+protected:
+    Snmp*             m_snmp;
+    TargetCollection* notify_targets;
+    OidCollection*    notify_ids;
 };
 
-  /*-----------------------------------------------------------*/
-  /* CNotifyEventQueue                                         */
-  /*   class describing a collection of outstanding SNMP msgs. */
-  /*-----------------------------------------------------------*/
-class DLLOPT CNotifyEventQueue: public CEvents
-{
-  public:
-    CNotifyEventQueue(EventListHolder *holder, Snmp *session);
+/*-----------------------------------------------------------*/
+/* CNotifyEventQueue                                         */
+/*   class describing a collection of outstanding SNMP msgs. */
+/*-----------------------------------------------------------*/
+class DLLOPT CNotifyEventQueue : public CEvents {
+public:
+    CNotifyEventQueue(EventListHolder* holder, Snmp* session);
     ~CNotifyEventQueue();
-    int AddEntry(Snmp * snmp,
-		 const OidCollection &trapids,
-		 const TargetCollection &targets);
-    CNotifyEvent * GetEntry(Snmp * snmp);
-    void DeleteEntry(Snmp * snmp);
+    int           AddEntry(Snmp* snmp, const OidCollection& trapids,
+                  const TargetCollection& targets);
+    CNotifyEvent* GetEntry(Snmp* snmp);
+    void          DeleteEntry(Snmp* snmp);
 
     // find the next timeout
-    int GetNextTimeout(msec &/*timeout*/) { return 1; }; // we have no timeouts
-    // set up parameters for select
+    int GetNextTimeout(msec& /*timeout*/) override
+    {
+        return 1;
+    }; // we have no timeouts
+       // set up parameters for select
 #ifdef HAVE_POLL_SYSCALL
-    int GetFdCount();
-    bool GetFdArray(struct pollfd *readfds, int &remaining);
-    int HandleEvents(const struct pollfd *readfds, const int fds);
+    int  GetFdCount();
+    bool GetFdArray(struct pollfd* readfds, int& remaining);
+    int  HandleEvents(const struct pollfd* readfds, const int fds);
 #else
-    void GetFdSets(int &maxfds, fd_set &readfds, fd_set &writefds,
-		   fd_set &exceptfds);
-    int HandleEvents(const int maxfds,
-                     const fd_set &readfds,
-                     const fd_set &writefds,
-                     const fd_set &exceptfds);
+    void GetFdSets(int& maxfds, fd_set& readfds, fd_set& writefds,
+        fd_set& exceptfds) override;
+    int  HandleEvents(const int maxfds, const fd_set& readfds,
+         const fd_set& writefds, const fd_set& exceptfds) override;
 #endif
     // return number of outstanding messages
-    int GetCount() { return m_msgCount; };
+    int GetCount() override { return m_msgCount; };
 
-    int DoRetries(const msec &/*sendtime*/) { return 0; }; // nothing to retry
+    int DoRetries(const msec& /*sendtime*/) override
+    {
+        return 0;
+    }; // nothing to retry
 
-    int Done() { return 0; }; // we are never done
-    void set_listen_port(int port) { m_listen_port = port; };
-    int get_listen_port() { return m_listen_port; };
+    int        Done() override { return 0; }; // we are never done
+    void       set_listen_port(int port) { m_listen_port = port; };
+    int        get_listen_port() { return m_listen_port; };
     SnmpSocket get_notify_fd() const;
 
-  protected:
-
+protected:
     /*-----------------------------------------------------------*/
     /* CNotifyEventQueueElt                                      */
     /*   a container for a single item on a linked lists of      */
     /*  CNotifyEvents.                                           */
     /*-----------------------------------------------------------*/
-    class DLLOPT CNotifyEventQueueElt
-    {
-     public:
-      CNotifyEventQueueElt(CNotifyEvent *notifyevent,
-			   CNotifyEventQueueElt *next,
-			   CNotifyEventQueueElt *previous);
+    class DLLOPT CNotifyEventQueueElt {
+    public:
+        CNotifyEventQueueElt(CNotifyEvent* notifyevent,
+            CNotifyEventQueueElt* next, CNotifyEventQueueElt* previous);
 
-      ~CNotifyEventQueueElt();
-      CNotifyEventQueueElt *GetNext() { return m_Next; };
-      CNotifyEvent *GetNotifyEvent() { return m_notifyevent; };
-      CNotifyEvent *TestId(Snmp *snmp);
+        ~CNotifyEventQueueElt();
+        CNotifyEventQueueElt* GetNext()
+        {
+            return m_Next; // NOLINT(clang-analyzer-cplusplus.NewDelete)
+        };
+        CNotifyEvent* GetNotifyEvent() { return m_notifyevent; };
+        CNotifyEvent* TestId(Snmp* snmp);
 
     private:
-
-      CNotifyEvent *m_notifyevent;
-      class CNotifyEventQueueElt *m_Next;
-      class CNotifyEventQueueElt *m_previous;
+        CNotifyEvent*               m_notifyevent;
+        class CNotifyEventQueueElt* m_Next;
+        class CNotifyEventQueueElt* m_previous;
     };
 
     void cleanup();
@@ -184,13 +186,13 @@ class DLLOPT CNotifyEventQueue: public CEvents
     int                  m_msgCount;
     SnmpSocket           m_notify_fd;
     int                  m_listen_port;
-    EventListHolder *my_holder;
-    Snmp *m_snmpSession;
-    UdpAddress m_notify_addr;
+    EventListHolder*     my_holder;
+    Snmp*                m_snmpSession;
+    UdpAddress           m_notify_addr;
 };
 
 #ifdef SNMP_PP_NAMESPACE
 } // end of namespace Snmp_pp
-#endif 
+#endif
 
 #endif // _SNMP_NOTIFYQUEUE_H_

@@ -1,28 +1,28 @@
 /*_############################################################################
-  _## 
-  _##  eventlist.h  
+  _##
+  _##  eventlist.h
   _##
   _##  SNMP++ v3.4
   _##  -----------------------------------------------
   _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
   _##
   _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##  
+  _##
   _##    Copyright (c) 1996
   _##    Hewlett-Packard Company
-  _##  
+  _##
   _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software 
-  _##  and/or its documentation is hereby granted without fee. User agrees 
-  _##  to display the above copyright notice and this license notice in all 
-  _##  copies of the software and any documentation of the software. User 
-  _##  agrees to assume all liability for the use of the software; 
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations 
-  _##  about the suitability of this software for any purpose. It is provided 
-  _##  "AS-IS" without warranty of any kind, either express or implied. User 
+  _##  Permission to use, copy, modify, distribute and/or sell this software
+  _##  and/or its documentation is hereby granted without fee. User agrees
+  _##  to display the above copyright notice and this license notice in all
+  _##  copies of the software and any documentation of the software. User
+  _##  agrees to assume all liability for the use of the software;
+  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+  _##  about the suitability of this software for any purpose. It is provided
+  _##  "AS-IS" without warranty of any kind, either express or implied. User
   _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base. 
-  _##  
+  _##  upon this software code base.
+  _##
   _##########################################################################*/
 /*===================================================================
 
@@ -65,19 +65,20 @@
 #include <limits.h>
 #include <sys/types.h>
 #ifdef WIN32
-#include <time.h>
+#    include <time.h>
 #else
-#if !(defined CPU && CPU == PPC603)
-#include <sys/time.h>  // time stuff and fd_set
-#endif
-#include <float.h>
+#    if !(defined CPU && CPU == PPC603)
+#        include <sys/time.h> // time stuff and fd_set
+#    endif
+#    include <float.h>
 #endif
 
 #include "snmp_pp/config_snmp_pp.h"
 #include "snmp_pp/reentrant.h"
 
 #ifdef SNMP_PP_NAMESPACE
-namespace Snmp_pp {
+namespace Snmp_pp
+{
 #endif
 
 // NOTE: this may be wrong! CK #define MAX_UINT32 MAXLONG
@@ -86,110 +87,102 @@ class msec;
 class Pdu;
 
 //----[ CEvents class ]------------------------------------------------
-class DLLOPT CEvents: public SnmpSynchronized {
-  public:
+class DLLOPT CEvents : public SnmpSynchronized {
+public:
+    // allow destruction of derived classes
+    virtual ~CEvents() {};
 
-  // allow destruction of derived classes
-  virtual ~CEvents() {};
+    // find the next timeout
+    virtual int GetNextTimeout(msec& sendTime) = 0;
 
-  // find the next timeout
-  virtual int GetNextTimeout(msec &sendTime) = 0;
-
-  // set up parameters for select/poll
+    // set up parameters for select/poll
 #ifdef HAVE_POLL_SYSCALL
-  virtual int GetFdCount() = 0;
-  virtual bool GetFdArray(struct pollfd *readfds, int &remaining) = 0;
-  virtual int HandleEvents(const struct pollfd *readfds, const int fds) = 0;
+    virtual int  GetFdCount()                                              = 0;
+    virtual bool GetFdArray(struct pollfd* readfds, int& remaining)        = 0;
+    virtual int  HandleEvents(const struct pollfd* readfds, const int fds) = 0;
 #else
-  virtual void GetFdSets(int &maxfds, fd_set &readfds, fd_set &writefds,
-			   fd_set &exceptfds) = 0;
-  // process events pending on the active file descriptors
-  virtual int HandleEvents(const int maxfds,
-			   const fd_set &readfds,
-			   const fd_set &writefds,
-			   const fd_set &exceptfds) = 0;
+    virtual void GetFdSets(
+        int& maxfds, fd_set& readfds, fd_set& writefds, fd_set& exceptfds) = 0;
+    // process events pending on the active file descriptors
+    virtual int HandleEvents(const int maxfds, const fd_set& readfds,
+        const fd_set& writefds, const fd_set& exceptfds) = 0;
 #endif
-  // return number of outstanding messages
-  virtual int GetCount() = 0;
+    // return number of outstanding messages
+    virtual int GetCount() = 0;
 
-  // process any timeout events
-  virtual int DoRetries(const msec &sendtime) = 0;
+    // process any timeout events
+    virtual int DoRetries(const msec& sendtime) = 0;
 
-  // check to see if there is a termination condition
-  virtual int Done() = 0;
+    // check to see if there is a termination condition
+    virtual int Done() = 0;
 };
 
-
-class DLLOPT CEventList: public SnmpSynchronized {
-  public:
+class DLLOPT CEventList : public SnmpSynchronized {
+public:
     CEventList() : m_head(0, 0, 0), m_msgCount(0), m_done(0) {};
     ~CEventList();
 
-  // add an event source to the list
-  CEvents *AddEntry(CEvents *events);
+    // add an event source to the list
+    CEvents* AddEntry(CEvents* events);
 
-  // tell main_loop to exit after one pass
-  void SetDone() REENTRANT({ m_done += 1; });
+    // tell main_loop to exit after one pass
+    void SetDone() REENTRANT({ m_done += 1; });
 
-  // see if main loop should terminate
-  int GetDone()  { return m_done; };
+    // see if main loop should terminate
+    int GetDone() { return m_done; };
 
-  // find the time of the next event that will timeout
-  int GetNextTimeout(msec &sendTime);
+    // find the time of the next event that will timeout
+    int GetNextTimeout(msec& sendTime);
 
 #ifdef HAVE_POLL_SYSCALL
-  int GetFdCount();
-  bool GetFdArray(struct pollfd *readfds, int &remaining);
-  int HandleEvents(const struct pollfd *readfds, const int fds);
+    int  GetFdCount();
+    bool GetFdArray(struct pollfd* readfds, int& remaining);
+    int  HandleEvents(const struct pollfd* readfds, const int fds);
 #else
- // set up paramters for select
-  void GetFdSets(int &maxfds, fd_set &readfds, fd_set &writefds,
-		 fd_set &exceptfds);
+    // set up paramters for select
+    void GetFdSets(
+        int& maxfds, fd_set& readfds, fd_set& writefds, fd_set& exceptfds);
 
-  // process events pending on the active file descriptors
-  int HandleEvents(const int maxfds,
-		   const fd_set &readfds,
-		   const fd_set &writefds,
-		   const fd_set &exceptfds);
+    // process events pending on the active file descriptors
+    int HandleEvents(const int maxfds, const fd_set& readfds,
+        const fd_set& writefds, const fd_set& exceptfds);
 #endif
 
-  // return number of outstanding messages
-  int GetCount() { return m_msgCount; };
+    // return number of outstanding messages
+    int GetCount() { return m_msgCount; };
 
+    // process any timeout events
+    int DoRetries(const msec& sendtime);
 
-  // process any timeout events
-  int DoRetries(const msec &sendtime);
+    // check to see if there is a termination condition
+    int Done();
 
-  // check to see if there is a termination condition
-  int Done();
-
-  private:
-
-   class DLLOPT CEventListElt
-   {
+private:
+    class DLLOPT CEventListElt {
     public:
-     CEventListElt(CEvents *events,
-		   CEventListElt *next,
-		   CEventListElt *previous);
+        CEventListElt(
+            CEvents* events, CEventListElt* next, CEventListElt* previous);
 
-     ~CEventListElt();
-     CEventListElt *GetNext() { return m_Next; }
-     CEvents *GetEvents() { return m_events; }
+        ~CEventListElt();
+        CEventListElt* GetNext()
+        {
+            return m_Next; // NOLINT(clang-analyzer-cplusplus.NewDelete)
+        }
+        CEvents* GetEvents() { return m_events; }
 
     private:
-
-     CEvents *m_events;
-     class CEventListElt *m_Next;
-     class CEventListElt *m_previous;
-   };
+        CEvents*             m_events;
+        class CEventListElt* m_Next;
+        class CEventListElt* m_previous;
+    };
 
     CEventListElt m_head;
-    int m_msgCount;
-    int m_done;
+    int           m_msgCount;
+    int           m_done;
 };
 
 #ifdef SNMP_PP_NAMESPACE
 } // end of namespace Snmp_pp
-#endif 
+#endif
 
 #endif // _SNMP_EVENTLIST_H_

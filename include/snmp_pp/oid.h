@@ -181,7 +181,7 @@ public:
      *
      * @return always sNMP_SYNTAX_OID
      */
-    SmiUINT32 get_syntax() const { return sNMP_SYNTAX_OID; }
+    SmiUINT32 get_syntax() const override { return sNMP_SYNTAX_OID; }
 
     /**
      * Assignment from a string.
@@ -214,7 +214,7 @@ public:
     /**
      * Return the space needed for serialization.
      */
-    int get_asn1_length() const;
+    int get_asn1_length() const override;
 
     /**
      * Overloaded equal operator.
@@ -239,7 +239,7 @@ public:
      */
     bool operator<(const Oid& rhs) const
     {
-        int result;
+        int result = 0;
         // call nCompare with the current
         // Oidx, Oidy and len of Oidx
         if ((result = nCompare(rhs)) < 0) return 1;
@@ -309,7 +309,7 @@ public:
      */
     Oid& operator+=(const Oid& o)
     {
-        SmiLPUINT32 new_oid;
+        SmiLPUINT32 new_oid = nullptr;
 
         if (o.smival.value.oid.len == 0) return *this;
 
@@ -354,7 +354,10 @@ public:
     SmiUINT32& operator[](const unsigned int index)
     {
         m_changed = true;
-        return smival.value.oid.ptr[index];
+        assert(smival.value.oid.ptr != nullptr);
+
+        return smival.value.oid.ptr
+            [index]; // NOLINT(clang-analyzer-core.uninitialized.UndefReturn)
     }
 
     /**
@@ -399,14 +402,14 @@ public:
     /**
      * Get the length of the oid.
      */
-    unsigned long len() const { return smival.value.oid.len; }
+    uint32_t len() const { return smival.value.oid.len; }
 
     /**
      * Trim off the rightmost values of an oid.
      *
      * @param n - Trim off n values from the right (default is one)
      */
-    void trim(const unsigned long n = 1)
+    void trim(const uint32_t n = 1)
     {
         // verify that n is legal
         if ((n <= smival.value.oid.len) && (n > 0))
@@ -425,10 +428,10 @@ public:
      *
      * @return 0 if equal / -1 if less / 1 if greater
      */
-    int nCompare(const unsigned long n, const Oid& o) const
+    int nCompare(const uint32_t n, const Oid& o) const
     {
-        unsigned long length      = n;
-        bool          reduced_len = false;
+        uint32_t length      = n;
+        bool     reduced_len = false;
 
         // If both oids are too short, decrease len
         if ((smival.value.oid.len < length)
@@ -451,7 +454,7 @@ public:
             reduced_len = true;
         }
 
-        unsigned long z = 0;
+        uint32_t z = 0;
         while (z < length)
         {
             if (smival.value.oid.ptr[z] < o.smival.value.oid.ptr[z])
@@ -479,8 +482,8 @@ public:
      */
     int nCompare(const Oid& o) const
     {
-        unsigned long length;
-        bool          reduced_len = false;
+        uint32_t length      = 0;
+        bool     reduced_len = false;
 
         length = smival.value.oid.len < o.smival.value.oid.len
             ? o.smival.value.oid.len
@@ -500,7 +503,7 @@ public:
             reduced_len = true;
         }
 
-        unsigned long z = 0;
+        uint32_t z = 0;
         while (z < length)
         {
             if (smival.value.oid.ptr[z] < o.smival.value.oid.ptr[z])
@@ -522,14 +525,17 @@ public:
     /**
      * Return validity of the object.
      */
-    bool valid() const { return (smival.value.oid.ptr ? true : false); }
+    bool valid() const override
+    {
+        return (smival.value.oid.ptr ? true : false);
+    }
 
     /**
      * Get a printable ASCII string of the whole value.
      *
      * @return Dotted oid string (for example "1.3.6.1.6.0")
      */
-    const char* get_printable() const
+    const char* get_printable() const override
     {
         return get_printable(1, smival.value.oid.len, (char*&)iv_str);
     };
@@ -541,7 +547,7 @@ public:
      *
      * @return Dotted oid string (for example "6.0")
      */
-    const char* get_printable(const unsigned long n) const
+    const char* get_printable(const uint32_t n) const
     {
         return get_printable(
             smival.value.oid.len - n + 1, n, (char*&)iv_part_str);
@@ -561,7 +567,7 @@ public:
      * @return Dotted oid string (for example "3.6.1.6")
      */
     const char* get_printable(
-        const unsigned long start, const unsigned long n, char*& buffer) const;
+        const uint32_t start, const uint32_t n, char*& buffer) const;
 
     /**
      * Get a printable ASCII string of a part of the value.
@@ -571,8 +577,7 @@ public:
      *
      * @return Dotted oid string (for example "3.6.1.6")
      */
-    const char* get_printable(
-        const unsigned long start, const unsigned long n) const
+    const char* get_printable(const uint32_t start, const uint32_t n) const
     {
         return get_printable(start, n, (char*&)iv_part_str);
     };
@@ -582,17 +587,17 @@ public:
      *
      * @return Pointer to the newly created object (allocated through new).
      */
-    SnmpSyntax* clone() const { return (SnmpSyntax*)new Oid(*this); }
+    SnmpSyntax* clone() const override { return (SnmpSyntax*)new Oid(*this); }
 
     /**
      * Map other SnmpSyntax objects to Oid.
      */
-    SnmpSyntax& operator=(const SnmpSyntax& val);
+    SnmpSyntax& operator=(const SnmpSyntax& val) override;
 
     /**
      * Clear the Oid.
      */
-    void clear() { delete_oid_ptr(); }
+    void clear() override { delete_oid_ptr(); }
 
 protected:
     /**

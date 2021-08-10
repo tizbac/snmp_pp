@@ -258,7 +258,7 @@ public:
      *
      * @return - The status counter
      */
-    unsigned long get_stats_unknown_security_models() const
+    uint32_t get_stats_unknown_security_models() const
     {
         return snmpUnknownSecurityModels;
     };
@@ -268,14 +268,14 @@ public:
      *
      * @return - The status counter
      */
-    unsigned long get_stats_invalid_msgs() const { return snmpInvalidMsgs; };
+    uint32_t get_stats_invalid_msgs() const { return snmpInvalidMsgs; };
 
     /**
      * Get the value of the status counter snmpUnknownPDUHandlers.
      *
      * @return - The status counter
      */
-    unsigned long get_stats_unknown_pdu_handlers() const
+    uint32_t get_stats_unknown_pdu_handlers() const
     {
         return snmpUnknownPDUHandlers;
     };
@@ -333,8 +333,8 @@ protected:
      * @param buffer - The message
      * @param length - The length of the message
      *
-     * @return - TRUE if the version could be extracted and it
-     *           is a SNMPv3 message. On any error: FALSE.
+     * @return - true if the version could be extracted and it
+     *           is a SNMPv3 message. On any error: false.
      *
      */
     static bool is_v3_msg(unsigned char* buffer, int length);
@@ -371,8 +371,7 @@ protected:
      * @param local_request - Does the request id belong to a local or to
      *                        a remote request?
      */
-    void delete_from_cache(
-        unsigned long requestID, const bool local_request = true)
+    void delete_from_cache(uint32_t requestID, const bool local_request = true)
     {
         cache.delete_entry(requestID, local_request);
     };
@@ -387,8 +386,8 @@ public:
      * @param local_request - Does the request id belong to a local or to
      *                        a remote request?
      */
-    void delete_from_cache(unsigned long requestID, unsigned long messageID,
-        const bool local_request)
+    void delete_from_cache(
+        uint32_t requestID, uint32_t messageID, const bool local_request)
     {
         cache.delete_entry(requestID, messageID, local_request);
     };
@@ -536,7 +535,7 @@ private:
 
         struct Entry_T {
             int                            msg_id;
-            unsigned long                  req_id;
+            uint32_t                       req_id;
             OctetStr                       sec_engine_id;
             int                            sec_model;
             OctetStr                       sec_name;
@@ -566,7 +565,7 @@ private:
          * @return - SNMPv3_MP_OK, SNMPv3_MP_ERROR or SNMPv3_DOUBLED_MESSAGE
          *           (an entry with the given values is already in the cache)
          */
-        int add_entry(int msg_id, unsigned long req_id,
+        int add_entry(int msg_id, uint32_t req_id,
             const OctetStr& sec_engine_id, int sec_model,
             const OctetStr& sec_name, int sec_level,
             const OctetStr& context_engine_id, const OctetStr& context_name,
@@ -594,7 +593,7 @@ private:
          *
          * @param req_id - The request id.
          */
-        void delete_entry(unsigned long req_id, bool local_request);
+        void delete_entry(uint32_t req_id, bool local_request);
 
         /**
          * Delete the entry with the given request and message id from the
@@ -603,8 +602,7 @@ private:
          * @param req_id - The request id.
          * @param msg_id - The message id.
          */
-        void delete_entry(
-            unsigned long req_id, int msg_id, bool local_request);
+        void delete_entry(uint32_t req_id, int msg_id, bool local_request);
 
         /**
          * Search the cache for a message id, return the whole entry and

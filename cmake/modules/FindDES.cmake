@@ -7,10 +7,18 @@
 #  DES_INCLUDE_DIR
 #  DES_LIBRARIES
 
-find_path(DES_INCLUDE_DIR NAMES des.h PATHS ${DES_ROOT_DIR}/include ${CMAKE_SOURCE_DIR}/examples/deslib)
+find_path(
+  DES_INCLUDE_DIR
+  NAMES des.h
+  PATHS ${DES_ROOT_DIR}/include ${CMAKE_SOURCE_DIR}/examples/deslib
+)
 
 if(NOT TARGET des)
-  find_library(DES_LIBRARIES NAMES des desd libdes PATHS ${DES_ROOT_DIR}/lib ${CMAKE_SOURCE_DIR}/examples/deslib)
+  find_library(
+    DES_LIBRARIES
+    NAMES des desd libdes
+    PATHS ${DES_ROOT_DIR}/lib ${CMAKE_SOURCE_DIR}/examples/deslib
+  )
 else()
   set(DES_LIBRARIES des)
 endif()
@@ -22,4 +30,3 @@ if(DES_FOUND)
   message(STATUS "Found DES (include: ${DES_INCLUDE_DIR}, library: ${DES_LIBRARIES})")
   mark_as_advanced(DES_INCLUDE_DIR DES_LIBRARIES)
 endif()
-

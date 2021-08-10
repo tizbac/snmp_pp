@@ -83,7 +83,7 @@ unsigned char* asn_parse_int(
      *       timestamp   0x43 asnlength byte {byte}*
      */
     unsigned char* bufp       = data;
-    unsigned long  asn_length = 0;
+    uint32_t       asn_length = 0;
     long           value      = 0;
 
     *type = *bufp++;
@@ -98,7 +98,7 @@ unsigned char* asn_parse_int(
         ASNERROR("bad length");
         return NULL;
     }
-    if ((asn_length + (bufp - data)) > (unsigned long)(*datalength))
+    if ((asn_length + (bufp - data)) > (uint32_t)(*datalength))
     {
         ASNERROR("overflow of message (int)");
         return NULL;
@@ -110,13 +110,18 @@ unsigned char* asn_parse_int(
     }
     *datalength -= (int)asn_length + SAFE_INT_CAST(bufp - data);
     if (*bufp & 0x80) value = -1; /* integer is negative */
+
+    // FIXME: The result of the left shift is undefined because the left
+    // operand is negative! CK
+    // [clang-analyzer-core.UndefinedBinaryOperatorResult]
     while (asn_length--) value = (value << 8) | *bufp++;
+
     *intp = value;
     return bufp;
 }
 
 /*
- * asn_parse_unsigned_int - pulls an unsigned long out of an ASN int type.
+ * asn_parse_unsigned_int - pulls an uint32_t out of an ASN int type.
  *  On entry, datalength is input as the number of valid bytes following
  *   "data".  On exit, it is returned as the number of valid bytes
  *   following the end of this object.
@@ -133,8 +138,8 @@ unsigned char* asn_parse_unsigned_int(
      *                   0x43 asnlength byte {byte}*
      */
     unsigned char* bufp       = data;
-    unsigned long  asn_length = 0;
-    unsigned long  value      = 0;
+    uint32_t       asn_length = 0;
+    uint32_t       value      = 0;
 
     // get the type
     *type = *bufp++;
@@ -154,7 +159,7 @@ unsigned char* asn_parse_unsigned_int(
     }
 
     // check the len for message overflow
-    if ((asn_length + (bufp - data)) > (unsigned long)(*datalength))
+    if ((asn_length + (bufp - data)) > (uint32_t)(*datalength))
     {
         ASNERROR("overflow of message (uint)");
         return NULL;
@@ -179,7 +184,7 @@ unsigned char* asn_parse_unsigned_int(
 
     // calculate the value
     for (long i = 0; i < (long)asn_length; i++)
-        value = (value << 8) + (unsigned long)*bufp++;
+        value = (value << 8) + (uint32_t)*bufp++;
 
     *intp = value; // assign return value
 
@@ -252,9 +257,9 @@ unsigned char* asn_build_unsigned_int(unsigned char* data, // modified data
     /*
      * ASN.1 integer ::= 0x02 asnlength byte {byte}*
      */
-    unsigned long u_integer     = *intp;
-    long          u_integer_len = 0;
-    long          x             = 0;
+    uint32_t u_integer     = *intp;
+    long     u_integer_len = 0;
+    long     x             = 0;
 
     // figure out the len
     if (((u_integer >> 24) & 0xFF) != 0)
@@ -317,7 +322,7 @@ unsigned char* asn_parse_string(unsigned char* data, int* datalength,
      * ipaddress  ::= 0x40 4 byte byte byte byte
      */
     unsigned char* bufp       = data;
-    unsigned long  asn_length = 0;
+    uint32_t       asn_length = 0;
 
     *type = *bufp++;
     if ((*type != 0x04) && (*type != 0x24) && (*type != 0x40)
@@ -328,7 +333,7 @@ unsigned char* asn_parse_string(unsigned char* data, int* datalength,
     }
     bufp = asn_parse_length(bufp, &asn_length);
     if (bufp == NULL) return NULL;
-    if ((asn_length + (bufp - data)) > (unsigned long)(*datalength))
+    if ((asn_length + (bufp - data)) > (uint32_t)(*datalength))
     {
         ASNERROR("asn parse string: overflow of message");
         return NULL;
@@ -387,7 +392,7 @@ unsigned char* asn_parse_header(
     unsigned char* data, int* datalength, unsigned char* type)
 {
     unsigned char* bufp       = data;
-    unsigned long  asn_length = 0;
+    uint32_t       asn_length = 0;
 
     /* this only works on data types < 30, i.e. no extension octets */
     if (IS_EXTENSION_ID(*bufp))
@@ -399,7 +404,7 @@ unsigned char* asn_parse_header(
     bufp  = asn_parse_length(bufp + 1, &asn_length);
     if (bufp == NULL) return NULL;
     int header_len = SAFE_INT_CAST(bufp - data);
-    if ((unsigned long)(header_len + asn_length) > (unsigned long)*datalength)
+    if ((uint32_t)(header_len + asn_length) > (uint32_t)*datalength)
     {
         ASNERROR("asn length too long");
         return NULL;
@@ -470,7 +475,7 @@ unsigned char* asn_build_sequence(
  *  field (aka: the start of the data field).
  *  Returns NULL on any error.
  */
-unsigned char* asn_parse_length(unsigned char* data, unsigned long* length)
+unsigned char* asn_parse_length(unsigned char* data, uint32_t* length)
 {
     unsigned char lengthbyte = *data;
     *length                  = 0;
@@ -594,9 +599,9 @@ unsigned char* asn_parse_objid(unsigned char* data, int* datalength,
      */
     unsigned char* bufp          = data;
     oid*           oidp          = objid + 1;
-    unsigned long  subidentifier = 0;
+    uint32_t       subidentifier = 0;
     long           length        = 0;
-    unsigned long  asn_length    = 0;
+    uint32_t       asn_length    = 0;
 
     *type = *bufp++;
     if (*type != 0x06)
@@ -606,7 +611,7 @@ unsigned char* asn_parse_objid(unsigned char* data, int* datalength,
     }
     bufp = asn_parse_length(bufp, &asn_length);
     if (bufp == NULL) return NULL;
-    if ((asn_length + (bufp - data)) > (unsigned long)(*datalength))
+    if ((asn_length + (bufp - data)) > (uint32_t)(*datalength))
     {
         ASNERROR("overflow of message (objid)");
         return NULL;
@@ -627,7 +632,7 @@ unsigned char* asn_parse_objid(unsigned char* data, int* datalength,
             length--;
         } while ((*(unsigned char*)bufp++ & ASN_BIT8)
             && length > 0); /* last byte has high bit clear */
-        if (subidentifier > (unsigned long)MAX_SUBID)
+        if (subidentifier > (uint32_t)MAX_SUBID)
         {
             ASNERROR("subidentifier too long");
             return NULL;
@@ -641,7 +646,7 @@ unsigned char* asn_parse_objid(unsigned char* data, int* datalength,
      * X is the value of the first subidentifier.
      * Y is the value of the second subidentifier.
      */
-    subidentifier = (unsigned long)objid[1];
+    subidentifier = (uint32_t)objid[1];
     if (subidentifier == 0x2B)
     {
         objid[0] = 1;
@@ -729,7 +734,7 @@ unsigned char* asn_build_objid(unsigned char* data, int* datalength,
  *    the buffer pointer. On return, the pointer will be increased at least
  *    by one (character) and at most by five.
  */
-void asn_build_subid(unsigned long subid, unsigned char*& bp)
+void asn_build_subid(uint32_t subid, unsigned char*& bp)
 {
     if (subid < 127)
     { /* off by one? */
@@ -737,10 +742,10 @@ void asn_build_subid(unsigned long subid, unsigned char*& bp)
     }
     else
     {
-        unsigned long testmask = 0;
-        int           testbits = 0;
-        unsigned long mask     = 0x7F; /* handle subid == 0 case */
-        int           bits     = 0;
+        uint32_t testmask = 0;
+        int      testbits = 0;
+        uint32_t mask     = 0x7F; /* handle subid == 0 case */
+        int      bits     = 0;
         /* testmask *MUST* !!!! be of an unsigned type */
         for (testmask = 0x7F, testbits = 0; testmask != 0;
              testmask <<= 7, testbits += 7)
@@ -779,7 +784,7 @@ unsigned char* asn_parse_null(
      * ASN.1 null ::= 0x05 0x00
      */
     unsigned char* bufp       = data;
-    unsigned long  asn_length = 0;
+    uint32_t       asn_length = 0;
 
     *type = *bufp++;
     if (*type != 0x05)
@@ -836,7 +841,7 @@ unsigned char* asn_parse_bitstring(unsigned char* data, int* datalength,
      * bitstring ::= 0x03 asnlength unused {byte}*
      */
     unsigned char* bufp       = data;
-    unsigned long  asn_length = 0;
+    uint32_t       asn_length = 0;
 
     *type = *bufp++;
     if (*type != 0x03)
@@ -846,7 +851,7 @@ unsigned char* asn_parse_bitstring(unsigned char* data, int* datalength,
     }
     bufp = asn_parse_length(bufp, &asn_length);
     if (bufp == NULL) return NULL;
-    if ((asn_length + (bufp - data)) > (unsigned long)(*datalength))
+    if ((asn_length + (bufp - data)) > (uint32_t)(*datalength))
     {
         ASNERROR("overflow of message (bitstring)");
         return NULL;
@@ -905,7 +910,7 @@ unsigned char* asn_build_bitstring(unsigned char* data, int* datalength,
 }
 
 /*
- * asn_parse_unsigned_int64 - pulls a 64 bit unsigned long out of an ASN int
+ * asn_parse_unsigned_int64 - pulls a 64 bit uint32_t out of an ASN int
  * type.
  *  On entry, datalength is input as the number of valid bytes following
  *   "data".  On exit, it is returned as the number of valid bytes
@@ -922,8 +927,8 @@ unsigned char* asn_parse_unsigned_int64(unsigned char* data, int* datalength,
      * ASN.1 integer ::= 0x02 asnlength byte {byte}*
      */
     unsigned char* bufp       = data;
-    unsigned long  asn_length = 0;
-    unsigned long  low = 0, high = 0;
+    uint32_t       asn_length = 0;
+    uint32_t       low = 0, high = 0;
 
     *type = *bufp++;
     if ((*type != 0x02) && (*type != 0x46))
@@ -937,7 +942,7 @@ unsigned char* asn_parse_unsigned_int64(unsigned char* data, int* datalength,
         ASNERROR("bad length");
         return NULL;
     }
-    if ((asn_length + (bufp - data)) > (unsigned long)(*datalength))
+    if ((asn_length + (bufp - data)) > (uint32_t)(*datalength))
     {
         ASNERROR("overflow of message (uint64)");
         return NULL;
@@ -950,8 +955,8 @@ unsigned char* asn_parse_unsigned_int64(unsigned char* data, int* datalength,
     *datalength -= (int)asn_length + SAFE_INT_CAST(bufp - data);
     if (*bufp & 0x80)
     {
-        low  = (unsigned long)-1; // integer is negative
-        high = (unsigned long)-1;
+        low  = (uint32_t)-1; // integer is negative
+        high = (uint32_t)-1;
     }
     while (asn_length--)
     {
@@ -980,11 +985,11 @@ unsigned char* asn_build_unsigned_int64(unsigned char* data, int* datalength,
     /*
      * ASN.1 integer ::= 0x02 asnlength byte {byte}*
      */
-    unsigned long low           = cp->low;
-    unsigned long high          = cp->high;
-    unsigned long mask          = 0xFF000000ul;
-    int           add_null_byte = 0;
-    int           intsize       = 8;
+    uint32_t low           = cp->low;
+    uint32_t high          = cp->high;
+    uint32_t mask          = 0xFF000000ul;
+    int      add_null_byte = 0;
+    int      intsize       = 8;
 
     if (((high & mask) >> 24) & 0x80)
     {
@@ -999,7 +1004,7 @@ unsigned char* asn_build_unsigned_int64(unsigned char* data, int* datalength,
          * 2's complement integer. There should be no sequence of 9 consecutive
          * 1's or 0's at the most significant end of the integer.
          */
-        unsigned long mask2 = 0xFF800000ul;
+        uint32_t mask2 = 0xFF800000ul;
         while ((((high & mask2) == 0) || ((high & mask2) == mask2))
             && (intsize > 1))
         {
@@ -1153,8 +1158,8 @@ void snmp_add_var(
         vars->type      = (unsigned char)smival->syntax;
         vars->val_len   = (int)smival->value.oid.len * sizeof(oid);
         vars->val.objid = (oid*)malloc((unsigned)vars->val_len);
-        memcpy((unsigned long*)vars->val.objid,
-            (unsigned long*)smival->value.oid.ptr, (unsigned)vars->val_len);
+        memcpy((uint32_t*)vars->val.objid, (uint32_t*)smival->value.oid.ptr,
+            (unsigned)vars->val_len);
     }
     break;
 
@@ -1555,8 +1560,8 @@ unsigned char* snmp_parse_var_op(
         ASNERROR("Error snmp_parse_var_op: 3");
         return NULL;
     }
-    if (((unsigned long)var_op_len + (data - var_op_start))
-        > (unsigned long)(*listlength))
+    if (((uint32_t)var_op_len + (data - var_op_start))
+        > (uint32_t)(*listlength))
     {
         ASNERROR("Error snmp_parse_var_op: 4");
         return NULL;

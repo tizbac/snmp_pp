@@ -156,10 +156,7 @@ public:
      *
      * @return - engine_boots value if initialized, 0 else
      */
-    unsigned long get_local_boots()
-    {
-        return (table ? table[0].engine_boots : 0);
-    };
+    uint32_t get_local_boots() { return (table ? table[0].engine_boots : 0); };
 
     /**
      * Return the engineTime value of this snmp entity.
@@ -3046,8 +3043,8 @@ int USMUserNameTable::get_user_name(unsigned char* user_name,
     long int* user_name_len, const unsigned char* security_name,
     const long int security_name_len)
 {
-    unsigned long buf_len = *user_name_len;
-    *user_name_len        = 0;
+    uint32_t buf_len = *user_name_len;
+    *user_name_len   = 0;
 
     if (!table) return SNMPv3_USM_ERROR;
 

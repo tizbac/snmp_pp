@@ -84,10 +84,10 @@ static void Decode(UINT4*, const unsigned char*, unsigned int);
 static void MD5_memcpy(POINTER, POINTER, unsigned int);
 static void MD5_memset(POINTER, int, unsigned int);
 
-const static unsigned char PADDING[64] = { 0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+const static unsigned char PADDING[64] = { 0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0 };
+    0, 0, 0 };
 
 /* F, G, H and I are basic MD5 functions.
  */
@@ -185,7 +185,7 @@ void MD5Update(MD5_CTX*  context, /* context */
      the message digest and zeroizing the context.
  */
 void MD5Final(unsigned char digest[16], /* message digest */
-    MD5_CTX* context)                   /* context */
+    MD5_CTX*                context)                   /* context */
 {
     unsigned char bits[8];
     unsigned int  index = 0, padLen = 0;

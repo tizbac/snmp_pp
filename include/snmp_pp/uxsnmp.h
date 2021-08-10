@@ -432,7 +432,7 @@ public:
      *
      * @return SNMP_CLASS_SUCCES or SNMP_CLASS_INVALID_REQID on failure
      */
-    virtual int cancel(const unsigned long rid);
+    virtual int cancel(const uint32_t rid);
 
     /** @name Trap and Inform handling
      */

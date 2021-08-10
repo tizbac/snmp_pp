@@ -219,8 +219,7 @@ DLLOPT unsigned char* asn_build_header(
 DLLOPT unsigned char* asn_build_sequence(
     unsigned char* data, int* datalength, unsigned char type, int length);
 
-DLLOPT unsigned char* asn_parse_length(
-    unsigned char* data, unsigned long* length);
+DLLOPT unsigned char* asn_parse_length(unsigned char* data, uint32_t* length);
 
 DLLOPT unsigned char* asn_build_length(
     unsigned char* data, int* datalength, int length);
@@ -231,7 +230,7 @@ DLLOPT unsigned char* asn_parse_objid(unsigned char* data, int* datalength,
 DLLOPT unsigned char* asn_build_objid(unsigned char* data, int* datalength,
     unsigned char type, oid* objid, int objidlength);
 
-DLLOPT void asn_build_subid(unsigned long subid, unsigned char*& bp);
+DLLOPT void asn_build_subid(uint32_t subid, unsigned char*& bp);
 
 DLLOPT unsigned char* asn_parse_null(
     unsigned char* data, int* datalength, unsigned char* type);

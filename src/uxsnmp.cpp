@@ -221,7 +221,8 @@ long Snmp::MyMakeReqId()
             tv.tv_sec  = 0;
             tv.tv_usec = 100;
             select(0, 0, 0, 0, &tv);
-            eventListHolder->snmpEventList()->lock();
+            eventListHolder->snmpEventList()
+                ->lock(); // FIXME: not exception save! CK
         }
     } while (eventListHolder->snmpEventList()->GetEntry(rid));
     eventListHolder->snmpEventList()->unlock();
@@ -249,9 +250,10 @@ DLLOPT int send_snmp_request(SnmpSocket sock, unsigned char* send_buf,
         // prepare the destination address
         struct sockaddr_in agent_addr; // send socket struct
         memset(&agent_addr, 0, sizeof(agent_addr));
-        agent_addr.sin_family = AF_INET;
-        agent_addr.sin_addr.s_addr =
-            inet_addr(((IpAddress&)address).IpAddress::get_printable());
+        agent_addr.sin_family      = AF_INET;
+        agent_addr.sin_addr.s_addr = inet_addr(
+            ((IpAddress&)address)
+                .IpAddress::get_printable()); // TODO: Use inet_pton()! CK
         agent_addr.sin_port = htons(((UdpAddress&)address).get_port());
 
         send_result = sendto(sock, (char*)send_buf, SAFE_INT_CAST(send_len), 0,
@@ -352,7 +354,8 @@ int receive_snmp_response(SnmpSocket sock, Snmp& snmp_session, Pdu& pdu,
     if (((sockaddr_in&)from_addr).sin_family == AF_INET)
     {
         // IPv4
-        fromaddress = inet_ntoa(((sockaddr_in&)from_addr).sin_addr);
+        fromaddress = inet_ntoa(
+            ((sockaddr_in&)from_addr).sin_addr); // TODO: Use inet_ntop()! CK
         fromaddress.set_port(ntohs(((sockaddr_in&)from_addr).sin_port));
     }
 #ifdef SNMP_PP_IPv6
@@ -465,7 +468,8 @@ int receive_snmp_notification(
     if (((sockaddr_in&)from_addr).sin_family == AF_INET)
     {
         // IPv4
-        fromaddress = inet_ntoa(((sockaddr_in&)from_addr).sin_addr);
+        fromaddress = inet_ntoa(
+            ((sockaddr_in&)from_addr).sin_addr); // TODO: Use inet_ntop()! CK
         fromaddress.set_port(ntohs(((sockaddr_in&)from_addr).sin_port));
     }
 #ifdef SNMP_PP_IPv6
@@ -737,7 +741,8 @@ void Snmp::init(int& status, IpAddress* addresses[2],
         else
         {
             // set up the manager socket attributes
-            unsigned long inaddr = inet_addr(addresses[0]->get_printable());
+            uint32_t inaddr = inet_addr(
+                addresses[0]->get_printable()); // TODO: Use inet_pton()! CK
             struct sockaddr_in mgr_addr;
             memset(&mgr_addr, 0, sizeof(mgr_addr));
             mgr_addr.sin_family      = AF_INET;
@@ -1122,7 +1127,7 @@ int Snmp::send_raw_data(unsigned char* send_buf, size_t send_len,
 }
 
 //-----------------------[ cancel ]--------------------------------------
-int Snmp::cancel(const unsigned long request_id)
+int Snmp::cancel(const uint32_t request_id)
 {
     eventListHolder->snmpEventList()->lock();
     int status = eventListHolder->snmpEventList()->DeleteEntry(request_id);
@@ -1184,7 +1189,7 @@ int Snmp::trap(Pdu&   pdu,    // pdu to send
     OctetStr      my_get_community;
     OctetStr      my_set_community;
     GenAddress    address;
-    unsigned long my_timeout = 0;
+    uint32_t      my_timeout = 0;
     int           my_retry   = 0;
     unsigned char version    = 0;
     int           status     = 0;
@@ -1514,7 +1519,7 @@ int Snmp::snmp_engine(Pdu& pdu,      // pdu to use
 
         unsigned short pdu_action = 0; // type of pdu to build
         unsigned short action     = 0; // type of pdu to build
-        unsigned long  my_timeout = 0; // target specific timeout
+        uint32_t       my_timeout = 0; // target specific timeout
         int            my_retry   = 0; // target specific retry
 
         OctetStr      my_get_community;
