@@ -372,7 +372,7 @@ v3MP::Cache::~Cache()
 }
 
 // Add an entry to the cache.
-int v3MP::Cache::add_entry(int msg_id, unsigned long req_id,
+int v3MP::Cache::add_entry(int msg_id, uint32_t req_id,
     const OctetStr& sec_engine_id, int sec_model, const OctetStr& sec_name,
     int sec_level, const OctetStr& context_engine_id,
     const OctetStr& context_name, struct SecurityStateReference* sec_state_ref,
@@ -488,7 +488,7 @@ int v3MP::Cache::get_entry(int msg_id, bool local_request, int* error_code,
 }
 
 // Delete the entry with the given request id from the cache.
-void v3MP::Cache::delete_entry(unsigned long req_id, bool local_request)
+void v3MP::Cache::delete_entry(uint32_t req_id, bool local_request)
 {
     if (!table) return;
 
@@ -530,8 +530,7 @@ void v3MP::Cache::delete_entry(unsigned long req_id, bool local_request)
 }
 
 // Delete the entry with the given request ans message id from the cache.
-void v3MP::Cache::delete_entry(
-    unsigned long req_id, int msg_id, bool local_request)
+void v3MP::Cache::delete_entry(uint32_t req_id, int msg_id, bool local_request)
 {
     if (!table) return;
 

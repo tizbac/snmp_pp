@@ -175,7 +175,7 @@ public:
      *
      * The syntax of the Vb will be set to SMI UINT32.
      */
-    void set_value(const unsigned int i)
+    void set_value(const uint32_t i)
     {
         free_vb();
         iv_vb_value = new SnmpUInt32(i);
@@ -195,7 +195,7 @@ public:
     };
 
     /**
-     * Set the value with an unsigned long int.
+     * Set the value with an uint32_t int.
      *
      * @note Even on 64 bit platforms, only 32 bits are used
      *
@@ -263,7 +263,7 @@ public:
      * Get the value.
      *
      * This method will only return success if the value of the vb can
-     * be mapped to an unsigned long (SMI types uint32, counter32, gauge
+     * be mapped to an uint32_t (SMI types uint32, counter32, gauge
      * and timeticks).
      *
      * @param i - returned value
@@ -288,14 +288,14 @@ public:
    * Get the value.
    *
    * This method will only return success if the value of the vb can
-   * be mapped to an unsigned long (SMI types uint32, counter32, gauge
+   * be mapped to an uint32_t (SMI types uint32, counter32, gauge
    * and timeticks).
    *
    * @param i - returned value
    *
    * @return SNMP_CLASS_SUCCESS on success, else SNMP_CLASS_INVALID.
    */
-  int get_value(unsigned long &i) const;
+  int get_value(uint32_t &i) const;
 #endif
 
     /**
@@ -326,7 +326,7 @@ public:
      *
      * @return SNMP_CLASS_SUCCESS on success, else SNMP_CLASS_INVALID.
      */
-    int get_value(unsigned char* ptr, unsigned long& len) const;
+    int get_value(unsigned char* ptr, uint32_t& len) const;
 
     /**
      * Get the value.
@@ -347,8 +347,8 @@ public:
      *
      * @return SNMP_CLASS_SUCCESS on success, else SNMP_CLASS_INVALID.
      */
-    int get_value(unsigned char* ptr, unsigned long& len,
-        const unsigned long maxlen, const bool add_null_byte = false) const;
+    int get_value(unsigned char* ptr, uint32_t& len, const uint32_t maxlen,
+        const bool add_null_byte = false) const;
 
     /**
      * Get the value.
@@ -436,7 +436,7 @@ public:
     /**
      * Return the validity of a Vb object.
      *
-     * @return TRUE if oid and value have been set.
+     * @return true if oid and value have been set.
      */
     bool valid() const;
 

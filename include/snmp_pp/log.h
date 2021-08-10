@@ -65,11 +65,12 @@ namespace Snmp_pp
 
 #else
 
-#    define LOG_BEGIN(name, level)                            \
-        {                                                     \
-            if (DefaultLog::log()->log_needed(name, level)) { \
-                DefaultLog::lock();                           \
-            DefaultLog::create_log_entry(name, level)
+#    define LOG_BEGIN(name, level)                          \
+        {                                                   \
+            if (DefaultLog::log()->log_needed(name, level)) \
+            {                                               \
+                DefaultLog::lock();                         \
+                DefaultLog::create_log_entry(name, level)
 
 #    define LOG(item) *DefaultLog::log_entry() += item
 
@@ -191,7 +192,7 @@ protected:
      * Add a string to the log.
      *
      * @param s - A string value.
-     * @return TRUE if the value has been added and FALSE if the log
+     * @return true if the value has been added and false if the log
      *         entry is full.
      */
     virtual bool add_string(const char* s) = 0;
@@ -200,7 +201,7 @@ protected:
      * Add an integer to the log.
      *
      * @param s - An integer value.
-     * @return TRUE if the value has been added and FALSE if the log
+     * @return true if the value has been added and false if the log
      *         entry is full.
      */
     virtual bool add_integer(long s);
@@ -258,7 +259,7 @@ public:
      *
      * @return Current contents of this log entry.
      */
-    virtual const char* get_value() const { return value; }
+    const char* get_value() const override { return value; }
 
 protected:
     /**
@@ -275,10 +276,10 @@ protected:
      * Add a string to the log.
      *
      * @param s - A string value.
-     * @return TRUE if the value has been added and FALSE if the log
+     * @return true if the value has been added and false if the log
      *         entry is full.
      */
-    bool add_string(const char* s);
+    bool add_string(const char* s) override;
 
 private:
     char* value;
@@ -367,7 +368,7 @@ public:
      *    by logical or the log entry class with a level
      *    of 0 up to 15.
      * @return
-     *    TRUE if logging is needed, FALSE otherwise.
+     *    true if logging is needed, false otherwise.
      */
     virtual bool log_needed(const char* const, unsigned char t) const
     {
@@ -459,8 +460,8 @@ public:
      * @param t - The type of the log entry.
      * @return A new instance of LogEntry (or of a derived class).
      */
-    virtual LogEntry* create_log_entry(
-        const char* const name, unsigned char t) const;
+    LogEntry* create_log_entry(
+        const char* const name, unsigned char t) const override;
 
     /**
      * Add a LogEntry to the receiver Log.
@@ -468,7 +469,7 @@ public:
      * @param log - A log entry.
      * @return The receiver log itself.
      */
-    virtual AgentLog& operator+=(const LogEntry* log);
+    AgentLog& operator+=(const LogEntry* log) override;
 
 protected:
     FILE* logfile;
@@ -505,7 +506,7 @@ public:
      */
     static void init(AgentLog* logger)
     {
-        lock();
+        lock(); // FIXME: not exception save! CK
         if (instance) delete instance;
         instance = logger;
         unlock();
@@ -556,7 +557,8 @@ public:
      */
     static void create_log_entry(const char* name, unsigned char type)
     {
-        if (!entry) {
+        if (!entry)
+        {
             entry = log()->create_log_entry(name, type);
             entry->init();
         }

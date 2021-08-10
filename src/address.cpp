@@ -136,7 +136,7 @@ void Address::clear()
 
 //-----------------------------------------------------------------------
 // overloaded equivalence operator, are two addresses equal?
-int operator==(const Address& lhs, const Address& rhs)
+bool operator==(const Address& lhs, const Address& rhs)
 {
     ADDRESS_TRACE2;
 
@@ -145,7 +145,7 @@ int operator==(const Address& lhs, const Address& rhs)
 
 //------------------------------------------------------------------
 // overloaded > operator, is a1 > a2
-int operator>(const Address& lhs, const Address& rhs)
+bool operator>(const Address& lhs, const Address& rhs)
 {
     ADDRESS_TRACE2;
 
@@ -154,7 +154,7 @@ int operator>(const Address& lhs, const Address& rhs)
 
 //-----------------------------------------------------------------
 // overloaded < operator, is a1 < a2
-int operator<(const Address& lhs, const Address& rhs)
+bool operator<(const Address& lhs, const Address& rhs)
 {
     ADDRESS_TRACE2;
 
@@ -163,7 +163,7 @@ int operator<(const Address& lhs, const Address& rhs)
 
 //------------------------------------------------------------------
 // equivlence operator overloaded, are an address and a string equal?
-int operator==(const Address& lhs, const char* rhs)
+bool operator==(const Address& lhs, const char* rhs)
 {
     ADDRESS_TRACE2;
 
@@ -179,7 +179,7 @@ int operator==(const Address& lhs, const char* rhs)
 
 //------------------------------------------------------------------
 // overloaded > , is a > inaddr
-int operator>(const Address& lhs, const char* rhs)
+bool operator>(const Address& lhs, const char* rhs)
 {
     ADDRESS_TRACE2;
 
@@ -191,7 +191,7 @@ int operator>(const Address& lhs, const char* rhs)
 
 //------------------------------------------------------------------
 // overloaded >= , is a >= inaddr
-int operator>=(const Address& lhs, const char* rhs)
+bool operator>=(const Address& lhs, const char* rhs)
 {
     ADDRESS_TRACE2;
 
@@ -202,7 +202,7 @@ int operator>=(const Address& lhs, const char* rhs)
 
 //-----------------------------------------------------------------
 // overloaded < , are an address and a string equal?
-int operator<(const Address& lhs, const char* rhs)
+bool operator<(const Address& lhs, const char* rhs)
 {
     ADDRESS_TRACE2;
 
@@ -213,7 +213,7 @@ int operator<(const Address& lhs, const char* rhs)
 
 //-----------------------------------------------------------------
 // overloaded <= , is a <= inaddr
-int operator<=(const Address& lhs, const char* rhs)
+bool operator<=(const Address& lhs, const char* rhs)
 {
     ADDRESS_TRACE2;
 
@@ -323,7 +323,7 @@ SnmpSyntax& IpAddress::operator=(const SnmpSyntax& val)
     if (this == &val) return *this; // protect against assignment from itself
 
     addr_changed = true;
-    valid_flag   = false; // will get set TRUE if really valid
+    valid_flag   = false; // will get set true if really valid
     iv_friendly_name.clear();
 
     if (val.valid())
@@ -383,7 +383,7 @@ Address& IpAddress::operator=(const Address& val)
     if (this == &val) return *this; // protect against assignment from itself
 
     addr_changed = true;
-    valid_flag   = false; // will get set TRUE if really valid
+    valid_flag   = false; // will get set true if really valid
     iv_friendly_name.clear();
 
     if (val.valid())
@@ -493,8 +493,7 @@ const char* IpAddress::friendly_name(int& status)
 {
     ADDRESS_TRACE;
 
-    if ((iv_friendly_name.length() == 0) && (valid_flag))
-        this->addr_to_friendly();
+    if ((iv_friendly_name.empty()) && (valid_flag)) this->addr_to_friendly();
     status = iv_friendly_name_status;
     return iv_friendly_name.c_str();
 }
@@ -558,7 +557,7 @@ int IpAddress::parse_dotted_ipstring(const char* inaddr)
     ptr = temp;
     while (*ptr)
     {
-        unsigned long number = 0;
+        uint32_t number = 0;
 
         if (*ptr == '.') ++ptr; // skip over the dot
 
@@ -596,7 +595,7 @@ int IpAddress::parse_coloned_ipstring(const char* inaddr)
 {
     ADDRESS_TRACE;
 
-    unsigned char tmp_address_buffer[ADDRBUF];
+    unsigned char tmp_address_buffer[ADDRBUF] {};
     char          temp[60]; // temp buffer for destruction
 
     // check len, an ipv6 can never be bigger than 39 + 11
@@ -629,7 +628,7 @@ int IpAddress::parse_coloned_ipstring(const char* inaddr)
     char* in_ptr         = temp;
     char* out_ptr        = (char*)tmp_address_buffer;
     char* end_first_part = NULL;
-    char  second[39];
+    char  second[39] {};
     int   second_used      = false;
     int   colon_count      = 0;
     int   had_double_colon = false;
@@ -637,7 +636,7 @@ int IpAddress::parse_coloned_ipstring(const char* inaddr)
     int   had_dot          = false;
     int   dot_count        = 0;
     int   digit_count      = 0;
-    char  digits[4];
+    char  digits[4] {};
     char  last_deliminiter = 0;
 
     while (*in_ptr != 0)
@@ -746,7 +745,7 @@ int IpAddress::parse_coloned_ipstring(const char* inaddr)
                     *out_ptr++      = (c * 16 + d);
                 }
             }
-            digit_count = 0;
+            // Note: DeadStores: digit_count = 0;! CK
         }
         else if (last_deliminiter == '.')
         {
@@ -764,7 +763,7 @@ int IpAddress::parse_coloned_ipstring(const char* inaddr)
                 else
                     return false;
             }
-            // digit_count = 0;
+            // Note: DeadStores: digit_count = 0;! CK
         }
         else
             return false;
@@ -965,14 +964,14 @@ bool IpAddress::parse_address(const char* inaddr)
     }
 #            endif // SNMP_PP_IPv6
 #        else      // not HAVE_GETHOSTBYNAME_R
-    lookupResult = gethostbyname(inaddr);
+    lookupResult = gethostbyname(inaddr); // TODO: Use getaddrinfo()! CK
 #            ifdef SNMP_PP_IPv6
     if (!lookupResult)
     {
 #                ifdef HAVE_GETHOSTBYNAME2
         lookupResult = gethostbyname2(inaddr, AF_INET6);
 #                else
-        lookupResult = gethostbyname(inaddr);
+        lookupResult = gethostbyname(inaddr); // TODO: Use getaddrinfo()! CK
 #                endif // HAVE_GETHOSTBYNAME2
     }
 #            endif     // SNMP_PP_IPv6
@@ -1016,7 +1015,8 @@ bool IpAddress::parse_address(const char* inaddr)
                 (void*)&ipAddr, (void*)lookupResult->h_addr, sizeof(in_addr));
 
             // now lets check out the dotted string
-            strlcpy(ds, inet_ntoa(ipAddr), sizeof(ds)); // TODO: CWE-119! CK
+            strlcpy(ds, inet_ntoa(ipAddr),
+                sizeof(ds)); // TODO: use inet_ntop()! CK
 
             if (!parse_dotted_ipstring(ds)) return false;
 
@@ -1100,7 +1100,8 @@ int IpAddress::addr_to_friendly()
     char            ds[61];
 
     // lets try and get the friendly name from the DNS
-    strlcpy(ds, this->IpAddress::get_printable(), sizeof(ds)); // TODO: CWE-119! CK
+    strlcpy(
+        ds, this->IpAddress::get_printable(), sizeof(ds)); // TODO: CWE-119! CK
 
 #    if !(defined(CPU) && CPU == PPC603) && defined HAVE_GETHOSTBYADDR_R
     int     herrno = 0;
@@ -1109,7 +1110,7 @@ int IpAddress::addr_to_friendly()
 #    endif
     if (ip_version == version_ipv4)
     {
-        in_addr ipAddr;
+        in_addr ipAddr {};
 
 #    if defined   HAVE_INET_ATON
         if (inet_aton((char*)ds, &ipAddr) == 0) return -1; // bad address
@@ -1117,7 +1118,7 @@ int IpAddress::addr_to_friendly()
         if (inet_pton(AF_INET, (char*)ds, &ipAddr) <= 0)
             return -1; // bad address
 #    else
-        ipAddr.s_addr = inet_addr((char*)ds);
+        ipAddr.s_addr = inet_addr((char*)ds); // TODO: use inet_pton()! CK
         if (ipAddr.s_addr == INADDR_NONE) return -1; // bad address
 #    endif
 
@@ -1132,7 +1133,8 @@ int IpAddress::addr_to_friendly()
             2048, &lookupResult, &herrno);
 #        endif
 #    else
-        lookupResult = gethostbyaddr((char*)&ipAddr, sizeof(in_addr), AF_INET);
+        lookupResult = gethostbyaddr((char*)&ipAddr, sizeof(in_addr),
+            AF_INET); // TODO: Use getaddrinfo()! CK
 #    endif
     }
     else
@@ -1149,7 +1151,7 @@ int IpAddress::addr_to_friendly()
                 }
         }
 
-        in6_addr ipAddr;
+        in6_addr ipAddr {};
 
         if (inet_pton(AF_INET6, (char*)ds, &ipAddr) <= 0)
             return -1; // bad address
@@ -1165,8 +1167,8 @@ int IpAddress::addr_to_friendly()
             buf, 2048, &lookupResult, &herrno);
 #            endif
 #        else
-        lookupResult =
-            gethostbyaddr((char*)&ipAddr, sizeof(in6_addr), AF_INET6);
+        lookupResult = gethostbyaddr((char*)&ipAddr, sizeof(in6_addr),
+            AF_INET6); // TODO: Use getaddrinfo()! CK
 #        endif // HAVE_GETHOSTBYADDR_R
 #    else
         return -1;
@@ -1249,8 +1251,9 @@ void IpAddress::format_output() const
     if (valid_flag)
     {
         if (ip_version == version_ipv4)
-            snprintf((char*)output_buffer, sizeof(output_buffer), "%d.%d.%d.%d", address_buffer[0],
-                address_buffer[1], address_buffer[2], address_buffer[3]);
+            snprintf((char*)output_buffer, sizeof(output_buffer),
+                "%d.%d.%d.%d", address_buffer[0], address_buffer[1],
+                address_buffer[2], address_buffer[3]);
         else if (have_ipv6_scope)
             snprintf((char*)output_buffer, sizeof(output_buffer),
                 "%02x%02x:%02x%02x:%02x%02x:%02x%02x:"
@@ -1478,7 +1481,7 @@ SnmpSyntax& UdpAddress::operator=(const SnmpSyntax& val)
 
     if (this == &val) return *this; // protect against assignment from itself
 
-    valid_flag   = false; // will get set TRUE if really valid
+    valid_flag   = false; // will get set true if really valid
     addr_changed = true;
     if (val.valid())
     {
@@ -1537,7 +1540,7 @@ Address& UdpAddress::operator=(const Address& val)
 
     if (this == &val) return *this; // protect against assignment from itself
 
-    valid_flag   = false; // will get set TRUE if really valid
+    valid_flag   = false; // will get set true if really valid
     addr_changed = true;
     if (val.valid())
     {
@@ -1732,13 +1735,13 @@ bool UdpAddress::parse_address(const char* inaddr)
         buffer[0]       = ' ';
     }
 
-    bool           result = 0;
-    unsigned short port   = 0;
+    bool     result = 0;
+    uint16_t port   = 0;
 
     if (found)
     {
         buffer[pos] = 0;
-        port        = std::stoul(&buffer[pos + 1]);
+        port        = (uint16_t)std::stoul(&buffer[pos + 1]);
         result      = IpAddress::parse_address(buffer);
     }
     else
@@ -1807,7 +1810,8 @@ void UdpAddress::format_output() const
     if (valid_flag)
     {
         if (ip_version == version_ipv4)
-            snprintf((char*)output_buffer, sizeof(output_buffer), "%s%c%d", IpAddress::get_printable(),
+            snprintf((char*)output_buffer, sizeof(output_buffer), "%s%c%d",
+                IpAddress::get_printable(),
                 '/', // TODO: look for problems in old code and change to "sep"
                 get_port());
         else
@@ -1841,7 +1845,7 @@ bool UdpAddress::set_scope(const unsigned int scope)
 /**
  * Map a IPv4 UDP address to a IPv6 UDP address.
  *
- * @return - TRUE if no error occured.
+ * @return - true if no error occured.
  */
 bool UdpAddress::map_to_ipv6()
 {
@@ -1938,7 +1942,7 @@ SnmpSyntax& IpxAddress::operator=(const SnmpSyntax& val)
     // protect against assignment from itself
     if (this == &val) return *this;
 
-    valid_flag = false; // will set to TRUE if really valid
+    valid_flag = false; // will set to true if really valid
     if (val.valid())
     {
         switch (val.get_syntax())
@@ -1962,7 +1966,7 @@ Address& IpxAddress::operator=(const Address& val)
     // protect against assignment from itself
     if (this == &val) return *this;
 
-    valid_flag = false; // will set to TRUE if really valid
+    valid_flag = false; // will set to true if really valid
     if (val.valid())
     {
         switch (val.get_syntax())
@@ -1995,7 +1999,7 @@ IpxAddress& IpxAddress::operator=(const IpxAddress& ipxaddress)
 
 //-----[ IPX Address parse Address ]-----------------------------------
 // Convert a string to a ten byte ipx address
-// On success sets validity  TRUE or FALSE
+// On success sets validity  true or false
 //
 //     IPX address format
 //
@@ -2151,10 +2155,9 @@ int IpxAddress::get_hostid(MacAddress& mac) const
     if (valid_flag)
     {
         char buffer[18];
-        snprintf(buffer, sizeof(buffer),
-            "%02x:%02x:%02x:%02x:%02x:%02x", address_buffer[4],
-            address_buffer[5], address_buffer[6], address_buffer[7],
-            address_buffer[8], address_buffer[9]);
+        snprintf(buffer, sizeof(buffer), "%02x:%02x:%02x:%02x:%02x:%02x",
+            address_buffer[4], address_buffer[5], address_buffer[6],
+            address_buffer[7], address_buffer[8], address_buffer[9]);
         MacAddress temp(buffer);
         mac = temp;
         if (mac.valid()) return true;
@@ -2259,7 +2262,7 @@ SnmpSyntax& IpxSockAddress::operator=(const SnmpSyntax& val)
 {
     if (this == &val) return *this; // protect against assignment from itself
 
-    valid_flag = false; // will set to TRUE if really valid
+    valid_flag = false; // will set to true if really valid
     if (val.valid())
     {
         switch (val.get_syntax())
@@ -2293,7 +2296,7 @@ Address& IpxSockAddress::operator=(const Address& val)
 {
     if (this == &val) return *this; // protect against assignment from itself
 
-    valid_flag = false; // will set to TRUE if really valid
+    valid_flag = false; // will set to true if really valid
     if (val.valid())
     {
         switch (val.get_syntax())
@@ -2342,8 +2345,7 @@ void IpxSockAddress::format_output() const
 
     if (valid_flag)
         snprintf((char*)output_buffer, sizeof(output_buffer), "%s/%d",
-            IpxAddress::get_printable(),
-            get_socket());
+            IpxAddress::get_printable(), get_socket());
     else
         *(char*)output_buffer = 0;
     IpxSockAddress* nc_this = PP_CONST_CAST(IpxSockAddress*, this);
@@ -2481,7 +2483,7 @@ Address& MacAddress::operator=(const Address& val)
 {
     if (this == &val) return *this; // protect against assignment from itself
 
-    valid_flag = false; // will set to TRUE if really valid
+    valid_flag = false; // will set to true if really valid
     if (val.valid())
     {
         switch (val.get_syntax())
@@ -2505,7 +2507,7 @@ SnmpSyntax& MacAddress::operator=(const SnmpSyntax& val)
 {
     if (this == &val) return *this; // protect against assignment from itself
 
-    valid_flag = false; // will set to TRUE if really valid
+    valid_flag = false; // will set to true if really valid
     if (val.valid())
     {
         switch (val.get_syntax())
@@ -2526,7 +2528,7 @@ SnmpSyntax& MacAddress::operator=(const SnmpSyntax& val)
 
 //-----[ MAC Address parse Address ]--------------------------------------
 // Convert a string to a six byte MAC address
-// On success sets validity TRUE or FALSE
+// On success sets validity true or false
 //
 //     MAC address format
 //
@@ -2610,9 +2612,10 @@ bool MacAddress::parse_address(const char* inaddr)
 void MacAddress::format_output() const
 {
     if (valid_flag)
-        snprintf((char*)output_buffer, sizeof(output_buffer), "%02x:%02x:%02x:%02x:%02x:%02x",
-            address_buffer[0], address_buffer[1], address_buffer[2],
-            address_buffer[3], address_buffer[4], address_buffer[5]);
+        snprintf((char*)output_buffer, sizeof(output_buffer),
+            "%02x:%02x:%02x:%02x:%02x:%02x", address_buffer[0],
+            address_buffer[1], address_buffer[2], address_buffer[3],
+            address_buffer[4], address_buffer[5]);
     else
         *(char*)output_buffer = 0;
     MacAddress* nc_this   = PP_CONST_CAST(MacAddress*, this);
@@ -2664,15 +2667,16 @@ GenAddress::GenAddress(const char* addr, const Address::addr_type use_type)
     smival.value.string.ptr = address_buffer;   // constant
 
     address = 0;
-    parse_address(addr, use_type);
+    bool OK = parse_address(addr, use_type);
 
     // Copy real address smival info into GenAddr smival
     // BOK: smival is generally not used for GenAddress, but
     //      we need this to be a replica of the real address'
     //      smival info so that <class>::operator=SnmpSyntax
     //      will work.
-    if (valid_flag)
+    if (OK && valid_flag && address != nullptr)
     {
+        // NOLINTNEXTLINE(clang-analyzer-core.NullDereference)
         smival.syntax = ((GenAddress*)address)->smival.syntax;
         smival.value.string.len =
             ((GenAddress*)address)->smival.value.string.len;
@@ -2851,7 +2855,7 @@ SnmpSyntax& GenAddress::operator=(const SnmpSyntax& val)
 
     if (this == &val) return *this; // protect against assignment from itself
 
-    valid_flag = false; // will get set to TRUE if really valid
+    valid_flag = false; // will get set to true if really valid
     if (address)
     {
         delete address;
@@ -2883,8 +2887,8 @@ SnmpSyntax& GenAddress::operator=(const SnmpSyntax& val)
         // (e.g., UDPIPLEN == MACLEN).  It gets worse if we add AppleTalk or
         // OSI which use variable length addresses!
         case sNMP_SYNTAX_OCTETS: {
-            unsigned long val_len = 0;
-            val_len               = ((GenAddress&)val).smival.value.string.len;
+            uint32_t val_len = 0;
+            val_len          = ((GenAddress&)val).smival.value.string.len;
 
             if ((val_len == UDPIPLEN) || IS_UDPIP6LEN(val_len))
                 address = new UdpAddress;

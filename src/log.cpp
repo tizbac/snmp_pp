@@ -121,7 +121,7 @@ void LogEntry::init(void)
 #            ifdef _WIN32
     typedef long pid_t;
 #            endif
-    pid_t        pid = getpid();
+    pid_t        pid = _getpid();
 #        else
     long pid = 0;
 #        endif
@@ -424,7 +424,7 @@ SnmpSynchronized DefaultLog::mutex;
 
 void DefaultLog::cleanup()
 {
-    lock();
+    lock(); // FIXME: not exception save! CK
     if (instance) delete instance;
     instance = 0;
     unlock();
@@ -435,7 +435,7 @@ AgentLog* DefaultLog::init_ts(AgentLog* logger)
     AgentLog* r = instance;
     if (!r)
     {
-        lock();
+        lock(); // FIXME: not exception save! CK
         if (!instance)
         {
 #ifdef WITH_LOG_PROFILES
