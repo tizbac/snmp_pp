@@ -253,7 +253,7 @@ public:
     }
 
 protected:
-    SNMP_PP_MUTABLE char output_buffer[CTR64OUTBUF]{};
+    SNMP_PP_MUTABLE char output_buffer[CTR64OUTBUF] {};
     SNMP_PP_MUTABLE bool m_changed;
 };
 

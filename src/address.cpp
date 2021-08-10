@@ -493,8 +493,7 @@ const char* IpAddress::friendly_name(int& status)
 {
     ADDRESS_TRACE;
 
-    if ((iv_friendly_name.empty()) && (valid_flag))
-        this->addr_to_friendly();
+    if ((iv_friendly_name.empty()) && (valid_flag)) this->addr_to_friendly();
     status = iv_friendly_name_status;
     return iv_friendly_name.c_str();
 }
@@ -596,7 +595,7 @@ int IpAddress::parse_coloned_ipstring(const char* inaddr)
 {
     ADDRESS_TRACE;
 
-    unsigned char tmp_address_buffer[ADDRBUF]{};
+    unsigned char tmp_address_buffer[ADDRBUF] {};
     char          temp[60]; // temp buffer for destruction
 
     // check len, an ipv6 can never be bigger than 39 + 11
@@ -629,7 +628,7 @@ int IpAddress::parse_coloned_ipstring(const char* inaddr)
     char* in_ptr         = temp;
     char* out_ptr        = (char*)tmp_address_buffer;
     char* end_first_part = NULL;
-    char  second[39]{};
+    char  second[39] {};
     int   second_used      = false;
     int   colon_count      = 0;
     int   had_double_colon = false;
@@ -637,7 +636,7 @@ int IpAddress::parse_coloned_ipstring(const char* inaddr)
     int   had_dot          = false;
     int   dot_count        = 0;
     int   digit_count      = 0;
-    char  digits[4]{};
+    char  digits[4] {};
     char  last_deliminiter = 0;
 
     while (*in_ptr != 0)
@@ -1016,7 +1015,8 @@ bool IpAddress::parse_address(const char* inaddr)
                 (void*)&ipAddr, (void*)lookupResult->h_addr, sizeof(in_addr));
 
             // now lets check out the dotted string
-            strlcpy(ds, inet_ntoa(ipAddr), sizeof(ds)); // TODO: use inet_ntop()! CK
+            strlcpy(ds, inet_ntoa(ipAddr),
+                sizeof(ds)); // TODO: use inet_ntop()! CK
 
             if (!parse_dotted_ipstring(ds)) return false;
 
@@ -1110,7 +1110,7 @@ int IpAddress::addr_to_friendly()
 #    endif
     if (ip_version == version_ipv4)
     {
-        in_addr ipAddr{};
+        in_addr ipAddr {};
 
 #    if defined   HAVE_INET_ATON
         if (inet_aton((char*)ds, &ipAddr) == 0) return -1; // bad address
@@ -1133,7 +1133,8 @@ int IpAddress::addr_to_friendly()
             2048, &lookupResult, &herrno);
 #        endif
 #    else
-        lookupResult = gethostbyaddr((char*)&ipAddr, sizeof(in_addr), AF_INET);  // TODO: Use getaddrinfo()! CK
+        lookupResult = gethostbyaddr((char*)&ipAddr, sizeof(in_addr),
+            AF_INET); // TODO: Use getaddrinfo()! CK
 #    endif
     }
     else
@@ -1150,7 +1151,7 @@ int IpAddress::addr_to_friendly()
                 }
         }
 
-        in6_addr ipAddr{};
+        in6_addr ipAddr {};
 
         if (inet_pton(AF_INET6, (char*)ds, &ipAddr) <= 0)
             return -1; // bad address
@@ -1166,8 +1167,8 @@ int IpAddress::addr_to_friendly()
             buf, 2048, &lookupResult, &herrno);
 #            endif
 #        else
-        lookupResult =
-            gethostbyaddr((char*)&ipAddr, sizeof(in6_addr), AF_INET6);  // TODO: Use getaddrinfo()! CK
+        lookupResult = gethostbyaddr((char*)&ipAddr, sizeof(in6_addr),
+            AF_INET6); // TODO: Use getaddrinfo()! CK
 #        endif // HAVE_GETHOSTBYADDR_R
 #    else
         return -1;
@@ -1740,7 +1741,7 @@ bool UdpAddress::parse_address(const char* inaddr)
     if (found)
     {
         buffer[pos] = 0;
-        port        = (uint16_t) std::stoul(&buffer[pos + 1]);
+        port        = (uint16_t)std::stoul(&buffer[pos + 1]);
         result      = IpAddress::parse_address(buffer);
     }
     else

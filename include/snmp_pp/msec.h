@@ -182,7 +182,7 @@ public:
 
 private:
     timeval              m_time;
-    SNMP_PP_MUTABLE char m_output_buffer[MSECOUTBUF]{};
+    SNMP_PP_MUTABLE char m_output_buffer[MSECOUTBUF] {};
     SNMP_PP_MUTABLE bool m_changed;
 
 #if !defined HAVE_LOCALTIME_R && !defined HAVE_REENTRANT_LOCALTIME

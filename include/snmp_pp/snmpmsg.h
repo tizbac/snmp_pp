@@ -165,7 +165,7 @@ public:
     uint32_t len() const { return bufflen; };
 
 protected:
-    unsigned char databuff[MAX_SNMP_PACKET]{};
+    unsigned char databuff[MAX_SNMP_PACKET] {};
     unsigned int  bufflen;
     bool          valid_flag;
 };

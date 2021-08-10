@@ -153,7 +153,8 @@ public:
     }
 
 protected:
-    SNMP_PP_MUTABLE char output_buffer[TICKOUTBUF]{}; // for storing printed form
+    SNMP_PP_MUTABLE char
+        output_buffer[TICKOUTBUF] {}; // for storing printed form
 };
 
 #ifdef SNMP_PP_NAMESPACE

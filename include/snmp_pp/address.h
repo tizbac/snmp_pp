@@ -525,7 +525,7 @@ public:
     }
 
 protected:
-    SNMP_PP_MUTABLE char output_buffer[OUTBUFF_IP]{}; // output buffer
+    SNMP_PP_MUTABLE char output_buffer[OUTBUFF_IP] {}; // output buffer
 
     // friendly name storage
     std::string iv_friendly_name;
@@ -725,8 +725,8 @@ public:
     bool set_scope(const unsigned int scope) override;
 
 protected:
-    SNMP_PP_MUTABLE char output_buffer[OUTBUFF_UDP]{}; // output buffer
-    char                 sep;                        // separator
+    SNMP_PP_MUTABLE char output_buffer[OUTBUFF_UDP] {}; // output buffer
+    char                 sep;                           // separator
 
     // redefined parse address
     // specific to IP addresses

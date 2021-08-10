@@ -398,7 +398,8 @@ int CNotifyEventQueue::AddEntry(
 
             // set up the manager socket attributes
             uint32_t inaddr =
-                inet_addr(IpAddress(m_notify_addr).get_printable()); // TODO: Use inet_pton()! CK
+                inet_addr(IpAddress(m_notify_addr)
+                              .get_printable()); // TODO: Use inet_pton()! CK
             memset(&mgr_addr, 0, sizeof(mgr_addr));
             mgr_addr.sin_family      = AF_INET;
             mgr_addr.sin_addr.s_addr = inaddr; // was htonl( INADDR_ANY);

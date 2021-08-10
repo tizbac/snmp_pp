@@ -130,8 +130,8 @@ public:
     int GetNextTimeout(msec& /*timeout*/) override
     {
         return 1;
-    };  // we have no timeouts
-        // set up parameters for select
+    }; // we have no timeouts
+       // set up parameters for select
 #ifdef HAVE_POLL_SYSCALL
     int  GetFdCount();
     bool GetFdArray(struct pollfd* readfds, int& remaining);
