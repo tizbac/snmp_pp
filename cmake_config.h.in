@@ -1,39 +1,39 @@
 /*_############################################################################
-  _## 
-  _##  cmake_config.h.in  
+  _##
+  _##  cmake_config.h.in
   _##
   _##  SNMP++ v3.4
   _##  -----------------------------------------------
   _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
   _##
   _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##  
+  _##
   _##    Copyright (c) 1996
   _##    Hewlett-Packard Company
-  _##  
+  _##
   _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software 
-  _##  and/or its documentation is hereby granted without fee. User agrees 
-  _##  to display the above copyright notice and this license notice in all 
-  _##  copies of the software and any documentation of the software. User 
-  _##  agrees to assume all liability for the use of the software; 
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations 
-  _##  about the suitability of this software for any purpose. It is provided 
-  _##  "AS-IS" without warranty of any kind, either express or implied. User 
+  _##  Permission to use, copy, modify, distribute and/or sell this software
+  _##  and/or its documentation is hereby granted without fee. User agrees
+  _##  to display the above copyright notice and this license notice in all
+  _##  copies of the software and any documentation of the software. User
+  _##  agrees to assume all liability for the use of the software;
+  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+  _##  about the suitability of this software for any purpose. It is provided
+  _##  "AS-IS" without warranty of any kind, either express or implied. User
   _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base. 
-  _##  
+  _##  upon this software code base.
+  _##
   _##########################################################################*/
-/* Define if you want full debug output support compiled in. */
-#cmakedefine __DEBUG
-
 /* Defines default log profile to use */
 #cmakedefine DEFAULT_LOG_PROFILE "@DEFAULT_LOG_PROFILE@"
+
+/* Define if you want full debug output support compiled in. */
+#cmakedefine __DEBUG
 
 /* Define to 1 if you have the `clock_gettime' function. */
 #cmakedefine HAVE_CLOCK_GETTIME
 
-/* Define if getaddrinfo is there */
+/* Define to 1 if you have the `getaddrinfo' function. */
 #cmakedefine HAVE_GETADDRINFO
 
 /* Define to 1 if you have the `gethostbyaddr' function. */
@@ -209,9 +209,6 @@
 
 /* define SNMP_PP_IPv6 if you want to use IPv6 */
 #cmakedefine SNMP_PP_IPv6 @SNMP_PP_IPv6@
-
-/* Define to 1 if you have the ANSI C header files. */
-#cmakedefine STDC_HEADERS
 
 /* Define if ISO C++ 1998 header files are present. */
 #cmakedefine STDCXX_98_HEADERS
