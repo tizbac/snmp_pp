@@ -133,7 +133,7 @@ int EventListHolder::SNMPProcessPendingEvents()
         if (nfound > 0)
         {
             status = m_eventList.HandleEvents(pollfds, fdcount);
-            // TM should we do anything with bad status?
+            // TODO: TM: should we do anything with bad status?
         }
 #    ifdef WIN32
         /* On Win32 select immediately returns -1 if all fd_sets are empty */

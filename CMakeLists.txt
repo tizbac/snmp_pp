@@ -5,7 +5,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # NOTE: We need LANGUAGE C too for libdes. It may be required to build at Windows! CK
 project(
   snmp_pp
-  VERSION 3.4.7.11
+  VERSION 3.4.7.12
   LANGUAGES CXX C
 )
 
@@ -16,24 +16,27 @@ include(CheckLibraryExists)
 include(CheckStructHasMember)
 include(CheckTypeSize)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CNF_STDCXX_98_HEADERS YES)
-set(HAVE_INTTYPES_H YES)
-
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 
+# =======================================
+set(CMAKE_CXX_STANDARD 17)
+# =======================================
+# NOTE: in consideration of std=c++17! CK
+set(CNF_STDCXX_98_HEADERS YES)
+set(HAVE_INTTYPES_H YES)
+set(SNMP_PP_NAMESPACE ON) # "Enable using of namespace (needed!)" ON)
+set(SNMP_PP_SNMPv3 ON) # "Enable support for SNMPv3 (needed!)" ON)
+set(SNMP_PP_THREADS ON) # "Enable support for threads (needed!)" ON)
+
 option(SNMP_PP_EXAMPLES "Enable to build examples" ON)
-option(SNMP_PP_SNMPv3 "Enable support for SNMPv3 (needed!)" ON)
+option(SNMP_PP_EXTENDED_DEBUG "Enable additional debug messages" OFF)
+option(SNMP_PP_IPXADDR "Enable IpxAddress class" OFF)
 option(SNMP_PP_IPv6 "Enable support for IPv6" ON)
-option(SNMP_PP_THREADS "Enable support for threads (needed!)" ON)
-option(SNMP_PP_NAMESPACE "Enable using of namespace (needed!)" ON)
+option(SNMP_PP_LIBDES "Search for DES library (At least needed for Windows!)" ON)
+option(SNMP_PP_LIBTOMCRYPT "Search for Tomcrypt library" OFF)
 option(SNMP_PP_LOGGING "Enable logging" OFF)
 option(SNMP_PP_MACADDR "Enable MacAddress class" OFF)
-option(SNMP_PP_IPXADDR "Enable IpxAddress class" OFF)
 option(SNMP_PP_OPENSSL "Search for OpenSSL library" ON)
-option(SNMP_PP_LIBDES "Search for DES library (needed for WIN32!)" ON)
-option(SNMP_PP_LIBTOMCRYPT "Search for Tomcrypt library" OFF)
-option(SNMP_PP_EXTENDED_DEBUG "Enable additional debug messages" OFF)
 
 if(SNMP_PP_LOGGING)
   set(LogProfile
@@ -183,10 +186,6 @@ endif()
 check_struct_has_member(
   "struct sockaddr_storage" ss_family "${SOCKADDR_HEADERS}" CNF_HAVE_STRUCT_SOCKADDR_STORAGE_SS_FAMILY LANGUAGE CXX
 )
-
-# check_struct_has_member(
-#   "struct sockaddr_storage" __ss_family "${SOCKADDR_HEADERS}" CNF_HAVE_STRUCT_SOCKADDR_STORAGE___SS_FAMILY LANGUAGE CXX
-# )
 
 if(SNMP_PP_SNMPv3)
   set(_SNMPv3 1)

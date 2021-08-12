@@ -1101,8 +1101,11 @@ void snmp_add_var(
 
     // if we don't have a vb list ,create one
     if (pdu->variables == NULL)
+    {
         pdu->variables = vars =
             (struct variable_list*)malloc(sizeof(struct variable_list));
+        assert(vars != nullptr);
+    }
     else
     {
         // we have one, find the end
@@ -1112,7 +1115,8 @@ void snmp_add_var(
         // create a new one
         vars->next_variable =
             (struct variable_list*)malloc(sizeof(struct variable_list));
-        // bump ptr
+        assert(vars->next_variable != nullptr);
+
         vars = vars->next_variable;
     }
 
@@ -1121,6 +1125,7 @@ void snmp_add_var(
 
     // hook in the Oid portion
     vars->name = (oid*)malloc(name_length * sizeof(oid));
+    assert(vars->name != nullptr);
 
     memcpy((char*)vars->name, (char*)name, name_length * sizeof(oid));
     vars->name_length = name_length;
@@ -1596,6 +1601,8 @@ int snmp_parse_vb(struct snmp_pdu* pdu, unsigned char*& data, int& data_len)
         {
             vp->next_variable =
                 (struct variable_list*)malloc(sizeof(struct variable_list));
+            assert(vp->next_variable != nullptr);
+
             vp = vp->next_variable;
         }
         vp->next_variable = NULL;

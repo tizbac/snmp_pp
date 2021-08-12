@@ -136,6 +136,7 @@ public:
             smival.value.oid.ptr =
                 (SmiLPUINT32) new SmiUINT32[oid.smival.value.oid.len];
             if (smival.value.oid.ptr)
+                // NOLINTNEXTLINE(clang-analyzer-optin.cplusplus.VirtualCall)
                 OidCopy((SmiLPOID) & (oid.smival.value.oid),
                     (SmiLPOID)&smival.value.oid);
         }
