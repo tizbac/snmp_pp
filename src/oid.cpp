@@ -163,7 +163,7 @@ void Oid::set_data(const char* str, const unsigned int str_len)
     if ((!str) || (str_len == 0)) return;
 
     for (unsigned int i = 0; i < str_len; i++)
-        smival.value.oid.ptr[i] = str[i];
+        smival.value.oid.ptr[i] = (uint32_t)str[i];
 
     smival.value.oid.len = str_len;
     m_changed            = true;

@@ -106,7 +106,7 @@ int operator>(const msec& t1, const msec& t2)
 
 msec& msec::operator-=(const long millisec)
 {
-    timeval t1;
+    timeval t1 = {};
 
     // create a timeval
     t1.tv_sec  = millisec / 1000;
@@ -136,7 +136,7 @@ msec& msec::operator-=(const timeval& t1)
 
 msec& msec::operator+=(const long millisec)
 {
-    timeval t1;
+    timeval t1 = {};
 
     // create a timeval
     t1.tv_sec  = millisec / 1000;
@@ -205,12 +205,12 @@ void msec::refresh()
 
 #else
 #    ifdef HAVE_CLOCK_GETTIME
-    struct timespec tsp;
+    struct timespec tsp = {};
     clock_gettime(CLOCK_MONOTONIC, &tsp);
     m_time.tv_sec  = tsp.tv_sec;
     m_time.tv_usec = tsp.tv_nsec / 1000000;
 #    else
-    struct timezone tzone;
+    struct timezone tzone = {};
     gettimeofday((timeval*)&m_time, &tzone);
     m_time.tv_usec /= 1000; // convert usec to millisec
 #    endif
@@ -255,11 +255,11 @@ const char* msec::get_printable() const
 {
     if (m_changed == false) return m_output_buffer;
 
-    char  msec_buffer[5];
-    msec* nc_this = PP_CONST_CAST(msec*, this);
+    char  msec_buffer[5] = {};
+    msec* nc_this        = PP_CONST_CAST(msec*, this);
 
 #ifdef HAVE_LOCALTIME_R
-    struct tm stm;
+    struct tm stm = {};
     localtime_r((const time_t*)&m_time.tv_sec, &stm);
     strftime(
         nc_this->m_output_buffer, sizeof(m_output_buffer), "%H:%M:%S.", &stm);

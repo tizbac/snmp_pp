@@ -739,7 +739,7 @@ int SnmpMessage::unload(Pdu& pdu,           // Pdu object
 
             // ip address
         case sNMP_SYNTAX_IPADDR: {
-            char buffer[42];
+            char buffer[42] {};
             buffer[0] = 0; // in case we receive an inavlid length IP
 
             if (vp->val_len == 16)

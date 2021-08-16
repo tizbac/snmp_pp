@@ -1424,11 +1424,11 @@ void Snmp::check_notify_timestamp(Pdu& pdu)
         timestamp       = theTime.NumMS / 10;
 #else
 #    ifdef HAVE_CLOCK_GETTIME
-        struct timespec tsp;
+        struct timespec tsp = {};
         clock_gettime(CLOCK_MONOTONIC, &tsp);
         timestamp = (tsp.tv_sec * 100) + (tsp.tv_nsec / 10000000);
 #    else
-        struct timeval tp;
+        struct timeval tp = {};
         gettimeofday(&tp, NULL);
         tp.tv_sec -= 1103760000; // knock off 35 years worth of seconds
         timestamp = (tp.tv_sec * 100) + (tp.tv_usec / 10000);

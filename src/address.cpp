@@ -2154,7 +2154,7 @@ int IpxAddress::get_hostid(MacAddress& mac) const
 {
     if (valid_flag)
     {
-        char buffer[18];
+        char buffer[18] {};
         snprintf(buffer, sizeof(buffer), "%02x:%02x:%02x:%02x:%02x:%02x",
             address_buffer[4], address_buffer[5], address_buffer[6],
             address_buffer[7], address_buffer[8], address_buffer[9]);

@@ -305,8 +305,8 @@ const char* AgentLog::now(char* buf)
     time_t t = 0;
     time(&t);
 #ifdef HAVE_LOCALTIME_R
-    struct tm  tm_buffer;
-    struct tm* stm = localtime_r(&t, &tm_buffer);
+    struct tm  tm_buffer = {};
+    struct tm* stm       = localtime_r(&t, &tm_buffer);
 #else
     struct tm* stm = localtime(&t);
 #endif

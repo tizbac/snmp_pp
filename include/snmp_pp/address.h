@@ -1271,7 +1271,7 @@ public:
 protected:
     // pointer to a concrete address
     Address* address;
-    char     output_buffer[1]; // TODO: output buffer? only 1 byte? CK
+    char     output_buffer[1] {}; // TODO: output buffer? only 1 byte? CK
 
     // redefined parse address for generic address
     bool parse_address(const char* addr) override

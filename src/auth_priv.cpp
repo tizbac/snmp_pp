@@ -2087,11 +2087,11 @@ bool Priv3DES_EDE::test()
 
     unsigned char msg[80] =
         "This is the secret message, that has to be encrypted!";
-    unsigned char enc_buffer[80];
+    unsigned char enc_buffer[80] {};
     unsigned int  enc_buffer_len = 80;
-    unsigned char dec_buffer[80];
+    unsigned char dec_buffer[80] {};
     unsigned int  dec_buffer_len = 80;
-    unsigned char priv_params[64];
+    unsigned char priv_params[64] {};
     unsigned int  priv_params_len = 64;
 
     status = ap.encrypt_msg(SNMP_PRIVPROTOCOL_3DESEDE, key, key_len, msg, 53,

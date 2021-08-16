@@ -157,8 +157,8 @@ int EventListHolder::SNMPProcessEvents(const int max_block_milliseconds)
 {
     int            fdcount;
     int            remaining;
-    struct pollfd* pollfds = 0;
-    struct timeval fd_timeout;
+    struct pollfd* pollfds    = 0;
+    struct timeval fd_timeout = {};
     int            timeout;
     msec           now; // automatcally calls msec::refresh()
     msec           sendTime;
@@ -208,8 +208,8 @@ int EventListHolder::SNMPProcessPendingEvents()
     fd_set         readfds;
     fd_set         writefds;
     fd_set         exceptfds;
-    int            nfound = 0;
-    struct timeval fd_timeout;
+    int            nfound     = 0;
+    struct timeval fd_timeout = {};
     msec           now(0, 0);
     int            status = 0;
 
@@ -257,7 +257,7 @@ int EventListHolder::SNMPProcessEvents(const int max_block_milliseconds)
     fd_set         readfds;
     fd_set         writefds;
     fd_set         exceptfds;
-    struct timeval fd_timeout;
+    struct timeval fd_timeout = {};
     msec           now; // automatically calls msec::refresh()
     msec           sendTime;
     int            status = 0;
