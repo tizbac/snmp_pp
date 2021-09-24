@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14...3.21)
+cmake_minimum_required(VERSION 3.16...3.21)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -256,7 +256,7 @@ if(USE_OUTPUT_PATH)
   # Where to put all the LIBRARY targets when built. This variable is used to initialize the
   # LIBRARY_OUTPUT_DIRECTORY property on all the targets.
   # -----------------------------------------------------------------------
-  set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
   # -----------------------------------------------------------------------
   # Where to put all the RUNTIME targets when built. This variable is used to initialize the
@@ -455,6 +455,9 @@ set(MY_SRC_FILES
 
 option(BUILD_SHARED_LIBS "Global flag to cause add_library() to create shared libraries if on." ON)
 add_library(${PROJECT_NAME} ${MY_HEADER_FILES} ${MY_HEADER_LIB_FILES} ${CMAKE_CURRENT_BINARY_DIR}/config.h ${MY_SRC_FILES})
+
+option(ENABLE_UNITY "Enable Unity builds of projects" ON)
+set_target_properties(${PROJECT_NAME} PROPERTIES UNITY_BUILD ${ENABLE_UNITY})
 
 if(MSVC)
   target_link_libraries(${PROJECT_NAME} PUBLIC wsock32 ws2_32)

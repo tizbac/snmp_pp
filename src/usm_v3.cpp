@@ -41,6 +41,8 @@
 #    include "snmp_pp/v3.h"
 #    include "snmp_pp/vb.h"
 
+#    include <algorithm> // std::min
+
 #    ifdef SNMP_PP_NAMESPACE
 namespace Snmp_pp
 {
@@ -63,11 +65,17 @@ static const char* loggerModuleName = "snmp++.usm_v3";
 #        define BEGIN_AUTO_LOCK(obj)
 #    endif
 
-#    ifndef min
-#        define min(a, b) ((a) < (b) ? (a) : (b))
+#    if 0
+#        ifndef min
+#            define min(a, b) ((a) < (b) ? (a) : (b))
+#        endif
+#    else
+#        ifdef min
+#            undef min
+#        endif
 #    endif
 
-#    define MAX_LINE_LEN 2048 // Max line length in usm user files
+#    define MAX_LINE_LEN_V3 2048 // Max line length in usm user files
 
 // structure for key update
 struct UsmKeyUpdate {
@@ -197,7 +205,7 @@ public:
 private:
     struct Entry_T {
         unsigned char engine_id[MAXLENGTH_ENGINEID];
-        int           engine_id_len;
+        size_t        engine_id_len;
         SmiINT32      engine_boots;
         SmiINT32      time_diff;
         SmiINT32      latest_received_time;
@@ -2522,7 +2530,8 @@ USMTimeTable::USMTimeTable(
     table[0].time_diff    = -SAFE_LONG_CAST(now);
     table[0].engine_boots = engine_boots;
     table[0].engine_id_len =
-        min(usm->get_local_engine_id().len(), MAXLENGTH_ENGINEID);
+        std::min(static_cast<size_t>(usm->get_local_engine_id().len()),
+            MAXLENGTH_ENGINEID);
     memcpy(table[0].engine_id, usm->get_local_engine_id().data(),
         table[0].engine_id_len);
 
@@ -2581,7 +2590,7 @@ int USMTimeTable::add_entry(const OctetStr& engine_id,
     table[entries].time_diff            = engine_time - SAFE_ULONG_CAST(now);
     table[entries].engine_id_len        = engine_id.len();
     table[entries].engine_id_len =
-        min(table[entries].engine_id_len, MAXLENGTH_ENGINEID);
+        std::min(table[entries].engine_id_len, MAXLENGTH_ENGINEID);
     memcpy(table[entries].engine_id, engine_id.data(),
         table[entries].engine_id_len);
 
@@ -3127,7 +3136,7 @@ int USMUserNameTable::save_to_file(const char* name, AuthPriv* ap)
     {
         BEGIN_REENTRANT_CODE_BLOCK;
 
-        char encoded[MAX_LINE_LEN * 2];
+        char encoded[MAX_LINE_LEN_V3 * 2];
 
         for (int i = 0; i < entries; ++i)
         {
@@ -3301,10 +3310,10 @@ int USMUserNameTable::load_from_file(const char* name, AuthPriv* ap)
         return SNMPv3_USM_FILEOPEN_ERROR;
     }
 
-    char          decoded[MAX_LINE_LEN];
-    unsigned char line[MAX_LINE_LEN * 2];
+    char          decoded[MAX_LINE_LEN_V3];
+    unsigned char line[MAX_LINE_LEN_V3 * 2];
     bool          failed = false;
-    while (fgets((char*)line, MAX_LINE_LEN * 2, file_in))
+    while (fgets((char*)line, MAX_LINE_LEN_V3 * 2, file_in))
     {
         // user_name
         int len = SAFE_INT_CAST(strlen((char*)line)) - 1;
@@ -3312,7 +3321,7 @@ int USMUserNameTable::load_from_file(const char* name, AuthPriv* ap)
         OctetStr user_name((unsigned char*)decoded, len / 2);
 
         // security_name
-        if (!fgets((char*)line, MAX_LINE_LEN * 2, file_in))
+        if (!fgets((char*)line, MAX_LINE_LEN_V3 * 2, file_in))
         {
             failed = true;
             break;
@@ -3322,7 +3331,7 @@ int USMUserNameTable::load_from_file(const char* name, AuthPriv* ap)
         OctetStr user_security_name((unsigned char*)decoded, len / 2);
 
         // auth password
-        if (!fgets((char*)line, MAX_LINE_LEN * 2, file_in))
+        if (!fgets((char*)line, MAX_LINE_LEN_V3 * 2, file_in))
         {
             failed = true;
             break;
@@ -3332,7 +3341,7 @@ int USMUserNameTable::load_from_file(const char* name, AuthPriv* ap)
         OctetStr auth_pass((unsigned char*)decoded, len / 2);
 
         // priv password
-        if (!fgets((char*)line, MAX_LINE_LEN * 2, file_in))
+        if (!fgets((char*)line, MAX_LINE_LEN_V3 * 2, file_in))
         {
             failed = true;
             break;
@@ -3342,7 +3351,7 @@ int USMUserNameTable::load_from_file(const char* name, AuthPriv* ap)
         OctetStr priv_pass((unsigned char*)decoded, len / 2);
 
         // auth protocol
-        if (!fgets((char*)line, MAX_LINE_LEN * 2, file_in))
+        if (!fgets((char*)line, MAX_LINE_LEN_V3 * 2, file_in))
         {
             failed = true;
             break;
@@ -3359,7 +3368,7 @@ int USMUserNameTable::load_from_file(const char* name, AuthPriv* ap)
             }
         }
 
-        if (!fgets((char*)line, MAX_LINE_LEN * 2, file_in))
+        if (!fgets((char*)line, MAX_LINE_LEN_V3 * 2, file_in))
         {
             failed = true;
             break;
@@ -3914,7 +3923,7 @@ int USMUserTable::save_to_file(const char* name, AuthPriv* ap)
     {
         BEGIN_REENTRANT_CODE_BLOCK;
 
-        char encoded[MAX_LINE_LEN * 2];
+        char encoded[MAX_LINE_LEN_V3 * 2];
 
         for (int i = 0; i < entries; ++i)
         {
@@ -4073,9 +4082,9 @@ int USMUserTable::save_to_file(const char* name, AuthPriv* ap)
 // Load the table from a file.
 int USMUserTable::load_from_file(const char* name, AuthPriv* ap)
 {
-    char          decoded[MAX_LINE_LEN];
+    char          decoded[MAX_LINE_LEN_V3];
     FILE*         file_in = nullptr;
-    unsigned char line[MAX_LINE_LEN * 2];
+    unsigned char line[MAX_LINE_LEN_V3 * 2];
 
     if (!name || !ap)
     {
@@ -4105,7 +4114,7 @@ int USMUserTable::load_from_file(const char* name, AuthPriv* ap)
     }
 
     bool failed = false;
-    while (fgets((char*)line, MAX_LINE_LEN * 2, file_in))
+    while (fgets((char*)line, MAX_LINE_LEN_V3 * 2, file_in))
     {
         // engine_id
         int len = SAFE_INT_CAST(strlen((char*)line)) - 1;
@@ -4113,7 +4122,7 @@ int USMUserTable::load_from_file(const char* name, AuthPriv* ap)
         OctetStr engine_id((unsigned char*)decoded, len / 2);
 
         // user_name
-        if (!fgets((char*)line, MAX_LINE_LEN * 2, file_in))
+        if (!fgets((char*)line, MAX_LINE_LEN_V3 * 2, file_in))
         {
             failed = true;
             break;
@@ -4123,7 +4132,7 @@ int USMUserTable::load_from_file(const char* name, AuthPriv* ap)
         OctetStr user_name((unsigned char*)decoded, len / 2);
 
         // security_name
-        if (!fgets((char*)line, MAX_LINE_LEN * 2, file_in))
+        if (!fgets((char*)line, MAX_LINE_LEN_V3 * 2, file_in))
         {
             failed = true;
             break;
@@ -4133,7 +4142,7 @@ int USMUserTable::load_from_file(const char* name, AuthPriv* ap)
         OctetStr user_security_name((unsigned char*)decoded, len / 2);
 
         // auth key
-        if (!fgets((char*)line, MAX_LINE_LEN * 2, file_in))
+        if (!fgets((char*)line, MAX_LINE_LEN_V3 * 2, file_in))
         {
             failed = true;
             break;
@@ -4143,7 +4152,7 @@ int USMUserTable::load_from_file(const char* name, AuthPriv* ap)
         OctetStr auth_key((unsigned char*)decoded, len / 2);
 
         // priv key
-        if (!fgets((char*)line, MAX_LINE_LEN * 2, file_in))
+        if (!fgets((char*)line, MAX_LINE_LEN_V3 * 2, file_in))
         {
             failed = true;
             break;
@@ -4153,7 +4162,7 @@ int USMUserTable::load_from_file(const char* name, AuthPriv* ap)
         OctetStr priv_key((unsigned char*)decoded, len / 2);
 
         // auth protocol
-        if (!fgets((char*)line, MAX_LINE_LEN * 2, file_in))
+        if (!fgets((char*)line, MAX_LINE_LEN_V3 * 2, file_in))
         {
             failed = true;
             break;
@@ -4170,7 +4179,7 @@ int USMUserTable::load_from_file(const char* name, AuthPriv* ap)
             }
         }
 
-        if (!fgets((char*)line, MAX_LINE_LEN * 2, file_in))
+        if (!fgets((char*)line, MAX_LINE_LEN_V3 * 2, file_in))
         {
             failed = true;
             break;

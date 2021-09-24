@@ -647,7 +647,7 @@ v3MP::v3MP(const OctetStr& snmpEngineID, unsigned int engineBoots,
     snmpInvalidMsgs           = 0;
     snmpUnknownPDUHandlers    = 0;
 
-    int length = snmpEngineID.len();
+    size_t length = snmpEngineID.len();
     if (length > MAXLENGTH_ENGINEID) length = MAXLENGTH_ENGINEID;
 
     own_engine_id     = v3strcpy(snmpEngineID.data(), length);

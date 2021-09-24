@@ -144,8 +144,6 @@ namespace Snmp_pp
 #define MAX_POS_ERROR SNMP_ERROR_INCONSIS_NAME
 #define MAX_NEG_ERROR SNMP_CLASS_SHUTDOWN
 
-#ifdef _INCLUDE_SNMP_ERR_STRINGS
-
 /**
  * ASCII strings returned through Snmp::error() function.
  *
@@ -177,7 +175,7 @@ static const char* pErrs[] = {
     "SNMP: Unknown Error Status"                              // 19
 };
 
-#    ifdef _SNMPv3
+#ifdef _SNMPv3
 static const char* nv3Errs[] = { "SNMPv3: v3MP error", // -1400
     "SNMPv3: v3MP ok",                                 // -1401
     "SNMPv3: Unsupported Security Model",              // -1402
@@ -221,7 +219,7 @@ static const char* pv3Errs[] = { "SNMPv3: USM: ok", // 1400
     "SNMPv3: USM: Could not write into file",       // 1419
     "SNMPv3: USM: Could not read from file",        // 1420
     "SNMPv3: USM: Unknown error code" };
-#    endif
+#endif
 
 static const char* nErrs[] = {
     // General:
@@ -265,7 +263,6 @@ static const char* nErrs[] = {
     "Unknown error code", // unknown error code
 };
 //@}
-#endif //_INCLUDE_SNMP_ERR_STRINGS
 
 #ifdef SNMP_PP_NAMESPACE
 } // end of namespace Snmp_pp

@@ -206,10 +206,10 @@ void decodeString(const unsigned char* in, const int in_length, char* out)
 int getBootCounter(
     const char* fileName, const OctetStr& engineId, unsigned int& boot)
 {
-    char  line[MAX_LINE_LEN];
-    char  encoded[MAXLENGTH_ENGINEID * 2 + 2];
-    int   len  = engineId.len();
-    FILE* file = fopen(fileName, "r");
+    char   line[MAX_LINE_LEN];
+    char   encoded[MAXLENGTH_ENGINEID * 2 + 2];
+    size_t len  = engineId.len();
+    FILE*  file = fopen(fileName, "r");
     ;
 
     boot = 0; // set to default
@@ -294,9 +294,9 @@ int getBootCounter(
 int saveBootCounter(
     const char* fileName, const OctetStr& engineId, const unsigned int boot)
 {
-    char  tmpFileName[MAXLENGTH_FILENAME];
-    int   len     = engineId.len();
-    FILE *file_in = nullptr, *file_out = nullptr;
+    char   tmpFileName[MAXLENGTH_FILENAME];
+    size_t len     = engineId.len();
+    FILE * file_in = nullptr, *file_out = nullptr;
 
     tmpFileName[0] = 0;
     snprintf(tmpFileName, sizeof(tmpFileName), "%s.tmp", fileName);

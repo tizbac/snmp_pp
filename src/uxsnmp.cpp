@@ -36,8 +36,6 @@
 
 /* CK Ng    added support for WIN32 in the whole file */
 
-#define _INCLUDE_SNMP_ERR_STRINGS
-
 #include <libsnmp.h>
 
 //-----[ includes ]----------------------------------------------------
@@ -55,6 +53,7 @@
 #include "snmp_pp/msgqueue.h"    // message queue
 #include "snmp_pp/notifyqueue.h" // notification queue
 #include "snmp_pp/oid_def.h"     // class def for well known trap oids
+#include "snmp_pp/snmperrs.h"    // pv3Errs, nErrs
 #include "snmp_pp/snmpmsg.h"     // asn serialization class
 #include "snmp_pp/usm_v3.h"
 #include "snmp_pp/uxsnmp.h" // class def for this module

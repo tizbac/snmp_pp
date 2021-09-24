@@ -107,10 +107,11 @@ void debugprintf(int db_level, const char* format, ...);
 
 #ifdef _SNMPv3
 
-#    define MAXLENGTH_ENGINEID     32
-#    define MAXLENGTH_CONTEXT_NAME 32
-#    define MAXLENGTH_FILENAME     255
-#    define MAXLENGTH_GLOBALDATA   42 // (2 + 1) + 7 + 7 + 3 + 7 + security
+constexpr size_t MAXLENGTH_ENGINEID { 32 };
+
+#    define MAXLENGTH_CONTEXT_NAME 32U
+#    define MAXLENGTH_FILENAME     255U
+#    define MAXLENGTH_GLOBALDATA   42U // (2 + 1) + 7 + 7 + 3 + 7 + security
 
 #    define oidV3SnmpEngine               "1.3.6.1.6.3.10.2.1"
 #    define oidV3SnmpEngineID             "1.3.6.1.6.3.10.2.1.1.0"
