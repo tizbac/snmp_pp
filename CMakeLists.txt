@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16...3.21)
+cmake_minimum_required(VERSION 3.21...3.25)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -250,13 +250,13 @@ else()
   set(_DEBUG 0)
 endif()
 
-option(USE_OUTPUT_PATH "build all libaries and runtime files at lib and bin directory" YES)
+option(USE_OUTPUT_PATH "build all libaries and runtime files at the bin directory" YES)
 if(USE_OUTPUT_PATH)
   # -----------------------------------------------------------------------
   # Where to put all the LIBRARY targets when built. This variable is used to initialize the
   # LIBRARY_OUTPUT_DIRECTORY property on all the targets.
   # -----------------------------------------------------------------------
-  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
   # -----------------------------------------------------------------------
   # Where to put all the RUNTIME targets when built. This variable is used to initialize the
@@ -269,6 +269,9 @@ endif()
 # see https://github.com/cpm-cmake/CPM.cmake for more info
 
 include(CPM)
+
+CPMAddPackage("gh:aminya/project_options@0.26.3")
+list(APPEND CMAKE_MODULE_PATH ${ProjectOptions_SRC_DIR})
 
 if(SNMP_PP_OPENSSL)
   if(APPLE)
@@ -453,10 +456,32 @@ set(MY_SRC_FILES
     src/vb.cpp
 )
 
+option(OPTION_ENABLE_COVERAGE "Enable test coverage of projects" OFF)
+if(OPTION_ENABLE_COVERAGE)
+  set(ENABLE_COVERAGE "ENABLE_COVERAGE")
+endif()
+
+option(OPTION_ENABLE_UNITY "Enable Unity builds of projects" ON)
+if(OPTION_ENABLE_UNITY)
+  set(ENABLE_UNITY "ENABLE_UNITY")
+endif()
+
+project_options(
+  PREFIX
+  ${PROJECT_NAME}
+  ENABLE_CACHE
+  ${ENABLE_COVERAGE}
+  ${ENABLE_UNITY}
+  ENABLE_SANITIZER_ADDRESS
+  ENABLE_SANITIZER_UNDEFINED_BEHAVIOR
+  # ENABLE_SANITIZER_THREAD
+  # ENABLE_SANITIZER_MEMORY
+  # TODO: WARNINGS_AS_ERRORS
+)
+
 option(BUILD_SHARED_LIBS "Global flag to cause add_library() to create shared libraries if on." ON)
 add_library(${PROJECT_NAME} ${MY_HEADER_FILES} ${MY_HEADER_LIB_FILES} ${CMAKE_CURRENT_BINARY_DIR}/config.h ${MY_SRC_FILES})
-
-option(ENABLE_UNITY "Enable Unity builds of projects" ON)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_project_options ${PROJECT_NAME}_project_warnings)
 set_target_properties(${PROJECT_NAME} PROPERTIES UNITY_BUILD ${ENABLE_UNITY})
 
 if(MSVC)
@@ -466,15 +491,14 @@ if(MSVC)
   target_compile_options(${PROJECT_NAME} PRIVATE /W3 /wd4251)
   target_compile_definitions(${PROJECT_NAME} PRIVATE _CRT_SECURE_NO_WARNINGS)
 else()
-  target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Werror -Wno-unused-parameter)
-  # TODO: lots of warnings (more: -Wpedantic)
+  target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wno-unused-parameter -Wno-deprecated-declarations)
 endif()
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE 1)
 # Set .so version as autoconf does: snmp++ version 1.2.3 will go to .so.12.0.3!
 set_target_properties(
-  ${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION_MAJOR}${PROJECT_VERSION_MINOR}.0.${PROJECT_VERSION_PATCH}
-                             SOVERSION ${PROJECT_VERSION_MAJOR}${PROJECT_VERSION_MINOR}
+  ${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}
+                             SOVERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 )
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD ${CMAKE_CXX_STANDARD})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${CRYPTO_LINKLIBS} Threads::Threads)
@@ -540,7 +564,7 @@ endif()
 
 install(FILES ${MY_HEADER_LIB_FILES} DESTINATION include)
 
-CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.8.0")
+CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.10.0")
 packageProject(
   # the name of the target to export
   NAME ${PROJECT_NAME}
@@ -552,6 +576,8 @@ packageProject(
   INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include
   # should match the target's INSTALL_INTERFACE include directory
   INCLUDE_DESTINATION include
+  # (optional) option to install only header files with matching pattern
+  INCLUDE_HEADER_PATTERN "*.h"
   # semicolon separated list of the project's dependencies
   DEPENDENCIES "${CRYPTO_LIB}; Threads"
   # (optional) create a header containing the version info
