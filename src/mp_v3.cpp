@@ -687,8 +687,8 @@ v3MP::~v3MP()
 // Remove all occurrences of this engine id from v3MP and USM.
 int v3MP::remove_engine_id(const OctetStr& engine_id)
 {
-    int retval1 = engine_id_table.delete_entry(engine_id);
-    int retval2 = usm->remove_engine_id(engine_id);
+    int const retval1 = engine_id_table.delete_entry(engine_id);
+    int const retval2 = usm->remove_engine_id(engine_id);
 
     if ((retval1 == SNMPv3_MP_NOT_INITIALIZED)
         || (retval2 == SNMPv3_USM_ERROR))
@@ -889,7 +889,7 @@ int v3MP::snmp_parse(Snmp* snmp_session, struct snmp_pdu* pdu,
 
     unsigned char         type       = 0;
     SmiINT32              version    = 0;
-    int                   origLength = inBufLength;
+    int const             origLength = inBufLength;
     unsigned char*        inBufPtr   = inBuf;
     SmiINT32              msgID = 0, msgMaxSize = 0;
     unsigned char         msgFlags = 0;
@@ -1003,7 +1003,7 @@ int v3MP::snmp_parse(Snmp* snmp_session, struct snmp_pdu* pdu,
     }
     }
 
-    bool reportableFlag = ((msgFlags & 0x04) != 0);
+    bool const reportableFlag = ((msgFlags & 0x04) != 0);
 
     securityStateReference = usm->get_new_sec_state_reference();
     if (!securityStateReference) return SNMPv3_MP_ERROR;
@@ -1115,10 +1115,7 @@ int v3MP::snmp_parse(Snmp* snmp_session, struct snmp_pdu* pdu,
                 snmp_session);
             clear_pdu(pdu, true); // Clear pdu and free all content AND IDs!
         }
-        else
-        {
-            usm->delete_sec_state_reference(securityStateReference);
-        }
+        else { usm->delete_sec_state_reference(securityStateReference); }
         return errorCode;
     }
 
@@ -1251,7 +1248,7 @@ int v3MP::snmp_parse(Snmp* snmp_session, struct snmp_pdu* pdu,
                 return SNMPv3_MP_MATCH_ERROR;
             }
         }
-        int ret = cache.add_entry(msgID, pdu->reqid, securityEngineID,
+        int const ret = cache.add_entry(msgID, pdu->reqid, securityEngineID,
             msgSecurityModel, securityName, securityLevel, contextEngineID,
             contextName, securityStateReference, SNMPv3_MP_OK,
             CACHE_REMOTE_REQ);
@@ -1382,7 +1379,7 @@ int v3MP::snmp_build(struct snmp_pdu* pdu, unsigned char* packet,
         debugprintf(3, "Looking up cache");
         msgID = pdu->msgid;
         rc    = cache.get_entry(msgID, CACHE_REMOTE_REQ, &cachedErrorCode,
-            &securityStateReference);
+               &securityStateReference);
 
         if (rc != SNMPv3_MP_OK)
         {

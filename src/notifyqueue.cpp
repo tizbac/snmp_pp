@@ -137,8 +137,8 @@ int CNotifyEvent::notify_filter(const Oid& trapid, SnmpTarget& target) const
         if (targetaddr.valid())
         {
             // loop through all targets in the collection
-            SnmpTarget::target_type target_type    = target.get_type();
-            SnmpTarget::target_type tmptarget_type = CTarget::type_base;
+            SnmpTarget::target_type const target_type    = target.get_type();
+            SnmpTarget::target_type       tmptarget_type = CTarget::type_base;
 
             for (int x = 0; x < target_count; x++) // for all targets
             {
@@ -155,16 +155,13 @@ int CNotifyEvent::notify_filter(const Oid& trapid, SnmpTarget& target) const
                     {
                         /* special case that works for UdpAddress == IpAddress
                          */
-                        IpAddress ip1(targetaddr);
-                        IpAddress ip2(tmpaddr);
+                        IpAddress const ip1(targetaddr);
+                        IpAddress const ip2(tmpaddr);
 
                         addr_equal =
                             (ip1.valid() && ip2.valid() && (ip1 == ip2));
                     }
-                    else
-                    {
-                        addr_equal = (targetaddr == tmpaddr);
-                    }
+                    else { addr_equal = (targetaddr == tmpaddr); }
 
                     if (addr_equal)
                     {
@@ -347,7 +344,7 @@ SnmpSocket CNotifyEventQueue::get_notify_fd() const { return m_notify_fd; }
 int CNotifyEventQueue::AddEntry(
     Snmp* snmp, const OidCollection& trapids, const TargetCollection& targets)
 {
-    SnmpSynchronize _synchronize(*this); // instead of REENTRANT()
+    SnmpSynchronize const _synchronize(*this); // instead of REENTRANT()
 
     if (snmp != m_snmpSession)
     {
@@ -365,7 +362,7 @@ int CNotifyEventQueue::AddEntry(
         // This is the first request to receive notifications
         // Set up the socket for the snmp trap port (162) or the
         // specified port through set_listen_port()
-        bool is_v4_address =
+        bool const is_v4_address =
             (m_notify_addr.get_ip_version() == Address::version_ipv4);
         if (is_v4_address)
         {
@@ -397,7 +394,7 @@ int CNotifyEventQueue::AddEntry(
             setCloseOnExecFlag(m_notify_fd);
 
             // set up the manager socket attributes
-            uint32_t inaddr =
+            uint32_t const inaddr =
                 inet_addr(IpAddress(m_notify_addr)
                               .get_printable()); // TODO: Use inet_pton()! CK
             memset(&mgr_addr, 0, sizeof(mgr_addr));
@@ -732,7 +729,7 @@ int CNotifyEventQueue::HandleEvents(
 void CNotifyEventQueue::GetFdSets(
     int& maxfds, fd_set& readfds, fd_set& /*writefds*/, fd_set& /*exceptfds*/)
 {
-    SnmpSynchronize _synchronize(*this); // REENTRANT
+    SnmpSynchronize const _synchronize(*this); // REENTRANT
     if (m_notify_fd != INVALID_SOCKET)
     {
         FD_SET(m_notify_fd, &readfds);
@@ -746,7 +743,7 @@ int CNotifyEventQueue::HandleEvents(const int /*maxfds*/,
     const fd_set& readfds, const fd_set& /*writefds*/,
     const fd_set& /*exceptfds*/)
 {
-    SnmpSynchronize _synchronize(*this); // REENTRANT
+    SnmpSynchronize const _synchronize(*this); // REENTRANT
     int status = SNMP_CLASS_SUCCESS;
 
     if (m_notify_fd == INVALID_SOCKET) return status;

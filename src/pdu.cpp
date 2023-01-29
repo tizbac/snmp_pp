@@ -478,7 +478,7 @@ int Pdu::get_asn1_length() const
     if (security_level == SNMP_SECURITY_LEVEL_AUTH_PRIV)
     {
         // assume that encryption increases the data to a multiple of 16
-        int mod = length % 16;
+        int const mod = length % 16;
         if (mod) length += 16 - mod;
 
         length += 4;

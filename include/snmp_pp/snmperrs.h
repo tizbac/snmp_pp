@@ -144,8 +144,6 @@ namespace Snmp_pp
 #define MAX_POS_ERROR SNMP_ERROR_INCONSIS_NAME
 #define MAX_NEG_ERROR SNMP_CLASS_SHUTDOWN
 
-
-
 #ifdef SNMP_PP_NAMESPACE
 } // end of namespace Snmp_pp
 #endif

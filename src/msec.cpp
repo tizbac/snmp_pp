@@ -118,7 +118,7 @@ msec& msec::operator-=(const long millisec)
 
 msec& msec::operator-=(const timeval& t1)
 {
-    long tmp_usec = t1.tv_usec / 1000; // convert usec to millisec
+    long const tmp_usec = t1.tv_usec / 1000; // convert usec to millisec
     if (!this->IsInfinite())
     {
         if (m_time.tv_usec < tmp_usec)
@@ -148,7 +148,7 @@ msec& msec::operator+=(const long millisec)
 
 msec& msec::operator+=(const timeval& t1)
 {
-    long tmp_usec = t1.tv_usec / 1000; // convert usec to millisec
+    long const tmp_usec = t1.tv_usec / 1000; // convert usec to millisec
     if (!this->IsInfinite())
     {
         m_time.tv_usec += tmp_usec;

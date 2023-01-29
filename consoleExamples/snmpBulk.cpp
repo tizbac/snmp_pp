@@ -500,10 +500,7 @@ int main(int argc, char** argv)
             {
                 std::cout << "Value = " << vb.get_printable_value() << "\n\n";
             }
-            else
-            {
-                std::cout << "End of MIB view.\n\n";
-            }
+            else { std::cout << "End of MIB view.\n\n"; }
         }
     }
     else

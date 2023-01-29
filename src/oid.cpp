@@ -178,9 +178,9 @@ const char* Oid::get_printable(
 {
     if (!m_changed && (buffer == iv_str)) return buffer;
 
-    uint32_t nz       = 0;
-    uint32_t my_start = start - 1;
-    uint32_t my_end   = my_start + n;
+    uint32_t       nz       = 0;
+    uint32_t const my_start = start - 1;
+    uint32_t const my_end   = my_start + n;
 
     nz = (smival.value.oid.len * (SNMPCHARSIZE + 1)) + 1;
 
@@ -342,7 +342,7 @@ int Oid::OidToStr(const SmiOID* srcOid, size_t size, char* str) const
     for (uint32_t index = 0; index < srcOid->len; ++index)
     {
         // TODO: convert data element to a string, but use std::string! CK
-        int cur_len = snprintf(
+        int const cur_len = snprintf(
             szNumber, sizeof(szNumber), "%" PRIu32, srcOid->ptr[index]);
 
         // verify len is not over
@@ -387,7 +387,7 @@ int Oid::get_asn1_length() const
 
     for (unsigned int i = 2; i < smival.value.oid.len; ++i)
     {
-        uint32_t v = smival.value.oid.ptr[i];
+        uint32_t const v = smival.value.oid.ptr[i];
 
         if (v < 0x80) //  7 bits long subid
             length += 1;

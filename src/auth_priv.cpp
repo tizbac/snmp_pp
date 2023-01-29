@@ -128,7 +128,7 @@ int evpAllocAndInit(EVP_MD_CTX** ctx, const EVP_MD* md)
 
 int evpDigestFinalAndFree(EVP_MD_CTX** ctx, unsigned char* digest)
 {
-    int result = EVP_DigestFinal(*ctx, digest, NULL);
+    int const result = EVP_DigestFinal(*ctx, digest, NULL);
     EVP_MD_CTX_free(*ctx);
     return result;
 }
@@ -304,9 +304,9 @@ int des3_extend_short_key(const unsigned char* /* password */,
 {
     if (max_key_len < min_key_len) return SNMPv3_USM_ERROR;
 
-    unsigned int   p2k_output_len = *key_len;
-    unsigned char* p2k_buf        = new unsigned char[p2k_output_len];
-    int            res            = 0;
+    unsigned int const p2k_output_len = *key_len;
+    unsigned char*     p2k_buf        = new unsigned char[p2k_output_len];
+    int                res            = 0;
 
     if (!p2k_buf) return SNMPv3_USM_ERROR;
 
@@ -470,7 +470,7 @@ int AuthPriv::add_auth(Auth* new_auth)
 {
     if (!new_auth) { return SNMP_CLASS_ERROR; }
 
-    int id = new_auth->get_id();
+    int const id = new_auth->get_id();
 
     if (id < 0) { return SNMP_CLASS_ERROR; }
 
@@ -544,7 +544,7 @@ int AuthPriv::add_priv(Priv* new_priv)
 {
     if (!new_priv) { return SNMP_CLASS_ERROR; }
 
-    int id = new_priv->get_id();
+    int const id = new_priv->get_id();
 
     if (id < 0) { return SNMP_CLASS_ERROR; }
 
@@ -654,7 +654,7 @@ int AuthPriv::get_keychange_value(const int auth_prot, const OctetStr& old_key,
     // algorithm according to USM-document textual convention KeyChange
 
     keychange_value.clear();
-    unsigned int key_len = old_key.len();
+    unsigned int const key_len = old_key.len();
 
     Auth* a = get_auth(auth_prot);
 
@@ -669,7 +669,7 @@ int AuthPriv::get_keychange_value(const int auth_prot, const OctetStr& old_key,
         // do not use random values for testing
         random += OctetStr((unsigned char*)"\0", 1);
 #    else
-        char tmprand = rand();
+        char const tmprand = rand();
         random += tmprand;
 #    endif
     }
@@ -681,9 +681,9 @@ int AuthPriv::get_keychange_value(const int auth_prot, const OctetStr& old_key,
     debughexcprintf(21, "random value", random.data(), random.len());
 #    endif
 
-    int      iterations = (key_len - 1) / a->get_hash_len();
-    OctetStr tmp        = old_key;
-    OctetStr delta;
+    int const iterations = (key_len - 1) / a->get_hash_len();
+    OctetStr  tmp        = old_key;
+    OctetStr  delta;
 
     for (int k = 0; k < iterations; k++)
     {
@@ -748,7 +748,7 @@ int AuthPriv::password_to_key_auth(const int auth_prot,
 
     if (!a) return SNMPv3_USM_UNSUPPORTED_AUTHPROTOCOL;
 
-    int res = a->password_to_key(
+    int const res = a->password_to_key(
         password, password_len, engine_id, engine_id_len, key, key_len);
 
     return res;
@@ -781,8 +781,8 @@ int AuthPriv::password_to_key_priv(const int auth_prot, const int priv_prot,
     if (!p) return SNMPv3_USM_UNSUPPORTED_PRIVPROTOCOL;
     if (!a) return SNMPv3_USM_UNSUPPORTED_AUTHPROTOCOL;
 
-    unsigned int max_key_len = *key_len; /* save length of buffer! */
-    unsigned int min_key_len = p->get_min_key_len();
+    unsigned int const max_key_len = *key_len; /* save length of buffer! */
+    unsigned int const min_key_len = p->get_min_key_len();
 
     /* check if buffer for key is long enough */
     if (min_key_len > max_key_len)
@@ -1115,11 +1115,11 @@ int AuthMD5::hash(const unsigned char* data, const unsigned int data_len,
 int AuthMD5::auth_out_msg(const unsigned char* key, unsigned char* msg,
     const int msg_len, unsigned char* auth_par_ptr)
 {
-    MD5HashStateType md5_hash_state {};
-    unsigned int     key_len = 16; /* We use only 16 Byte Key! */
-    unsigned char    digest[16];
-    unsigned char    k_ipad[65]; /* inner padding - key XORd with ipad */
-    unsigned char    k_opad[65]; /* outer padding - key XORd with opad */
+    MD5HashStateType   md5_hash_state {};
+    unsigned int const key_len = 16; /* We use only 16 Byte Key! */
+    unsigned char      digest[16];
+    unsigned char      k_ipad[65]; /* inner padding - key XORd with ipad */
+    unsigned char      k_opad[65]; /* outer padding - key XORd with opad */
 
     memset((char*)(auth_par_ptr), 0, 12);
 
@@ -1228,8 +1228,8 @@ int PrivDES::encrypt(const unsigned char* key, const unsigned int /*key_len*/,
     unsigned char* privacy_params, unsigned int* privacy_params_len,
     const uint32_t engine_boots, const uint32_t /*engine_time*/)
 {
-    unsigned char initVect[8];
-    pp_uint64     my_salt = (*salt)++;
+    unsigned char   initVect[8];
+    pp_uint64 const my_salt = (*salt)++;
 
 #    ifdef INVALID_ENCRYPTION
     debugprintf(-10, "\nWARNING: Encrypting with zeroed salt!\n");
@@ -1281,7 +1281,7 @@ int PrivDES::encrypt(const unsigned char* key, const unsigned int /*key_len*/,
     {
         unsigned char  tmp_buf[8];
         unsigned char* tmp_buf_ptr = tmp_buf;
-        int            start       = buffer_len - (buffer_len % 8);
+        int const      start       = buffer_len - (buffer_len % 8);
         memset(tmp_buf, 0, 8);
         for (unsigned int l = start; l < buffer_len; l++)
             *tmp_buf_ptr++ = buffer[l];
@@ -1487,7 +1487,7 @@ PrivAES::PrivAES(const int aes_type_) : aes_type(aes_type_)
         aes_type  = -1; // will cause an error in AuthPriv::add_priv()
     }
 
-    unsigned int testswap = htonl(0x01020304);
+    unsigned int const testswap = htonl(0x01020304);
     if (testswap == 0x01020304)
         need_byteswap = false;
     else
@@ -2081,7 +2081,7 @@ bool Priv3DES_EDE::test()
 
     key_len = TRIPLEDES_EDE_KEY_LEN;
     status  = ap.password_to_key_priv(SNMP_AUTHPROTOCOL_HMACMD5,
-        SNMP_PRIVPROTOCOL_3DESEDE, password, 10, engine_id, 12, key, &key_len);
+         SNMP_PRIVPROTOCOL_3DESEDE, password, 10, engine_id, 12, key, &key_len);
 
     debughexcprintf(1, "result key 3DES MD5", key, key_len);
 
@@ -2194,8 +2194,8 @@ int AuthSHABase::auth_out_msg(const unsigned char* key, unsigned char* msg,
     const int msg_len, unsigned char* auth_par_ptr)
 {
     std::unique_ptr<Hasher> h(get_hasher());
-    int                     block_size = h->get_block_size();
-    int                     key_len    = h->get_key_length();
+    int const               block_size = h->get_block_size();
+    int const               key_len    = h->get_key_length();
     unsigned char           digest[SNMPv3_AP_MAXLENGTH_AUTHPARAM];
     Buffer<unsigned char>   ipad(block_size);
     Buffer<unsigned char>   opad(block_size);
@@ -2300,7 +2300,7 @@ int AuthSHABase::auth_inc_msg(const unsigned char* key, unsigned char* msg,
 class AuthSHA::HasherSHA1 : public AuthSHABase::Hasher {
 public:
     HasherSHA1() { }
-    virtual ~HasherSHA1() { }
+    ~HasherSHA1() override { }
 
     int init() override { return SHA1_INIT(&sha_hash_state); }
 
@@ -2327,7 +2327,7 @@ AuthSHABase::Hasher* AuthSHA::get_hasher() const { return new HasherSHA1(); }
 class AuthHMAC128SHA224::Hasher224 : public AuthSHABase::Hasher {
 public:
     Hasher224() { }
-    virtual ~Hasher224() { }
+    ~Hasher224() override { }
 
     int init() override { return evpAllocAndInit(&ctx, EVP_sha224()); }
 
@@ -2355,7 +2355,7 @@ AuthSHABase::Hasher* AuthHMAC128SHA224::get_hasher() const
 class AuthHMAC192SHA256::Hasher256 : public Hasher {
 public:
     Hasher256() { }
-    virtual ~Hasher256() { }
+    ~Hasher256() override { }
 
     int init() override { return evpAllocAndInit(&ctx, EVP_sha256()); }
 
@@ -2383,7 +2383,7 @@ AuthSHABase::Hasher* AuthHMAC192SHA256::get_hasher() const
 class AuthHMAC256SHA384::Hasher384 : public Hasher {
 public:
     Hasher384() { }
-    virtual ~Hasher384() { }
+    ~Hasher384() override { }
 
     int init() override { return evpAllocAndInit(&ctx, EVP_sha384()); }
 
@@ -2411,7 +2411,7 @@ AuthSHABase::Hasher* AuthHMAC256SHA384::get_hasher() const
 class AuthHMAC384SHA512::Hasher512 : public Hasher {
 public:
     Hasher512() { }
-    virtual ~Hasher512() { }
+    ~Hasher512() override { }
 
     int init() override { return evpAllocAndInit(&ctx, EVP_sha512()); }
 

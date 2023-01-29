@@ -416,7 +416,7 @@ DLLOPT int send_snmp_request(SnmpSocket sock, unsigned char* send_buf,
         agent_addr.sin6_port     = htons(((UdpAddress&)address).get_port());
         agent_addr.sin6_scope_id = scope;
         send_result              = sendto(sock, (char*)send_buf, send_len, 0,
-            (struct sockaddr*)&agent_addr, sizeof(agent_addr));
+                         (struct sockaddr*)&agent_addr, sizeof(agent_addr));
 #else
         debugprintf(0, "User error: Enable IPv6 and recompile snmp++.");
         return -1;
@@ -519,14 +519,14 @@ int receive_snmp_response(SnmpSocket sock, Snmp& snmp_session, Pdu& pdu,
     SmiINT32 security_model = 0;
     if (snmpmsg.is_v3_message())
     {
-        int returncode = snmpmsg.unloadv3(pdu, version, engine_id,
+        int const returncode = snmpmsg.unloadv3(pdu, version, engine_id,
             security_name, security_model, fromaddress, snmp_session);
         if (returncode != SNMP_CLASS_SUCCESS) return returncode;
     }
     else
     {
 #endif
-        int returncode = snmpmsg.unload(pdu, community_name, version);
+        int const returncode = snmpmsg.unload(pdu, community_name, version);
         if (returncode != SNMP_CLASS_SUCCESS) return SNMP_CLASS_ERROR;
 #ifdef _SNMPv3
     }
@@ -632,14 +632,14 @@ int receive_snmp_notification(
     SmiINT32 security_model = SecurityModel_any;
     if (snmpmsg.is_v3_message())
     {
-        int returncode = snmpmsg.unloadv3(pdu, version, engine_id,
+        int const returncode = snmpmsg.unloadv3(pdu, version, engine_id,
             security_name, security_model, fromaddress, snmp_session);
         if (returncode != SNMP_CLASS_SUCCESS) return returncode;
     }
     else
     {
 #endif
-        int returncode = snmpmsg.unload(pdu, community_name, version);
+        int const returncode = snmpmsg.unload(pdu, community_name, version);
         if (returncode != SNMP_CLASS_SUCCESS) return SNMP_CLASS_ERROR;
 #ifdef _SNMPv3
     }
@@ -862,7 +862,7 @@ void Snmp::init(int& status, IpAddress* addresses[2],
         else
         {
             // set up the manager socket attributes
-            uint32_t inaddr = inet_addr(
+            uint32_t const inaddr = inet_addr(
                 addresses[0]->get_printable()); // TODO: Use inet_pton()! CK
             struct sockaddr_in mgr_addr;
             memset(&mgr_addr, 0, sizeof(mgr_addr));
@@ -1224,7 +1224,7 @@ int Snmp::send_raw_data(unsigned char* send_buf, size_t send_len,
     UdpAddress& address, SnmpSocket fd)
 {
     // REENTRANT() removed because of #ifdef
-    SnmpSynchronize _synchronize(*this);
+    SnmpSynchronize const _synchronize(*this);
 
     if (fd != INVALID_SOCKET)
         return send_snmp_request(fd, send_buf, send_len, address);
@@ -1251,7 +1251,8 @@ int Snmp::send_raw_data(unsigned char* send_buf, size_t send_len,
 int Snmp::cancel(const uint32_t request_id)
 {
     eventListHolder->snmpEventList()->lock();
-    int status = eventListHolder->snmpEventList()->DeleteEntry(request_id);
+    int const status =
+        eventListHolder->snmpEventList()->DeleteEntry(request_id);
     eventListHolder->snmpEventList()->unlock();
 
     return status;
@@ -1444,7 +1445,7 @@ int Snmp::trap(Pdu&   pdu,    // pdu to send
     if (version == version3)
     {
 
-        OctetStr engine_id = mpv3->get_local_engine_id();
+        OctetStr const engine_id = mpv3->get_local_engine_id();
         if (!utarget)
         {
             debugprintf(0,
@@ -2066,10 +2067,10 @@ int Snmp::snmp_engine(Pdu& pdu,      // pdu to use
 int Snmp::engine_id_discovery(
     OctetStr& engine_id, const int timeout_sec, const UdpAddress& addr)
 {
-    unsigned char* message        = nullptr;
-    int            message_length = 0;
-    SnmpSocket     sock           = 0;
-    SnmpMessage    snmpmsg;
+    unsigned char*    message        = nullptr;
+    int               message_length = 0;
+    SnmpSocket        sock           = 0;
+    SnmpMessage const snmpmsg;
 
     unsigned char snmpv3_message[60] = {
         0x30, 0x3a, 0x02, 0x01, 0x03, // Version: 3
@@ -2161,7 +2162,7 @@ int Snmp::engine_id_discovery(
             // receive message
             UdpAddress from;
             Pdu        dummy_pdu;
-            int res = receive_snmp_response(sock, *this, dummy_pdu, from,
+            int const res = receive_snmp_response(sock, *this, dummy_pdu, from,
                 engine_id, true /* process_msg */);
             if ((res == SNMP_CLASS_SUCCESS)
                 || (res == SNMPv3_MP_UNKNOWN_PDU_HANDLERS))
@@ -2172,10 +2173,7 @@ int Snmp::engine_id_discovery(
                 unlock();
                 return SNMP_CLASS_SUCCESS;
             }
-            else
-            {
-                debugprintf(0, "Error receiving discovery response.");
-            }
+            else { debugprintf(0, "Error receiving discovery response."); }
         }
     } while (
         (nfound > 0) || (fd_timeout.tv_sec > 0) || (fd_timeout.tv_usec > 0));
@@ -2242,7 +2240,7 @@ int Snmp::broadcast_discovery(UdpAddressCollection& addresses,
         else
             get_community = "public";
 
-        int status = snmpmsg.load(pdu, get_community, version);
+        int const status = snmpmsg.load(pdu, get_community, version);
         if (status != SNMP_CLASS_SUCCESS)
         {
             debugprintf(0, "Error encoding broadcast pdu (%i).", status);
@@ -2321,10 +2319,7 @@ int Snmp::broadcast_discovery(UdpAddressCollection& addresses,
             {
                 addresses += from;
             }
-            else
-            {
-                debugprintf(0, "Error receiving broadcast response.");
-            }
+            else { debugprintf(0, "Error receiving broadcast response."); }
         }
     } while (
         (nfound > 0) || (fd_timeout.tv_sec > 0) || (fd_timeout.tv_usec > 0));
@@ -2375,7 +2370,7 @@ bool Snmp::start_poll_thread(const int timeout)
         m_isThreadRunning = false;
     }
 #    else
-    int rc =
+    int const rc =
         pthread_create(&m_hThread, NULL, Snmp::process_thread, (void*)this);
     if (rc)
     {

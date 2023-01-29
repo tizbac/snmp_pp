@@ -114,7 +114,7 @@ int main(int argc, char** argv)
         }
         else
         {
-            Oid req_oid(oid_str.c_str());
+            Oid const req_oid(oid_str.c_str());
             if (!req_oid.valid())
             {
                 std::cerr << "Request oid constructor failed for:" << oid_str
@@ -135,7 +135,7 @@ int main(int argc, char** argv)
         else
         {
             std::cout << "Issued get successfully" << std::endl;
-            int vbcount = pdu.get_vb_count();
+            int const vbcount = pdu.get_vb_count();
             if (vbcount == NUM_SYS_VBS)
             {
                 pdu.get_vblist(vbl, vbcount);
@@ -162,7 +162,7 @@ int main(int argc, char** argv)
 
         if (oid_str.empty()) oid_str = dflt_trp_oid;
 
-        Oid notify_oid(oid_str.c_str());
+        Oid const notify_oid(oid_str.c_str());
         if (!notify_oid.valid())
         {
             std::cerr << "Notify oid constructor failed for:" << oid_str
@@ -184,10 +184,7 @@ int main(int argc, char** argv)
                       << snmp.error_msg(status) << std::endl;
             exit(EXIT_FAILURE);
         }
-        else
-        {
-            std::cout << "Success" << std::endl;
-        }
+        else { std::cout << "Success" << std::endl; }
     }
     else
     {

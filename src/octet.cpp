@@ -240,7 +240,8 @@ int operator!=(const OctetStr& lhs, const OctetStr& rhs)
 //==============[ less than < overloaded ]============================
 int operator<(const OctetStr& lhs, const OctetStr& rhs)
 {
-    uint32_t maxlen = lhs.smival.value.string.len > rhs.smival.value.string.len
+    uint32_t const maxlen =
+        lhs.smival.value.string.len > rhs.smival.value.string.len
         ? lhs.smival.value.string.len
         : rhs.smival.value.string.len;
     return (lhs.nCompare(maxlen, rhs) < 0);
@@ -249,7 +250,8 @@ int operator<(const OctetStr& lhs, const OctetStr& rhs)
 //==============[ less than <= overloaded ]===========================
 int operator<=(const OctetStr& lhs, const OctetStr& rhs)
 {
-    uint32_t maxlen = lhs.smival.value.string.len > rhs.smival.value.string.len
+    uint32_t const maxlen =
+        lhs.smival.value.string.len > rhs.smival.value.string.len
         ? lhs.smival.value.string.len
         : rhs.smival.value.string.len;
     return (lhs.nCompare(maxlen, rhs) <= 0);
@@ -258,7 +260,8 @@ int operator<=(const OctetStr& lhs, const OctetStr& rhs)
 //===============[ greater than > overloaded ]========================
 int operator>(const OctetStr& lhs, const OctetStr& rhs)
 {
-    uint32_t maxlen = lhs.smival.value.string.len > rhs.smival.value.string.len
+    uint32_t const maxlen =
+        lhs.smival.value.string.len > rhs.smival.value.string.len
         ? lhs.smival.value.string.len
         : rhs.smival.value.string.len;
     return (lhs.nCompare(maxlen, rhs) > 0);
@@ -267,7 +270,8 @@ int operator>(const OctetStr& lhs, const OctetStr& rhs)
 //===============[ greater than >= overloaded ]=======================
 int operator>=(const OctetStr& lhs, const OctetStr& rhs)
 {
-    uint32_t maxlen = lhs.smival.value.string.len > rhs.smival.value.string.len
+    uint32_t const maxlen =
+        lhs.smival.value.string.len > rhs.smival.value.string.len
         ? lhs.smival.value.string.len
         : rhs.smival.value.string.len;
     return (lhs.nCompare(maxlen, rhs) >= 0);
@@ -276,7 +280,7 @@ int operator>=(const OctetStr& lhs, const OctetStr& rhs)
 //===============[ equivlence operator overloaded ]===================
 int operator==(const OctetStr& lhs, const char* rhs)
 {
-    OctetStr to(rhs);
+    OctetStr const to(rhs);
     if (lhs.smival.value.string.len != to.smival.value.string.len)
         return false;
     return (lhs.nCompare(to.smival.value.string.len, to) == 0);
@@ -285,7 +289,7 @@ int operator==(const OctetStr& lhs, const char* rhs)
 //===============[ not equivlence operator overloaded ]===============
 int operator!=(const OctetStr& lhs, const char* rhs)
 {
-    OctetStr to(rhs);
+    OctetStr const to(rhs);
     if (lhs.smival.value.string.len != to.smival.value.string.len) return true;
     return (lhs.nCompare(to.smival.value.string.len, to) != 0);
 }
@@ -293,8 +297,9 @@ int operator!=(const OctetStr& lhs, const char* rhs)
 //===============[ less than < operator overloaded ]==================
 int operator<(const OctetStr& lhs, const char* rhs)
 {
-    OctetStr to(rhs);
-    uint32_t maxlen = lhs.smival.value.string.len > to.smival.value.string.len
+    OctetStr const to(rhs);
+    uint32_t const maxlen =
+        lhs.smival.value.string.len > to.smival.value.string.len
         ? lhs.smival.value.string.len
         : to.smival.value.string.len;
     return (lhs.nCompare(maxlen, to) < 0);
@@ -303,8 +308,9 @@ int operator<(const OctetStr& lhs, const char* rhs)
 //===============[ less than <= operator overloaded ]=================
 int operator<=(const OctetStr& lhs, const char* rhs)
 {
-    OctetStr to(rhs);
-    uint32_t maxlen = lhs.smival.value.string.len > to.smival.value.string.len
+    OctetStr const to(rhs);
+    uint32_t const maxlen =
+        lhs.smival.value.string.len > to.smival.value.string.len
         ? lhs.smival.value.string.len
         : to.smival.value.string.len;
     return (lhs.nCompare(maxlen, to) <= 0);
@@ -313,8 +319,9 @@ int operator<=(const OctetStr& lhs, const char* rhs)
 //===============[ greater than > operator overloaded ]===============
 int operator>(const OctetStr& lhs, const char* rhs)
 {
-    OctetStr to(rhs);
-    uint32_t maxlen = lhs.smival.value.string.len > to.smival.value.string.len
+    OctetStr const to(rhs);
+    uint32_t const maxlen =
+        lhs.smival.value.string.len > to.smival.value.string.len
         ? lhs.smival.value.string.len
         : to.smival.value.string.len;
     return (lhs.nCompare(maxlen, to) > 0);
@@ -323,8 +330,9 @@ int operator>(const OctetStr& lhs, const char* rhs)
 //===============[ greater than >= operator overloaded ]==============
 int operator>=(const OctetStr& lhs, const char* rhs)
 {
-    OctetStr to(rhs);
-    uint32_t maxlen = lhs.smival.value.string.len > to.smival.value.string.len
+    OctetStr const to(rhs);
+    uint32_t const maxlen =
+        lhs.smival.value.string.len > to.smival.value.string.len
         ? lhs.smival.value.string.len
         : to.smival.value.string.len;
     return (lhs.nCompare(maxlen, to) >= 0);
@@ -616,7 +624,7 @@ OctetStr OctetStr::from_hex_string(const OctetStr& hex_string)
     const unsigned char* ptr = hex_string.smival.value.string.ptr;
     for (p = hex_string.len(); p > 0; p--)
     {
-        unsigned char c = *ptr++;
+        unsigned char const c = *ptr++;
         if (c != ' ')
         {
             *hex_ptr++ = c;
@@ -632,10 +640,7 @@ OctetStr OctetStr::from_hex_string(const OctetStr& hex_string)
         val += c;
         p = 1;
     }
-    else
-    {
-        p = 0;
-    }
+    else { p = 0; }
 
     while (p < hex_len)
     {

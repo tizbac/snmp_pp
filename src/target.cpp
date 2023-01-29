@@ -98,8 +98,8 @@ bool SnmpTarget::set_address(const Address& address)
 
 SnmpTarget* SnmpTarget::clone() const
 {
-    GenAddress  addr = my_address;
-    SnmpTarget* res  = new SnmpTarget;
+    GenAddress const addr = my_address;
+    SnmpTarget*      res  = new SnmpTarget;
     res->set_timeout(timeout);
     res->set_retry(retries);
     res->set_address(addr);

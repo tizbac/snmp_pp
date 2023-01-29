@@ -47,8 +47,8 @@ following patents: PCT/CH91/00117, EP 0 482 154 B1, US Pat. 5,214,703.
 
 #include <libsnmp.h>
 
-//#include "snmp_pp/includes.h"
-//#include "snmp_pp/getput.h"
+// #include "snmp_pp/includes.h"
+// #include "snmp_pp/getput.h"
 #include "snmp_pp/idea.h"
 
 #ifdef SNMP_PP_NAMESPACE

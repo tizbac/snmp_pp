@@ -169,10 +169,7 @@ bool operator==(const Address& lhs, const char* rhs)
 
     if (!rhs && !lhs.valid())
         return true;
-    else if (!rhs)
-    {
-        return false;
-    }
+    else if (!rhs) { return false; }
     if (strcmp((const char*)lhs, rhs) == 0) return true;
     return false;
 }
@@ -544,10 +541,7 @@ int IpAddress::parse_dotted_ipstring(const char* inaddr)
             ++dot_count;
             last_char_was_dot = true;
         }
-        else if (isdigit(*ptr))
-        {
-            last_char_was_dot = false;
-        }
+        else if (isdigit(*ptr)) { last_char_was_dot = false; }
         else
             return false;
         ++ptr;
@@ -651,7 +645,7 @@ int IpAddress::parse_coloned_ipstring(const char* inaddr)
             for (int i = 0; i < digit_count; i++)
                 if (!isdigit(digits[i])) return false;
             digits[digit_count] = 0;
-            int value           = std::stoi(digits);
+            int const value     = std::stoi(digits);
             if ((value > 0) && (value <= 255))
                 *out_ptr++ = (unsigned char)value;
             else
@@ -686,9 +680,9 @@ int IpAddress::parse_coloned_ipstring(const char* inaddr)
                     // pack two digits into one byte
                     for (int i = 0; i < 4; i += 2)
                     {
-                        unsigned char c = digits[i];
-                        unsigned char d = digits[i + 1];
-                        *out_ptr++      = (c * 16 + d);
+                        unsigned char const c = digits[i];
+                        unsigned char const d = digits[i + 1];
+                        *out_ptr++            = (c * 16 + d);
                     }
                 }
                 digit_count = 0;
@@ -702,10 +696,7 @@ int IpAddress::parse_coloned_ipstring(const char* inaddr)
                 second_used      = true;
                 had_double_colon = true;
             }
-            else
-            {
-                last_was_colon = true;
-            }
+            else { last_was_colon = true; }
         }
         else
         {
@@ -740,9 +731,9 @@ int IpAddress::parse_coloned_ipstring(const char* inaddr)
                 // pack two digits into one byte
                 for (int i = 0; i < 4; i += 2)
                 {
-                    unsigned char c = digits[i];
-                    unsigned char d = digits[i + 1];
-                    *out_ptr++      = (c * 16 + d);
+                    unsigned char const c = digits[i];
+                    unsigned char const d = digits[i + 1];
+                    *out_ptr++            = (c * 16 + d);
                 }
             }
             // Note: DeadStores: digit_count = 0;! CK
@@ -753,7 +744,7 @@ int IpAddress::parse_coloned_ipstring(const char* inaddr)
             for (int i = 0; i < digit_count; i++)
                 if (!isdigit(digits[i])) return false;
             digits[digit_count] = 0;
-            int value           = std::stoi(digits);
+            int const value     = std::stoi(digits);
             if ((value > 0) && (value <= 255))
                 *out_ptr++ = (unsigned char)value;
             else
@@ -777,9 +768,9 @@ int IpAddress::parse_coloned_ipstring(const char* inaddr)
 
     if (second_used)
     {
-        int len_first =
+        int const len_first =
             SAFE_INT_CAST(end_first_part - (char*)tmp_address_buffer);
-        int len_second = SAFE_INT_CAST(out_ptr - second);
+        int const len_second = SAFE_INT_CAST(out_ptr - second);
 
         int i = 0;
         for (i = 0; i < IP6LEN_NO_SCOPE - (len_first + len_second); i++)
@@ -843,7 +834,7 @@ bool IpAddress::parse_address(const char* inaddr)
 #    ifdef AI_ADDRCONFIG
     hints.ai_flags |= AI_ADDRCONFIG;
 #    endif
-    int error = getaddrinfo(inaddr, 0, &hints, &res);
+    int const error = getaddrinfo(inaddr, 0, &hints, &res);
     if (error)
     {
         /* errx(1, "%s", gai_strerror(error)); */
@@ -1290,7 +1281,8 @@ void IpAddress::mask(const IpAddress& ipaddr)
 
     if (valid() && ipaddr.valid())
     {
-        int count = (ip_version == version_ipv4) ? IPLEN : IP6LEN_NO_SCOPE;
+        int const count =
+            (ip_version == version_ipv4) ? IPLEN : IP6LEN_NO_SCOPE;
 
         for (int i = 0; i < count; i++)
             address_buffer[i] = address_buffer[i] & ipaddr.address_buffer[i];
@@ -1307,7 +1299,8 @@ int IpAddress::get_match_bits(const IpAddress& match_ip) const
 
     if (valid() && match_ip.valid() && (ip_version == match_ip.ip_version))
     {
-        int count = (ip_version == version_ipv4) ? IPLEN : IP6LEN_NO_SCOPE;
+        int const count =
+            (ip_version == version_ipv4) ? IPLEN : IP6LEN_NO_SCOPE;
 
         for (int i = 0; i < count; i++)
         {
@@ -1446,10 +1439,7 @@ UdpAddress::UdpAddress(const GenAddress& genaddr) : IpAddress()
         {
             *this = genaddr.cast_ipaddress(); // copy in the IP address data
         }
-        else
-        {
-            valid_flag = false;
-        }
+        else { valid_flag = false; }
     }
     sep = ':';
 }
@@ -1488,7 +1478,7 @@ SnmpSyntax& UdpAddress::operator=(const SnmpSyntax& val)
         switch (val.get_syntax())
         {
         case sNMP_SYNTAX_IPADDR: {
-            UdpAddress temp_udp(val.get_printable());
+            UdpAddress const temp_udp(val.get_printable());
             *this = temp_udp; // valid_flag is set by the udp assignment
             break;
         }
@@ -1547,7 +1537,7 @@ Address& UdpAddress::operator=(const Address& val)
         switch (val.get_syntax())
         {
         case sNMP_SYNTAX_IPADDR: {
-            UdpAddress temp_udp(val.get_printable());
+            UdpAddress const temp_udp(val.get_printable());
             *this = temp_udp; // valid_flag is set by the udp assignment
             break;
         }
@@ -1831,7 +1821,7 @@ bool UdpAddress::set_scope(const unsigned int scope)
     ADDRESS_TRACE;
 
     /* Save the port, as IpAddress::set_scope destroys it */
-    unsigned short old_port = get_port();
+    unsigned short const old_port = get_port();
 
     if (!IpAddress::set_scope(scope)) return false;
 
@@ -1852,7 +1842,7 @@ bool UdpAddress::map_to_ipv6()
     ADDRESS_TRACE;
 
     /* Save the port, as IpAddress::map_to_ipv6 destroys it */
-    unsigned short old_port = get_port();
+    unsigned short const old_port = get_port();
 
     /* Map IpAddress */
     if (!IpAddress::map_to_ipv6()) return false;
@@ -2666,8 +2656,8 @@ GenAddress::GenAddress(const char* addr, const Address::addr_type use_type)
     smival.value.string.len = 0;                // to be overridden
     smival.value.string.ptr = address_buffer;   // constant
 
-    address = 0;
-    bool OK = parse_address(addr, use_type);
+    address       = 0;
+    bool const OK = parse_address(addr, use_type);
 
     // Copy real address smival info into GenAddr smival
     // BOK: smival is generally not used for GenAddress, but

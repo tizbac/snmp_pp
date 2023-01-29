@@ -606,7 +606,7 @@ int SnmpMessage::unload(Pdu& pdu,           // Pdu object
         pdu.set_notify_timestamp(timestamp);
 
         // set the agent address
-        IpAddress agent_addr(inet_ntoa(
+        IpAddress const agent_addr(inet_ntoa(
             raw_pdu->agent_addr.sin_addr)); // TODO: Use inet_ntop()! CK
         if (agent_addr != "0.0.0.0")
         {
@@ -679,13 +679,13 @@ int SnmpMessage::unload(Pdu& pdu,           // Pdu object
 
             // octet string
         case sNMP_SYNTAX_OCTETS: {
-            OctetStr octets(
+            OctetStr const octets(
                 (unsigned char*)vp->val.string, (uint32_t)vp->val_len);
             tempvb.set_value(octets);
         }
         break;
         case sNMP_SYNTAX_OPAQUE: {
-            OpaqueStr octets(
+            OpaqueStr const octets(
                 (unsigned char*)vp->val.string, (uint32_t)vp->val_len);
             tempvb.set_value(octets);
         }
@@ -693,7 +693,7 @@ int SnmpMessage::unload(Pdu& pdu,           // Pdu object
 
             // object id
         case sNMP_SYNTAX_OID: {
-            Oid oid((SmiLPUINT32)vp->val.objid, (int)vp->val_len);
+            Oid const oid((SmiLPUINT32)vp->val.objid, (int)vp->val_len);
             tempvb.set_value(oid);
             if ((vb_nr == 2)
                 && ((raw_pdu->command == sNMP_PDU_TRAP)
@@ -709,7 +709,7 @@ int SnmpMessage::unload(Pdu& pdu,           // Pdu object
 
             // timeticks
         case sNMP_SYNTAX_TIMETICKS: {
-            TimeTicks timeticks((uint32_t) * (vp->val.integer));
+            TimeTicks const timeticks((uint32_t) * (vp->val.integer));
             tempvb.set_value(timeticks);
             if ((vb_nr == 1)
                 && ((raw_pdu->command == sNMP_PDU_TRAP)
@@ -725,14 +725,14 @@ int SnmpMessage::unload(Pdu& pdu,           // Pdu object
 
             // 32 bit counter
         case sNMP_SYNTAX_CNTR32: {
-            Counter32 counter32((uint32_t) * (vp->val.integer));
+            Counter32 const counter32((uint32_t) * (vp->val.integer));
             tempvb.set_value(counter32);
         }
         break;
 
             // 32 bit gauge
         case sNMP_SYNTAX_GAUGE32: {
-            Gauge32 gauge32((uint32_t) * (vp->val.integer));
+            Gauge32 const gauge32((uint32_t) * (vp->val.integer));
             tempvb.set_value(gauge32);
         }
         break;
@@ -756,14 +756,14 @@ int SnmpMessage::unload(Pdu& pdu,           // Pdu object
                 snprintf(buffer, sizeof(buffer), "%d.%d.%d.%d",
                     vp->val.string[0], vp->val.string[1], vp->val.string[2],
                     vp->val.string[3]);
-            IpAddress ipaddress(buffer);
+            IpAddress const ipaddress(buffer);
             tempvb.set_value(ipaddress);
         }
         break;
 
             // 32 bit integer
         case sNMP_SYNTAX_INT: {
-            SnmpInt32 int32((long)*(vp->val.integer));
+            SnmpInt32 const int32((long)*(vp->val.integer));
             tempvb.set_value(int32);
         }
         break;
@@ -779,7 +779,7 @@ int SnmpMessage::unload(Pdu& pdu,           // Pdu object
             */
             // v2 counter 64's
         case sNMP_SYNTAX_CNTR64: { // Frank Fock (was empty before)
-            Counter64 c64(((counter64*)vp->val.counter64)->high,
+            Counter64 const c64(((counter64*)vp->val.counter64)->high,
                 ((counter64*)vp->val.counter64)->low);
             tempvb.set_value(c64);
             break;

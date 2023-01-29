@@ -60,8 +60,8 @@
 #include "snmp_pp/collect.h"
 #include "snmp_pp/smival.h"
 
-#include <libsnmp.h>
 #include <cassert>
+#include <libsnmp.h>
 
 #ifdef SNMP_PP_NAMESPACE
 namespace Snmp_pp

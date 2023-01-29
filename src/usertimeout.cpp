@@ -136,8 +136,8 @@ CUTEventQueue::~CUTEventQueue()
 UtId CUTEventQueue::AddEntry(
     const msec& timeout, const ut_callback callBack, const void* callData)
 {
-    UtId      uniqueId = MakeId(); // use a unique ID
-    CUTEvent* newEvent = new CUTEvent(uniqueId, timeout, callBack, callData);
+    UtId const uniqueId = MakeId(); // use a unique ID
+    CUTEvent*  newEvent = new CUTEvent(uniqueId, timeout, callBack, callData);
 
     /*---------------------------------------------------------*/
     /* Insert entry at head of list, done automagically by the */
@@ -239,7 +239,7 @@ int CUTEventQueue::DoRetries(const msec& sendtime)
         msg->GetTimeout(timeout);
         if (timeout <= sendtime)
         {
-            UtId id = msg->GetId();
+            UtId const id = msg->GetId();
             msg->Callback();
             DeleteEntry(id);
         }

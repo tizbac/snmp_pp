@@ -110,7 +110,7 @@ public:
     USMTimeTable(
         const USM* owner, const unsigned int engine_boots, int& result);
 
-    ~USMTimeTable();
+    ~USMTimeTable() override;
 
     /**
      * Add a new entry to the usmTimeTable. The caller is responsible for
@@ -230,7 +230,7 @@ private:
 class USMUserNameTable : public SnmpSynchronized {
 public:
     USMUserNameTable(int& result);
-    ~USMUserNameTable();
+    ~USMUserNameTable() override;
 
     /**
      * Add a new user to the usmUserNameTable. If the userName is already
@@ -364,7 +364,7 @@ class USMUserTable : public SnmpSynchronized {
 public:
     USMUserTable(int& result);
 
-    ~USMUserTable();
+    ~USMUserTable() override;
 
     /**
      * Get the number of valid entries in the table.
@@ -747,8 +747,8 @@ int USM::remove_all_users()
 // Delete this engine id form all USM tables (users and engine time).
 int USM::remove_engine_id(const OctetStr& engine_id)
 {
-    int retval1 = usm_time_table->delete_entry(engine_id);
-    int retval2 = usm_user_table->delete_engine_id(engine_id);
+    int const retval1 = usm_time_table->delete_entry(engine_id);
+    int const retval2 = usm_user_table->delete_engine_id(engine_id);
 
     if ((retval1 == SNMPv3_USM_ERROR) || (retval2 == SNMPv3_USM_ERROR))
         return SNMPv3_USM_ERROR;
@@ -794,7 +794,7 @@ int USM::add_usm_user(const OctetStr& user_name, const OctetStr& security_name,
     /*  delete localized entries if some exists */
     delete_localized_user(user_name);
 
-    int result = usm_user_name_table->add_entry(user_name, security_name,
+    int const result = usm_user_name_table->add_entry(user_name, security_name,
         auth_protocol, priv_protocol, auth_password, priv_password);
     if (result != SNMPv3_USM_OK) return result;
 
@@ -949,7 +949,7 @@ struct UsmUser* USM::get_user(
                     v3strcpy(entry->usmUserName, entry->usmUserNameLength);
                 res->usmUserNameLength  = entry->usmUserNameLength;
                 res->securityName       = v3strcpy(entry->usmUserSecurityName,
-                    entry->usmUserSecurityNameLength);
+                          entry->usmUserSecurityNameLength);
                 res->securityNameLength = entry->usmUserSecurityNameLength;
                 res->authProtocol       = SNMP_AUTHPROTOCOL_NONE;
                 res->authKey            = 0;
@@ -1014,7 +1014,7 @@ struct UsmUser* USM::get_user(
             unsigned int  authKeyLength = SNMPv3_USM_MAX_KEY_LEN;
             unsigned int  privKeyLength = SNMPv3_USM_MAX_KEY_LEN;
 
-            int res = build_localized_keys(engine_id,
+            int const res = build_localized_keys(engine_id,
                 name_table_entry->usmUserAuthProtocol,
                 name_table_entry->usmUserPrivProtocol,
                 name_table_entry->authPassword,
@@ -1164,8 +1164,8 @@ int USM::get_security_name(const unsigned char* user_name,
 int USM::get_user_name(unsigned char* user_name, long int* user_name_len,
     const unsigned char* security_name, const long int security_name_len)
 {
-    int      result  = 0;
-    long int buf_len = *user_name_len;
+    int            result  = 0;
+    long int const buf_len = *user_name_len;
 
     result = usm_user_name_table->get_user_name(
         user_name, user_name_len, security_name, security_name_len);
@@ -1254,7 +1254,7 @@ struct UsmKeyUpdate* USM::key_update_prepare(const OctetStr& securityName,
 
     GenAddress genaddress;
     target.get_address(genaddress);
-    UdpAddress udp_address(genaddress);
+    UdpAddress const udp_address(genaddress);
     if (!udp_address.valid())
     {
         debugprintf(0, "usmPrepareKeyUpdate: Address invalid.");
@@ -1337,7 +1337,7 @@ struct UsmKeyUpdate* USM::key_update_prepare(const OctetStr& securityName,
 
     for (int i = 0; i < 30; i++)
     {
-        char tmp_rand = rand();
+        char const tmp_rand = rand();
         random_value += tmp_rand;
     }
 
@@ -1419,8 +1419,8 @@ int USM::key_update_commit(struct UsmKeyUpdate* uku, int update_type)
 {
     if (!uku) return SNMPv3_USM_ERROR;
 
-    int      result = 0;
-    OctetStr userName;
+    int            result = 0;
+    OctetStr const userName;
 
     switch (update_type)
     {
@@ -1450,7 +1450,8 @@ int USM::key_update_commit(struct UsmKeyUpdate* uku, int update_type)
         {
         case OWNAUTHKEY:
         case AUTHKEY: {
-            OctetStr privPass(entry->privPassword, entry->privPasswordLength);
+            OctetStr const privPass(
+                entry->privPassword, entry->privPasswordLength);
             result = add_usm_user(uku->securityName, entry->usmUserName,
                 entry->usmUserAuthProtocol, entry->usmUserPrivProtocol,
                 uku->newPassword, privPass);
@@ -1458,7 +1459,8 @@ int USM::key_update_commit(struct UsmKeyUpdate* uku, int update_type)
         }
         case OWNPRIVKEY:
         case PRIVKEY: {
-            OctetStr authPass(entry->privPassword, entry->privPasswordLength);
+            OctetStr const authPass(
+                entry->privPassword, entry->privPasswordLength);
             result = add_usm_user(uku->securityName, entry->usmUserName,
                 entry->usmUserAuthProtocol, entry->usmUserPrivProtocol,
                 authPass, uku->newPassword);
@@ -1484,7 +1486,7 @@ int USM::key_update_commit(struct UsmKeyUpdate* uku, int update_type)
         {
         case OWNAUTHKEY:
         case AUTHKEY: {
-            OctetStr privPass =
+            OctetStr const privPass =
                 OctetStr(entry->privPassword, entry->privPasswordLength);
             delete_usm_user(uku->securityName);
             result = add_usm_user(uku->securityName, entry->usmUserName,
@@ -1494,7 +1496,7 @@ int USM::key_update_commit(struct UsmKeyUpdate* uku, int update_type)
         }
         case OWNPRIVKEY:
         case PRIVKEY: {
-            OctetStr authPass =
+            OctetStr const authPass =
                 OctetStr(entry->authPassword, entry->authPasswordLength);
             delete_usm_user(uku->securityName);
             result = add_usm_user(uku->securityName, entry->usmUserName,
@@ -1689,7 +1691,7 @@ int USM::generate_msg(unsigned char* globalData, // message header, admin data
             new unsigned char[usmSecurityParams.msgPrivacyParametersLength];
 
         // encrypt Message
-        int enc_result = auth_priv->encrypt_msg(user->privProtocol,
+        int const enc_result = auth_priv->encrypt_msg(user->privProtocol,
             user->privKey, user->privKeyLength, scopedPDU, scopedPDULength,
             buf2Ptr, &buf2Length, usmSecurityParams.msgPrivacyParameters,
             &usmSecurityParams.msgPrivacyParametersLength,
@@ -1705,10 +1707,7 @@ int USM::generate_msg(unsigned char* globalData, // message header, admin data
                     0, "usm: Privacy requested, but no UserPrivProtocol");
                 return_value = SNMPv3_USM_UNSUPPORTED_SECURITY_LEVEL;
             }
-            else
-            {
-                return_value = SNMPv3_USM_ENCRYPTION_ERROR;
-            }
+            else { return_value = SNMPv3_USM_ENCRYPTION_ERROR; }
 
             debugprintf(0, "usm: Encryption error (result %i).", enc_result);
 
@@ -1925,7 +1924,7 @@ int USM::process_msg(int maxMessageSize,     // of the sending SNMP entity
         debugprintf(0, "bad parse of msgAuthenticationParameters");
         return SNMPv3_USM_PARSE_ERROR;
     }
-    int authParametersPosition = securityParametersPosition
+    int const authParametersPosition = securityParametersPosition
         + SAFE_INT_CAST(sp - securityParameters) - authParamLength;
 
     sp = asn_parse_string(
@@ -2136,11 +2135,11 @@ int USM::process_msg(int maxMessageSize,     // of the sending SNMP entity
 
         // decrypt Message
         unsigned int tmp_length = *scopedPDULength;
-        int          dec_result = auth_priv->decrypt_msg(user->privProtocol,
-            user->privKey, user->privKeyLength, encryptedScopedPDU.get_ptr(),
-            encryptedScopedPDULength, scopedPDU, &tmp_length,
-            (unsigned char*)&privParam, privParamLength, engineBoots,
-            engineTime);
+        int const    dec_result = auth_priv->decrypt_msg(user->privProtocol,
+               user->privKey, user->privKeyLength, encryptedScopedPDU.get_ptr(),
+               encryptedScopedPDULength, scopedPDU, &tmp_length,
+               (unsigned char*)&privParam, privParamLength, engineBoots,
+               engineTime);
         *scopedPDULength        = tmp_length;
         if (dec_result != SNMPv3_USM_OK)
         {
@@ -2334,7 +2333,7 @@ unsigned char* USM::build_whole_msg(unsigned char* outBuf, int* maxLength,
     if (!secParPtr) return NULL;
     secParLength = SAFE_INT_CAST(secParPtr - secPar.get_ptr());
 
-    SmiINT32 dummyVersion = 3;
+    SmiINT32 const dummyVersion = 3;
     debugprintf(3, "Coding int snmpVersion = 0x%lx", dummyVersion);
     bufPtr = asn_build_int(
         bufPtr, &length, ASN_UNI_PRIM | ASN_INTEGER, &dummyVersion);
@@ -3052,8 +3051,8 @@ int USMUserNameTable::get_user_name(unsigned char* user_name,
     long int* user_name_len, const unsigned char* security_name,
     const long int security_name_len)
 {
-    uint32_t buf_len = *user_name_len;
-    *user_name_len   = 0;
+    uint32_t const buf_len = *user_name_len;
+    *user_name_len         = 0;
 
     if (!table) return SNMPv3_USM_ERROR;
 
@@ -3318,7 +3317,7 @@ int USMUserNameTable::load_from_file(const char* name, AuthPriv* ap)
         // user_name
         int len = SAFE_INT_CAST(strlen((char*)line)) - 1;
         decodeString(line, len, decoded);
-        OctetStr user_name((unsigned char*)decoded, len / 2);
+        OctetStr const user_name((unsigned char*)decoded, len / 2);
 
         // security_name
         if (!fgets((char*)line, MAX_LINE_LEN_V3 * 2, file_in))
@@ -3328,7 +3327,7 @@ int USMUserNameTable::load_from_file(const char* name, AuthPriv* ap)
         }
         len = SAFE_INT_CAST(strlen((char*)line)) - 1;
         decodeString(line, len, decoded);
-        OctetStr user_security_name((unsigned char*)decoded, len / 2);
+        OctetStr const user_security_name((unsigned char*)decoded, len / 2);
 
         // auth password
         if (!fgets((char*)line, MAX_LINE_LEN_V3 * 2, file_in))
@@ -3338,7 +3337,7 @@ int USMUserNameTable::load_from_file(const char* name, AuthPriv* ap)
         }
         len = SAFE_INT_CAST(strlen((char*)line)) - 1;
         decodeString(line, len, decoded);
-        OctetStr auth_pass((unsigned char*)decoded, len / 2);
+        OctetStr const auth_pass((unsigned char*)decoded, len / 2);
 
         // priv password
         if (!fgets((char*)line, MAX_LINE_LEN_V3 * 2, file_in))
@@ -3348,7 +3347,7 @@ int USMUserNameTable::load_from_file(const char* name, AuthPriv* ap)
         }
         len = SAFE_INT_CAST(strlen((char*)line)) - 1;
         decodeString(line, len, decoded);
-        OctetStr priv_pass((unsigned char*)decoded, len / 2);
+        OctetStr const priv_pass((unsigned char*)decoded, len / 2);
 
         // auth protocol
         if (!fgets((char*)line, MAX_LINE_LEN_V3 * 2, file_in))
@@ -3483,8 +3482,8 @@ int USMUserTable::get_user_name(unsigned char* user_name,
     const long sec_name_len)
 
 {
-    long buf_len   = *user_name_len;
-    *user_name_len = 0;
+    long const buf_len = *user_name_len;
+    *user_name_len     = 0;
 
     if (!table) return SNMPv3_USM_ERROR;
 
@@ -4119,7 +4118,7 @@ int USMUserTable::load_from_file(const char* name, AuthPriv* ap)
         // engine_id
         int len = SAFE_INT_CAST(strlen((char*)line)) - 1;
         decodeString(line, len, decoded);
-        OctetStr engine_id((unsigned char*)decoded, len / 2);
+        OctetStr const engine_id((unsigned char*)decoded, len / 2);
 
         // user_name
         if (!fgets((char*)line, MAX_LINE_LEN_V3 * 2, file_in))
@@ -4129,7 +4128,7 @@ int USMUserTable::load_from_file(const char* name, AuthPriv* ap)
         }
         len = SAFE_INT_CAST(strlen((char*)line)) - 1;
         decodeString(line, len, decoded);
-        OctetStr user_name((unsigned char*)decoded, len / 2);
+        OctetStr const user_name((unsigned char*)decoded, len / 2);
 
         // security_name
         if (!fgets((char*)line, MAX_LINE_LEN_V3 * 2, file_in))
@@ -4139,7 +4138,7 @@ int USMUserTable::load_from_file(const char* name, AuthPriv* ap)
         }
         len = SAFE_INT_CAST(strlen((char*)line)) - 1;
         decodeString(line, len, decoded);
-        OctetStr user_security_name((unsigned char*)decoded, len / 2);
+        OctetStr const user_security_name((unsigned char*)decoded, len / 2);
 
         // auth key
         if (!fgets((char*)line, MAX_LINE_LEN_V3 * 2, file_in))
@@ -4149,7 +4148,7 @@ int USMUserTable::load_from_file(const char* name, AuthPriv* ap)
         }
         len = SAFE_INT_CAST(strlen((char*)line)) - 1;
         decodeString(line, len, decoded);
-        OctetStr auth_key((unsigned char*)decoded, len / 2);
+        OctetStr const auth_key((unsigned char*)decoded, len / 2);
 
         // priv key
         if (!fgets((char*)line, MAX_LINE_LEN_V3 * 2, file_in))
@@ -4159,7 +4158,7 @@ int USMUserTable::load_from_file(const char* name, AuthPriv* ap)
         }
         len = SAFE_INT_CAST(strlen((char*)line)) - 1;
         decodeString(line, len, decoded);
-        OctetStr priv_key((unsigned char*)decoded, len / 2);
+        OctetStr const priv_key((unsigned char*)decoded, len / 2);
 
         // auth protocol
         if (!fgets((char*)line, MAX_LINE_LEN_V3 * 2, file_in))

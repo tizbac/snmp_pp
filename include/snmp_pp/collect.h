@@ -146,10 +146,7 @@ public:
             current->next = add;
             add->item[0]  = (T*)(i.clone());
         }
-        else
-        {
-            current->item[cn] = (T*)(i.clone());
-        }
+        else { current->item[cn] = (T*)(i.clone()); }
         count++;
 
         return *this;

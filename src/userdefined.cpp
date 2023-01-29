@@ -136,8 +136,8 @@ CUDEventQueue::~CUDEventQueue()
 UdId CUDEventQueue::AddEntry(const int fd, const UdInputMask mask,
     const ud_callback callBack, const void* callData)
 {
-    UdId      uniqueId = MakeId(); // use a unique ID
-    CUDEvent* newEvent = new CUDEvent(uniqueId, fd, mask, callBack, callData);
+    UdId const uniqueId = MakeId(); // use a unique ID
+    CUDEvent*  newEvent = new CUDEvent(uniqueId, fd, mask, callBack, callData);
 
     /*---------------------------------------------------------*/
     /* Insert entry at head of list, done automagically by the */

@@ -134,7 +134,7 @@ int CSNMPMessage::SetPdu(
         return -1;
     }
 
-    unsigned short orig_type = m_pdu.get_type();
+    unsigned short const orig_type = m_pdu.get_type();
     if (m_received)
     {
         LOG_BEGIN(loggerModuleName, WARNING_LOG | 1);
@@ -225,7 +225,7 @@ int CSNMPMessage::ResendMessage()
 
     m_target->set_retry(m_target->get_retry() - 1);
     SetSendTime();
-    int status =
+    int const status =
         send_snmp_request(m_socket, m_rawPdu, m_rawPduLen, *m_address);
     if (status != 0) return SNMP_CLASS_TL_FAILED;
 
@@ -638,12 +638,12 @@ int CSNMPMessageQueue::HandleEvents(
 void CSNMPMessageQueue::GetFdSets(
     int& maxfds, fd_set& readfds, fd_set&, fd_set&)
 {
-    SnmpSynchronize       _synchronize(*this); // REENTRANT
+    SnmpSynchronize const _synchronize(*this); // REENTRANT
     CSNMPMessageQueueElt* msgEltPtr = m_head.GetNext();
 
     while (msgEltPtr)
     {
-        SnmpSocket sock = msgEltPtr->GetMessage()->GetSocket();
+        SnmpSocket const sock = msgEltPtr->GetMessage()->GetSocket();
         FD_SET(sock, &readfds);
         if (maxfds < SAFE_INT_CAST(sock + 1)) maxfds = SAFE_INT_CAST(sock + 1);
         msgEltPtr = msgEltPtr->GetNext();
@@ -678,7 +678,7 @@ int CSNMPMessageQueue::HandleEvents(
             recv_status = receive_snmp_response(
                 fd, *m_snmpSession, tmppdu, fromaddress, engine_id);
 
-            uint32_t temp_req_id = tmppdu.get_request_id();
+            uint32_t const temp_req_id = tmppdu.get_request_id();
             if (!temp_req_id) continue;
 
             CSNMPMessage* msg          = 0;
@@ -731,7 +731,7 @@ int CSNMPMessageQueue::HandleEvents(
                         || tmppdu.get_type() == sNMP_PDU_RESPONSE)
                     {
 
-                        UdpAddress addr = target->get_address();
+                        UdpAddress const addr = target->get_address();
 
                         LOG_BEGIN(loggerModuleName, DEBUG_LOG | 14);
                         LOG("MsgQueue: Adding engine id to table (addr) (id)");
@@ -797,7 +797,7 @@ int CSNMPMessageQueue::DoRetries(const msec& now)
         {
             if (status == SNMP_CLASS_TIMEOUT)
             {
-                uint32_t req_id = msg->GetId();
+                uint32_t const req_id = msg->GetId();
 
                 // Dequeue the message
                 DeleteEntry(req_id);
@@ -830,7 +830,7 @@ int CSNMPMessageQueue::Done() { return 0; }
 
 int CSNMPMessageQueue::Done(uint32_t id)
 {
-    SnmpSynchronize _synchronize(*this); // instead of REENTRANT()
+    SnmpSynchronize const _synchronize(*this); // instead of REENTRANT()
 
     // FF: This is much more efficient than the above
     CSNMPMessage* msg = GetEntry(id);

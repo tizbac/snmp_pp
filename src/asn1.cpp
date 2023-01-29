@@ -54,8 +54,8 @@
 #include "snmp_pp/snmperrs.h"
 #include "snmp_pp/v3.h"
 
-#include <libsnmp.h>
 #include <cassert>
+#include <libsnmp.h>
 
 #ifdef SNMP_PP_NAMESPACE
 namespace Snmp_pp
@@ -258,9 +258,9 @@ unsigned char* asn_build_unsigned_int(unsigned char* data, // modified data
     /*
      * ASN.1 integer ::= 0x02 asnlength byte {byte}*
      */
-    uint32_t u_integer     = *intp;
-    long     u_integer_len = 0;
-    long     x             = 0;
+    uint32_t const u_integer     = *intp;
+    long           u_integer_len = 0;
+    long           x             = 0;
 
     // figure out the len
     if (((u_integer >> 24) & 0xFF) != 0)
@@ -404,7 +404,7 @@ unsigned char* asn_parse_header(
     *type = *bufp;
     bufp  = asn_parse_length(bufp + 1, &asn_length);
     if (bufp == NULL) return NULL;
-    int header_len = SAFE_INT_CAST(bufp - data);
+    int const header_len = SAFE_INT_CAST(bufp - data);
     if ((uint32_t)(header_len + asn_length) > (uint32_t)*datalength)
     {
         ASNERROR("asn length too long");
@@ -986,11 +986,11 @@ unsigned char* asn_build_unsigned_int64(unsigned char* data, int* datalength,
     /*
      * ASN.1 integer ::= 0x02 asnlength byte {byte}*
      */
-    uint32_t low           = cp->low;
-    uint32_t high          = cp->high;
-    uint32_t mask          = 0xFF000000ul;
-    int      add_null_byte = 0;
-    int      intsize       = 8;
+    uint32_t       low           = cp->low;
+    uint32_t       high          = cp->high;
+    uint32_t const mask          = 0xFF000000ul;
+    int            add_null_byte = 0;
+    int            intsize       = 8;
 
     if (((high & mask) >> 24) & 0x80)
     {
@@ -1005,7 +1005,7 @@ unsigned char* asn_build_unsigned_int64(unsigned char* data, int* datalength,
          * 2's complement integer. There should be no sequence of 9 consecutive
          * 1's or 0's at the most significant end of the integer.
          */
-        uint32_t mask2 = 0xFF800000ul;
+        uint32_t const mask2 = 0xFF800000ul;
         while ((((high & mask2) == 0) || ((high & mask2) == mask2))
             && (intsize > 1))
         {
@@ -1435,8 +1435,8 @@ unsigned char* build_data_pdu(struct snmp_pdu* pdu, unsigned char* buf,
     if (length < vb_buf_len) return 0;
 
     // save relative position of varbinds
-    int vb_rel_pos = SAFE_INT_CAST(cp - tmp_buf.get_ptr());
-    totallength    = SAFE_INT_CAST(cp - tmp_buf.get_ptr()) + vb_buf_len;
+    int const vb_rel_pos = SAFE_INT_CAST(cp - tmp_buf.get_ptr());
+    totallength          = SAFE_INT_CAST(cp - tmp_buf.get_ptr()) + vb_buf_len;
 
     // build header for datapdu into buf
     cp = asn_build_header(
@@ -1756,7 +1756,7 @@ int snmp_parse(struct snmp_pdu* pdu, unsigned char* data, int data_length,
 
     spp_version = (snmp_version)version;
 
-    int res = snmp_parse_data_pdu(pdu, data, data_length);
+    int const res = snmp_parse_data_pdu(pdu, data, data_length);
     if (res != SNMP_CLASS_SUCCESS) return res;
 
     return snmp_parse_vb(pdu, data, data_length);

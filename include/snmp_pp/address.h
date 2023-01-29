@@ -289,7 +289,7 @@ public:
      * Overloaded assignment operator.
      */
     virtual Address& operator=(const Address& val) = 0;
-    virtual Address& operator                      =(const char* str)
+    virtual Address& operator=(const char* str)
     {
         valid_flag   = parse_address(str);
         addr_changed = true;

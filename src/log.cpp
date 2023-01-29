@@ -232,7 +232,7 @@ bool LogEntryImpl::add_string(const char* s)
 {
     if (output_stopped) return false;
 
-    size_t len = strlen(s);
+    size_t const len = strlen(s);
     if (len <= bytes_left())
     {
         strlcat(ptr, s, MAX_LOG_SIZE);
@@ -286,14 +286,14 @@ void AgentLog::set_profile(const char* const logprofile)
 
 void AgentLog::set_filter(int logclass, unsigned char filter)
 {
-    int idx = (logclass / 16) - 1;
+    int const idx = (logclass / 16) - 1;
     if ((idx >= 0) && (idx < LOG_TYPES) && ((filter < 16) || (filter == 0xFF)))
         logfilter[idx] = filter;
 }
 
 unsigned char AgentLog::get_filter(int logclass) const
 {
-    int idx = (logclass / 16) - 1;
+    int const idx = (logclass / 16) - 1;
     if ((idx >= 0) && (idx < LOG_TYPES)) { return logfilter[idx]; }
     return 0;
 }

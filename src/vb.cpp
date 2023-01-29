@@ -270,8 +270,8 @@ int Vb::get_value(char* ptr) const
     if (iv_vb_value && iv_vb_value->valid()
         && (iv_vb_value->get_syntax() == sNMP_SYNTAX_OCTETS))
     {
-        OctetStr* p_os = (OctetStr*)iv_vb_value;
-        uint32_t  len  = p_os->len();
+        OctetStr*      p_os = (OctetStr*)iv_vb_value;
+        uint32_t const len  = p_os->len();
         memcpy(ptr, p_os->data(), len);
         ptr[len] = 0;
         return SNMP_CLASS_SUCCESS;

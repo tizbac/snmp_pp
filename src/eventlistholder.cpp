@@ -258,7 +258,7 @@ int EventListHolder::SNMPProcessEvents(const int max_block_milliseconds)
     fd_set         writefds;
     fd_set         exceptfds;
     struct timeval fd_timeout = {};
-    msec           now; // automatically calls msec::refresh()
+    msec const     now; // automatically calls msec::refresh()
     msec           sendTime;
     int            status = 0;
 
@@ -325,8 +325,8 @@ void EventListHolder::SNMPGetFdSets(
 
 uint32_t EventListHolder::SNMPGetNextTimeout()
 {
-    msec now;
-    msec sendTime(now);
+    msec const now;
+    msec       sendTime(now);
 
     // TM: This function used to have an argument of sendTime and
     //    would simply call eventList.GetNextTimeout(sendTime) and
