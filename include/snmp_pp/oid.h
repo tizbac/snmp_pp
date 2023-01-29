@@ -61,6 +61,7 @@
 #include "snmp_pp/smival.h"
 
 #include <libsnmp.h>
+#include <cassert>
 
 #ifdef SNMP_PP_NAMESPACE
 namespace Snmp_pp

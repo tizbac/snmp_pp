@@ -55,6 +55,7 @@
 #include "snmp_pp/v3.h"
 
 #include <libsnmp.h>
+#include <cassert>
 
 #ifdef SNMP_PP_NAMESPACE
 namespace Snmp_pp

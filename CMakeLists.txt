@@ -456,6 +456,8 @@ set(MY_SRC_FILES
     src/vb.cpp
 )
 
+option(BUILD_SHARED_LIBS "Global flag to cause add_library() to create shared libraries if on." YES)
+
 option(OPTION_ENABLE_COVERAGE "Enable test coverage of projects" OFF)
 if(OPTION_ENABLE_COVERAGE)
   set(ENABLE_COVERAGE "ENABLE_COVERAGE")
@@ -479,9 +481,16 @@ project_options(
   # TODO: WARNINGS_AS_ERRORS
 )
 
-option(BUILD_SHARED_LIBS "Global flag to cause add_library() to create shared libraries if on." ON)
 add_library(${PROJECT_NAME} ${MY_HEADER_FILES} ${MY_HEADER_LIB_FILES} ${CMAKE_CURRENT_BINARY_DIR}/config.h ${MY_SRC_FILES})
-target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_project_options ${PROJECT_NAME}_project_warnings)
+if(CMAKE_SKIP_INSTALL_RULES)
+  add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
+  target_link_libraries(${PROJECT_NAME} PUBLIC ${PROJECT_NAME}_project_options ${PROJECT_NAME}_project_warnings)
+
+# target_link_libraries(
+#   ${PROJECT_NAME} PRIVATE $<BUILD_LOCAL_INTERFACE:${PROJECT_NAME}_project_options>
+#                           $<BUILD_LOCAL_INTERFACE:${PROJECT_NAME}_project_warnings>
+# )
+endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES UNITY_BUILD ${ENABLE_UNITY})
 
 if(MSVC)
@@ -491,11 +500,10 @@ if(MSVC)
   target_compile_options(${PROJECT_NAME} PRIVATE /W3 /wd4251)
   target_compile_definitions(${PROJECT_NAME} PRIVATE _CRT_SECURE_NO_WARNINGS)
 else()
-  target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wno-unused-parameter -Wno-deprecated-declarations)
+  target_compile_options(${PROJECT_NAME} PRIVATE -Wno-unused-parameter -Wno-deprecated-declarations)
 endif()
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE 1)
-# Set .so version as autoconf does: snmp++ version 1.2.3 will go to .so.12.0.3!
 set_target_properties(
   ${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}
                              SOVERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
@@ -513,6 +521,7 @@ target_include_directories(
 target_include_directories(
   ${PROJECT_NAME}
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/PackageProjectInclude>
          $<BUILD_INTERFACE:${CRYPTO_INCLUDE_DIRS}> $<INSTALL_INTERFACE:include>
 )
 
@@ -560,6 +569,10 @@ if(SNMP_PP_EXAMPLES)
   add_test(NAME send_trap COMMAND test_app localhost trap)
   add_test(NAME env_test COMMAND ${CMAKE_COMMAND} -E echo $ENV{CMAKE_CONFIG_TYPE})
   add_test(NAME basename_test COMMAND ${CMAKE_COMMAND} -E echo $<TARGET_FILE_DIR:test_app>)
+endif()
+
+if(CMAKE_SKIP_INSTALL_RULES)
+  return()
 endif()
 
 install(FILES ${MY_HEADER_LIB_FILES} DESTINATION include)
