@@ -169,7 +169,10 @@ bool operator==(const Address& lhs, const char* rhs)
 
     if (!rhs && !lhs.valid())
         return true;
-    else if (!rhs) { return false; }
+    else if (!rhs)
+    {
+        return false;
+    }
     if (strcmp((const char*)lhs, rhs) == 0) return true;
     return false;
 }
@@ -541,7 +544,10 @@ int IpAddress::parse_dotted_ipstring(const char* inaddr)
             ++dot_count;
             last_char_was_dot = true;
         }
-        else if (isdigit(*ptr)) { last_char_was_dot = false; }
+        else if (isdigit(*ptr))
+        {
+            last_char_was_dot = false;
+        }
         else
             return false;
         ++ptr;
@@ -696,7 +702,10 @@ int IpAddress::parse_coloned_ipstring(const char* inaddr)
                 second_used      = true;
                 had_double_colon = true;
             }
-            else { last_was_colon = true; }
+            else
+            {
+                last_was_colon = true;
+            }
         }
         else
         {
@@ -1439,7 +1448,10 @@ UdpAddress::UdpAddress(const GenAddress& genaddr) : IpAddress()
         {
             *this = genaddr.cast_ipaddress(); // copy in the IP address data
         }
-        else { valid_flag = false; }
+        else
+        {
+            valid_flag = false;
+        }
     }
     sep = ':';
 }
@@ -2714,11 +2726,10 @@ GenAddress::GenAddress(const Address& addr)
     //      will work.
     if (valid_flag)
     {
-        smival.syntax = address->get_syntax();
-        smival.value.string.len =
-            ((GenAddress*)address)->smival.value.string.len;
+        smival.syntax           = address->get_syntax();
+        smival.value.string.len = ((Address*)address)->smival.value.string.len;
         memcpy(smival.value.string.ptr,
-            ((GenAddress*)address)->smival.value.string.ptr,
+            ((Address*)address)->smival.value.string.ptr,
             (size_t)smival.value.string.len);
     }
 }
@@ -2787,11 +2798,10 @@ GenAddress& GenAddress::operator=(const GenAddress& addr)
     //      will work.
     if (valid_flag)
     {
-        smival.syntax = ((GenAddress*)address)->smival.syntax;
-        smival.value.string.len =
-            ((GenAddress*)address)->smival.value.string.len;
+        smival.syntax           = ((Address*)address)->smival.syntax;
+        smival.value.string.len = ((Address*)address)->smival.value.string.len;
         memcpy(smival.value.string.ptr,
-            ((GenAddress*)address)->smival.value.string.ptr,
+            ((Address*)address)->smival.value.string.ptr,
             (size_t)smival.value.string.len);
     }
 

@@ -208,16 +208,16 @@ unsigned char* asn_build_int(unsigned char* data, int* datalength,
     /*
      * ASN.1 integer ::= 0x02 asnlength byte {byte}*
      */
-    long          integer = *intp;
+    int64_t       integer = *intp;
     unsigned long mask    = 0;
-    int           intsize = sizeof(long);
+    int           intsize = sizeof(int32_t);
 
     /* Truncate "unnecessary" bytes off of the most significant end of this
      * 2's complement integer.  There should be no sequence of 9
      * consecutive 1's or 0's at the most significant end of the
      * integer.
      */
-    mask = 0x1FFul << ((8 * (sizeof(long) - 1)) - 1);
+    mask = 0x1FFul << ((8 * (sizeof(int32_t) - 1)) - 1);
     /* mask is 0xFF800000 on a big-endian machine */
     while (
         (((integer & mask) == 0) || ((integer & mask) == mask)) && intsize > 1)
@@ -229,12 +229,12 @@ unsigned char* asn_build_int(unsigned char* data, int* datalength,
     if (data == NULL) return NULL;
     if (*datalength < intsize) return NULL;
     *datalength -= intsize;
-    mask = 0xFFul << (8 * (sizeof(long) - 1));
+    mask = 0xFFul << (8 * (sizeof(int32_t) - 1));
     /* mask is 0xFF000000 on a big-endian machine */
     while (intsize--)
     {
         *data++ =
-            (unsigned char)((integer & mask) >> (8 * (sizeof(long) - 1)));
+            (unsigned char)((integer & mask) >> (8 * (sizeof(int32_t) - 1)));
         integer <<= 8;
     }
     return data;
@@ -1478,7 +1478,7 @@ int snmp_build(struct snmp_pdu* pdu, unsigned char* packet, int* out_length,
     // build SNMP header
     length = *out_length;
     cp     = snmp_auth_build(
-        packet, &length, version, community, community_len, totallength);
+            packet, &length, version, community, community_len, totallength);
     if (cp == NULL) return -1;
     if ((*out_length - (cp - packet)) < totallength) return -1;
 
@@ -1703,7 +1703,7 @@ int snmp_parse_data_pdu(snmp_pdu* pdu, unsigned char*& data, int& length)
         // get the enterprise
         pdu->enterprise_length = ASN_MAX_NAME_LEN;
         data                   = asn_parse_objid(
-            data, &length, &type, objid, &pdu->enterprise_length);
+                              data, &length, &type, objid, &pdu->enterprise_length);
         if (data == NULL) return SNMP_CLASS_ASN1ERROR;
 
         pdu->enterprise = (oid*)malloc(pdu->enterprise_length * sizeof(oid));

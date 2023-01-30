@@ -28,6 +28,10 @@ set(SNMP_PP_NAMESPACE ON) # "Enable using of namespace (needed!)" ON)
 set(SNMP_PP_SNMPv3 ON) # "Enable support for SNMPv3 (needed!)" ON)
 set(SNMP_PP_THREADS ON) # "Enable support for threads (needed!)" ON)
 
+if(NOT PROJECT_IS_TOP_LEVEL)
+  option(CMAKE_SKIP_INSTALL_RULES "Whether to disable generation of installation rules" YES)
+endif()
+
 option(SNMP_PP_EXAMPLES "Enable to build examples" ON)
 option(SNMP_PP_EXTENDED_DEBUG "Enable additional debug messages" OFF)
 option(SNMP_PP_IPXADDR "Enable IpxAddress class" OFF)
@@ -491,7 +495,7 @@ if(CMAKE_SKIP_INSTALL_RULES)
 #                           $<BUILD_LOCAL_INTERFACE:${PROJECT_NAME}_project_warnings>
 # )
 endif()
-set_target_properties(${PROJECT_NAME} PROPERTIES UNITY_BUILD ${ENABLE_UNITY})
+set_target_properties(${PROJECT_NAME} PROPERTIES UNITY_BUILD ${OPTION_ENABLE_UNITY})
 
 if(MSVC)
   target_link_libraries(${PROJECT_NAME} PUBLIC wsock32 ws2_32)
