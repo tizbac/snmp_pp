@@ -590,7 +590,7 @@ unsigned char* asn_build_length(
  *  Returns NULL on any error.
  */
 unsigned char* asn_parse_objid(unsigned char* data, int* datalength,
-    unsigned char* type, oid* objid, int* objidlength)
+    unsigned char* type, oid_t* objid, int* objidlength)
 {
     /*
      * ASN.1 objid ::= 0x06 asnlength subidentifier {subidentifier}*
@@ -599,7 +599,7 @@ unsigned char* asn_parse_objid(unsigned char* data, int* datalength,
      * lastbyte ::= 0 7bitvalue
      */
     unsigned char* bufp          = data;
-    oid*           oidp          = objid + 1;
+    oid_t*         oidp          = objid + 1;
     uint32_t       subidentifier = 0;
     long           length        = 0;
     uint32_t       asn_length    = 0;
@@ -638,7 +638,7 @@ unsigned char* asn_parse_objid(unsigned char* data, int* datalength,
             ASNERROR("subidentifier too long");
             return NULL;
         }
-        *oidp++ = (oid)subidentifier;
+        *oidp++ = (oid_t)subidentifier;
     }
 
     /*
@@ -656,17 +656,17 @@ unsigned char* asn_parse_objid(unsigned char* data, int* datalength,
     else if (subidentifier < 40)
     {
         objid[0] = 0;
-        objid[1] = (oid)subidentifier;
+        objid[1] = (oid_t)subidentifier;
     }
     else if (subidentifier < 80)
     {
         objid[0] = 1;
-        objid[1] = (oid)(subidentifier - 40);
+        objid[1] = (oid_t)(subidentifier - 40);
     }
     else
     {
         objid[0] = 2;
-        objid[1] = (oid)(subidentifier - 80);
+        objid[1] = (oid_t)(subidentifier - 80);
     }
     *objidlength = (int)(oidp - objid);
     return bufp;
@@ -684,7 +684,7 @@ unsigned char* asn_parse_objid(unsigned char* data, int* datalength,
  *  Returns NULL on any error.
  */
 unsigned char* asn_build_objid(unsigned char* data, int* datalength,
-    unsigned char type, oid* objid, int objidlength)
+    unsigned char type, oid_t* objid, int objidlength)
 {
     /*
      * ASN.1 objid ::= 0x06 asnlength subidentifier {subidentifier}*
@@ -695,7 +695,7 @@ unsigned char* asn_build_objid(unsigned char* data, int* datalength,
     // F.Fock correct buffer size must be 5*8bit*MAX_OID_LEN
     unsigned char  buf[MAX_OID_LEN * 5];
     unsigned char* bp        = buf;
-    oid*           op        = objid;
+    oid_t*         op        = objid;
     int            asnlength = 0;
 
     if (objidlength > MAX_OID_LEN)
@@ -1096,7 +1096,7 @@ void snmp_free_pdu(struct snmp_pdu* pdu)
 
 // add a null var to a pdu
 void snmp_add_var(
-    struct snmp_pdu* pdu, oid* name, int name_length, SmiVALUE* smival)
+    struct snmp_pdu* pdu, oid_t* name, int name_length, SmiVALUE* smival)
 {
     struct variable_list* vars = nullptr;
 
@@ -1125,10 +1125,10 @@ void snmp_add_var(
     vars->next_variable = NULL;
 
     // hook in the Oid portion
-    vars->name = (oid*)malloc(name_length * sizeof(oid));
+    vars->name = (oid_t*)malloc(name_length * sizeof(oid_t));
     assert(vars->name != nullptr);
 
-    memcpy((char*)vars->name, (char*)name, name_length * sizeof(oid));
+    memcpy((char*)vars->name, (char*)name, name_length * sizeof(oid_t));
     vars->name_length = name_length;
 
     // hook in the SMI value
@@ -1162,8 +1162,8 @@ void snmp_add_var(
         // oid
     case sNMP_SYNTAX_OID: {
         vars->type      = (unsigned char)smival->syntax;
-        vars->val_len   = (int)smival->value.oid.len * sizeof(oid);
-        vars->val.objid = (oid*)malloc((unsigned)vars->val_len);
+        vars->val_len   = (int)smival->value.oid.len * sizeof(oid_t);
+        vars->val.objid = (oid_t*)malloc((unsigned)vars->val_len);
         memcpy((uint32_t*)vars->val.objid, (uint32_t*)smival->value.oid.ptr,
             (unsigned)vars->val_len);
     }
@@ -1242,7 +1242,7 @@ static unsigned char* snmp_auth_build(unsigned char* data, int* length,
 }
 
 // build a variable binding
-unsigned char* snmp_build_var_op(unsigned char* data, oid* var_name,
+unsigned char* snmp_build_var_op(unsigned char* data, oid_t* var_name,
     int* var_name_len, unsigned char var_val_type, int var_val_len,
     unsigned char* var_val, int* listlength)
 {
@@ -1305,7 +1305,7 @@ unsigned char* snmp_build_var_op(unsigned char* data, oid* var_name,
 
     case ASN_OBJECT_ID:
         buffer_pos = asn_build_objid(buffer_pos, &bufferLen, var_val_type,
-            (oid*)var_val, var_val_len / sizeof(oid));
+            (oid_t*)var_val, var_val_len / sizeof(oid_t));
         break;
 
     case ASN_NULL:
@@ -1408,7 +1408,7 @@ unsigned char* build_data_pdu(struct snmp_pdu* pdu, unsigned char* buf,
     { // this is a trap message
         // enterprise
         cp = asn_build_objid(cp, &length, ASN_UNI_PRIM | ASN_OBJECT_ID,
-            (oid*)pdu->enterprise, pdu->enterprise_length);
+            (oid_t*)pdu->enterprise, pdu->enterprise_length);
         if (cp == NULL) return 0;
 
         // agent-addr ; must be IPADDRESS changed by Frank Fock
@@ -1478,7 +1478,7 @@ int snmp_build(struct snmp_pdu* pdu, unsigned char* packet, int* out_length,
     // build SNMP header
     length = *out_length;
     cp     = snmp_auth_build(
-            packet, &length, version, community, community_len, totallength);
+        packet, &length, version, community, community_len, totallength);
     if (cp == NULL) return -1;
     if ((*out_length - (cp - packet)) < totallength) return -1;
 
@@ -1531,7 +1531,7 @@ static unsigned char* snmp_auth_parse(unsigned char* data, int* length,
 
 unsigned char* snmp_parse_var_op(
     unsigned char* data,         // IN - pointer to the start of object
-    oid*           var_name,     // OUT - object id of variable
+    oid_t*         var_name,     // OUT - object id of variable
     int*           var_name_len, // IN/OUT - length of variable name
     unsigned char* var_val_type, // OUT - type of variable (int or octet
                                  // string) (one byte)
@@ -1583,7 +1583,7 @@ int snmp_parse_vb(struct snmp_pdu* pdu, unsigned char*& data, int& data_len)
     unsigned char*        var_val = nullptr;
     int                   len     = 0;
     struct variable_list* vp      = 0;
-    oid                   objid[ASN_MAX_NAME_LEN], *op = nullptr;
+    oid_t                 objid[ASN_MAX_NAME_LEN], *op = nullptr;
     unsigned char         type = 0;
 
     // get the vb list from received data
@@ -1613,9 +1613,9 @@ int snmp_parse_vb(struct snmp_pdu* pdu, unsigned char*& data, int& data_len)
         data = snmp_parse_var_op(data, objid, &vp->name_length, &vp->type,
             &vp->val_len, &var_val, &data_len);
         if (data == NULL) return SNMP_CLASS_ASN1ERROR;
-        op = (oid*)malloc((unsigned)vp->name_length * sizeof(oid));
+        op = (oid_t*)malloc((unsigned)vp->name_length * sizeof(oid_t));
 
-        memcpy((char*)op, (char*)objid, vp->name_length * sizeof(oid));
+        memcpy((char*)op, (char*)objid, vp->name_length * sizeof(oid_t));
         vp->name = op;
 
         len = MAX_SNMP_PACKET;
@@ -1656,11 +1656,12 @@ int snmp_parse_vb(struct snmp_pdu* pdu, unsigned char*& data, int& data_len)
         case ASN_OBJECT_ID:
             vp->val_len = ASN_MAX_NAME_LEN;
             asn_parse_objid(var_val, &len, &vp->type, objid, &vp->val_len);
-            // vp->val_len *= sizeof(oid);
-            vp->val.objid = (oid*)malloc((unsigned)vp->val_len * sizeof(oid));
+            // vp->val_len *= sizeof(oid_t);
+            vp->val.objid =
+                (oid_t*)malloc((unsigned)vp->val_len * sizeof(oid_t));
 
-            memcpy(
-                (char*)vp->val.objid, (char*)objid, vp->val_len * sizeof(oid));
+            memcpy((char*)vp->val.objid, (char*)objid,
+                vp->val_len * sizeof(oid_t));
             break;
 
         case SNMP_NOSUCHOBJECT:
@@ -1676,7 +1677,7 @@ int snmp_parse_vb(struct snmp_pdu* pdu, unsigned char*& data, int& data_len)
 
 int snmp_parse_data_pdu(snmp_pdu* pdu, unsigned char*& data, int& length)
 {
-    oid           objid[ASN_MAX_NAME_LEN];
+    oid_t         objid[ASN_MAX_NAME_LEN];
     int           four = 4;
     unsigned char type = 0;
 
@@ -1703,13 +1704,14 @@ int snmp_parse_data_pdu(snmp_pdu* pdu, unsigned char*& data, int& length)
         // get the enterprise
         pdu->enterprise_length = ASN_MAX_NAME_LEN;
         data                   = asn_parse_objid(
-                              data, &length, &type, objid, &pdu->enterprise_length);
+            data, &length, &type, objid, &pdu->enterprise_length);
         if (data == NULL) return SNMP_CLASS_ASN1ERROR;
 
-        pdu->enterprise = (oid*)malloc(pdu->enterprise_length * sizeof(oid));
+        pdu->enterprise =
+            (oid_t*)malloc(pdu->enterprise_length * sizeof(oid_t));
 
         memcpy((char*)pdu->enterprise, (char*)objid,
-            pdu->enterprise_length * sizeof(oid));
+            pdu->enterprise_length * sizeof(oid_t));
 
         // get source address
         data = asn_parse_string(data, &length, &type,
