@@ -126,8 +126,9 @@ protected:
 class DLLOPT CUDEventQueue : public CEvents {
 public:
     CUDEventQueue(EventListHolder* holder)
-        : m_head(0, 0, 0), m_msgCount(0), m_id(1), my_holder(holder) {};
-    ~CUDEventQueue();
+        : m_head(nullptr, nullptr, nullptr), m_msgCount(0), m_id(1),
+          my_holder(holder) {};
+    ~CUDEventQueue() override;
     UdId      AddEntry(const int fd, const UdInputMask mask,
              const ud_callback callBack, const void* callData);
     CUDEvent* GetEntry(const UdId uniqueId);

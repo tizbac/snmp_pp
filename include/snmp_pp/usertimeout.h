@@ -120,8 +120,9 @@ protected:
 class DLLOPT CUTEventQueue : public CEvents {
 public:
     CUTEventQueue(EventListHolder* holder)
-        : m_head(0, 0, 0), m_msgCount(0), m_id(1), my_holder(holder) {};
-    ~CUTEventQueue();
+        : m_head(nullptr, nullptr, nullptr), m_msgCount(0), m_id(1),
+          my_holder(holder) {};
+    ~CUTEventQueue() override;
     UtId AddEntry(
         const msec& timeout, const ut_callback callBack, const void* callData);
     CUTEvent* GetEntry(const UtId uniqueId);
@@ -146,7 +147,7 @@ public:
     int HandleEvents(const int /*maxfds*/, const fd_set& /*readfds*/,
         const fd_set& /*writefds*/, const fd_set& /*exceptfds*/) override
     {
-        msec now;
+        msec const now;
         return DoRetries(now);
     };
 

@@ -117,7 +117,7 @@ CUTEventQueue::CUTEventQueueElt::~CUTEventQueueElt()
 CUTEvent* CUTEventQueue::CUTEventQueueElt::TestId(const UtId uniqueId)
 {
     if (m_utevent && (m_utevent->GetId() == uniqueId)) return m_utevent;
-    return 0;
+    return nullptr;
 }
 
 //----[ CUTEventQueue class ]--------------------------------------
@@ -159,7 +159,7 @@ CUTEvent* CUTEventQueue::GetEntry(const UtId uniqueId) REENTRANT({
         if ((returnVal = msgEltPtr->TestId(uniqueId))) return (returnVal);
         msgEltPtr = msgEltPtr->GetNext();
     }
-    return 0;
+    return nullptr;
 })
 
     void CUTEventQueue::DeleteEntry(const UtId uniqueId)
@@ -196,7 +196,7 @@ CUTEvent* CUTEventQueue::GetNextTimeoutEntry() REENTRANT({
     CUTEventQueueElt* msgEltPtr = m_head.GetNext();
     msec              bestTime(0, 0); // no need to be initialized...
     msec              sendTime(0, 0); // no need to be initialized...
-    CUTEvent*         bestmsg = 0;
+    CUTEvent*         bestmsg = nullptr;
 
     if (msgEltPtr)
     {

@@ -69,11 +69,11 @@ namespace Snmp_pp
 //
 // do a string to oid using the string passed in
 Oid::Oid(const char* oid_string, const bool is_dotted_oid_string)
-    : iv_str(0), iv_part_str(0), m_changed(true)
+    : iv_str(nullptr), iv_part_str(nullptr), m_changed(true)
 {
     smival.syntax        = sNMP_SYNTAX_OID;
     smival.value.oid.len = 0;
-    smival.value.oid.ptr = 0;
+    smival.value.oid.ptr = nullptr;
 
     if (is_dotted_oid_string)
         StrToOid(oid_string, &smival.value.oid);
@@ -187,7 +187,7 @@ const char* Oid::get_printable(
     if (buffer) delete[] buffer; // delete the previous output string
 
     buffer = new char[nz]; // allocate some space for the output string
-    if (buffer == 0) return 0;
+    if (buffer == nullptr) return nullptr;
 
     buffer[0] = 0; // init the string
 
@@ -234,12 +234,12 @@ int Oid::StrToOid(const char* str, SmiLPOID dstOid) const
     else
     {
         dstOid->len = 0;
-        dstOid->ptr = 0;
+        dstOid->ptr = nullptr;
         return -1;
     }
     temp = (SmiLPUINT32) new uint32_t[nz];
 
-    if (temp == 0) return -1; // return if can't get the mem
+    if (temp == nullptr) return -1; // return if can't get the mem
 
     while ((*str) && (index < nz))
     {
@@ -307,7 +307,7 @@ int Oid::StrToOid(const char* str, SmiLPOID dstOid) const
     // get some space for the real oid
     dstOid->ptr = (SmiLPUINT32) new uint32_t[index];
     // return if can't get the mem needed
-    if (dstOid->ptr == 0)
+    if (dstOid->ptr == nullptr)
     {
         delete[] temp;
         return -1;

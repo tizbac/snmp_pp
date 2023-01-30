@@ -105,7 +105,7 @@ public:
     /**
      * Destructor (ensure that SnmpSyntax::~SnmpSyntax() is overridden).
      */
-    virtual ~SnmpUInt32() { }
+    ~SnmpUInt32() override { }
 
     /**
      * Return the syntax.
@@ -231,7 +231,7 @@ public:
     /**
      * Destructor (ensure that SnmpSyntax::~SnmpSyntax() is overridden).
      */
-    virtual ~SnmpInt32() { }
+    ~SnmpInt32() override { }
 
     /**
      * Return the syntax.

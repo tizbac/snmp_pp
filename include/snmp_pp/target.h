@@ -319,7 +319,7 @@ public:
     /**
      * Destructor, that has nothing to do.
      */
-    ~CTarget() {};
+    ~CTarget() override {};
 
     /**
      * Clone operator.
@@ -501,7 +501,7 @@ public:
     /**
      * Destructor, that has nothing to do.
      */
-    ~UTarget() {};
+    ~UTarget() override {};
 
     /**
      * Clone operator.

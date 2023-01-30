@@ -97,7 +97,7 @@ public:
     /**
      * Destructor.
      */
-    ~TimeTicks() { }
+    ~TimeTicks() override { }
 
     /**
      * Return the syntax.

@@ -252,7 +252,7 @@ public:
     /**
      * Destructor.
      */
-    virtual ~LogEntryImpl() { delete[] value; }
+    ~LogEntryImpl() override { delete[] value; }
 
     /**
      * Get the contents of this log entry.
@@ -387,7 +387,7 @@ public:
      *    a string containing the current time. Either the supplied
      *    buffer or the static area.
      */
-    virtual const char* now(char* buf = 0);
+    virtual const char* now(char* buf = nullptr);
 
     /**
      * Return the current time as a string, using the current
@@ -437,7 +437,7 @@ public:
     /**
      * Destructor.
      */
-    ~AgentLogImpl();
+    ~AgentLogImpl() override;
 
     /**
      * Set destination of logs to a given file.
@@ -583,7 +583,7 @@ public:
     static void delete_log_entry()
     {
         if (entry) delete entry;
-        entry = 0;
+        entry = nullptr;
     }
 
     /**

@@ -94,7 +94,7 @@ public:
     /**
      * Destructor (ensure that SnmpUInt32::~SnmpUInt32() is overridden).
      */
-    ~Gauge32() { }
+    ~Gauge32() override { }
 
     //-----------[ SnmpSyntax methods ]----------------------
 

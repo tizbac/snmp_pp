@@ -55,7 +55,7 @@ static const char* loggerModuleName = "snmp++.mp_v3";
 #    define CACHE_LOCAL_REQ  true
 #    define CACHE_REMOTE_REQ false
 
-v3MP* v3MP::instance = 0;
+v3MP* v3MP::instance = nullptr;
 
 // Use locking on access methods in an multithreaded environment.
 #    ifdef _THREADS
@@ -88,7 +88,7 @@ v3MP::EngineIdTable::EngineIdTable(int initial_size)
 v3MP::EngineIdTable::~EngineIdTable()
 {
     if (table) delete[] table;
-    table = 0;
+    table = nullptr;
 }
 
 // Add an entry to the table.
@@ -366,7 +366,7 @@ v3MP::Cache::~Cache()
             usm->delete_sec_state_reference(table[i].sec_state_ref);
         entries = 0;
         delete[] table;
-        table       = 0;
+        table       = nullptr;
         max_entries = 0;
     }
 }
@@ -639,7 +639,7 @@ void v3MP::Cache::delete_content(struct v3MP::Cache::Entry_T& ce)
 // Initialize the v3MP.
 v3MP::v3MP(const OctetStr& snmpEngineID, unsigned int engineBoots,
     int& construct_status)
-    : own_engine_id(0), usm(0)
+    : own_engine_id(nullptr), usm(nullptr)
 {
     instance = this;
 
@@ -673,15 +673,15 @@ v3MP::v3MP(const OctetStr& snmpEngineID, unsigned int engineBoots,
 v3MP::~v3MP()
 {
     if (own_engine_id) delete[] own_engine_id;
-    own_engine_id = 0;
+    own_engine_id = nullptr;
 
     if (usm)
     {
         delete usm;
-        usm = 0;
+        usm = nullptr;
     }
 
-    instance = 0;
+    instance = nullptr;
 }
 
 // Remove all occurrences of this engine id from v3MP and USM.
@@ -824,7 +824,7 @@ int v3MP::send_report(unsigned char* scopedPDU, int scopedPDULength,
         counterVb.set_value(Counter32(get_stats_invalid_msgs()));
         sModel = SNMP_SECURITY_MODEL_USM;
         sLevel = SNMP_SECURITY_LEVEL_NOAUTH_NOPRIV;
-        sName.set_data(0, 0);
+        sName.set_data(nullptr, 0);
 
         debugprintf(2, "ErrorCode was %i in snmp_parse", errorCode);
     }
@@ -1228,7 +1228,7 @@ int v3MP::snmp_parse(Snmp* snmp_session, struct snmp_pdu* pdu,
                             "", securityStateReference,
                             SNMPv3_MP_INVALID_ENGINEID, CACHE_REMOTE_REQ);
 
-                        send_report(0, MAX_SNMP_PACKET, pdu,
+                        send_report(nullptr, MAX_SNMP_PACKET, pdu,
                             SNMPv3_MP_INVALID_ENGINEID,
                             SNMP_SECURITY_LEVEL_NOAUTH_NOPRIV,
                             msgSecurityModel, securityName, from_address,

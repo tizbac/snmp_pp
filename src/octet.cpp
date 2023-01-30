@@ -73,19 +73,21 @@ char OctetStr::linefeed_chars[3] = "\r\n";
 
 //============[ constructor using no arguments ]======================
 OctetStr::OctetStr()
-    : output_buffer(0), output_buffer_len(0), m_changed(true), validity(true)
+    : output_buffer(nullptr), output_buffer_len(0), m_changed(true),
+      validity(true)
 {
     smival.syntax           = sNMP_SYNTAX_OCTETS;
-    smival.value.string.ptr = 0;
+    smival.value.string.ptr = nullptr;
     smival.value.string.len = 0;
 }
 
 //============[ constructor using a  string ]=========================
 OctetStr::OctetStr(const char* str)
-    : output_buffer(0), output_buffer_len(0), m_changed(true), validity(true)
+    : output_buffer(nullptr), output_buffer_len(0), m_changed(true),
+      validity(true)
 {
     smival.syntax           = sNMP_SYNTAX_OCTETS;
-    smival.value.string.ptr = 0;
+    smival.value.string.ptr = nullptr;
     smival.value.string.len = 0;
 
     size_t z = 0;
@@ -107,10 +109,11 @@ OctetStr::OctetStr(const char* str)
 
 //============[ constructor using an unsigned char * ]================
 OctetStr::OctetStr(const unsigned char* str, uint32_t len)
-    : output_buffer(0), output_buffer_len(0), m_changed(true), validity(true)
+    : output_buffer(nullptr), output_buffer_len(0), m_changed(true),
+      validity(true)
 {
     smival.syntax           = sNMP_SYNTAX_OCTETS;
-    smival.value.string.ptr = 0;
+    smival.value.string.ptr = nullptr;
     smival.value.string.len = 0;
 
     if (!str || !len) return; // check for zero len
@@ -129,10 +132,11 @@ OctetStr::OctetStr(const unsigned char* str, uint32_t len)
 
 //============[ constructor using another octet object ]==============
 OctetStr::OctetStr(const OctetStr& octet)
-    : output_buffer(0), output_buffer_len(0), m_changed(true), validity(true)
+    : output_buffer(nullptr), output_buffer_len(0), m_changed(true),
+      validity(true)
 {
     smival.syntax           = sNMP_SYNTAX_OCTETS;
-    smival.value.string.ptr = 0;
+    smival.value.string.ptr = nullptr;
     smival.value.string.len = 0;
 
     if (octet.smival.value.string.len == 0) return; // check for zero len case
@@ -164,9 +168,9 @@ OctetStr::~OctetStr()
     // if not empty, free it up
     if (smival.value.string.ptr) delete[] smival.value.string.ptr;
     smival.value.string.len = 0;
-    smival.value.string.ptr = 0;
+    smival.value.string.ptr = nullptr;
     if (output_buffer) delete[] output_buffer;
-    output_buffer     = 0;
+    output_buffer     = nullptr;
     output_buffer_len = 0;
 }
 
@@ -177,7 +181,7 @@ void OctetStr::set_data(const unsigned char* str, uint32_t len)
     if (smival.value.string.ptr)
     {
         delete[] smival.value.string.ptr;
-        smival.value.string.ptr = 0;
+        smival.value.string.ptr = nullptr;
     }
     smival.value.string.len = 0;
     m_changed               = true;
@@ -580,7 +584,7 @@ SnmpSyntax& OctetStr::operator=(const SnmpSyntax& val)
     if (smival.value.string.ptr)
     {
         delete[] smival.value.string.ptr;
-        smival.value.string.ptr = 0;
+        smival.value.string.ptr = nullptr;
     }
     smival.value.string.len = 0;
     validity                = false;
@@ -647,10 +651,7 @@ OctetStr OctetStr::from_hex_string(const OctetStr& hex_string)
         val += c;
         p = 1;
     }
-    else
-    {
-        p = 0;
-    }
+    else { p = 0; }
 
     while (p < hex_len)
     {
@@ -808,7 +809,7 @@ bool OctetStr::set_len(const uint32_t new_len)
         if (new_len == 0)
         {
             if (smival.value.string.ptr) delete[] smival.value.string.ptr;
-            smival.value.string.ptr = 0;
+            smival.value.string.ptr = nullptr;
         }
 
         validity = true;

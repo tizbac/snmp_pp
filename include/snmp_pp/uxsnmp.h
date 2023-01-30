@@ -158,7 +158,7 @@ public:
     /**
      * Destructor.
      */
-    virtual ~Snmp();
+    ~Snmp() override;
 
     //@}
 
@@ -255,7 +255,7 @@ public:
      * @return SNMP_CLASS_SUCCESS or a negative error code
      */
     virtual int get(Pdu& pdu, SnmpTarget& target, const snmp_callback callback,
-        const void* callback_data = 0);
+        const void* callback_data = nullptr);
 
     /**
      * Send a blocking SNMP-GETNEXT request.
@@ -278,7 +278,7 @@ public:
      * @return SNMP_CLASS_SUCCESS or a negative error code
      */
     virtual int get_next(Pdu& pdu, SnmpTarget& target,
-        const snmp_callback callback, const void* callback_data = 0);
+        const snmp_callback callback, const void* callback_data = nullptr);
 
     /**
      * Send a blocking SNMP-SET request.
@@ -301,7 +301,7 @@ public:
      * @return SNMP_CLASS_SUCCESS or a negative error code
      */
     virtual int set(Pdu& pdu, SnmpTarget& target, const snmp_callback callback,
-        const void* callback_data = 0);
+        const void* callback_data = nullptr);
 
     /**
      * Send a blocking SNMP-GETBULK request.
@@ -330,7 +330,7 @@ public:
      */
     virtual int get_bulk(Pdu& pdu, SnmpTarget& target, const int non_repeaters,
         const int max_reps, const snmp_callback callback,
-        const void* callback_data = 0);
+        const void* callback_data = nullptr);
 
     /**
      * Send a SNMP-TRAP.
@@ -373,7 +373,7 @@ public:
      * @return SNMP_CLASS_SUCCESS or a negative error code
      */
     virtual int inform(Pdu& pdu, SnmpTarget& target,
-        const snmp_callback callback, const void* callback_data = 0);
+        const snmp_callback callback, const void* callback_data = nullptr);
 
     /**
      * Send a RESPONSE.
@@ -417,7 +417,7 @@ public:
      */
     virtual int broadcast_discovery(UdpAddressCollection& addresses,
         const int timeout_sec, const UdpAddress& addr,
-        const snmp_version version, const OctetStr* community = 0);
+        const snmp_version version, const OctetStr* community = nullptr);
 
 #ifdef _SNMPv3
     virtual int engine_id_discovery(
@@ -466,7 +466,7 @@ public:
      */
     virtual int notify_register(const OidCollection& trapids,
         const TargetCollection& targets, const snmp_callback callback,
-        const void* callback_data = 0);
+        const void* callback_data = nullptr);
 
     /**
      * Unregister to get traps and informs.

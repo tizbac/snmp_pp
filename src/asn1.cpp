@@ -1362,15 +1362,15 @@ unsigned char* build_vb(struct snmp_pdu* pdu, unsigned char* buf, int* buf_len)
     {
         cp = snmp_build_var_op(cp, vp->name, &vp->name_length, vp->type,
             vp->val_len, (unsigned char*)vp->val.string, &length);
-        if (cp == NULL) return 0;
+        if (cp == NULL) return nullptr;
     }
     vb_length = SAFE_INT_CAST(cp - tmp_buf.get_ptr());
     *buf_len -= vb_length;
-    if (*buf_len <= 0) return 0;
+    if (*buf_len <= 0) return nullptr;
 
     // encode the length of encoded varbinds into buf
     cp = asn_build_header(buf, buf_len, ASN_SEQ_CON, vb_length);
-    if (cp == NULL) return 0;
+    if (cp == NULL) return nullptr;
 
     // copy varbinds from packet behind header in buf
     memcpy(cp, tmp_buf.get_ptr(), vb_length);
@@ -1392,47 +1392,47 @@ unsigned char* build_data_pdu(struct snmp_pdu* pdu, unsigned char* buf,
         // request id
         cp = asn_build_int(
             cp, &length, ASN_UNI_PRIM | ASN_INTEGER, &pdu->reqid);
-        if (cp == NULL) return 0;
+        if (cp == NULL) return nullptr;
 
         // error status
         cp = asn_build_int(
             cp, &length, ASN_UNI_PRIM | ASN_INTEGER, &pdu->errstat);
-        if (cp == NULL) return 0;
+        if (cp == NULL) return nullptr;
 
         // error index
         cp = asn_build_int(
             cp, &length, ASN_UNI_PRIM | ASN_INTEGER, &pdu->errindex);
-        if (cp == NULL) return 0;
+        if (cp == NULL) return nullptr;
     }
     else
     { // this is a trap message
         // enterprise
         cp = asn_build_objid(cp, &length, ASN_UNI_PRIM | ASN_OBJECT_ID,
             (oid_t*)pdu->enterprise, pdu->enterprise_length);
-        if (cp == NULL) return 0;
+        if (cp == NULL) return nullptr;
 
         // agent-addr ; must be IPADDRESS changed by Frank Fock
         cp = asn_build_string(cp, &length, SMI_IPADDRESS,
             (unsigned char*)&pdu->agent_addr.sin_addr.s_addr,
             sizeof(pdu->agent_addr.sin_addr.s_addr));
-        if (cp == NULL) return 0;
+        if (cp == NULL) return nullptr;
 
         SmiINT32 dummy = pdu->trap_type;
         // generic trap
         cp = asn_build_int(cp, &length, ASN_UNI_PRIM | ASN_INTEGER, &dummy);
-        if (cp == NULL) return 0;
+        if (cp == NULL) return nullptr;
 
         dummy = pdu->specific_type;
         // specific trap
         cp = asn_build_int(cp, &length, ASN_UNI_PRIM | ASN_INTEGER, &dummy);
-        if (cp == NULL) return 0;
+        if (cp == NULL) return nullptr;
 
         // timestamp
         cp = asn_build_unsigned_int(cp, &length, SMI_TIMETICKS, &pdu->time);
-        if (cp == NULL) return 0;
+        if (cp == NULL) return nullptr;
     }
 
-    if (length < vb_buf_len) return 0;
+    if (length < vb_buf_len) return nullptr;
 
     // save relative position of varbinds
     int const vb_rel_pos = SAFE_INT_CAST(cp - tmp_buf.get_ptr());
@@ -1441,8 +1441,8 @@ unsigned char* build_data_pdu(struct snmp_pdu* pdu, unsigned char* buf,
     // build header for datapdu into buf
     cp = asn_build_header(
         buf, buf_len, (unsigned char)pdu->command, totallength);
-    if (cp == NULL) return 0;
-    if (*buf_len < totallength) return 0;
+    if (cp == NULL) return nullptr;
+    if (*buf_len < totallength) return nullptr;
 
     // copy data behind header
     memcpy(cp, tmp_buf.get_ptr(), totallength - vb_buf_len);
@@ -1464,14 +1464,14 @@ int snmp_build(struct snmp_pdu* pdu, unsigned char* packet, int* out_length,
     // encode vbs with header into packet
     length = *out_length;
     cp     = build_vb(pdu, packet, &length);
-    if (cp == 0) return -1;
+    if (cp == nullptr) return -1;
     totallength = SAFE_INT_CAST(cp - packet);
     if (totallength >= *out_length) return -1;
 
     // encode datadpu into buf
     length = MAX_SNMP_PACKET;
     cp     = build_data_pdu(pdu, buf.get_ptr(), &length, packet, totallength);
-    if (cp == 0) return -1;
+    if (cp == nullptr) return -1;
     totallength = SAFE_INT_CAST(cp - buf.get_ptr());
     if (totallength >= *out_length) return -1;
 
@@ -1582,7 +1582,7 @@ int snmp_parse_vb(struct snmp_pdu* pdu, unsigned char*& data, int& data_len)
 {
     unsigned char*        var_val = nullptr;
     int                   len     = 0;
-    struct variable_list* vp      = 0;
+    struct variable_list* vp      = nullptr;
     oid_t                 objid[ASN_MAX_NAME_LEN], *op = nullptr;
     unsigned char         type = 0;
 
@@ -1778,27 +1778,27 @@ unsigned char* asn1_parse_header_data(unsigned char* buf, int* buf_len,
     if (!buf)
     {
         debugprintf(0, "Parse error in header HeaderData");
-        return 0;
+        return nullptr;
     }
 
     if (type != ASN_SEQ_CON)
     {
         debugprintf(0, "wrong type in header of msgHeaderData");
-        return 0;
+        return nullptr;
     }
 
     buf = asn_parse_int(buf, &length, &type, msg_id);
     if (!buf)
     {
         debugprintf(0, "Parse error: msg_id");
-        return 0;
+        return nullptr;
     }
 
     buf = asn_parse_int(buf, &length, &type, msg_max_size);
     if (!buf)
     {
         debugprintf(0, "Parse error: msg_max_size");
-        return 0;
+        return nullptr;
     }
 
     int dummy = 1;
@@ -1807,20 +1807,20 @@ unsigned char* asn1_parse_header_data(unsigned char* buf, int* buf_len,
     if ((dummy != 1) || (!buf))
     {
         debugprintf(0, "Parse error: msg_flags");
-        return 0;
+        return nullptr;
     }
 
     buf = asn_parse_int(buf, &length, &type, msg_security_model);
     if (!buf)
     {
         debugprintf(0, "Parse error: msg_security_model");
-        return 0;
+        return nullptr;
     }
 
     if (length)
     {
         debugprintf(0, "Parse error: wrong length in header of HeaderData");
-        return 0;
+        return nullptr;
     }
 
     debugprintf(3,
@@ -1926,13 +1926,13 @@ unsigned char* asn1_parse_scoped_pdu(unsigned char* scoped_pdu,
     if (!scoped_pdu)
     {
         debugprintf(0, "Parse error: Wrong header in scoped_pdu.");
-        return 0;
+        return nullptr;
     }
 
     if (type != ASN_SEQ_CON)
     {
         debugprintf(0, "Parse error: Wrong header type in scoped_pdu.");
-        return 0;
+        return nullptr;
     }
 
     scoped_pdu = asn_parse_string(scoped_pdu, scoped_pdu_len, &type,
@@ -1940,7 +1940,7 @@ unsigned char* asn1_parse_scoped_pdu(unsigned char* scoped_pdu,
     if (!scoped_pdu)
     {
         debugprintf(0, "Parse error: context_engine_id");
-        return 0;
+        return nullptr;
     }
 
     scoped_pdu = asn_parse_string(
@@ -1948,7 +1948,7 @@ unsigned char* asn1_parse_scoped_pdu(unsigned char* scoped_pdu,
     if (!scoped_pdu)
     {
         debugprintf(0, "mpParseScopedPDU: bad parse of context_name");
-        return 0;
+        return nullptr;
     }
 
     debugprintf(3,
@@ -1983,7 +1983,7 @@ unsigned char* asn1_build_scoped_pdu(unsigned char* outBuf, int* max_len,
         LOG("ASN1: Error encoding contextEngineID");
         LOG_END;
 
-        return 0;
+        return nullptr;
     }
 
     bufPtr = asn_build_string(bufPtr, max_len, ASN_UNI_PRIM | ASN_OCTET_STR,
@@ -1994,7 +1994,7 @@ unsigned char* asn1_build_scoped_pdu(unsigned char* outBuf, int* max_len,
         LOG("ASN1: Error encoding contextName");
         LOG_END;
 
-        return 0;
+        return nullptr;
     }
 
     long bufLength = SAFE_INT_CAST(bufPtr - buffer.get_ptr());
@@ -2014,7 +2014,7 @@ unsigned char* asn1_build_scoped_pdu(unsigned char* outBuf, int* max_len,
         LOG("ASN1: Error encoding scopedPDU sequence");
         LOG_END;
 
-        return 0;
+        return nullptr;
     }
 
     memcpy(outBufPtr, buffer.get_ptr(), bufLength);

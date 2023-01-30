@@ -94,11 +94,11 @@ public:
     /**
      * Construct an invalid Oid.
      */
-    Oid() : iv_str(0), iv_part_str(0), m_changed(true)
+    Oid() : iv_str(nullptr), iv_part_str(nullptr), m_changed(true)
     {
         smival.syntax        = sNMP_SYNTAX_OID;
         smival.value.oid.len = 0;
-        smival.value.oid.ptr = 0;
+        smival.value.oid.ptr = nullptr;
     }
 
     /**
@@ -124,11 +124,12 @@ public:
      *
      * @param oid - Source Oid
      */
-    Oid(const Oid& oid) : iv_str(0), iv_part_str(0), m_changed(true)
+    Oid(const Oid& oid)
+        : iv_str(nullptr), iv_part_str(nullptr), m_changed(true)
     {
         smival.syntax        = sNMP_SYNTAX_OID;
         smival.value.oid.len = 0;
-        smival.value.oid.ptr = 0;
+        smival.value.oid.ptr = nullptr;
 
         // allocate some memory for the oid
         // in this case the size to allocate is the same size as the source oid
@@ -150,11 +151,11 @@ public:
      * @param oid_len - length of array
      */
     Oid(const SmiUINT32* raw_oid, int oid_len)
-        : iv_str(0), iv_part_str(0), m_changed(true)
+        : iv_str(nullptr), iv_part_str(nullptr), m_changed(true)
     {
         smival.syntax        = sNMP_SYNTAX_OID;
         smival.value.oid.len = 0;
-        smival.value.oid.ptr = 0;
+        smival.value.oid.ptr = nullptr;
 
         if (raw_oid && (oid_len > 0))
         {
@@ -171,7 +172,7 @@ public:
     /**
      * Destructor.
      */
-    virtual ~Oid()
+    ~Oid() override
     {
         delete_oid_ptr();
         if (iv_str) delete[] iv_str;           // free up the output string
@@ -299,7 +300,7 @@ public:
      */
     Oid& operator+=(const SmiUINT32 i)
     {
-        Oid other((SmiLPUINT32)&i, 1);
+        Oid const other((SmiLPUINT32)&i, 1);
         (*this) += other;
         return *this;
     }
@@ -317,7 +318,7 @@ public:
 
         new_oid = (SmiLPUINT32) new SmiUINT32[smival.value.oid.len
             + o.smival.value.oid.len];
-        if (new_oid == 0)
+        if (new_oid == nullptr)
         {
             delete_oid_ptr();
             return *this;
@@ -664,7 +665,7 @@ inline void Oid::delete_oid_ptr()
     if (smival.value.oid.ptr)
     {
         delete[] smival.value.oid.ptr;
-        smival.value.oid.ptr = 0;
+        smival.value.oid.ptr = nullptr;
     }
     smival.value.oid.len = 0;
     m_changed            = true;

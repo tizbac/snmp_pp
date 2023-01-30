@@ -169,10 +169,7 @@ bool operator==(const Address& lhs, const char* rhs)
 
     if (!rhs && !lhs.valid())
         return true;
-    else if (!rhs)
-    {
-        return false;
-    }
+    else if (!rhs) { return false; }
     if (strcmp((const char*)lhs, rhs) == 0) return true;
     return false;
 }
@@ -544,10 +541,7 @@ int IpAddress::parse_dotted_ipstring(const char* inaddr)
             ++dot_count;
             last_char_was_dot = true;
         }
-        else if (isdigit(*ptr))
-        {
-            last_char_was_dot = false;
-        }
+        else if (isdigit(*ptr)) { last_char_was_dot = false; }
         else
             return false;
         ++ptr;
@@ -702,10 +696,7 @@ int IpAddress::parse_coloned_ipstring(const char* inaddr)
                 second_used      = true;
                 had_double_colon = true;
             }
-            else
-            {
-                last_was_colon = true;
-            }
+            else { last_was_colon = true; }
         }
         else
         {
@@ -834,7 +825,7 @@ bool IpAddress::parse_address(const char* inaddr)
         return true; // since this is a valid ipv6 string don't do any DNS
 
 #ifdef HAVE_GETADDRINFO
-    struct addrinfo hints, *res = 0;
+    struct addrinfo hints, *res = nullptr;
     // XXX ensure that MAX_FRIENDLY_NAME keeps greater than INET6_ADDRSTRLEN
     char ds[MAX_FRIENDLY_NAME];
 
@@ -843,7 +834,7 @@ bool IpAddress::parse_address(const char* inaddr)
 #    ifdef AI_ADDRCONFIG
     hints.ai_flags |= AI_ADDRCONFIG;
 #    endif
-    int const error = getaddrinfo(inaddr, 0, &hints, &res);
+    int const error = getaddrinfo(inaddr, nullptr, &hints, &res);
     if (error)
     {
         /* errx(1, "%s", gai_strerror(error)); */
@@ -1051,7 +1042,7 @@ int IpAddress::addr_to_friendly()
     if (!valid_flag) return -1;
 
 #ifdef HAVE_GETADDRINFO
-    struct addrinfo hints, *res = 0;
+    struct addrinfo hints, *res = nullptr;
     int             error = 0;
     char            ds[MAX_FRIENDLY_NAME];
 
@@ -1061,7 +1052,7 @@ int IpAddress::addr_to_friendly()
 #    ifdef AI_ADDRCONFIG
     hints.ai_flags |= AI_ADDRCONFIG;
 #    endif
-    error = getaddrinfo(ds, 0, &hints, &res);
+    error = getaddrinfo(ds, nullptr, &hints, &res);
     if (error)
     {
         /* errx(1, "%s", gai_strerror(error)); */
@@ -1448,10 +1439,7 @@ UdpAddress::UdpAddress(const GenAddress& genaddr) : IpAddress()
         {
             *this = genaddr.cast_ipaddress(); // copy in the IP address data
         }
-        else
-        {
-            valid_flag = false;
-        }
+        else { valid_flag = false; }
     }
     sep = ':';
 }
@@ -2650,7 +2638,7 @@ GenAddress::GenAddress() : Address()
     smival.value.string.ptr = address_buffer;   // constant
 
     valid_flag       = false;
-    address          = 0;
+    address          = nullptr;
     output_buffer[0] = 0;
 }
 
@@ -2668,7 +2656,7 @@ GenAddress::GenAddress(const char* addr, const Address::addr_type use_type)
     smival.value.string.len = 0;                // to be overridden
     smival.value.string.ptr = address_buffer;   // constant
 
-    address       = 0;
+    address       = nullptr;
     bool const OK = parse_address(addr, use_type);
 
     // Copy real address smival info into GenAddr smival
@@ -2707,7 +2695,7 @@ GenAddress::GenAddress(const Address& addr)
     // make sure that the object is valid
     if (!addr.valid())
     {
-        address = 0;
+        address = nullptr;
         return;
     }
 
@@ -2752,7 +2740,7 @@ GenAddress::GenAddress(const GenAddress& addr)
     // make sure that the object is valid
     if (!addr.valid_flag)
     {
-        address = 0;
+        address = nullptr;
         return;
     }
 
@@ -2786,7 +2774,7 @@ GenAddress& GenAddress::operator=(const GenAddress& addr)
     if (address)
     {
         delete address;
-        address = 0;
+        address = nullptr;
     }
     if (addr.address) address = (Address*)(addr.address->clone());
     if (address) valid_flag = address->valid();
@@ -2819,7 +2807,7 @@ Address& GenAddress::operator=(const Address& addr)
     if (address)
     {
         delete address;
-        address = 0;
+        address = nullptr;
     }
 
     // addr can be a GenAddress object and calling clone() on that is bad...
@@ -2859,7 +2847,7 @@ SnmpSyntax& GenAddress::operator=(const SnmpSyntax& val)
     if (address)
     {
         delete address;
-        address = 0;
+        address = nullptr;
     }
 
     if (val.valid())
@@ -3010,7 +2998,7 @@ bool GenAddress::parse_address(
     }
 #endif // _MAC_ADDRESS
 
-    address = 0;
+    address = nullptr;
     return false;
 }
 

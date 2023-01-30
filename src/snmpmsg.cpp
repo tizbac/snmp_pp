@@ -434,7 +434,7 @@ int SnmpMessage::load(
             // prevention of SNMP++ Enterprise Oid death
             if (enterprise.len() > 0)
             {
-                raw_pdu->enterprise        = 0;
+                raw_pdu->enterprise        = nullptr;
                 raw_pdu->enterprise_length = 0;
             }
             snmp_free_pdu(raw_pdu);
@@ -462,7 +462,7 @@ int SnmpMessage::load(
                 // prevention of SNMP++ Enterprise Oid death
                 if (enterprise.len() > 0)
                 {
-                    raw_pdu->enterprise        = 0;
+                    raw_pdu->enterprise        = nullptr;
                     raw_pdu->enterprise_length = 0;
                 }
                 snmp_free_pdu(raw_pdu);
@@ -490,7 +490,7 @@ int SnmpMessage::load(
         // prevention of SNMP++ Enterprise Oid death
         if (enterprise.len() > 0)
         {
-            raw_pdu->enterprise        = 0;
+            raw_pdu->enterprise        = nullptr;
             raw_pdu->enterprise_length = 0;
         }
         snmp_free_pdu(raw_pdu);
@@ -509,7 +509,7 @@ int SnmpMessage::load(
     // prevention of SNMP++ Enterprise Oid death
     if (enterprise.len() > 0)
     {
-        raw_pdu->enterprise        = 0;
+        raw_pdu->enterprise        = nullptr;
         raw_pdu->enterprise_length = 0;
     }
 

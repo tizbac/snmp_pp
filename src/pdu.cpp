@@ -70,7 +70,7 @@ namespace Snmp_pp
 
 //=====================[ constructor no args ]=========================
 Pdu::Pdu()
-    : vbs(0), vbs_size(0), vb_count(0), error_status(0), error_index(0),
+    : vbs(nullptr), vbs_size(0), vb_count(0), error_status(0), error_index(0),
       validity(true), request_id(0), pdu_type(0), notify_timestamp(0),
       v1_trap_address_set(false)
 #ifdef _SNMPv3
@@ -82,7 +82,7 @@ Pdu::Pdu()
 
 //=====================[ constructor with vbs and count ]==============
 Pdu::Pdu(Vb* pvbs, const int pvb_count)
-    : vbs(0), vbs_size(0), vb_count(0), error_status(0), error_index(0),
+    : vbs(nullptr), vbs_size(0), vb_count(0), error_status(0), error_index(0),
       validity(true), request_id(0), pdu_type(0), notify_timestamp(0),
       v1_trap_address_set(false)
 #ifdef _SNMPv3
@@ -109,15 +109,15 @@ Pdu::Pdu(Vb* pvbs, const int pvb_count)
         if (pvbs[z].valid())
             vbs[z] = new Vb(pvbs[z]);
         else
-            vbs[z] = 0;
+            vbs[z] = nullptr;
 
         if ((vbs[z]) && !vbs[z]->valid())
         {
             delete vbs[z];
-            vbs[z] = 0;
+            vbs[z] = nullptr;
         }
 
-        if (vbs[z] == 0) // check for new fail
+        if (vbs[z] == nullptr) // check for new fail
         {
             for (int y = 0; y < z; ++y) delete vbs[y]; // free vbs
             validity = false;
@@ -134,13 +134,13 @@ Pdu::~Pdu()
     for (int z = 0; z < vb_count; ++z)
     {
         delete vbs[z];
-        vbs[z] = 0;
+        vbs[z] = nullptr;
     }
 
     if (vbs)
     {
         delete[] vbs;
-        vbs      = 0;
+        vbs      = nullptr;
         vbs_size = 0;
     }
 }
@@ -174,7 +174,7 @@ Pdu& Pdu::operator=(const Pdu& pdu)
     for (int z = 0; z < vb_count; ++z)
     {
         delete vbs[z];
-        vbs[z] = 0;
+        vbs[z] = nullptr;
     }
     vb_count = 0;
 
@@ -204,7 +204,7 @@ Pdu& Pdu::operator=(const Pdu& pdu)
         if ((vbs[y]) && !vbs[y]->valid())
         {
             delete vbs[y];
-            vbs[y] = 0;
+            vbs[y] = nullptr;
         }
 
         if (!vbs[y])
@@ -212,7 +212,7 @@ Pdu& Pdu::operator=(const Pdu& pdu)
             for (int x = 0; x < y; ++x)
             {
                 delete vbs[x]; // free vbs
-                vbs[x] = 0;
+                vbs[x] = nullptr;
             }
             validity = false;
             return *this;
@@ -245,7 +245,7 @@ Pdu& Pdu::operator+=(const Vb& vb)
         else
         {
             delete vbs[vb_count];
-            vbs[vb_count] = 0;
+            vbs[vb_count] = nullptr;
         }
     }
 
@@ -311,11 +311,11 @@ int Pdu::set_vblist(Vb const* pvbs, const int pvb_count)
             if ((vbs[y]) && !vbs[y]->valid())
             {
                 delete vbs[y];
-                vbs[y] = 0;
+                vbs[y] = nullptr;
             }
         }
         else
-            vbs[y] = 0;
+            vbs[y] = nullptr;
 
         // check for errors
         if (!vbs[y])
@@ -390,7 +390,7 @@ int Pdu::trim(const int count)
         if (vb_count > 0)
         {
             delete vbs[vb_count - 1];
-            vbs[vb_count - 1] = 0;
+            vbs[vb_count - 1] = nullptr;
             vb_count--;
         }
         lp--;

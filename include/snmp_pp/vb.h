@@ -94,7 +94,7 @@ public:
      *
      * This constructor creates an unitialized vb.
      */
-    Vb() : iv_vb_value(0), exception_status(SNMP_CLASS_SUCCESS) {};
+    Vb() : iv_vb_value(nullptr), exception_status(SNMP_CLASS_SUCCESS) {};
 
     /**
      * Constructor to initialize the oid.
@@ -102,13 +102,13 @@ public:
      * This constructor creates a vb with oid portion initialized.
      */
     Vb(const Oid& oid)
-        : iv_vb_oid(oid), iv_vb_value(0),
+        : iv_vb_oid(oid), iv_vb_value(nullptr),
           exception_status(SNMP_CLASS_SUCCESS) {};
 
     /**
      * Copy constructor.
      */
-    Vb(const Vb& vb) : iv_vb_value(0) { *this = vb; };
+    Vb(const Vb& vb) : iv_vb_value(nullptr) { *this = vb; };
 
     /**
      * Destructor that frees all allocated memory.
@@ -377,7 +377,7 @@ public:
      */
     SnmpSyntax* clone_value() const
     {
-        return ((iv_vb_value) ? iv_vb_value->clone() : 0);
+        return ((iv_vb_value) ? iv_vb_value->clone() : nullptr);
     };
 
     //-----[ misc]--------------------------------------------------------

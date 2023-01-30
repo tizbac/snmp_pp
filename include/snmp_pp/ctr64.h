@@ -116,7 +116,7 @@ public:
     /**
      * Destructor (ensure that SnmpSyntax::~SnmpSyntax() is overridden).
      */
-    ~Counter64() { }
+    ~Counter64() override { }
 
     operator pp_uint64() const
     {

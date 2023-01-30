@@ -106,7 +106,10 @@ public:
      *
      * @param pdu - source pdu object
      */
-    Pdu(const Pdu& pdu) : vbs(0), vbs_size(0), vb_count(0) { *this = pdu; };
+    Pdu(const Pdu& pdu) : vbs(nullptr), vbs_size(0), vb_count(0)
+    {
+        *this = pdu;
+    };
 
     /**
      * Destructor

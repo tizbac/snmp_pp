@@ -221,15 +221,15 @@ void deleteV3Callback(struct Snmp::V3CallBackData*& cbData)
     if (cbData->pdu)
     {
         delete cbData->pdu;
-        cbData->pdu = 0;
+        cbData->pdu = nullptr;
     }
     if (cbData->target)
     {
         delete cbData->target;
-        cbData->target = 0;
+        cbData->target = nullptr;
     }
     delete cbData;
-    cbData = 0;
+    cbData = nullptr;
 }
 
 void v3CallBack(
@@ -341,7 +341,7 @@ long Snmp::MyMakeReqId()
             struct timeval tv;
             tv.tv_sec  = 0;
             tv.tv_usec = 100;
-            select(0, 0, 0, 0, &tv);
+            select(0, nullptr, nullptr, nullptr, &tv);
             eventListHolder->snmpEventList()
                 ->lock(); // FIXME: not exception save! CK
         }
@@ -822,8 +822,8 @@ void Snmp::init(int& status, IpAddress* addresses[2],
     eventListHolder->snmpEventList()->unlock();
 
     // initialize all the trap receiving member variables
-    notifycallback      = 0;
-    notifycallback_data = 0;
+    notifycallback      = nullptr;
+    notifycallback_data = nullptr;
 #ifdef HPUX
     int errno = 0;
 #endif
@@ -1147,7 +1147,7 @@ int Snmp::error_code(const Oid& v3Oid)
 int Snmp::get(Pdu& pdu, SnmpTarget& target)
 {
     pdu.set_type(sNMP_PDU_GET);
-    return snmp_engine(pdu, 0, 0, target, NULL, 0);
+    return snmp_engine(pdu, 0, 0, target, NULL, nullptr);
 }
 
 //------------------------[ get async ]----------------------------------
@@ -1162,7 +1162,7 @@ int Snmp::get(Pdu& pdu, SnmpTarget& target, const snmp_callback callback,
 int Snmp::get_next(Pdu& pdu, SnmpTarget& target)
 {
     pdu.set_type(sNMP_PDU_GETNEXT);
-    return snmp_engine(pdu, 0, 0, target, NULL, 0);
+    return snmp_engine(pdu, 0, 0, target, NULL, nullptr);
 }
 
 //------------------------[ get next async ]-----------------------------
@@ -1177,7 +1177,7 @@ int Snmp::get_next(Pdu& pdu, SnmpTarget& target, const snmp_callback callback,
 int Snmp::set(Pdu& pdu, SnmpTarget& target)
 {
     pdu.set_type(sNMP_PDU_SET);
-    return snmp_engine(pdu, 0, 0, target, NULL, 0);
+    return snmp_engine(pdu, 0, 0, target, NULL, nullptr);
 }
 
 //------------------------[ set async ]----------------------------------
@@ -1195,7 +1195,7 @@ int Snmp::get_bulk(Pdu& pdu,           // pdu to use
     const int           max_reps)                // maximum number of repetitions
 {
     pdu.set_type(sNMP_PDU_GETBULK);
-    return snmp_engine(pdu, non_repeaters, max_reps, target, NULL, 0);
+    return snmp_engine(pdu, non_repeaters, max_reps, target, NULL, nullptr);
 }
 
 //-----------------------[ get bulk async ]------------------------------
@@ -1217,7 +1217,7 @@ int Snmp::response(Pdu& pdu,    // pdu to use
     const SnmpSocket    fd)
 {
     pdu.set_type(sNMP_PDU_RESPONSE);
-    return snmp_engine(pdu, 0, 0, target, NULL, 0, fd);
+    return snmp_engine(pdu, 0, 0, target, NULL, nullptr, fd);
 }
 
 int Snmp::send_raw_data(unsigned char* send_buf, size_t send_len,
@@ -1263,7 +1263,7 @@ int Snmp::report(Pdu& pdu, // pdu to send
     SnmpTarget&       target)    // destination target
 {
     pdu.set_type(sNMP_PDU_REPORT);
-    return snmp_engine(pdu, 0, 0, target, NULL, 0);
+    return snmp_engine(pdu, 0, 0, target, NULL, nullptr);
 }
 
 //----------------------[ blocking inform, V2 only]------------------------
@@ -1281,7 +1281,7 @@ int Snmp::inform(Pdu& pdu, // pdu to send
 
     pdu.set_type(sNMP_PDU_INFORM);
     check_notify_timestamp(pdu);
-    return snmp_engine(pdu, 0, 0, target, NULL, 0);
+    return snmp_engine(pdu, 0, 0, target, NULL, nullptr);
 }
 
 //----------------------[ asynch inform, V2 only]------------------------
@@ -1609,8 +1609,8 @@ int Snmp::notify_unregister()
     eventListHolder->notifyEventList()->DeleteEntry(this);
 
     // null out callback information
-    notifycallback      = 0;
-    notifycallback_data = 0;
+    notifycallback      = nullptr;
+    notifycallback_data = nullptr;
 
     return SNMP_CLASS_SUCCESS;
 }
@@ -1659,7 +1659,7 @@ int Snmp::snmp_engine(Pdu& pdu,      // pdu to use
         //---------[ check for correct mode ]---------------------------
         // if the class was constructed as a blocked model, callback=0
         // and async calls are attempted, an error is returned
-        if ((cb == 0)
+        if ((cb == nullptr)
             && ((action == sNMP_PDU_GET_ASYNC)
                 || (action == sNMP_PDU_SET_ASYNC)
                 || (action == sNMP_PDU_GETNEXT_ASYNC)
@@ -1670,7 +1670,7 @@ int Snmp::snmp_engine(Pdu& pdu,      // pdu to use
         //---------[ more mode checking ]--------------------------------
         // if the class was constructed as an async model, callback = something
         // and blocked calls are attempted, an error is returned
-        if ((cb != 0)
+        if ((cb != nullptr)
             && ((action == sNMP_PDU_GET) || (action == sNMP_PDU_SET)
                 || (action == sNMP_PDU_GETNEXT) || (action == sNMP_PDU_GETBULK)
                 || (action == sNMP_PDU_INFORM)))
@@ -1851,7 +1851,7 @@ int Snmp::snmp_engine(Pdu& pdu,      // pdu to use
         SnmpMessage snmpmsg;
 
 #ifdef _SNMPv3
-        struct V3CallBackData* v3CallBackData = 0;
+        struct V3CallBackData* v3CallBackData = nullptr;
 
         if (version == version3)
         {
@@ -2433,11 +2433,11 @@ void* Snmp::process_thread(void* arg)
 #        if defined(CPU) && CPU == PPC603
     exit(0);
 #        else
-    pthread_exit(0);
+    pthread_exit(nullptr);
 #        endif
 #    endif
 #endif
-    return 0;
+    return nullptr;
 }
 
 #ifdef SNMP_PP_NAMESPACE

@@ -106,7 +106,7 @@ public:
     /**
      * Destructor, frees allocated space.
      */
-    ~OctetStr();
+    ~OctetStr() override;
 
     //-----------[ Overloaded operators ]----------------------
 

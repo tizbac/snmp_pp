@@ -171,7 +171,7 @@ public:
      */
     void GetDeltaFromNow(timeval& timeout) const
     {
-        msec now;
+        msec const now;
         now.GetDelta(*this, timeout);
     };
 

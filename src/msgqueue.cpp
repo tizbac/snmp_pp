@@ -270,13 +270,14 @@ CSNMPMessage* CSNMPMessageQueue::CSNMPMessageQueueElt::TestId(
     const uint32_t uniqueId)
 {
     if (m_message && (m_message->GetId() == uniqueId)) return m_message;
-    return 0;
+    return nullptr;
 }
 
 //----[ CSNMPMessageQueue class ]--------------------------------------
 
 CSNMPMessageQueue::CSNMPMessageQueue(EventListHolder* holder, Snmp* session)
-    : m_head(0, 0, 0), m_msgCount(0), my_holder(holder), m_snmpSession(session)
+    : m_head(nullptr, nullptr, nullptr), m_msgCount(0), my_holder(holder),
+      m_snmpSession(session)
 { }
 
 CSNMPMessageQueue::~CSNMPMessageQueue()
@@ -348,7 +349,7 @@ CSNMPMessage* CSNMPMessageQueue::GetEntry(const uint32_t uniqueId)
         if (returnVal) return returnVal;
         msgEltPtr = msgEltPtr->GetNext();
     }
-    return 0;
+    return nullptr;
 }
 
 int CSNMPMessageQueue::DeleteEntry(const uint32_t uniqueId)
@@ -681,7 +682,7 @@ int CSNMPMessageQueue::HandleEvents(
             uint32_t const temp_req_id = tmppdu.get_request_id();
             if (!temp_req_id) continue;
 
-            CSNMPMessage* msg          = 0;
+            CSNMPMessage* msg          = nullptr;
             bool          redoGetEntry = 0;
             do {
                 redoGetEntry = false;

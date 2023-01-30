@@ -117,7 +117,7 @@ CUDEventQueue::CUDEventQueueElt::~CUDEventQueueElt()
 CUDEvent* CUDEventQueue::CUDEventQueueElt::TestId(const UdId uniqueId)
 {
     if (m_udevent && (m_udevent->GetId() == uniqueId)) return m_udevent;
-    return 0;
+    return nullptr;
 }
 
 //----[ CUDEventQueue class ]--------------------------------------
@@ -159,7 +159,7 @@ CUDEvent* CUDEventQueue::GetEntry(const UdId uniqueId) REENTRANT({
         if ((returnVal = msgEltPtr->TestId(uniqueId))) return returnVal;
         msgEltPtr = msgEltPtr->GetNext();
     }
-    return 0;
+    return nullptr;
 })
 
     void CUDEventQueue::DeleteEntry(const UdId uniqueId)

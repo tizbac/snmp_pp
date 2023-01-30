@@ -415,8 +415,8 @@ AgentLog& AgentLogImpl::operator+=(const LogEntry* log)
 
 // define the default logs
 
-AgentLog* DefaultLog::instance = 0;
-LogEntry* DefaultLog::entry    = 0;
+AgentLog* DefaultLog::instance = nullptr;
+LogEntry* DefaultLog::entry    = nullptr;
 
 #ifdef _THREADS
 SnmpSynchronized DefaultLog::mutex;
@@ -426,7 +426,7 @@ void DefaultLog::cleanup()
 {
     lock(); // FIXME: not exception save! CK
     if (instance) delete instance;
-    instance = 0;
+    instance = nullptr;
     unlock();
 }
 

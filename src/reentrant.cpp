@@ -42,7 +42,7 @@ SnmpSynchronized::SnmpSynchronized()
 #    elif defined(CPU) && CPU == PPC603
     _mutex = semMCreate(SEM_Q_PRIORITY | SEM_DELETE_SAFE | SEM_INVERSION_SAFE);
 #    else
-    pthread_mutex_init(&_mutex, 0);
+    pthread_mutex_init(&_mutex, nullptr);
 #    endif
 #endif
 }

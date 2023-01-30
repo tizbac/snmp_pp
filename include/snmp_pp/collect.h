@@ -197,8 +197,8 @@ public:
         if ((p < count) && (p >= 0))
         {
             cBlock const* current = &data;
-            int           bn      = (int)(p / MAXT);
-            int           cn      = (int)p % MAXT;
+            int const     bn      = (int)(p / MAXT);
+            int const     cn      = (int)p % MAXT;
             for (int z = 0; z < bn; z++) current = current->next;
             return *(current->item[cn]);
         }
@@ -219,9 +219,9 @@ public:
     {
         if ((p < 0) || (p > count)) return -1; // not found!
 
-        cBlock* current = &data;
-        int     bn      = (int)p / MAXT;
-        int     cn      = (int)p % MAXT;
+        cBlock*   current = &data;
+        int const bn      = (int)p / MAXT;
+        int const cn      = (int)p % MAXT;
         for (int z = 0; z < bn; z++) current = current->next;
         delete current->item[cn];
         current->item[cn] = (T*)(i.clone());
@@ -238,8 +238,8 @@ public:
         if ((p < 0) || (p > count)) return -1; // not found!
 
         cBlock const* current = &data;
-        int           bn      = (int)p / MAXT;
-        int           cn      = (int)p % MAXT;
+        int const     bn      = (int)p / MAXT;
+        int const     cn      = (int)p % MAXT;
         for (int z = 0; z < bn; z++) current = current->next;
         t = *(current->item[cn]);
         return 0;
@@ -255,8 +255,8 @@ public:
         if ((p < 0) || (p > count)) return -1; // not found!
 
         cBlock const* current = &data;
-        int           bn      = (int)p / MAXT;
-        int           cn      = (int)p % MAXT;
+        int const     bn      = (int)p / MAXT;
+        int const     cn      = (int)p % MAXT;
         for (int z = 0; z < bn; z++) current = current->next;
         t = current->item[cn];
         return 0;

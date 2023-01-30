@@ -173,7 +173,7 @@ public:
     /**
      * Allow destruction of derived classes.
      */
-    virtual ~Address() { }
+    ~Address() override { }
 
     /// overloaded equivlence operator, are two addresses equal?
     DLLOPT friend bool operator==(const Address& lhs, const Address& rhs);
@@ -370,7 +370,7 @@ public:
     /**
      * Destructor (ensure that SnmpSyntax::~SnmpSyntax() is overridden).
      */
-    ~IpAddress() { }
+    ~IpAddress() override { }
 
     using Address::operator=;
 
@@ -604,7 +604,7 @@ public:
     /**
      * Destructor (ensure that SnmpSyntax::~SnmpSyntax() is overridden).
      */
-    ~UdpAddress() { }
+    ~UdpAddress() override { }
 
     using IpAddress::operator=;
 
@@ -1128,7 +1128,7 @@ public:
     /**
      * Destructor, free memory.
      */
-    ~GenAddress()
+    ~GenAddress() override
     {
         if (address) delete address;
     }

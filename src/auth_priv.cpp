@@ -371,9 +371,9 @@ AuthPriv::AuthPriv(int& construct_state)
         LOG_END;
     }
 
-    for (int i = 0; i < auth_size; i++) auth[i] = 0;
+    for (int i = 0; i < auth_size; i++) auth[i] = nullptr;
 
-    for (int j = 0; j < priv_size; j++) priv[j] = 0;
+    for (int j = 0; j < priv_size; j++) priv[j] = nullptr;
 
     /* Check size of salt, has to be 64 bits */
     if (sizeof(salt) != 8)
@@ -452,14 +452,14 @@ AuthPriv::~AuthPriv()
         if (auth[i])
         {
             delete auth[i];
-            auth[i] = 0;
+            auth[i] = nullptr;
         }
 
     for (int j = 0; j < priv_size; j++)
         if (priv[j])
         {
             delete priv[j];
-            priv[j] = 0;
+            priv[j] = nullptr;
         }
 
     delete[] auth;
@@ -487,7 +487,7 @@ int AuthPriv::add_auth(Auth* new_auth)
         }
         for (int i = 0; i < auth_size; i++) new_array[i] = auth[i];
 
-        for (int j = auth_size; j < id + 5; j++) new_array[j] = 0;
+        for (int j = auth_size; j < id + 5; j++) new_array[j] = nullptr;
 
         AuthPtr* victim = auth;
         auth            = new_array;
@@ -519,7 +519,7 @@ int AuthPriv::add_auth(Auth* new_auth)
 
 int AuthPriv::del_auth(const int auth_id)
 {
-    if ((auth_id < 0) || (auth_id >= auth_size) || (auth[auth_id] == 0))
+    if ((auth_id < 0) || (auth_id >= auth_size) || (auth[auth_id] == nullptr))
     {
         LOG_BEGIN(loggerModuleName, WARNING_LOG | 4);
         LOG("AuthPriv: Request to delete non existing auth protocol (id)");
@@ -530,7 +530,7 @@ int AuthPriv::del_auth(const int auth_id)
     }
 
     delete auth[auth_id];
-    auth[auth_id] = 0;
+    auth[auth_id] = nullptr;
 
     LOG_BEGIN(loggerModuleName, INFO_LOG | 6);
     LOG("AuthPriv: Removed auth protocol (id)");
@@ -561,7 +561,7 @@ int AuthPriv::add_priv(Priv* new_priv)
         }
         for (int i = 0; i < priv_size; i++) new_array[i] = priv[i];
 
-        for (int j = priv_size; j < id + 5; j++) new_array[j] = 0;
+        for (int j = priv_size; j < id + 5; j++) new_array[j] = nullptr;
 
         PrivPtr* victim = priv;
         priv            = new_array;
@@ -593,7 +593,7 @@ int AuthPriv::add_priv(Priv* new_priv)
 
 int AuthPriv::del_priv(const int priv_id)
 {
-    if ((priv_id < 0) || (priv_id >= priv_size) || (priv[priv_id] == 0))
+    if ((priv_id < 0) || (priv_id >= priv_size) || (priv[priv_id] == nullptr))
     {
         LOG_BEGIN(loggerModuleName, WARNING_LOG | 4);
         LOG("AuthPriv: Request to delete non existing priv protocol (id)");
@@ -604,7 +604,7 @@ int AuthPriv::del_priv(const int priv_id)
     }
 
     delete priv[priv_id];
-    priv[priv_id] = 0;
+    priv[priv_id] = nullptr;
 
     LOG_BEGIN(loggerModuleName, INFO_LOG | 6);
     LOG("AuthPriv: Removed priv protocol (id)");
@@ -617,13 +617,13 @@ int AuthPriv::del_priv(const int priv_id)
 Auth* AuthPriv::get_auth(const int auth_prot)
 {
     if ((auth_prot >= 0) && (auth_prot < auth_size)) return auth[auth_prot];
-    return 0;
+    return nullptr;
 }
 
 Priv* AuthPriv::get_priv(const int priv_prot)
 {
     if ((priv_prot >= 0) && (priv_prot < priv_size)) return priv[priv_prot];
-    return 0;
+    return nullptr;
 }
 
 // Get the unique id for the given auth protocol.

@@ -342,7 +342,7 @@ public:
     const UsmUserNameTableEntry* peek_first() const
     {
         if (entries > 0) return table;
-        return 0;
+        return nullptr;
     };
 
     const UsmUserNameTableEntry* peek_next(
@@ -556,7 +556,7 @@ public:
     const UsmUserTableEntry* peek_first() const
     {
         if (entries > 0) return table;
-        return 0;
+        return nullptr;
     };
 
     const UsmUserTableEntry* peek_next(const UsmUserTableEntry* e) const;
@@ -688,7 +688,7 @@ USM::USM(unsigned int engine_boots, const OctetStr& engine_id,
       usmStatsUnknownUserNames(0), usmStatsUnknownEngineIDs(0),
       usmStatsWrongDigests(0), usmStatsDecryptionErrors(0),
 
-      usm_add_user_cb(0)
+      usm_add_user_cb(nullptr)
 {
     auth_priv = new AuthPriv(result);
     if (result != SNMPv3_USM_OK) return;
@@ -941,9 +941,9 @@ struct UsmUser* USM::get_user(
                 // there is a entry for this security_name in the usmUserTable
                 // so return an entry for this user to do engine_id discovery
                 struct UsmUser* res = new UsmUser;
-                if (!res) return 0;
+                if (!res) return nullptr;
 
-                res->engineID       = 0;
+                res->engineID       = nullptr;
                 res->engineIDLength = 0;
                 res->usmUserName =
                     v3strcpy(entry->usmUserName, entry->usmUserNameLength);
@@ -952,10 +952,10 @@ struct UsmUser* USM::get_user(
                           entry->usmUserSecurityNameLength);
                 res->securityNameLength = entry->usmUserSecurityNameLength;
                 res->authProtocol       = SNMP_AUTHPROTOCOL_NONE;
-                res->authKey            = 0;
+                res->authKey            = nullptr;
                 res->authKeyLength      = 0;
                 res->privProtocol       = SNMP_PRIVPROTOCOL_NONE;
-                res->privKey            = 0;
+                res->privKey            = nullptr;
                 res->privKeyLength      = 0;
 
                 if ((res->usmUserNameLength && !res->usmUserName)
@@ -979,9 +979,9 @@ struct UsmUser* USM::get_user(
             if (!res)
             {
                 usm_user_name_table->delete_cloned_entry(name_table_entry);
-                return 0;
+                return nullptr;
             }
-            res->engineID       = 0;
+            res->engineID       = nullptr;
             res->engineIDLength = 0;
             res->usmUserName = v3strcpy(name_table_entry->usmUserName.data(),
                 name_table_entry->usmUserName.len());
@@ -992,10 +992,10 @@ struct UsmUser* USM::get_user(
             res->securityNameLength =
                 name_table_entry->usmUserSecurityName.len();
             res->authProtocol  = SNMP_AUTHPROTOCOL_NONE;
-            res->authKey       = 0;
+            res->authKey       = nullptr;
             res->authKeyLength = 0;
             res->privProtocol  = SNMP_PRIVPROTOCOL_NONE;
-            res->privKey       = 0;
+            res->privKey       = nullptr;
             res->privKeyLength = 0;
 
             if ((res->usmUserNameLength && !res->usmUserName)
@@ -1031,7 +1031,7 @@ struct UsmUser* USM::get_user(
                 LOG_END;
 
                 usm_user_name_table->delete_cloned_entry(name_table_entry);
-                return 0;
+                return nullptr;
             }
 
             OctetStr akey(authKey, authKeyLength);
@@ -1064,7 +1064,7 @@ struct UsmUser* USM::get_user(
                 LOG(engine_id.get_printable());
                 LOG_END;
                 usm_user_name_table->delete_cloned_entry(name_table_entry);
-                return 0;
+                return nullptr;
             }
         }
         usm_user_name_table->delete_cloned_entry(name_table_entry);
@@ -1073,7 +1073,7 @@ struct UsmUser* USM::get_user(
     if (!res)
     {
         usm_user_table->delete_cloned_entry(user_table_entry);
-        return 0;
+        return nullptr;
     }
     res->engineID           = user_table_entry->usmUserEngineID;
     res->engineIDLength     = user_table_entry->usmUserEngineIDLength;
@@ -1088,11 +1088,11 @@ struct UsmUser* USM::get_user(
     res->privKey            = user_table_entry->usmUserPrivKey;
     res->privKeyLength      = user_table_entry->usmUserPrivKeyLength;
 
-    user_table_entry->usmUserEngineID     = 0;
-    user_table_entry->usmUserName         = 0;
-    user_table_entry->usmUserSecurityName = 0;
-    user_table_entry->usmUserAuthKey      = 0;
-    user_table_entry->usmUserPrivKey      = 0;
+    user_table_entry->usmUserEngineID     = nullptr;
+    user_table_entry->usmUserName         = nullptr;
+    user_table_entry->usmUserSecurityName = nullptr;
+    user_table_entry->usmUserAuthKey      = nullptr;
+    user_table_entry->usmUserPrivKey      = nullptr;
 
     usm_user_table->delete_cloned_entry(user_table_entry);
 
@@ -1122,7 +1122,7 @@ void USM::free_user(struct UsmUser*& user)
 
     delete user;
 
-    user = 0;
+    user = nullptr;
 }
 
 void USM::delete_usm_user(const OctetStr& security_name)
@@ -1800,7 +1800,7 @@ int USM::generate_msg(unsigned char* globalData, // message header, admin data
         usmSecurityParams.msgAuthoritativeEngineTime  = 0;
 
         usmSecurityParams.msgAuthenticationParametersLength = 0;
-        usmSecurityParams.msgAuthenticationParameters       = 0;
+        usmSecurityParams.msgAuthenticationParameters       = nullptr;
 
         wholeMsgPtr = build_whole_msg(wholeMsgPtr, &maxMessageSize, globalData,
             globalDataLength,
@@ -2096,8 +2096,8 @@ int USM::process_msg(int maxMessageSize,     // of the sending SNMP entity
             securityStateReference->privKeyLength = user->privKeyLength;
             securityStateReference->privKey       = user->privKey;
 
-            user->authKey = 0;
-            user->privKey = 0;
+            user->authKey = nullptr;
+            user->privKey = nullptr;
 
             free_user(user);
             return rc;
@@ -2195,8 +2195,8 @@ int USM::process_msg(int maxMessageSize,     // of the sending SNMP entity
     securityStateReference->privKeyLength = user->privKeyLength;
     securityStateReference->privKey       = user->privKey;
 
-    user->authKey = 0;
-    user->privKey = 0;
+    user->authKey = nullptr;
+    user->privKey = nullptr;
 
     free_user(user);
 
@@ -2967,7 +2967,7 @@ struct UsmUserNameTableEntry* USMUserNameTable::get_cloned_entry(
 {
     lock(); // FIXME: not exception save! CK
     const struct UsmUserNameTableEntry* e   = get_entry(security_name);
-    struct UsmUserNameTableEntry*       res = 0;
+    struct UsmUserNameTableEntry*       res = nullptr;
 
     if (e) { res = new struct UsmUserNameTableEntry; }
 
@@ -3012,7 +3012,7 @@ void USMUserNameTable::delete_cloned_entry(
 
     delete entry;
 
-    entry = 0;
+    entry = nullptr;
 }
 
 int USMUserNameTable::get_security_name(const unsigned char* user_name,
@@ -3426,9 +3426,9 @@ int USMUserNameTable::load_from_file(const char* name, AuthPriv* ap)
 const UsmUserNameTableEntry* USMUserNameTable::peek_next(
     const UsmUserNameTableEntry* e) const
 {
-    if (e == 0) return 0;
-    if (e - table < 0) return 0;
-    if (e - table >= entries - 1) return 0;
+    if (e == nullptr) return nullptr;
+    if (e - table < 0) return nullptr;
+    if (e - table >= entries - 1) return nullptr;
     return (e + 1);
 }
 
@@ -3647,7 +3647,7 @@ struct UsmUserTableEntry* USMUserTable::get_cloned_entry(
 {
     lock(); // FIXME: not exception save! CK
     const struct UsmUserTableEntry* e   = get_entry(engine_id, sec_name);
-    struct UsmUserTableEntry*       res = 0;
+    struct UsmUserTableEntry*       res = nullptr;
 
     if (e) { res = new struct UsmUserTableEntry; }
 
@@ -3706,7 +3706,7 @@ void USMUserTable::delete_cloned_entry(struct UsmUserTableEntry*& entry)
 
     delete entry;
 
-    entry = 0;
+    entry = nullptr;
 }
 
 const struct UsmUserTableEntry* USMUserTable::get_entry(
@@ -4237,9 +4237,9 @@ int USMUserTable::load_from_file(const char* name, AuthPriv* ap)
 const UsmUserTableEntry* USMUserTable::peek_next(
     const UsmUserTableEntry* e) const
 {
-    if (e == 0) return 0;
-    if (e - table < 0) return 0;
-    if (e - table >= entries - 1) return 0;
+    if (e == nullptr) return nullptr;
+    if (e - table < 0) return nullptr;
+    if (e - table >= entries - 1) return nullptr;
     return (e + 1);
 }
 

@@ -109,12 +109,12 @@ CNotifyEvent::~CNotifyEvent()
     if (notify_ids)
     {
         delete notify_ids;
-        notify_ids = 0;
+        notify_ids = nullptr;
     }
     if (notify_targets)
     {
         delete notify_targets;
-        notify_targets = 0;
+        notify_targets = nullptr;
     }
 }
 
@@ -129,7 +129,7 @@ int CNotifyEvent::notify_filter(const Oid& trapid, SnmpTarget& target) const
     // figure out how many targets, handle empty case as all targets
     if ((notify_targets) && ((target_count = notify_targets->size())))
     {
-        SnmpTarget* tmptarget = 0;
+        SnmpTarget* tmptarget = nullptr;
         has_target            = true;
 
         target.get_address(targetaddr);
@@ -315,7 +315,7 @@ CNotifyEvent* CNotifyEventQueue::CNotifyEventQueueElt::TestId(Snmp* snmp)
 {
     if (m_notifyevent && (m_notifyevent->GetId() == snmp))
         return m_notifyevent;
-    return 0;
+    return nullptr;
 }
 
 //----[ CNotifyEventQueue class ]--------------------------------------
@@ -624,7 +624,7 @@ CNotifyEvent* CNotifyEventQueue::GetEntry(Snmp* snmp) REENTRANT({
         if (returnVal) return returnVal;
         msgEltPtr = msgEltPtr->GetNext();
     }
-    return 0;
+    return nullptr;
 })
 
     void CNotifyEventQueue::DeleteEntry(Snmp* snmp)
