@@ -352,12 +352,15 @@ OctetStr& OctetStr::operator+=(const char* a)
 
     if (tmp)
     {
-        // copy in the original 1st
-        memcpy(tmp, smival.value.string.ptr, smival.value.string.len);
+        if (smival.value.string.ptr)
+        {
+            // copy in the original 1st
+            memcpy(tmp, smival.value.string.ptr, smival.value.string.len);
+            delete[] smival.value.string.ptr; // delete the original
+        }
         // copy in the string
         memcpy(tmp + smival.value.string.len, a, slen);
-        // delete the original
-        if (smival.value.string.ptr) delete[] smival.value.string.ptr;
+
         // point to the new one
         smival.value.string.ptr = tmp;
         smival.value.string.len = SAFE_INT_CAST(nlen);
@@ -381,12 +384,15 @@ OctetStr& OctetStr::operator+=(const OctetStr& octet)
 
     if (tmp)
     {
-        // copy in the original 1st
-        memcpy(tmp, smival.value.string.ptr, smival.value.string.len);
+        if (smival.value.string.ptr)
+        {
+            // copy in the original 1st
+            memcpy(tmp, smival.value.string.ptr, smival.value.string.len);
+            delete[] smival.value.string.ptr; // delete the original
+        }
         // copy in the string
         memcpy(tmp + smival.value.string.len, octet.data(), slen);
-        // delete the original
-        if (smival.value.string.ptr) delete[] smival.value.string.ptr;
+
         // point to the new one
         smival.value.string.ptr = tmp;
         smival.value.string.len = SAFE_INT_CAST(nlen);
@@ -407,14 +413,15 @@ OctetStr& OctetStr::operator+=(const unsigned char c)
 
     if (tmp)
     {
-        memcpy(tmp, smival.value.string.ptr, smival.value.string.len);
-        tmp[smival.value.string.len] = c; // assign in new byte
+        if (smival.value.string.ptr)
+        {
+            memcpy(tmp, smival.value.string.ptr, smival.value.string.len);
+            delete[] smival.value.string.ptr; // delete the original
+        }
 
-        if (smival.value.string.ptr) // delete the original
-            delete[] smival.value.string.ptr;
-
-        smival.value.string.ptr = tmp; // point to new one
-        smival.value.string.len++;     // up the len
+        tmp[smival.value.string.len] = c;   // assign in new byte
+        smival.value.string.ptr      = tmp; // point to new one
+        smival.value.string.len++;          // up the len
 
         m_changed = true;
         validity  = true;
@@ -640,7 +647,10 @@ OctetStr OctetStr::from_hex_string(const OctetStr& hex_string)
         val += c;
         p = 1;
     }
-    else { p = 0; }
+    else
+    {
+        p = 0;
+    }
 
     while (p < hex_len)
     {

@@ -143,6 +143,7 @@ void debugprintf(int, const char*, ...) { }
 
 unsigned char* v3strcpy(const unsigned char* src, const int srclen)
 {
+    if (!src) return NULL;
     unsigned char* res = new unsigned char[srclen + 1];
     if (!res) return NULL;
     memcpy(res, src, srclen);
