@@ -111,8 +111,8 @@ void LogEntry::init(void)
     }
     else
     {
-        unsigned char* ptc = (unsigned char*)(void*)(&pid);
-        OctetStr       os;
+        auto*    ptc = (unsigned char*)(void*)(&pid);
+        OctetStr os;
         os.set_data(ptc, sizeof(pthread_t));
         add_string(os.get_printable_hex());
     }

@@ -593,7 +593,7 @@ int CNotifyEventQueue::AddEntry(
         } // not is_v4_address
     }
 
-    CNotifyEvent* newEvent = new CNotifyEvent(snmp, trapids, targets);
+    auto* newEvent = new CNotifyEvent(snmp, trapids, targets);
 
     /*---------------------------------------------------------*/
     /* Insert entry at head of list, done automagically by the */

@@ -670,7 +670,7 @@ void USM::delete_sec_state_reference(struct SecurityStateReference* ssr)
 
 struct SecurityStateReference* USM::get_new_sec_state_reference()
 {
-    struct SecurityStateReference* res = new SecurityStateReference;
+    auto* res = new SecurityStateReference;
 
     if (!res) return NULL;
 
@@ -940,7 +940,7 @@ struct UsmUser* USM::get_user(
             {
                 // there is a entry for this security_name in the usmUserTable
                 // so return an entry for this user to do engine_id discovery
-                struct UsmUser* res = new UsmUser;
+                auto* res = new UsmUser;
                 if (!res) return nullptr;
 
                 res->engineID       = nullptr;
@@ -975,7 +975,7 @@ struct UsmUser* USM::get_user(
         if (engine_id.len() == 0)
         {
             // do not add a user
-            struct UsmUser* res = new UsmUser;
+            auto* res = new UsmUser;
             if (!res)
             {
                 usm_user_name_table->delete_cloned_entry(name_table_entry);
@@ -1069,7 +1069,7 @@ struct UsmUser* USM::get_user(
         }
         usm_user_name_table->delete_cloned_entry(name_table_entry);
     }
-    struct UsmUser* res = new UsmUser;
+    auto* res = new UsmUser;
     if (!res)
     {
         usm_user_table->delete_cloned_entry(user_table_entry);
@@ -1401,12 +1401,12 @@ struct UsmKeyUpdate* USM::key_update_prepare(const OctetStr& securityName,
     vb.set_value(random_value);
     pdu += vb;
 
-    struct UsmKeyUpdate* uku = new struct UsmKeyUpdate;
-    uku->engineID            = engineID;
-    uku->securityName        = securityName;
-    uku->newPassword         = newPassword;
-    uku->newKey              = newKey;
-    uku->type                = type;
+    auto* uku         = new struct UsmKeyUpdate;
+    uku->engineID     = engineID;
+    uku->securityName = securityName;
+    uku->newPassword  = newPassword;
+    uku->newKey       = newKey;
+    uku->type         = type;
 
     free_user(user);
     status = SNMPv3_USM_OK;
@@ -2568,7 +2568,7 @@ int USMTimeTable::add_entry(const OctetStr& engine_id,
     if (entries == max_entries)
     {
         /* resize Table */
-        struct Entry_T* tmp = new struct Entry_T[4 * max_entries];
+        auto* tmp = new struct Entry_T[4 * max_entries];
 
         if (!tmp) return SNMPv3_USM_ERROR;
 

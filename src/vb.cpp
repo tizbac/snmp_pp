@@ -208,8 +208,8 @@ int Vb::get_value(unsigned char* ptr, uint32_t& len) const
     if (iv_vb_value && iv_vb_value->valid()
         && (iv_vb_value->get_syntax() == sNMP_SYNTAX_OCTETS))
     {
-        OctetStr* p_os = (OctetStr*)iv_vb_value;
-        len            = p_os->len();
+        auto* p_os = (OctetStr*)iv_vb_value;
+        len        = p_os->len();
         memcpy(ptr, p_os->data(), len);
         ptr[len] = 0;
         return SNMP_CLASS_SUCCESS;
@@ -229,8 +229,8 @@ int Vb::get_value(unsigned char* ptr, uint32_t& len, const uint32_t maxlen,
     if (iv_vb_value && iv_vb_value->valid()
         && (iv_vb_value->get_syntax() == sNMP_SYNTAX_OCTETS) && (maxlen > 0))
     {
-        OctetStr* p_os = (OctetStr*)iv_vb_value;
-        len            = p_os->len();
+        auto* p_os = (OctetStr*)iv_vb_value;
+        len        = p_os->len();
         if (len > maxlen) len = maxlen;
         memcpy(ptr, p_os->data(), len);
         if (add_null_byte)
@@ -270,7 +270,7 @@ int Vb::get_value(char* ptr) const
     if (iv_vb_value && iv_vb_value->valid()
         && (iv_vb_value->get_syntax() == sNMP_SYNTAX_OCTETS))
     {
-        OctetStr*      p_os = (OctetStr*)iv_vb_value;
+        auto*          p_os = (OctetStr*)iv_vb_value;
         uint32_t const len  = p_os->len();
         memcpy(ptr, p_os->data(), len);
         ptr[len] = 0;

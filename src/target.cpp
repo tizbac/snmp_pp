@@ -99,7 +99,7 @@ bool SnmpTarget::set_address(const Address& address)
 SnmpTarget* SnmpTarget::clone() const
 {
     GenAddress const addr = my_address;
-    SnmpTarget*      res  = new SnmpTarget;
+    auto*            res  = new SnmpTarget;
     res->set_timeout(timeout);
     res->set_retry(retries);
     res->set_address(addr);

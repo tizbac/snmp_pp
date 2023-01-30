@@ -500,7 +500,7 @@ OctetStr* IpAddress::clone_as_hex() const
 {
     ADDRESS_TRACE;
 
-    OctetStr* hex = new OctetStr();
+    auto* hex = new OctetStr();
     hex->set_len(get_length());
     for (int i = 0; i < get_length(); i++) { (*hex)[i] = address_buffer[i]; }
     return hex;
@@ -794,8 +794,7 @@ int IpAddress::parse_coloned_ipstring(const char* inaddr)
 
     if (have_scope)
     {
-        unsigned int* scope_p =
-            (unsigned int*)(address_buffer + IP6LEN_NO_SCOPE);
+        auto* scope_p   = (unsigned int*)(address_buffer + IP6LEN_NO_SCOPE);
         *scope_p        = htonl(scope);
         have_ipv6_scope = true;
     }
@@ -1223,8 +1222,7 @@ bool IpAddress::set_scope(const unsigned int scope)
 
     if (!valid_flag || (ip_version != version_ipv6)) return false;
 
-    unsigned int* scope_ptr =
-        (unsigned int*)(address_buffer + IP6LEN_NO_SCOPE);
+    auto* scope_ptr = (unsigned int*)(address_buffer + IP6LEN_NO_SCOPE);
 
     *scope_ptr              = htonl(scope);
     addr_changed            = true;

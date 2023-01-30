@@ -141,7 +141,7 @@ public:
         while (current->next) current = current->next;
         if ((count > 0) && ((count % MAXT) == 0))
         {
-            cBlock* add = new cBlock(current, 0);
+            auto* add = new cBlock(current, 0);
             if (!add) return *this;
             current->next = add;
             add->item[0]  = (T*)(i.clone());

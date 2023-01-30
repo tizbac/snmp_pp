@@ -816,7 +816,7 @@ bool OctetStr::set_len(const uint32_t new_len)
         return true;
     }
 
-    unsigned char* tmp = new unsigned char[new_len]; // get mem needed
+    auto* tmp = new unsigned char[new_len]; // get mem needed
     if (!tmp) return false;
 
     if (smival.value.string.ptr)

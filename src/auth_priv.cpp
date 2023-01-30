@@ -305,7 +305,7 @@ int des3_extend_short_key(const unsigned char* /* password */,
     if (max_key_len < min_key_len) return SNMPv3_USM_ERROR;
 
     unsigned int const p2k_output_len = *key_len;
-    unsigned char*     p2k_buf        = new unsigned char[p2k_output_len];
+    auto*              p2k_buf        = new unsigned char[p2k_output_len];
     int                res            = 0;
 
     if (!p2k_buf) return SNMPv3_USM_ERROR;
@@ -388,7 +388,7 @@ AuthPriv::AuthPriv(int& construct_state)
     }
 
     /* Initialize salt. srand() has been already done in Snmp::init() */
-    unsigned int* rnd = (unsigned int*)(void*)&salt;
+    auto* rnd = (unsigned int*)(void*)&salt;
     for (size_t i = 0; i < sizeof(salt); i += sizeof(unsigned int), rnd++)
     {
         *rnd = rand() << 1;
@@ -476,7 +476,7 @@ int AuthPriv::add_auth(Auth* new_auth)
 
     if (id >= auth_size)
     {
-        AuthPtr* new_array = new AuthPtr[id + 5];
+        auto* new_array = new AuthPtr[id + 5];
         if (!new_array)
         {
             LOG_BEGIN(loggerModuleName, ERROR_LOG | 1);
@@ -550,7 +550,7 @@ int AuthPriv::add_priv(Priv* new_priv)
 
     if (id >= priv_size)
     {
-        PrivPtr* new_array = new PrivPtr[id + 5];
+        auto* new_array = new PrivPtr[id + 5];
         if (!new_array)
         {
             LOG_BEGIN(loggerModuleName, ERROR_LOG | 1);
@@ -1537,9 +1537,9 @@ int PrivAES::encrypt(const unsigned char* key, const unsigned int key_len,
     *privacy_params_len = 8;
 
     /* Set IV as engine_boots + engine_time + salt */
-    unsigned int* tmpi = (unsigned int*)initVect;
-    *tmpi++            = htonl(engine_boots);
-    *tmpi++            = htonl(engine_time);
+    auto* tmpi = (unsigned int*)initVect;
+    *tmpi++    = htonl(engine_boots);
+    *tmpi++    = htonl(engine_time);
     if (need_byteswap)
     {
         *tmpi++ = htonl(my_salt & 0xFFFFFFFF);
@@ -1735,8 +1735,8 @@ int PrivAES::extend_short_key(const unsigned char* password,
     (void)engine_id_len;
     if (max_key_len < (unsigned)key_bytes) return SNMPv3_USM_ERROR;
 
-    int            res      = 0;
-    unsigned char* hash_buf = new unsigned char[auth->get_hash_len()];
+    int   res      = 0;
+    auto* hash_buf = new unsigned char[auth->get_hash_len()];
 
     if (!hash_buf)
     {

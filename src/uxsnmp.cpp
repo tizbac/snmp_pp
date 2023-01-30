@@ -235,7 +235,7 @@ void deleteV3Callback(struct Snmp::V3CallBackData*& cbData)
 void v3CallBack(
     int reason, Snmp* snmp, Pdu& pdu, SnmpTarget& target, void* v3cd)
 {
-    struct Snmp::V3CallBackData* cbData = (struct Snmp::V3CallBackData*)v3cd;
+    auto* cbData = (struct Snmp::V3CallBackData*)v3cd;
 
     Vb tmpvb;
     pdu.get_vb(tmpvb, 0);

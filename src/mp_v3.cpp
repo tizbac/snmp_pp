@@ -1446,8 +1446,8 @@ int v3MP::snmp_build(struct snmp_pdu* pdu, unsigned char* packet,
     scopedPDULength = SAFE_INT_CAST(scopedPDUPtr - scopedPDU.get_ptr());
 
     // build msgGlobalData
-    unsigned char* globalDataPtr = (unsigned char*)&globalData;
-    unsigned char  msgFlags      = 0;
+    auto*         globalDataPtr = (unsigned char*)&globalData;
+    unsigned char msgFlags      = 0;
     switch (securityLevel)
     {
     case SNMP_SECURITY_LEVEL_NOAUTH_NOPRIV: {

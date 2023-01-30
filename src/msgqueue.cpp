@@ -313,8 +313,8 @@ CSNMPMessage* CSNMPMessageQueue::AddEntry(uint32_t id, Snmp* snmp,
         LOG_END;
     }
 
-    CSNMPMessage* newMsg = new CSNMPMessage(id, snmp, socket, target, pdu,
-        rawPdu, rawPduLen, address, callBack, callData);
+    auto* newMsg = new CSNMPMessage(id, snmp, socket, target, pdu, rawPdu,
+        rawPduLen, address, callBack, callData);
 
     lock(); // FIXME: not exception save! CK
             /*---------------------------------------------------------*/

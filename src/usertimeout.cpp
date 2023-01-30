@@ -137,7 +137,7 @@ UtId CUTEventQueue::AddEntry(
     const msec& timeout, const ut_callback callBack, const void* callData)
 {
     UtId const uniqueId = MakeId(); // use a unique ID
-    CUTEvent*  newEvent = new CUTEvent(uniqueId, timeout, callBack, callData);
+    auto*      newEvent = new CUTEvent(uniqueId, timeout, callBack, callData);
 
     /*---------------------------------------------------------*/
     /* Insert entry at head of list, done automagically by the */

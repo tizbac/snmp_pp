@@ -1839,7 +1839,7 @@ unsigned char* asn1_build_header_data(unsigned char* outBuf, int* maxLength,
 
 {
     unsigned char  buf[MAXLENGTH_GLOBALDATA];
-    unsigned char* bufPtr      = (unsigned char*)&buf;
+    auto*          bufPtr      = (unsigned char*)&buf;
     unsigned char* outBufPtr   = outBuf;
     int            length      = *maxLength;
     int            totalLength = 0;
