@@ -134,7 +134,7 @@ void debugprintf(int db_level, const char* format, ...)
 
 #else
 #    if (defined(__STRICT_ANSI__) || !defined(__GNUC__)) && !defined(_MSC_VER)
-void debugprintf(int, const char*, ...) { }
+void debugprintf(int /*unused*/, const char* /*unused*/, ...) { }
 #    endif
 
 #endif
@@ -143,9 +143,9 @@ void debugprintf(int, const char*, ...) { }
 
 unsigned char* v3strcpy(const unsigned char* src, const int srclen)
 {
-    if (!src) return NULL;
+    if (!src) return nullptr;
     auto* res = new unsigned char[srclen + 1];
-    if (!res) return NULL;
+    if (!res) return nullptr;
     memcpy(res, src, srclen);
     res[srclen] = '\0';
     return res;

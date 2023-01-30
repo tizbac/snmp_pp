@@ -899,14 +899,14 @@ int v3MP::snmp_parse(Snmp* snmp_session, struct snmp_pdu* pdu,
     Buffer<unsigned char>          scopedPDU(MAX_SNMP_PACKET);
     int                            scopedPDULength          = MAX_SNMP_PACKET;
     long                           maxSizeResponseScopedPDU = 0;
-    struct SecurityStateReference* securityStateReference   = NULL;
+    struct SecurityStateReference* securityStateReference   = nullptr;
     int                            securityParametersPosition = 0;
     int                            rc                         = 0;
     int                            errorCode                  = 0;
 
     // get the type
     inBuf = asn_parse_header(inBuf, &inBufLength, &type);
-    if (inBuf == NULL)
+    if (inBuf == nullptr)
     {
         debugprintf(0, "snmp_parse: bad header");
         return SNMPv3_MP_PARSE_ERROR;
@@ -926,7 +926,7 @@ int v3MP::snmp_parse(Snmp* snmp_session, struct snmp_pdu* pdu,
 
     // get the version
     inBuf = asn_parse_int(inBuf, &inBufLength, &type, &version);
-    if (inBuf == NULL)
+    if (inBuf == nullptr)
     {
         debugprintf(0, "snmp_parse: bad parse of version");
         return SNMPv3_MP_PARSE_ERROR;
@@ -941,7 +941,7 @@ int v3MP::snmp_parse(Snmp* snmp_session, struct snmp_pdu* pdu,
     inBuf = asn1_parse_header_data(inBuf, &inBufLength, &msgID, &msgMaxSize,
         &msgFlags, &msgSecurityModel);
 
-    if (inBuf == NULL)
+    if (inBuf == nullptr)
     {
         debugprintf(0, "snmp_parse: bad parse of msgHeaderData");
         return SNMPv3_MP_PARSE_ERROR;
@@ -961,7 +961,7 @@ int v3MP::snmp_parse(Snmp* snmp_session, struct snmp_pdu* pdu,
     inBuf = asn_parse_string(inBuf, &inBufLength, &type,
         msgSecurityParameters.get_ptr(), &msgSecurityParametersLength);
 
-    if (inBuf == NULL)
+    if (inBuf == nullptr)
     {
         debugprintf(0, "snmp_parse: bad parse of msgSecurityParameters");
         return SNMPv3_MP_PARSE_ERROR;
@@ -1309,7 +1309,7 @@ bool v3MP::is_v3_msg(unsigned char* buffer, int length)
         LOG("Testing for v3 message: Bad parse of version");
         LOG_END;
 
-        return 0;
+        return false;
     }
 
     return (version == SNMP_VERSION_3);
@@ -1333,7 +1333,7 @@ int v3MP::snmp_build(struct snmp_pdu* pdu, unsigned char* packet,
     long                           bufLength = 0, rc = 0;
     int                            msgID                  = 0;
     int                            cachedErrorCode        = SNMPv3_MP_OK;
-    struct SecurityStateReference* securityStateReference = NULL;
+    struct SecurityStateReference* securityStateReference = nullptr;
     int                            isRequestMessage       = 0;
 
     if ((pdu->command == GET_REQ_MSG) || (pdu->command == GETNEXT_REQ_MSG)

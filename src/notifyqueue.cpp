@@ -320,7 +320,8 @@ CNotifyEvent* CNotifyEventQueue::CNotifyEventQueueElt::TestId(Snmp* snmp)
 
 //----[ CNotifyEventQueue class ]--------------------------------------
 CNotifyEventQueue::CNotifyEventQueue(EventListHolder* holder, Snmp* session)
-    : m_head(NULL, NULL, NULL), m_msgCount(0), m_notify_fd(INVALID_SOCKET),
+    : m_head(nullptr, nullptr, nullptr), m_msgCount(0),
+      m_notify_fd(INVALID_SOCKET),
       m_listen_port(SNMP_PP_DEFAULT_SNMP_TRAP_PORT), my_holder(holder),
       m_snmpSession(session)
 {
@@ -366,7 +367,7 @@ int CNotifyEventQueue::AddEntry(
             (m_notify_addr.get_ip_version() == Address::version_ipv4);
         if (is_v4_address)
         {
-            struct sockaddr_in mgr_addr;
+            struct sockaddr_in mgr_addr { };
 
             // open a socket to be used for the session
             if ((m_notify_fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
@@ -502,7 +503,7 @@ int CNotifyEventQueue::AddEntry(
 #    endif
 
             // set up the manager socket attributes
-            struct sockaddr_in6 mgr_addr;
+            struct sockaddr_in6 mgr_addr { };
             memset(&mgr_addr, 0, sizeof(mgr_addr));
 
             unsigned int scope = 0;
@@ -749,7 +750,7 @@ int CNotifyEventQueue::HandleEvents(const int /*maxfds*/,
     if (m_notify_fd == INVALID_SOCKET) return status;
 
     Pdu pdu;
-    SnmpTarget* target = NULL;
+    SnmpTarget* target = nullptr;
 
     // pull the notifiaction off the socket
     if (FD_ISSET(m_notify_fd, (fd_set*)&readfds))

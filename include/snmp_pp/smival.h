@@ -99,7 +99,7 @@ struct DLLOPT SmiVALUE { /* smiVALUE portion of VarBind */
                               SNMP_SYNTAX_NOSUCHOBJECT
                               SNMP_SYNTAX_NOSUCHINSTANCE
                               SNMP_SYNTAX_ENDOFMIBVIEW */
-    } value;
+    } value {};
 };
 typedef SmiVALUE* SmiLPVALUE;
 //=================================================================

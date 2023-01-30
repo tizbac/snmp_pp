@@ -225,7 +225,7 @@ public:
     bool operator==(const Oid& rhs) const
     {
         // ensure same len, then use nCompare
-        if (len() != rhs.len()) return 0;
+        if (len() != rhs.len()) return false;
         return (nCompare(rhs) == 0);
     }
 
@@ -245,8 +245,8 @@ public:
         int result = 0;
         // call nCompare with the current
         // Oidx, Oidy and len of Oidx
-        if ((result = nCompare(rhs)) < 0) return 1;
-        if (result > 0) return 0;
+        if ((result = nCompare(rhs)) < 0) return true;
+        if (result > 0) return false;
 
         // if here, equivalent substrings, call the shorter one <
         return (len() < rhs.len());

@@ -370,7 +370,8 @@ public:
      * @return
      *    true if logging is needed, false otherwise.
      */
-    virtual bool log_needed(const char* const, unsigned char t) const
+    virtual bool log_needed(
+        const char* const /*unused*/, unsigned char t) const
     {
         return (logfilter[(t / 16) - 1] != 0xFF)
             && ((t & LOG_LEVEL_MASK) <= logfilter[(t / 16) - 1]);
@@ -527,7 +528,7 @@ public:
      *    the existing logger (if there was any) or the new logger pointer.
      * @since 3.5.24
      */
-    static AgentLog* init_ts(AgentLog* logger = NULL);
+    static AgentLog* init_ts(AgentLog* logger = nullptr);
 
     /**
      * Free the logging implementation.

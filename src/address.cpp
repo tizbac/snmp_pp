@@ -621,7 +621,7 @@ int IpAddress::parse_coloned_ipstring(const char* inaddr)
 
     char* in_ptr         = temp;
     char* out_ptr        = (char*)tmp_address_buffer;
-    char* end_first_part = NULL;
+    char* end_first_part = nullptr;
     char  second[39] {};
     int   second_used      = false;
     int   colon_count      = 0;
@@ -824,7 +824,8 @@ bool IpAddress::parse_address(const char* inaddr)
         return true; // since this is a valid ipv6 string don't do any DNS
 
 #ifdef HAVE_GETADDRINFO
-    struct addrinfo hints, *res = nullptr;
+    struct addrinfo hints {
+    }, *res = nullptr;
     // XXX ensure that MAX_FRIENDLY_NAME keeps greater than INET6_ADDRSTRLEN
     char ds[MAX_FRIENDLY_NAME];
 
@@ -1041,9 +1042,10 @@ int IpAddress::addr_to_friendly()
     if (!valid_flag) return -1;
 
 #ifdef HAVE_GETADDRINFO
-    struct addrinfo hints, *res = nullptr;
-    int             error = 0;
-    char            ds[MAX_FRIENDLY_NAME];
+    struct addrinfo hints {
+    }, *res = nullptr;
+    int  error = 0;
+    char ds[MAX_FRIENDLY_NAME];
 
     strlcpy(ds, this->IpAddress::get_printable(), sizeof(ds));
     memset(&hints, 0, sizeof(hints));
@@ -1723,7 +1725,7 @@ bool UdpAddress::parse_address(const char* inaddr)
         buffer[0]       = ' ';
     }
 
-    bool     result = 0;
+    bool     result = false;
     uint16_t port   = 0;
 
     if (found)

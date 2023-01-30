@@ -458,9 +458,9 @@ public:
 
     //-----[ protected members ]
 protected:
-    Oid         iv_vb_oid;        // a vb is made up of a oid
-    SnmpSyntax* iv_vb_value;      // and a value...
-    SmiUINT32   exception_status; // are there any vb exceptions??
+    Oid         iv_vb_oid;           // a vb is made up of a oid
+    SnmpSyntax* iv_vb_value;         // and a value...
+    SmiUINT32   exception_status {}; // are there any vb exceptions??
 
     /**
      * Free the value portion.

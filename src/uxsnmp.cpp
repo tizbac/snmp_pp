@@ -338,7 +338,7 @@ long Snmp::MyMakeReqId()
             current_rid = rid = PDU_MIN_RID;
             // let other tasks proceed
             eventListHolder->snmpEventList()->unlock();
-            struct timeval tv;
+            struct timeval tv { };
             tv.tv_sec  = 0;
             tv.tv_usec = 100;
             select(0, nullptr, nullptr, nullptr, &tv);
@@ -369,7 +369,7 @@ DLLOPT int send_snmp_request(SnmpSocket sock, unsigned char* send_buf,
     if (((UdpAddress&)address).get_ip_version() == Address::version_ipv4)
     {
         // prepare the destination address
-        struct sockaddr_in agent_addr; // send socket struct
+        struct sockaddr_in agent_addr { }; // send socket struct
         memset(&agent_addr, 0, sizeof(agent_addr));
         agent_addr.sin_family      = AF_INET;
         agent_addr.sin_addr.s_addr = inet_addr(
@@ -383,7 +383,7 @@ DLLOPT int send_snmp_request(SnmpSocket sock, unsigned char* send_buf,
     else
     {
 #ifdef SNMP_PP_IPv6
-        struct sockaddr_in6 agent_addr;
+        struct sockaddr_in6 agent_addr { };
         memset(&agent_addr, 0, sizeof(agent_addr));
         unsigned int scope = 0;
 
@@ -730,7 +730,7 @@ Snmp::Snmp(int& status, const unsigned short port, const bool bind_ipv6)
     {
         listen_address = "::";
 
-        addresses[0] = NULL;
+        addresses[0] = nullptr;
         addresses[1] = &listen_address;
 
         init(status, addresses, 0, port);
@@ -740,7 +740,7 @@ Snmp::Snmp(int& status, const unsigned short port, const bool bind_ipv6)
         listen_address = "0.0.0.0";
 
         addresses[0] = &listen_address;
-        addresses[1] = NULL;
+        addresses[1] = nullptr;
 
         init(status, addresses, port, 0);
     }
@@ -760,12 +760,12 @@ Snmp::Snmp(int& status, const UdpAddress& addr)
     if (listen_address.get_ip_version() == Address::version_ipv4)
     {
         addresses[0] = &listen_address;
-        addresses[1] = NULL;
+        addresses[1] = nullptr;
         init(status, addresses, addr.get_port(), 0);
     }
     else
     {
-        addresses[0] = NULL;
+        addresses[0] = nullptr;
         addresses[1] = &listen_address;
         init(status, addresses, 0, addr.get_port());
     }
@@ -864,7 +864,7 @@ void Snmp::init(int& status, IpAddress* addresses[2],
             // set up the manager socket attributes
             uint32_t const inaddr = inet_addr(
                 addresses[0]->get_printable()); // TODO: Use inet_pton()! CK
-            struct sockaddr_in mgr_addr;
+            struct sockaddr_in mgr_addr { };
             memset(&mgr_addr, 0, sizeof(mgr_addr));
             mgr_addr.sin_family      = AF_INET;
             mgr_addr.sin_addr.s_addr = inaddr;
@@ -960,7 +960,7 @@ void Snmp::init(int& status, IpAddress* addresses[2],
             setCloseOnExecFlag(iv_snmp_session_ipv6);
 
             // set up the manager socket attributes
-            struct sockaddr_in6 mgr_addr;
+            struct sockaddr_in6 mgr_addr { };
             memset(&mgr_addr, 0, sizeof(mgr_addr));
             unsigned int scope = 0;
 
@@ -1147,7 +1147,7 @@ int Snmp::error_code(const Oid& v3Oid)
 int Snmp::get(Pdu& pdu, SnmpTarget& target)
 {
     pdu.set_type(sNMP_PDU_GET);
-    return snmp_engine(pdu, 0, 0, target, NULL, nullptr);
+    return snmp_engine(pdu, 0, 0, target, nullptr, nullptr);
 }
 
 //------------------------[ get async ]----------------------------------
@@ -1162,7 +1162,7 @@ int Snmp::get(Pdu& pdu, SnmpTarget& target, const snmp_callback callback,
 int Snmp::get_next(Pdu& pdu, SnmpTarget& target)
 {
     pdu.set_type(sNMP_PDU_GETNEXT);
-    return snmp_engine(pdu, 0, 0, target, NULL, nullptr);
+    return snmp_engine(pdu, 0, 0, target, nullptr, nullptr);
 }
 
 //------------------------[ get next async ]-----------------------------
@@ -1177,7 +1177,7 @@ int Snmp::get_next(Pdu& pdu, SnmpTarget& target, const snmp_callback callback,
 int Snmp::set(Pdu& pdu, SnmpTarget& target)
 {
     pdu.set_type(sNMP_PDU_SET);
-    return snmp_engine(pdu, 0, 0, target, NULL, nullptr);
+    return snmp_engine(pdu, 0, 0, target, nullptr, nullptr);
 }
 
 //------------------------[ set async ]----------------------------------
@@ -1195,7 +1195,7 @@ int Snmp::get_bulk(Pdu& pdu,           // pdu to use
     const int           max_reps)                // maximum number of repetitions
 {
     pdu.set_type(sNMP_PDU_GETBULK);
-    return snmp_engine(pdu, non_repeaters, max_reps, target, NULL, nullptr);
+    return snmp_engine(pdu, non_repeaters, max_reps, target, nullptr, nullptr);
 }
 
 //-----------------------[ get bulk async ]------------------------------
@@ -1217,7 +1217,7 @@ int Snmp::response(Pdu& pdu,    // pdu to use
     const SnmpSocket    fd)
 {
     pdu.set_type(sNMP_PDU_RESPONSE);
-    return snmp_engine(pdu, 0, 0, target, NULL, nullptr, fd);
+    return snmp_engine(pdu, 0, 0, target, nullptr, nullptr, fd);
 }
 
 int Snmp::send_raw_data(unsigned char* send_buf, size_t send_len,
@@ -1263,7 +1263,7 @@ int Snmp::report(Pdu& pdu, // pdu to send
     SnmpTarget&       target)    // destination target
 {
     pdu.set_type(sNMP_PDU_REPORT);
-    return snmp_engine(pdu, 0, 0, target, NULL, nullptr);
+    return snmp_engine(pdu, 0, 0, target, nullptr, nullptr);
 }
 
 //----------------------[ blocking inform, V2 only]------------------------
@@ -1281,7 +1281,7 @@ int Snmp::inform(Pdu& pdu, // pdu to send
 
     pdu.set_type(sNMP_PDU_INFORM);
     check_notify_timestamp(pdu);
-    return snmp_engine(pdu, 0, 0, target, NULL, nullptr);
+    return snmp_engine(pdu, 0, 0, target, nullptr, nullptr);
 }
 
 //----------------------[ asynch inform, V2 only]------------------------
@@ -1331,8 +1331,8 @@ int Snmp::trap(Pdu&   pdu,    // pdu to send
         return SNMP_CLASS_INVALID_TARGET;
     }
 
-    CTarget* ctarget = NULL;
-    UTarget* utarget = NULL;
+    CTarget* ctarget = nullptr;
+    UTarget* utarget = nullptr;
     OctetStr security_name;
     int      security_model = 0;
 
@@ -1683,8 +1683,8 @@ int Snmp::snmp_engine(Pdu& pdu,      // pdu to use
         OctetStr       community_string;
         OctetStr       security_name;
         int            security_model = 0;
-        const CTarget* ctarget        = NULL;
-        const UTarget* utarget        = NULL;
+        const CTarget* ctarget        = nullptr;
+        const UTarget* utarget        = nullptr;
 
         switch (target.get_type())
         {
@@ -2130,7 +2130,7 @@ int Snmp::engine_id_discovery(
     // now wait for the responses
     int            nfound = 0;
     msec           end_time;
-    struct timeval fd_timeout;
+    struct timeval fd_timeout { };
 
     end_time += timeout_sec * 1000;
 
@@ -2152,7 +2152,8 @@ int Snmp::engine_id_discovery(
         FD_ZERO(&readfds);
         FD_SET(sock, &readfds);
 
-        nfound = select((int)(sock + 1), &readfds, NULL, NULL, &fd_timeout);
+        nfound =
+            select((int)(sock + 1), &readfds, nullptr, nullptr, &fd_timeout);
         if ((nfound > 0) && (FD_ISSET(sock, &readfds)))
             something_to_receive = true;
 #    endif
@@ -2280,7 +2281,7 @@ int Snmp::broadcast_discovery(UdpAddressCollection& addresses,
     // now wait for the responses
     int            nfound = 0;
     msec           end_time;
-    struct timeval fd_timeout;
+    struct timeval fd_timeout { };
 
     end_time += timeout_sec * 1000;
 
@@ -2302,7 +2303,8 @@ int Snmp::broadcast_discovery(UdpAddressCollection& addresses,
         FD_ZERO(&readfds);
         FD_SET(sock, &readfds);
 
-        nfound = select((int)(sock + 1), &readfds, NULL, NULL, &fd_timeout);
+        nfound =
+            select((int)(sock + 1), &readfds, nullptr, nullptr, &fd_timeout);
         if ((nfound > 0) && (FD_ISSET(sock, &readfds)))
             something_to_receive = true;
 #endif
@@ -2371,7 +2373,7 @@ bool Snmp::start_poll_thread(const int timeout)
     }
 #    else
     int const rc =
-        pthread_create(&m_hThread, NULL, Snmp::process_thread, (void*)this);
+        pthread_create(&m_hThread, nullptr, Snmp::process_thread, (void*)this);
     if (rc)
     {
         // Could not create thread.
@@ -2407,7 +2409,7 @@ void Snmp::stop_poll_thread()
 #    elif defined(CPU) && CPU == PPC603
     while (taskIdVerify(m_hThread) == OK) taskDelay(10);
 #    else
-    pthread_join(m_hThread, NULL);
+    pthread_join(m_hThread, nullptr);
 #    endif
 #endif
 }
@@ -2437,7 +2439,8 @@ void* Snmp::process_thread(void* arg)
 #        endif
 #    endif
 #endif
-    return nullptr;
+
+    return 0; // NOLINT
 }
 
 #ifdef SNMP_PP_NAMESPACE

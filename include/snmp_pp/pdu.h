@@ -534,27 +534,27 @@ protected:
      */
     bool extend_vbs();
 
-    Vb**           vbs;          // pointer to array of Vbs
-    int            vbs_size;     // Size of array
-    int            vb_count;     // count of Vbs
-    int            error_status; // SMI error status
-    int            error_index;  // SMI error index
-    bool           validity;     // valid boolean
-    uint32_t       request_id;   // SMI request id
-    unsigned short pdu_type;     // derived at run time based on request type
+    Vb**           vbs;             // pointer to array of Vbs
+    int            vbs_size;        // Size of array
+    int            vb_count;        // count of Vbs
+    int            error_status {}; // SMI error status
+    int            error_index {};  // SMI error index
+    bool           validity {};     // valid boolean
+    uint32_t       request_id {};   // SMI request id
+    unsigned short pdu_type {}; // derived at run time based on request type
     // for notify Pdu objects only
     // traps & notifies
     TimeTicks  notify_timestamp; // a timestamp associated with an infor
     Oid        notify_id;        // an id
     Oid        notify_enterprise;
     GenAddress v1_trap_address; // address object
-    bool       v1_trap_address_set;
+    bool       v1_trap_address_set {};
 #ifdef _SNMPv3
     // specific Objects for SNMPv3
-    int security_level; // the securityLevel with which this Pdu
-                        // should be sent or was received
-    uint32_t message_id;
-    uint32_t maxsize_scopedpdu;
+    int security_level {}; // the securityLevel with which this Pdu
+                           // should be sent or was received
+    uint32_t message_id {};
+    uint32_t maxsize_scopedpdu {};
     OctetStr context_name;
     OctetStr context_engine_id;
 #endif // _SNMPv3

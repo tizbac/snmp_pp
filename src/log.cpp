@@ -95,7 +95,7 @@ static void initLogProfiles()
  * Initialize a log entry, showing timestamp, class, and level.
  *
  */
-void LogEntry::init(void)
+void LogEntry::init()
 {
     add_timestamp();
     add_string(": ");
@@ -214,10 +214,7 @@ bool LogEntry::add_integer(long l)
 /**
  * Add the current time to the log entry.
  */
-bool LogEntry::add_timestamp(void)
-{
-    return add_string(DefaultLog::log()->now());
-}
+bool LogEntry::add_timestamp() { return add_string(DefaultLog::log()->now()); }
 
 /*------------------------- class LogEntryImpl ------------------------*/
 
@@ -300,7 +297,7 @@ unsigned char AgentLog::get_filter(int logclass) const
 
 const char* AgentLog::now(char* buf)
 {
-    if (buf == NULL) buf = static_buf;
+    if (buf == nullptr) buf = static_buf;
 
     time_t t = 0;
     time(&t);
@@ -360,7 +357,7 @@ void AgentLogImpl::set_dest(const char* fname)
     else
     {
         logfile = fopen(fname, "a");
-        if (logfile == NULL)
+        if (logfile == nullptr)
             logfile = stdout;
         else
             close_needed = true;

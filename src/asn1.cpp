@@ -91,23 +91,23 @@ unsigned char* asn_parse_int(
     if ((*type != 0x02) && (*type != 0x43) && (*type != 0x41))
     {
         ASNERROR("Wrong Type. Not an integer");
-        return NULL;
+        return nullptr;
     }
     bufp = asn_parse_length(bufp, &asn_length);
-    if (bufp == NULL)
+    if (bufp == nullptr)
     {
         ASNERROR("bad length");
-        return NULL;
+        return nullptr;
     }
     if ((asn_length + (bufp - data)) > (uint32_t)(*datalength))
     {
         ASNERROR("overflow of message (int)");
-        return NULL;
+        return nullptr;
     }
     if (asn_length > sizeof(*intp))
     {
         ASNERROR("I don't support such large integers");
-        return NULL;
+        return nullptr;
     }
     *datalength -= (int)asn_length + SAFE_INT_CAST(bufp - data);
     if (*bufp & 0x80) value = -1; /* integer is negative */
@@ -148,29 +148,29 @@ unsigned char* asn_parse_unsigned_int(
         && (*type != 0x42) && (*type != 0x47))
     {
         ASNERROR("Wrong Type. Not an unsigned integer");
-        return NULL;
+        return nullptr;
     }
 
     // pick up the len
     bufp = asn_parse_length(bufp, &asn_length);
-    if (bufp == NULL)
+    if (bufp == nullptr)
     {
         ASNERROR("bad length");
-        return NULL;
+        return nullptr;
     }
 
     // check the len for message overflow
     if ((asn_length + (bufp - data)) > (uint32_t)(*datalength))
     {
         ASNERROR("overflow of message (uint)");
-        return NULL;
+        return nullptr;
     }
 
     // check for legal uint size
     if ((asn_length > 5) || ((asn_length > 4) && (*bufp != 0x00)))
     {
         ASNERROR("I don't support such large integers");
-        return NULL;
+        return nullptr;
     }
 
     // check for leading  0 octet
@@ -226,8 +226,8 @@ unsigned char* asn_build_int(unsigned char* data, int* datalength,
         integer <<= 8;
     }
     data = asn_build_header(data, datalength, type, intsize);
-    if (data == NULL) return NULL;
-    if (*datalength < intsize) return NULL;
+    if (data == nullptr) return nullptr;
+    if (*datalength < intsize) return nullptr;
     *datalength -= intsize;
     mask = 0xFFul << (8 * (sizeof(int32_t) - 1));
     /* mask is 0xFF000000 on a big-endian machine */
@@ -280,8 +280,8 @@ unsigned char* asn_build_unsigned_int(unsigned char* data, // modified data
 
     // build up the header
     data = asn_build_header(data, datalength, type, u_integer_len);
-    if (data == NULL) return NULL;
-    if (*datalength < u_integer_len) return NULL;
+    if (data == nullptr) return nullptr;
+    if (*datalength < u_integer_len) return nullptr;
 
     // special case, add a null byte for len of 5
     if (u_integer_len == 5)
@@ -330,20 +330,20 @@ unsigned char* asn_parse_string(unsigned char* data, int* datalength,
         && (*type != 0x44) && (*type != 0x45))
     {
         ASNERROR("asn parse string: Wrong Type. Not a string");
-        return NULL;
+        return nullptr;
     }
     bufp = asn_parse_length(bufp, &asn_length);
-    if (bufp == NULL) return NULL;
+    if (bufp == nullptr) return nullptr;
     if ((asn_length + (bufp - data)) > (uint32_t)(*datalength))
     {
         ASNERROR("asn parse string: overflow of message");
-        return NULL;
+        return nullptr;
     }
     if ((int)asn_length > *strlength)
     {
         ASNERROR("asn parse string: String to parse is longer than buffer, "
                  "aborting parsing.");
-        return NULL;
+        return nullptr;
     }
 
     memcpy(str, bufp, asn_length);
@@ -372,8 +372,8 @@ unsigned char* asn_build_string(unsigned char* data, int* datalength,
      * This code will never send a compound string.
      */
     data = asn_build_header(data, datalength, type, strlength);
-    if (data == NULL) return NULL;
-    if (*datalength < strlength) return NULL;
+    if (data == nullptr) return nullptr;
+    if (*datalength < strlength) return nullptr;
 
     memcpy(data, string, strlength);
     *datalength -= strlength;
@@ -399,16 +399,16 @@ unsigned char* asn_parse_header(
     if (IS_EXTENSION_ID(*bufp))
     {
         ASNERROR("can't process ID >= 30");
-        return NULL;
+        return nullptr;
     }
     *type = *bufp;
     bufp  = asn_parse_length(bufp + 1, &asn_length);
-    if (bufp == NULL) return NULL;
+    if (bufp == nullptr) return nullptr;
     int const header_len = SAFE_INT_CAST(bufp - data);
     if ((uint32_t)(header_len + asn_length) > (uint32_t)*datalength)
     {
         ASNERROR("asn length too long");
-        return NULL;
+        return nullptr;
     }
     *datalength = (int)asn_length;
     return bufp;
@@ -430,7 +430,7 @@ unsigned char* asn_parse_header(
 unsigned char* asn_build_header(
     unsigned char* data, int* datalength, unsigned char type, int length)
 {
-    if (*datalength < 1) return NULL;
+    if (*datalength < 1) return nullptr;
     *data++ = type;
     (*datalength)--;
     return asn_build_length(data, datalength, length);
@@ -451,18 +451,18 @@ unsigned char* asn_build_sequence(
     if (*datalength < 2) /* need at least two octets for a sequence */
     {
         ASNERROR("build_sequence");
-        return NULL;
+        return nullptr;
     }
     *data++ = type;
     (*datalength)--;
 
     unsigned char* data_with_length =
         asn_build_length(data, datalength, length);
-    if (data_with_length == NULL)
+    if (data_with_length == nullptr)
     {
         (*datalength)++; /* correct datalength to emulate old behavior of
                             build_sequence */
-        return NULL;
+        return nullptr;
     }
 
     return data_with_length;
@@ -486,12 +486,12 @@ unsigned char* asn_parse_length(unsigned char* data, uint32_t* length)
         if (lengthbyte == 0)
         {
             ASNERROR("We don't support indefinite lengths");
-            return NULL;
+            return nullptr;
         }
         if (lengthbyte > sizeof(int))
         {
             ASNERROR("we can't support data lengths that long");
-            return NULL;
+            return nullptr;
         }
         for (int i = 0; i < lengthbyte; i++)
         {
@@ -501,7 +501,7 @@ unsigned char* asn_parse_length(unsigned char* data, uint32_t* length)
         if (*length > 0x80000000ul)
         {
             ASNERROR("SNMP does not support data lengths > 2^31");
-            return NULL;
+            return nullptr;
         }
         return data + lengthbyte + 1;
     }
@@ -523,7 +523,7 @@ unsigned char* asn_build_length(
         if (*datalength < 1)
         {
             ASNERROR("build_length");
-            return NULL;
+            return nullptr;
         }
         *data++ = (unsigned char)length;
     }
@@ -532,7 +532,7 @@ unsigned char* asn_build_length(
         if (*datalength < 2)
         {
             ASNERROR("build_length");
-            return NULL;
+            return nullptr;
         }
         *data++ = (unsigned char)(0x01 | ASN_LONG_LEN);
         *data++ = (unsigned char)length;
@@ -542,7 +542,7 @@ unsigned char* asn_build_length(
         if (*datalength < 3)
         {
             ASNERROR("build_length");
-            return NULL;
+            return nullptr;
         }
         *data++ = (unsigned char)(0x02 | ASN_LONG_LEN);
         *data++ = (unsigned char)((length >> 8) & 0xFF);
@@ -553,7 +553,7 @@ unsigned char* asn_build_length(
         if (*datalength < 4)
         {
             ASNERROR("build_length");
-            return NULL;
+            return nullptr;
         }
         *data++ = (unsigned char)(0x03 | ASN_LONG_LEN);
         *data++ = (unsigned char)((length >> 16) & 0xFF);
@@ -565,7 +565,7 @@ unsigned char* asn_build_length(
         if (*datalength < 5)
         {
             ASNERROR("build_length");
-            return NULL;
+            return nullptr;
         }
         *data++ = (unsigned char)(0x04 | ASN_LONG_LEN);
         *data++ = (unsigned char)((length >> 24) & 0xFF);
@@ -608,14 +608,14 @@ unsigned char* asn_parse_objid(unsigned char* data, int* datalength,
     if (*type != 0x06)
     {
         ASNERROR("Wrong Type. Not an oid");
-        return NULL;
+        return nullptr;
     }
     bufp = asn_parse_length(bufp, &asn_length);
-    if (bufp == NULL) return NULL;
+    if (bufp == nullptr) return nullptr;
     if ((asn_length + (bufp - data)) > (uint32_t)(*datalength))
     {
         ASNERROR("overflow of message (objid)");
-        return NULL;
+        return nullptr;
     }
     *datalength -= (int)asn_length + SAFE_INT_CAST(bufp - data);
 
@@ -636,7 +636,7 @@ unsigned char* asn_parse_objid(unsigned char* data, int* datalength,
         if (subidentifier > (uint32_t)MAX_SUBID)
         {
             ASNERROR("subidentifier too long");
-            return NULL;
+            return nullptr;
         }
         *oidp++ = (oid_t)subidentifier;
     }
@@ -718,8 +718,8 @@ unsigned char* asn_build_objid(unsigned char* data, int* datalength,
     while (objidlength-- > 0) { asn_build_subid(*op++, bp); }
     asnlength = SAFE_INT_CAST(bp - buf);
     data      = asn_build_header(data, datalength, type, asnlength);
-    if (data == NULL) return NULL;
-    if (*datalength < asnlength) return NULL;
+    if (data == nullptr) return nullptr;
+    if (*datalength < asnlength) return nullptr;
 
     memcpy((char*)data, (char*)buf, asnlength);
     *datalength -= asnlength;
@@ -791,14 +791,14 @@ unsigned char* asn_parse_null(
     if (*type != 0x05)
     {
         ASNERROR("Wrong Type. Not a null");
-        return NULL;
+        return nullptr;
     }
     bufp = asn_parse_length(bufp, &asn_length);
-    if (bufp == NULL) return NULL;
+    if (bufp == nullptr) return nullptr;
     if (asn_length != 0)
     {
         ASNERROR("Malformed NULL");
-        return NULL;
+        return nullptr;
     }
     *datalength -= SAFE_INT_CAST(bufp - data);
     return bufp + asn_length;
@@ -848,29 +848,29 @@ unsigned char* asn_parse_bitstring(unsigned char* data, int* datalength,
     if (*type != 0x03)
     {
         ASNERROR("Wrong Type. Not a bitstring");
-        return NULL;
+        return nullptr;
     }
     bufp = asn_parse_length(bufp, &asn_length);
-    if (bufp == NULL) return NULL;
+    if (bufp == nullptr) return nullptr;
     if ((asn_length + (bufp - data)) > (uint32_t)(*datalength))
     {
         ASNERROR("overflow of message (bitstring)");
-        return NULL;
+        return nullptr;
     }
     if ((int)asn_length > *strlength)
     {
         ASNERROR("I don't support such long bitstrings");
-        return NULL;
+        return nullptr;
     }
     if (asn_length < 1)
     {
         ASNERROR("Invalid bitstring");
-        return NULL;
+        return nullptr;
     }
     if (*bufp > 7)
     {
         ASNERROR("Invalid bitstring");
-        return NULL;
+        return nullptr;
     }
 
     memcpy((char*)string, (char*)bufp, (int)asn_length);
@@ -899,11 +899,11 @@ unsigned char* asn_build_bitstring(unsigned char* data, int* datalength,
     if (strlength < 1 || *string > 7)
     {
         ASNERROR("Building invalid bitstring");
-        return NULL;
+        return nullptr;
     }
     data = asn_build_header(data, datalength, type, strlength);
-    if (data == NULL) return NULL;
-    if (*datalength < strlength) return NULL;
+    if (data == nullptr) return nullptr;
+    if (*datalength < strlength) return nullptr;
 
     memcpy((char*)data, (char*)string, strlength);
     *datalength -= strlength;
@@ -935,23 +935,23 @@ unsigned char* asn_parse_unsigned_int64(unsigned char* data, int* datalength,
     if ((*type != 0x02) && (*type != 0x46))
     {
         ASNERROR("Wrong Type. Not an integer 64");
-        return NULL;
+        return nullptr;
     }
     bufp = asn_parse_length(bufp, &asn_length);
-    if (bufp == NULL)
+    if (bufp == nullptr)
     {
         ASNERROR("bad length");
-        return NULL;
+        return nullptr;
     }
     if ((asn_length + (bufp - data)) > (uint32_t)(*datalength))
     {
         ASNERROR("overflow of message (uint64)");
-        return NULL;
+        return nullptr;
     }
     if (((int)asn_length > 9) || (((int)asn_length == 9) && *bufp != 0x00))
     {
         ASNERROR("I don't support such large integers");
-        return NULL;
+        return nullptr;
     }
     *datalength -= (int)asn_length + SAFE_INT_CAST(bufp - data);
     if (*bufp & 0x80)
@@ -1015,8 +1015,8 @@ unsigned char* asn_build_unsigned_int64(unsigned char* data, int* datalength,
         }
     }
     data = asn_build_header(data, datalength, type, intsize);
-    if (data == NULL) return NULL;
-    if (*datalength < intsize) return NULL;
+    if (data == nullptr) return nullptr;
+    if (*datalength < intsize) return nullptr;
     *datalength -= intsize;
     if (add_null_byte == 1)
     {
@@ -1046,9 +1046,9 @@ struct snmp_pdu* snmp_pdu_create(int command)
 #endif
     pdu->errstat           = 0;
     pdu->errindex          = 0;
-    pdu->enterprise        = NULL;
+    pdu->enterprise        = nullptr;
     pdu->enterprise_length = 0;
-    pdu->variables         = NULL;
+    pdu->variables         = nullptr;
     return pdu;
 }
 
@@ -1064,11 +1064,11 @@ void clear_pdu(struct snmp_pdu* pdu, bool clear_all)
         vp                        = vp->next_variable; // go to the next one
         free((char*)ovp);                              // free up vb itself
     }
-    pdu->variables = NULL;
+    pdu->variables = nullptr;
 
     // if enterprise free it up
     if (pdu->enterprise) free((char*)pdu->enterprise);
-    pdu->enterprise = NULL;
+    pdu->enterprise = nullptr;
 
     if (!clear_all) return;
 
@@ -1101,7 +1101,7 @@ void snmp_add_var(
     struct variable_list* vars = nullptr;
 
     // if we don't have a vb list ,create one
-    if (pdu->variables == NULL)
+    if (pdu->variables == nullptr)
     {
         pdu->variables = vars =
             (struct variable_list*)malloc(sizeof(struct variable_list));
@@ -1122,7 +1122,7 @@ void snmp_add_var(
     }
 
     // add the oid with no data
-    vars->next_variable = NULL;
+    vars->next_variable = nullptr;
 
     // hook in the Oid portion
     vars->name = (oid_t*)malloc(name_length * sizeof(oid_t));
@@ -1140,7 +1140,7 @@ void snmp_add_var(
     case sNMP_SYNTAX_NOSUCHINSTANCE:
     case sNMP_SYNTAX_ENDOFMIBVIEW: {
         vars->type       = (unsigned char)smival->syntax;
-        vars->val.string = NULL;
+        vars->val.string = nullptr;
         vars->val_len    = 0;
     }
     break;
@@ -1218,24 +1218,24 @@ static unsigned char* snmp_auth_build(unsigned char* data, int* length,
     // This assumes that community will not be longer than 0x7f chars.
     data = asn_build_sequence(
         data, length, ASN_SEQ_CON, messagelen + community_len + 5);
-    if (data == NULL)
+    if (data == nullptr)
     {
         ASNERROR("buildheader");
-        return NULL;
+        return nullptr;
     }
     data = asn_build_int(data, length, ASN_UNI_PRIM | ASN_INTEGER, &version);
-    if (data == NULL)
+    if (data == nullptr)
     {
         ASNERROR("buildint");
-        return NULL;
+        return nullptr;
     }
 
     data = asn_build_string(
         data, length, ASN_UNI_PRIM | ASN_OCTET_STR, community, community_len);
-    if (data == NULL)
+    if (data == nullptr)
     {
         ASNERROR("buildstring");
-        return NULL;
+        return nullptr;
     }
 
     return data;
@@ -1253,10 +1253,10 @@ unsigned char* snmp_build_var_op(unsigned char* data, oid_t* var_name,
 
     buffer_pos = asn_build_objid(buffer_pos, &bufferLen,
         ASN_UNI_PRIM | ASN_OBJECT_ID, var_name, *var_name_len);
-    if (buffer_pos == NULL)
+    if (buffer_pos == nullptr)
     {
         ASNERROR("build_var_op: build_objid failed");
-        return NULL;
+        return nullptr;
     }
 
     // based on the type...
@@ -1266,7 +1266,7 @@ unsigned char* snmp_build_var_op(unsigned char* data, oid_t* var_name,
         if (var_val_len != sizeof(SmiINT32))
         {
             ASNERROR("build_var_op: Illegal size of integer");
-            return NULL;
+            return nullptr;
         }
         buffer_pos = asn_build_int(
             buffer_pos, &bufferLen, var_val_type, (SmiINT32*)var_val);
@@ -1279,7 +1279,7 @@ unsigned char* snmp_build_var_op(unsigned char* data, oid_t* var_name,
         if (var_val_len != sizeof(SmiUINT32))
         {
             ASNERROR("build_var_op: Illegal size of unsigned integer");
-            return NULL;
+            return nullptr;
         }
         buffer_pos = asn_build_unsigned_int(
             buffer_pos, &bufferLen, var_val_type, (SmiUINT32*)var_val);
@@ -1289,7 +1289,7 @@ unsigned char* snmp_build_var_op(unsigned char* data, oid_t* var_name,
         if (var_val_len != sizeof(counter64))
         {
             ASNERROR("build_var_op: Illegal size of counter64");
-            return NULL;
+            return nullptr;
         }
         buffer_pos = asn_build_unsigned_int64(
             buffer_pos, &bufferLen, var_val_type, (struct counter64*)var_val);
@@ -1323,22 +1323,22 @@ unsigned char* snmp_build_var_op(unsigned char* data, oid_t* var_name,
         buffer_pos = asn_build_null(buffer_pos, &bufferLen, var_val_type);
         break;
 
-    default: ASNERROR("build_var_op: wrong type"); return NULL;
+    default: ASNERROR("build_var_op: wrong type"); return nullptr;
     }
-    if (buffer_pos == NULL)
+    if (buffer_pos == nullptr)
     {
         ASNERROR("build_var_op: value build failed");
-        return NULL;
+        return nullptr;
     }
 
     valueLen = SAFE_INT_CAST(buffer_pos - buffer.get_ptr());
 
     data = asn_build_sequence(data, listlength, ASN_SEQ_CON, valueLen);
 
-    if (data == NULL || *listlength < valueLen)
+    if (data == nullptr || *listlength < valueLen)
     {
         ASNERROR("build_var_op");
-        data = NULL;
+        data = nullptr;
     }
     else
     {
@@ -1362,7 +1362,7 @@ unsigned char* build_vb(struct snmp_pdu* pdu, unsigned char* buf, int* buf_len)
     {
         cp = snmp_build_var_op(cp, vp->name, &vp->name_length, vp->type,
             vp->val_len, (unsigned char*)vp->val.string, &length);
-        if (cp == NULL) return nullptr;
+        if (cp == nullptr) return nullptr;
     }
     vb_length = SAFE_INT_CAST(cp - tmp_buf.get_ptr());
     *buf_len -= vb_length;
@@ -1370,7 +1370,7 @@ unsigned char* build_vb(struct snmp_pdu* pdu, unsigned char* buf, int* buf_len)
 
     // encode the length of encoded varbinds into buf
     cp = asn_build_header(buf, buf_len, ASN_SEQ_CON, vb_length);
-    if (cp == NULL) return nullptr;
+    if (cp == nullptr) return nullptr;
 
     // copy varbinds from packet behind header in buf
     memcpy(cp, tmp_buf.get_ptr(), vb_length);
@@ -1392,44 +1392,44 @@ unsigned char* build_data_pdu(struct snmp_pdu* pdu, unsigned char* buf,
         // request id
         cp = asn_build_int(
             cp, &length, ASN_UNI_PRIM | ASN_INTEGER, &pdu->reqid);
-        if (cp == NULL) return nullptr;
+        if (cp == nullptr) return nullptr;
 
         // error status
         cp = asn_build_int(
             cp, &length, ASN_UNI_PRIM | ASN_INTEGER, &pdu->errstat);
-        if (cp == NULL) return nullptr;
+        if (cp == nullptr) return nullptr;
 
         // error index
         cp = asn_build_int(
             cp, &length, ASN_UNI_PRIM | ASN_INTEGER, &pdu->errindex);
-        if (cp == NULL) return nullptr;
+        if (cp == nullptr) return nullptr;
     }
     else
     { // this is a trap message
         // enterprise
         cp = asn_build_objid(cp, &length, ASN_UNI_PRIM | ASN_OBJECT_ID,
             (oid_t*)pdu->enterprise, pdu->enterprise_length);
-        if (cp == NULL) return nullptr;
+        if (cp == nullptr) return nullptr;
 
         // agent-addr ; must be IPADDRESS changed by Frank Fock
         cp = asn_build_string(cp, &length, SMI_IPADDRESS,
             (unsigned char*)&pdu->agent_addr.sin_addr.s_addr,
             sizeof(pdu->agent_addr.sin_addr.s_addr));
-        if (cp == NULL) return nullptr;
+        if (cp == nullptr) return nullptr;
 
         SmiINT32 dummy = pdu->trap_type;
         // generic trap
         cp = asn_build_int(cp, &length, ASN_UNI_PRIM | ASN_INTEGER, &dummy);
-        if (cp == NULL) return nullptr;
+        if (cp == nullptr) return nullptr;
 
         dummy = pdu->specific_type;
         // specific trap
         cp = asn_build_int(cp, &length, ASN_UNI_PRIM | ASN_INTEGER, &dummy);
-        if (cp == NULL) return nullptr;
+        if (cp == nullptr) return nullptr;
 
         // timestamp
         cp = asn_build_unsigned_int(cp, &length, SMI_TIMETICKS, &pdu->time);
-        if (cp == NULL) return nullptr;
+        if (cp == nullptr) return nullptr;
     }
 
     if (length < vb_buf_len) return nullptr;
@@ -1441,7 +1441,7 @@ unsigned char* build_data_pdu(struct snmp_pdu* pdu, unsigned char* buf,
     // build header for datapdu into buf
     cp = asn_build_header(
         buf, buf_len, (unsigned char)pdu->command, totallength);
-    if (cp == NULL) return nullptr;
+    if (cp == nullptr) return nullptr;
     if (*buf_len < totallength) return nullptr;
 
     // copy data behind header
@@ -1479,7 +1479,7 @@ int snmp_build(struct snmp_pdu* pdu, unsigned char* packet, int* out_length,
     length = *out_length;
     cp     = snmp_auth_build(
         packet, &length, version, community, community_len, totallength);
-    if (cp == NULL) return -1;
+    if (cp == nullptr) return -1;
     if ((*out_length - (cp - packet)) < totallength) return -1;
 
     // copy data
@@ -1498,32 +1498,32 @@ static unsigned char* snmp_auth_parse(unsigned char* data, int* length,
 
     // get the type
     data = asn_parse_header(data, length, &type);
-    if (data == NULL)
+    if (data == nullptr)
     {
         ASNERROR("bad header");
-        return NULL;
+        return nullptr;
     }
 
     if (type != ASN_SEQ_CON)
     {
         ASNERROR("wrong auth header type");
-        return NULL;
+        return nullptr;
     }
 
     // get the version
     data = asn_parse_int(data, length, &type, version);
-    if (data == NULL)
+    if (data == nullptr)
     {
         ASNERROR("bad parse of version");
-        return NULL;
+        return nullptr;
     }
 
     // get the community name
     data = asn_parse_string(data, length, &type, community, community_len);
-    if (data == NULL)
+    if (data == nullptr)
     {
         ASNERROR("bad parse of community");
-        return NULL;
+        return nullptr;
     }
 
     return (unsigned char*)data;
@@ -1544,33 +1544,33 @@ unsigned char* snmp_parse_var_op(
     unsigned char* var_op_start = data;
 
     data = asn_parse_header(data, &var_op_len, &var_op_type);
-    if (data == NULL)
+    if (data == nullptr)
     {
         ASNERROR("Error snmp_parse_var_op: 1");
-        return NULL;
+        return nullptr;
     }
-    if (var_op_type != ASN_SEQ_CON) return NULL;
+    if (var_op_type != ASN_SEQ_CON) return nullptr;
     data = asn_parse_objid(
         data, &var_op_len, &var_op_type, var_name, var_name_len);
-    if (data == NULL)
+    if (data == nullptr)
     {
         ASNERROR("Error snmp_parse_var_op: 2");
-        return NULL;
+        return nullptr;
     }
-    if (var_op_type != (ASN_UNI_PRIM | ASN_OBJECT_ID)) return NULL;
+    if (var_op_type != (ASN_UNI_PRIM | ASN_OBJECT_ID)) return nullptr;
     *var_val = data; /* save pointer to this object */
     /* find out what type of object this is */
     data = asn_parse_header(data, &var_op_len, var_val_type);
-    if (data == NULL)
+    if (data == nullptr)
     {
         ASNERROR("Error snmp_parse_var_op: 3");
-        return NULL;
+        return nullptr;
     }
     if (((uint32_t)var_op_len + (data - var_op_start))
         > (uint32_t)(*listlength))
     {
         ASNERROR("Error snmp_parse_var_op: 4");
-        return NULL;
+        return nullptr;
     }
     *var_val_len = (int)var_op_len;
     data += var_op_len;
@@ -1588,12 +1588,12 @@ int snmp_parse_vb(struct snmp_pdu* pdu, unsigned char*& data, int& data_len)
 
     // get the vb list from received data
     data = asn_parse_header(data, &data_len, &type);
-    if (data == NULL) return SNMP_CLASS_ASN1ERROR;
+    if (data == nullptr) return SNMP_CLASS_ASN1ERROR;
     if (type != ASN_SEQ_CON) return SNMP_CLASS_ASN1ERROR;
-    pdu->variables = NULL;
+    pdu->variables = nullptr;
     while (data_len > 0)
     {
-        if (pdu->variables == NULL)
+        if (pdu->variables == nullptr)
         {
             pdu->variables = vp =
                 (struct variable_list*)malloc(sizeof(struct variable_list));
@@ -1606,13 +1606,13 @@ int snmp_parse_vb(struct snmp_pdu* pdu, unsigned char*& data, int& data_len)
 
             vp = vp->next_variable;
         }
-        vp->next_variable = NULL;
-        vp->val.string    = NULL;
-        vp->name          = NULL;
+        vp->next_variable = nullptr;
+        vp->val.string    = nullptr;
+        vp->name          = nullptr;
         vp->name_length   = ASN_MAX_NAME_LEN;
         data = snmp_parse_var_op(data, objid, &vp->name_length, &vp->type,
             &vp->val_len, &var_val, &data_len);
-        if (data == NULL) return SNMP_CLASS_ASN1ERROR;
+        if (data == nullptr) return SNMP_CLASS_ASN1ERROR;
         op = (oid_t*)malloc((unsigned)vp->name_length * sizeof(oid_t));
 
         memcpy((char*)op, (char*)objid, vp->name_length * sizeof(oid_t));
@@ -1682,7 +1682,7 @@ int snmp_parse_data_pdu(snmp_pdu* pdu, unsigned char*& data, int& length)
     unsigned char type = 0;
 
     data = asn_parse_header(data, &length, &type);
-    if (data == NULL) return SNMP_CLASS_ASN1ERROR;
+    if (data == nullptr) return SNMP_CLASS_ASN1ERROR;
 
     pdu->command = type;
 
@@ -1690,13 +1690,13 @@ int snmp_parse_data_pdu(snmp_pdu* pdu, unsigned char*& data, int& length)
     {
         // get the rid error status and error index
         data = asn_parse_int(data, &length, &type, &pdu->reqid);
-        if (data == NULL) return SNMP_CLASS_ASN1ERROR;
+        if (data == nullptr) return SNMP_CLASS_ASN1ERROR;
 
         data = asn_parse_int(data, &length, &type, &pdu->errstat);
-        if (data == NULL) return SNMP_CLASS_ASN1ERROR;
+        if (data == nullptr) return SNMP_CLASS_ASN1ERROR;
 
         data = asn_parse_int(data, &length, &type, &pdu->errindex);
-        if (data == NULL) return SNMP_CLASS_ASN1ERROR;
+        if (data == nullptr) return SNMP_CLASS_ASN1ERROR;
     }
     else
     { // is a trap
@@ -1705,7 +1705,7 @@ int snmp_parse_data_pdu(snmp_pdu* pdu, unsigned char*& data, int& length)
         pdu->enterprise_length = ASN_MAX_NAME_LEN;
         data                   = asn_parse_objid(
             data, &length, &type, objid, &pdu->enterprise_length);
-        if (data == NULL) return SNMP_CLASS_ASN1ERROR;
+        if (data == nullptr) return SNMP_CLASS_ASN1ERROR;
 
         pdu->enterprise =
             (oid_t*)malloc(pdu->enterprise_length * sizeof(oid_t));
@@ -1716,24 +1716,24 @@ int snmp_parse_data_pdu(snmp_pdu* pdu, unsigned char*& data, int& length)
         // get source address
         data = asn_parse_string(data, &length, &type,
             (unsigned char*)&pdu->agent_addr.sin_addr.s_addr, &four);
-        if (data == NULL) return SNMP_CLASS_ASN1ERROR;
+        if (data == nullptr) return SNMP_CLASS_ASN1ERROR;
 
         // get trap type
         SmiINT32 dummy = 0;
         data           = asn_parse_int(data, &length, &type, &dummy);
         pdu->trap_type = dummy;
 
-        if (data == NULL) return SNMP_CLASS_ASN1ERROR;
+        if (data == nullptr) return SNMP_CLASS_ASN1ERROR;
 
         // trap specific type
         dummy              = 0;
         data               = asn_parse_int(data, &length, &type, &dummy);
         pdu->specific_type = dummy;
-        if (data == NULL) return SNMP_CLASS_ASN1ERROR;
+        if (data == nullptr) return SNMP_CLASS_ASN1ERROR;
 
         // timestamp
         data = asn_parse_unsigned_int(data, &length, &type, &pdu->time);
-        if (data == NULL) return SNMP_CLASS_ASN1ERROR;
+        if (data == nullptr) return SNMP_CLASS_ASN1ERROR;
     }
     return SNMP_CLASS_SUCCESS;
 }
@@ -1748,7 +1748,7 @@ int snmp_parse(struct snmp_pdu* pdu, unsigned char* data, int data_length,
     // authenticates message and returns length if valid
     data = snmp_auth_parse(
         data, &data_length, community_name, &community_len, &version);
-    if (data == NULL) return SNMP_CLASS_ASN1ERROR;
+    if (data == nullptr) return SNMP_CLASS_ASN1ERROR;
 
     if (version != SNMP_VERSION_1 && version != SNMP_VERSION_2C)
     {
@@ -1856,33 +1856,33 @@ unsigned char* asn1_build_header_data(unsigned char* outBuf, int* maxLength,
 
     bufPtr =
         asn_build_int(bufPtr, &length, ASN_UNI_PRIM | ASN_INTEGER, &msgID);
-    if (bufPtr == NULL)
+    if (bufPtr == nullptr)
     {
         debugprintf(0, "asn_build_header_data: Error coding msgID");
-        return NULL;
+        return nullptr;
     }
     bufPtr = asn_build_int(
         bufPtr, &length, ASN_UNI_PRIM | ASN_INTEGER, &maxMessageSize);
-    if (bufPtr == NULL)
+    if (bufPtr == nullptr)
     {
         debugprintf(0, "asn_build_header_data: Error coding maxMessageSize");
-        return NULL;
+        return nullptr;
     }
 
     bufPtr = asn_build_string(
         bufPtr, &length, ASN_UNI_PRIM | ASN_OCTET_STR, &msgFlags, 1);
-    if (bufPtr == NULL)
+    if (bufPtr == nullptr)
     {
         debugprintf(0, "asn_build_header_data: Error coding msgFlags");
-        return NULL;
+        return nullptr;
     }
 
     bufPtr = asn_build_int(
         bufPtr, &length, ASN_UNI_PRIM | ASN_INTEGER, &securityModel);
-    if (bufPtr == NULL)
+    if (bufPtr == nullptr)
     {
         debugprintf(0, "asn_build_header_data: Error coding securityModel");
-        return NULL;
+        return nullptr;
     }
 
     totalLength = SAFE_INT_CAST(bufPtr - (unsigned char*)&buf);
@@ -1891,16 +1891,16 @@ unsigned char* asn1_build_header_data(unsigned char* outBuf, int* maxLength,
     outBufPtr =
         asn_build_sequence(outBufPtr, maxLength, ASN_SEQ_CON, totalLength);
 
-    if (outBufPtr == NULL)
+    if (outBufPtr == nullptr)
     {
         debugprintf(0, "asn_build_header_data: Error coding seq headerdata");
-        return NULL;
+        return nullptr;
     }
 
     if (*maxLength < totalLength)
     {
         debugprintf(0, "asn_build_header_data: Length error");
-        return NULL;
+        return nullptr;
     }
 
     memcpy(outBufPtr, (unsigned char*)&buf, totalLength);

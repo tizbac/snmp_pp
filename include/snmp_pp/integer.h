@@ -195,7 +195,7 @@ public:
 
 protected:
     bool                 valid_flag;
-    SNMP_PP_MUTABLE char output_buffer[INTOUTBUF];
+    SNMP_PP_MUTABLE char output_buffer[INTOUTBUF] {};
     SNMP_PP_MUTABLE bool m_changed;
 };
 
@@ -321,7 +321,7 @@ public:
 
 protected:
     bool                 valid_flag;
-    SNMP_PP_MUTABLE char output_buffer[INTOUTBUF];
+    SNMP_PP_MUTABLE char output_buffer[INTOUTBUF] {};
     SNMP_PP_MUTABLE bool m_changed;
 };
 

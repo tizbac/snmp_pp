@@ -121,7 +121,7 @@ int convertVbToSmival(const Vb& tempvb, SmiVALUE* smival)
     case sNMP_SYNTAX_IPADDR: {
         OctetStr os;
         tempvb.get_value(os);
-        smival->value.string.ptr = NULL;
+        smival->value.string.ptr = nullptr;
         smival->value.string.len = os.len();
         if (smival->value.string.len > 0)
         {
@@ -144,7 +144,7 @@ int convertVbToSmival(const Vb& tempvb, SmiVALUE* smival)
     case sNMP_SYNTAX_OID: {
         Oid oid;
         tempvb.get_value(oid);
-        smival->value.oid.ptr = NULL;
+        smival->value.oid.ptr = nullptr;
         smival->value.oid.len = oid.len();
         if (smival->value.oid.len > 0)
         {
@@ -276,7 +276,7 @@ int SnmpMessage::load(
                 addr_set = true;
             }
         }
-        struct sockaddr_in agent_addr; // agent address socket struct
+        struct sockaddr_in agent_addr { }; // agent address socket struct
         // prepare the agent address
         memset(&agent_addr, 0, sizeof(agent_addr));
         agent_addr.sin_family = AF_INET;

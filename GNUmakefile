@@ -35,7 +35,7 @@ $(BUILD_DIR):
 	mkdir -p $@
 
 check: $(BUILD_DIR)/compile_commands.json
-	# run-clang-tidy -p $(BUILD_DIR) -checks='-*,hicpp-use-auto,hicpp-use-nullptr,misc-const-correctness,cppcoreguidelines-explicit-virtual-functions' -j1 -fix .
+	# run-clang-tidy -p $(BUILD_DIR) -checks='-*,hicpp-named-parameter,hicpp-member-init,modernize-redundant-void-arg,modernize-use-bool-literals,modernize-use-auto,modernize-use-nullptr,misc-const-correctness,cppcoreguidelines-explicit-virtual-functions' -j1 -fix .
 	run-clang-tidy -p $(BUILD_DIR) -checks='-clang-analyzer-optin.*' .
 
 clean:

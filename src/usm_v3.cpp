@@ -83,7 +83,7 @@ struct UsmKeyUpdate {
     OctetStr securityName;
     OctetStr newPassword;
     OctetStr newKey;
-    int      type;
+    int      type {};
 };
 
 /* ------------------------- UsmTimeTable --------------------------*/
@@ -672,7 +672,7 @@ struct SecurityStateReference* USM::get_new_sec_state_reference()
 {
     auto* res = new SecurityStateReference;
 
-    if (!res) return NULL;
+    if (!res) return nullptr;
 
     memset(res, 0, sizeof(struct SecurityStateReference));
     return res;
@@ -709,32 +709,32 @@ USM::USM(unsigned int engine_boots, const OctetStr& engine_id,
 USM::~USM()
 {
     if (usm_time_table) delete usm_time_table;
-    usm_time_table = NULL;
+    usm_time_table = nullptr;
 
     if (usm_user_table) delete usm_user_table;
-    usm_user_table = NULL;
+    usm_user_table = nullptr;
 
     if (usm_user_name_table)
     {
         delete usm_user_name_table;
-        usm_user_name_table = NULL;
+        usm_user_name_table = nullptr;
     }
 
     if (auth_priv)
     {
         delete auth_priv;
-        auth_priv = NULL;
+        auth_priv = nullptr;
     }
 }
 
 int USM::remove_all_users()
 {
     if (usm_user_table) delete usm_user_table;
-    usm_user_table = NULL;
+    usm_user_table = nullptr;
     if (usm_user_name_table)
     {
         delete usm_user_name_table;
-        usm_user_name_table = NULL;
+        usm_user_name_table = nullptr;
     }
     int result          = 0;
     usm_user_name_table = new USMUserNameTable(result);
@@ -921,7 +921,7 @@ struct UsmUser* USM::get_user(
     debugprintf(7, "USM::get_user: user (%s) engine_id (%s)",
         security_name.get_printable(), engine_id.get_printable());
 
-    struct UsmUserNameTableEntry* name_table_entry = NULL;
+    struct UsmUserNameTableEntry* name_table_entry = nullptr;
     struct UsmUserTableEntry*     user_table_entry =
         usm_user_table->get_cloned_entry(engine_id, security_name);
     if (!user_table_entry)
@@ -968,7 +968,7 @@ struct UsmUser* USM::get_user(
             else
             {
                 debugprintf(1, "USM::get_user: User unknown");
-                return NULL;
+                return nullptr;
             }
         }
         // here we have valid name_table_entry but not user_table_entry
@@ -1200,13 +1200,13 @@ void USM::delete_sec_parameters(struct UsmSecurityParameters* usp)
     if (usp->msgAuthenticationParameters)
     {
         delete[] usp->msgAuthenticationParameters;
-        usp->msgAuthenticationParameters = NULL;
+        usp->msgAuthenticationParameters = nullptr;
     }
     usp->msgAuthenticationParametersLength = 0;
     if (usp->msgPrivacyParameters)
     {
         delete[] usp->msgPrivacyParameters;
-        usp->msgPrivacyParameters = NULL;
+        usp->msgPrivacyParameters = nullptr;
     }
     usp->msgPrivacyParametersLength = 0;
 }
@@ -1259,7 +1259,7 @@ struct UsmKeyUpdate* USM::key_update_prepare(const OctetStr& securityName,
     {
         debugprintf(0, "usmPrepareKeyUpdate: Address invalid.");
         status = SNMPv3_USM_ADDRESS_ERROR;
-        return NULL;
+        return nullptr;
     }
 
     OctetStr engineID = "";
@@ -1271,19 +1271,19 @@ struct UsmKeyUpdate* USM::key_update_prepare(const OctetStr& securityName,
         debugprintf(0,
             "usmPrepareKeyUpdate: Could not find engineID of given address.");
         status = SNMPv3_USM_ADDRESS_ERROR;
-        return NULL;
+        return nullptr;
     }
 
     // get user
     struct UsmUser* user = nullptr;
     user                 = get_user(engineID, securityName);
 
-    if (user == NULL)
+    if (user == nullptr)
     {
         debugprintf(
             0, "usmPrepareKeyUpdate: Could not find user in usmTables.");
         status = SNMPv3_USM_UNKNOWN_SECURITY_NAME;
-        return NULL;
+        return nullptr;
     }
 
     /* set old and new key */
@@ -1314,7 +1314,7 @@ struct UsmKeyUpdate* USM::key_update_prepare(const OctetStr& securityName,
         debugprintf(0, "usmPrepareKeyUpdate: wrong type specified.");
         status = SNMPv3_USM_ERROR;
         free_user(user);
-        return NULL;
+        return nullptr;
     }
     }
 
@@ -1323,7 +1323,7 @@ struct UsmKeyUpdate* USM::key_update_prepare(const OctetStr& securityName,
         debugprintf(0,
             "usmPrepareKeyUpdate: password_to_key failed (code %i).", status);
         free_user(user);
-        return NULL;
+        return nullptr;
     }
 
     newKey = OctetStr(key, key_len);
@@ -1369,7 +1369,7 @@ struct UsmKeyUpdate* USM::key_update_prepare(const OctetStr& securityName,
         debugprintf(0, "KeyChange error: wrong type:");
         status = SNMPv3_USM_ERROR;
         free_user(user);
-        return NULL;
+        return nullptr;
     }
     }
 
@@ -1534,8 +1534,8 @@ int USM::generate_msg(unsigned char* globalData, // message header, admin data
 
     unsigned char*               wholeMsgPtr  = nullptr;
     int                          startAuthPar = 0;
-    struct UsmUser*              user         = NULL;
-    struct UsmSecurityParameters usmSecurityParams;
+    struct UsmUser*              user         = nullptr;
+    struct UsmSecurityParameters usmSecurityParams { };
 
     int          bufLength   = 0;
     unsigned int buf2Length  = buffer2.get_len();
@@ -1610,7 +1610,7 @@ int USM::generate_msg(unsigned char* globalData, // message header, admin data
             securityStateReference->authKeyLength);
 
         delete securityStateReference;
-        securityStateReference = NULL;
+        securityStateReference = nullptr;
     }
     else
     {
@@ -1658,10 +1658,10 @@ int USM::generate_msg(unsigned char* globalData, // message header, admin data
         securityEngineID.len());
 
     usmSecurityParams.msgPrivacyParametersLength = 0;
-    usmSecurityParams.msgPrivacyParameters       = NULL;
+    usmSecurityParams.msgPrivacyParameters       = nullptr;
 
     usmSecurityParams.msgAuthenticationParametersLength = 0;
-    usmSecurityParams.msgAuthenticationParameters       = NULL;
+    usmSecurityParams.msgAuthenticationParameters       = nullptr;
 
     if (securityLevel >= SNMP_SECURITY_LEVEL_AUTH_NOPRIV)
     {
@@ -1768,7 +1768,7 @@ int USM::generate_msg(unsigned char* globalData, // message header, admin data
             &startAuthPar, // for MD5, SHA,...
             usmSecurityParams, buffer.get_ptr(),
             bufLength); // the msgData
-        if (wholeMsgPtr == NULL)
+        if (wholeMsgPtr == nullptr)
         {
             debugprintf(0, "usm: could not generate wholeMsg");
             delete_sec_parameters(&usmSecurityParams);
@@ -1807,7 +1807,7 @@ int USM::generate_msg(unsigned char* globalData, // message header, admin data
             &startAuthPar, // dummy ( no auth)
             usmSecurityParams, buffer.get_ptr(),
             bufLength); // the msgData
-        if (wholeMsgPtr == NULL)
+        if (wholeMsgPtr == nullptr)
         {
             debugprintf(0, "usm: could not generate wholeMsg");
             delete_sec_parameters(&usmSecurityParams);
@@ -1853,13 +1853,13 @@ int USM::process_msg(int maxMessageSize,     // of the sending SNMP entity
     int                   privParamLength = SNMPv3_AP_MAXLENGTH_PRIVPARAM;
     Buffer<unsigned char> encryptedScopedPDU(MAX_SNMP_PACKET);
     int                   encryptedScopedPDULength = msgDataLength;
-    struct UsmUser*       user                     = NULL;
+    struct UsmUser*       user                     = nullptr;
     int                   rc                       = 0;
     int                   notInTime                = 0;
 
     // check securityParameters
     sp = asn_parse_header(sp, &spLength, &type);
-    if (sp == NULL)
+    if (sp == nullptr)
     {
         debugprintf(0, "bad header of securityParameters");
         return SNMPv3_USM_PARSE_ERROR;
@@ -1879,7 +1879,7 @@ int USM::process_msg(int maxMessageSize,     // of the sending SNMP entity
         sp = asn_parse_string(sp, &spLength, &type, data, &len);
 
         debugprintf(3, "Parsed securityEngineID, length = 0x%x", len);
-        if (sp == NULL)
+        if (sp == nullptr)
         {
             debugprintf(0, "bad parse of securityEngineID");
             return SNMPv3_USM_PARSE_ERROR;
@@ -1888,14 +1888,14 @@ int USM::process_msg(int maxMessageSize,     // of the sending SNMP entity
     }
 
     sp = asn_parse_int(sp, &spLength, &type, &engineBoots);
-    if ((sp == NULL) || (engineBoots < 0))
+    if ((sp == nullptr) || (engineBoots < 0))
     {
         debugprintf(0, "bad parse of engineBoots");
         return SNMPv3_USM_PARSE_ERROR;
     }
 
     sp = asn_parse_int(sp, &spLength, &type, &engineTime);
-    if ((sp == NULL) || (engineTime < 0))
+    if ((sp == nullptr) || (engineTime < 0))
     {
         debugprintf(0, "bad parse of engineTime");
         return SNMPv3_USM_PARSE_ERROR;
@@ -1910,7 +1910,7 @@ int USM::process_msg(int maxMessageSize,     // of the sending SNMP entity
     sp = asn_parse_string(sp, &spLength, &type, (unsigned char*)&usmUserName,
         &usmUserNameLength);
 
-    if (sp == NULL)
+    if (sp == nullptr)
     {
         debugprintf(0, "bad parse of usmUserName");
         return SNMPv3_USM_PARSE_ERROR;
@@ -1919,7 +1919,7 @@ int USM::process_msg(int maxMessageSize,     // of the sending SNMP entity
     sp = asn_parse_string(
         sp, &spLength, &type, (unsigned char*)&authParam, &authParamLength);
 
-    if (sp == NULL)
+    if (sp == nullptr)
     {
         debugprintf(0, "bad parse of msgAuthenticationParameters");
         return SNMPv3_USM_PARSE_ERROR;
@@ -1930,7 +1930,7 @@ int USM::process_msg(int maxMessageSize,     // of the sending SNMP entity
     sp = asn_parse_string(
         sp, &spLength, &type, (unsigned char*)&privParam, &privParamLength);
 
-    if (sp == NULL)
+    if (sp == nullptr)
     {
         debugprintf(0, "bad parse of msgPrivacyParameters");
         return SNMPv3_USM_PARSE_ERROR;
@@ -1967,11 +1967,11 @@ int USM::process_msg(int maxMessageSize,     // of the sending SNMP entity
     securityStateReference->securityLevel = securityLevel;
 
     securityStateReference->securityNameLength = 0;
-    securityStateReference->securityName       = NULL;
+    securityStateReference->securityName       = nullptr;
     securityStateReference->authProtocol       = 1;
     securityStateReference->privProtocol       = 1;
-    securityStateReference->authKey            = NULL;
-    securityStateReference->privKey            = NULL;
+    securityStateReference->authKey            = nullptr;
+    securityStateReference->privKey            = nullptr;
 
     // in case we return with error,
     // perhaps v3MP can decode it (requestID!!!)
@@ -2126,7 +2126,7 @@ int USM::process_msg(int maxMessageSize,     // of the sending SNMP entity
     {
         msgData = asn_parse_string(msgData, &msgDataLength, &type,
             encryptedScopedPDU.get_ptr(), &encryptedScopedPDULength);
-        if (msgData == NULL)
+        if (msgData == nullptr)
         {
             debugprintf(0, "usmProcessMsg: bad header of encryptedPDU");
             free_user(user);
@@ -2218,10 +2218,10 @@ unsigned char* USM::build_sec_params(unsigned char* outBuf, int* maxLength,
         sp.msgAuthoritativeEngineIDLength);
     bufPtr = asn_build_string(bufPtr, &length, ASN_UNI_PRIM | ASN_OCTET_STR,
         sp.msgAuthoritativeEngineID, sp.msgAuthoritativeEngineIDLength);
-    if (bufPtr == NULL)
+    if (bufPtr == nullptr)
     {
         debugprintf(0, "usmBuildSecurityParameters error coding engineid");
-        return NULL;
+        return nullptr;
     }
 
     debugprintf(5, "Coding int sp.msgAuthoritativeEngineBoots = 0x%lx",
@@ -2229,10 +2229,10 @@ unsigned char* USM::build_sec_params(unsigned char* outBuf, int* maxLength,
     bufPtr = asn_build_int(bufPtr, &length, ASN_UNI_PRIM | ASN_INTEGER,
         &sp.msgAuthoritativeEngineBoots);
 
-    if (bufPtr == NULL)
+    if (bufPtr == nullptr)
     {
         debugprintf(0, "usmBuildSecurityParameters error coding engineboots");
-        return NULL;
+        return nullptr;
     }
 
     debugprintf(5, "Coding int sp.msgAuthoritativeEngineTime = 0x%lx",
@@ -2240,20 +2240,20 @@ unsigned char* USM::build_sec_params(unsigned char* outBuf, int* maxLength,
     bufPtr = asn_build_int(bufPtr, &length, ASN_UNI_PRIM | ASN_INTEGER,
         &sp.msgAuthoritativeEngineTime);
 
-    if (bufPtr == NULL)
+    if (bufPtr == nullptr)
     {
         debugprintf(0, "usmBuildSecurityParameters error coding enginetime");
-        return NULL;
+        return nullptr;
     }
 
     debugprintf(5, "Coding octstr sp.msgUserName, length = 0x%lx",
         sp.msgUserNameLength);
     bufPtr = asn_build_string(bufPtr, &length, ASN_UNI_PRIM | ASN_OCTET_STR,
         sp.msgUserName, sp.msgUserNameLength);
-    if (bufPtr == NULL)
+    if (bufPtr == nullptr)
     {
         debugprintf(0, "usmBuildSecurityParameters error coding msgusername");
-        return NULL;
+        return nullptr;
     }
 
     *position = SAFE_INT_CAST(bufPtr - buf.get_ptr()) + 2;
@@ -2263,10 +2263,10 @@ unsigned char* USM::build_sec_params(unsigned char* outBuf, int* maxLength,
     bufPtr = asn_build_string(bufPtr, &length, ASN_UNI_PRIM | ASN_OCTET_STR,
         sp.msgAuthenticationParameters, sp.msgAuthenticationParametersLength);
 
-    if (bufPtr == NULL)
+    if (bufPtr == nullptr)
     {
         debugprintf(0, "usmBuildSecurityParameters error coding authparams");
-        return NULL;
+        return nullptr;
     }
 
     debugprintf(5, "Coding octstr sp.msgPr..Para.. , length = 0x%lx",
@@ -2274,10 +2274,10 @@ unsigned char* USM::build_sec_params(unsigned char* outBuf, int* maxLength,
     bufPtr = asn_build_string(bufPtr, &length, ASN_UNI_PRIM | ASN_OCTET_STR,
         sp.msgPrivacyParameters, sp.msgPrivacyParametersLength);
 
-    if (bufPtr == NULL)
+    if (bufPtr == nullptr)
     {
         debugprintf(0, "usmBuildSecurityParameters error coding privparams");
-        return NULL;
+        return nullptr;
     }
 
     totalLength = SAFE_INT_CAST(bufPtr - buf.get_ptr());
@@ -2287,18 +2287,18 @@ unsigned char* USM::build_sec_params(unsigned char* outBuf, int* maxLength,
     outBufPtr =
         asn_build_sequence(outBufPtr, maxLength, ASN_SEQ_CON, totalLength);
 
-    if (outBufPtr == NULL)
+    if (outBufPtr == nullptr)
     {
         debugprintf(
             0, "usm: usmBuildSecurityParameters error coding secparams");
-        return NULL;
+        return nullptr;
     }
 
     if (*maxLength < totalLength)
     {
         debugprintf(
             0, "usm: usmBuildSecurityParameters error (length mismatch)");
-        return NULL;
+        return nullptr;
     }
     *position += SAFE_INT_CAST(outBufPtr - outBuf);
     memcpy(outBufPtr, buf.get_ptr(), totalLength);
@@ -2330,17 +2330,17 @@ unsigned char* USM::build_whole_msg(unsigned char* outBuf, int* maxLength,
     secParPtr = build_sec_params(
         secParPtr, &dummy, securityParameters, positionAuthPar);
 
-    if (!secParPtr) return NULL;
+    if (!secParPtr) return nullptr;
     secParLength = SAFE_INT_CAST(secParPtr - secPar.get_ptr());
 
     SmiINT32 const dummyVersion = 3;
     debugprintf(3, "Coding int snmpVersion = 0x%lx", dummyVersion);
     bufPtr = asn_build_int(
         bufPtr, &length, ASN_UNI_PRIM | ASN_INTEGER, &dummyVersion);
-    if (bufPtr == NULL)
+    if (bufPtr == nullptr)
     {
         debugprintf(0, "usmBuildWholeMsg error");
-        return NULL;
+        return nullptr;
     }
 
     // globalData is encoded as sequence
@@ -2348,7 +2348,7 @@ unsigned char* USM::build_whole_msg(unsigned char* outBuf, int* maxLength,
     if (length < 0)
     {
         debugprintf(0, "usmBuildWholeMsg error");
-        return NULL;
+        return nullptr;
     }
     memcpy(bufPtr, globalData, globalDataLength);
     bufPtr += globalDataLength;
@@ -2361,10 +2361,10 @@ unsigned char* USM::build_whole_msg(unsigned char* outBuf, int* maxLength,
     bufPtr = asn_build_string(bufPtr, &length, ASN_UNI_PRIM | ASN_OCTET_STR,
         secPar.get_ptr(), secParLength);
 
-    if (bufPtr == NULL)
+    if (bufPtr == nullptr)
     {
         debugprintf(0, "usmBuildWholeMsg error2");
-        return NULL;
+        return nullptr;
     }
 
     // msgData (ScopedPduData) is encoded
@@ -2375,7 +2375,7 @@ unsigned char* USM::build_whole_msg(unsigned char* outBuf, int* maxLength,
             10, "usmBuildWholeMsg error: msgDataLength = %i", msgDataLength);
         debugprintf(10, "maxLength = %i, encoded = %i", *maxLength,
             SAFE_INT_CAST(bufPtr - buf.get_ptr()));
-        return NULL;
+        return nullptr;
     }
     memcpy(bufPtr, msgData, msgDataLength);
     bufPtr += msgDataLength;
@@ -2387,16 +2387,16 @@ unsigned char* USM::build_whole_msg(unsigned char* outBuf, int* maxLength,
     outBufPtr =
         asn_build_sequence(outBufPtr, maxLength, ASN_SEQ_CON, totalLength);
 
-    if (outBufPtr == NULL)
+    if (outBufPtr == nullptr)
     {
         debugprintf(0, "usm: usmBuildWholeMsg error");
-        return NULL;
+        return nullptr;
     }
 
     if (*maxLength < totalLength)
     {
         debugprintf(0, "usm: usmBuildWholeMsg error");
-        return NULL;
+        return nullptr;
     }
     *positionAuthPar += SAFE_INT_CAST(outBufPtr - outBuf);
     memcpy(outBufPtr, buf.get_ptr(), totalLength);
@@ -2415,29 +2415,29 @@ inline void USM::delete_user_ptr(struct UsmUser* user)
     if (user->engineID)
     {
         delete[] user->engineID;
-        user->engineID = NULL;
+        user->engineID = nullptr;
     }
     if (user->usmUserName)
     {
         delete[] user->usmUserName;
-        user->usmUserName = NULL;
+        user->usmUserName = nullptr;
     }
     if (user->securityName)
     {
         delete[] user->securityName;
-        user->securityName = NULL;
+        user->securityName = nullptr;
     }
     if (user->authKey)
     {
         memset(user->authKey, 0, user->authKeyLength);
         delete[] user->authKey;
-        user->authKey = NULL;
+        user->authKey = nullptr;
     }
     if (user->privKey)
     {
         memset(user->privKey, 0, user->privKeyLength);
         delete[] user->privKey;
-        user->authKey = NULL;
+        user->authKey = nullptr;
     }
 }
 
@@ -2545,7 +2545,7 @@ USMTimeTable::~USMTimeTable()
     if (table)
     {
         delete[] table;
-        table = NULL;
+        table = nullptr;
     }
     entries     = 0;
     max_entries = 0;
@@ -2847,7 +2847,7 @@ USMUserNameTable::~USMUserNameTable()
             }
         }
         delete[] table;
-        table = NULL;
+        table = nullptr;
     }
     entries     = 0;
     max_entries = 0;
@@ -2955,11 +2955,11 @@ int USMUserNameTable::delete_security_name(const OctetStr& security_name)
 const struct UsmUserNameTableEntry* USMUserNameTable::get_entry(
     const OctetStr& security_name)
 {
-    if (!table) return NULL;
+    if (!table) return nullptr;
 
     for (int i = 0; i < entries; i++)
         if (table[i].usmUserSecurityName == security_name) return &table[i];
-    return NULL;
+    return nullptr;
 }
 
 struct UsmUserNameTableEntry* USMUserNameTable::get_cloned_entry(
@@ -3471,7 +3471,7 @@ USMUserTable::~USMUserTable()
             }
         }
         delete[] table;
-        table       = NULL;
+        table       = nullptr;
         max_entries = 0;
         entries     = 0;
     }
@@ -3621,7 +3621,7 @@ int USMUserTable::delete_entry(
 
 const struct UsmUserTableEntry* USMUserTable::get_entry(const int number)
 {
-    if ((entries < number) || (number < 1)) return NULL;
+    if ((entries < number) || (number < 1)) return nullptr;
 
     return &table[number - 1];
 }
@@ -3629,7 +3629,7 @@ const struct UsmUserTableEntry* USMUserTable::get_entry(const int number)
 const struct UsmUserTableEntry* USMUserTable::get_entry(
     const OctetStr& engine_id, const OctetStr& sec_name)
 {
-    if (!table) return NULL;
+    if (!table) return nullptr;
 
     for (int i = 0; i < entries; i++)
         if (unsignedCharCompare(table[i].usmUserSecurityName,
@@ -3639,7 +3639,7 @@ const struct UsmUserTableEntry* USMUserTable::get_entry(
                     table[i].usmUserEngineIDLength, engine_id.data(),
                     engine_id.len()))
                 return &table[i];
-    return NULL;
+    return nullptr;
 }
 
 struct UsmUserTableEntry* USMUserTable::get_cloned_entry(
@@ -3712,14 +3712,14 @@ void USMUserTable::delete_cloned_entry(struct UsmUserTableEntry*& entry)
 const struct UsmUserTableEntry* USMUserTable::get_entry(
     const OctetStr& sec_name)
 {
-    if (!table) return NULL;
+    if (!table) return nullptr;
 
     for (int i = 0; i < entries; i++)
         if (unsignedCharCompare(table[i].usmUserSecurityName,
                 table[i].usmUserSecurityNameLength, sec_name.data(),
                 sec_name.len()))
             return &table[i];
-    return NULL;
+    return nullptr;
 }
 
 int USMUserTable::add_entry(const OctetStr& engine_id,

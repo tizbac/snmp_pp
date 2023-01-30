@@ -128,7 +128,7 @@ int evpAllocAndInit(EVP_MD_CTX** ctx, const EVP_MD* md)
 
 int evpDigestFinalAndFree(EVP_MD_CTX** ctx, unsigned char* digest)
 {
-    int const result = EVP_DigestFinal(*ctx, digest, NULL);
+    int const result = EVP_DigestFinal(*ctx, digest, nullptr);
     EVP_MD_CTX_free(*ctx);
     return result;
 }
@@ -1560,7 +1560,7 @@ int PrivAES::encrypt(const unsigned char* key, const unsigned int key_len,
         return SNMPv3_USM_ENCRYPTION_ERROR;
     }
 
-    const EVP_CIPHER* evp_cipher = NULL;
+    const EVP_CIPHER* evp_cipher = nullptr;
     switch (aes_type)
     {
     case SNMP_PRIVPROTOCOL_AES128: evp_cipher = EVP_aes_128_cfb128(); break;
@@ -1568,7 +1568,7 @@ int PrivAES::encrypt(const unsigned char* key, const unsigned int key_len,
     case SNMP_PRIVPROTOCOL_AES256: evp_cipher = EVP_aes_256_cfb128(); break;
     }
 
-    if (EVP_EncryptInit_ex(ctx, evp_cipher, NULL, key, initVect) != 1)
+    if (EVP_EncryptInit_ex(ctx, evp_cipher, nullptr, key, initVect) != 1)
     {
         debugprintf(1, "EVP_EncryptInit_ex() failed.");
         EVP_CIPHER_CTX_free(ctx);
@@ -1659,7 +1659,7 @@ int PrivAES::decrypt(const unsigned char* key, const unsigned int key_len,
         return SNMPv3_USM_DECRYPTION_ERROR;
     }
 
-    const EVP_CIPHER* evp_cipher = NULL;
+    const EVP_CIPHER* evp_cipher = nullptr;
     switch (aes_type)
     {
     case SNMP_PRIVPROTOCOL_AES128: evp_cipher = EVP_aes_128_cfb128(); break;
@@ -1667,7 +1667,7 @@ int PrivAES::decrypt(const unsigned char* key, const unsigned int key_len,
     case SNMP_PRIVPROTOCOL_AES256: evp_cipher = EVP_aes_256_cfb128(); break;
     }
 
-    if (EVP_DecryptInit_ex(ctx, evp_cipher, NULL, key, initVect) != 1)
+    if (EVP_DecryptInit_ex(ctx, evp_cipher, nullptr, key, initVect) != 1)
     {
         debugprintf(1, "EVP_DecryptInit_ex() failed.");
         EVP_CIPHER_CTX_free(ctx);
@@ -2317,7 +2317,7 @@ public:
     int get_block_size() const override { return 64; }
 
 private:
-    SHAHashStateType sha_hash_state;
+    SHAHashStateType sha_hash_state {};
 };
 
 AuthSHABase::Hasher* AuthSHA::get_hasher() const { return new HasherSHA1(); }
@@ -2344,7 +2344,7 @@ public:
     int get_block_size() const override { return 64; }
 
 private:
-    EVPHashStateType ctx;
+    EVPHashStateType ctx {};
 };
 
 AuthSHABase::Hasher* AuthHMAC128SHA224::get_hasher() const
@@ -2372,7 +2372,7 @@ public:
     int get_block_size() const override { return 64; }
 
 private:
-    EVPHashStateType ctx;
+    EVPHashStateType ctx {};
 };
 
 AuthSHABase::Hasher* AuthHMAC192SHA256::get_hasher() const
@@ -2400,7 +2400,7 @@ public:
     int get_block_size() const override { return 128; }
 
 private:
-    EVPHashStateType ctx;
+    EVPHashStateType ctx {};
 };
 
 AuthSHABase::Hasher* AuthHMAC256SHA384::get_hasher() const
@@ -2428,7 +2428,7 @@ public:
     int get_block_size() const override { return 128; }
 
 private:
-    EVPHashStateType ctx;
+    EVPHashStateType ctx {};
 };
 
 AuthSHABase::Hasher* AuthHMAC384SHA512::get_hasher() const

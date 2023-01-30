@@ -71,7 +71,7 @@ namespace Snmp_pp
 bool Vb::valid() const
 {
     if (iv_vb_oid.valid()
-        && ((iv_vb_value == NULL) || (iv_vb_value && iv_vb_value->valid())))
+        && ((iv_vb_value == nullptr) || (iv_vb_value && iv_vb_value->valid())))
         return true;
     return false;
 }
@@ -107,7 +107,7 @@ void Vb::free_vb()
     if (iv_vb_value)
     {
         delete iv_vb_value;
-        iv_vb_value = NULL;
+        iv_vb_value = nullptr;
     }
     exception_status = SNMP_CLASS_SUCCESS;
 }

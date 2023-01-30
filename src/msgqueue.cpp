@@ -238,7 +238,7 @@ int CSNMPMessage::Callback(const int reason)
     {
         // prevent callbacks from using this message
         snmp_callback tmp_callBack = m_callBack;
-        m_callBack                 = NULL;
+        m_callBack                 = nullptr;
 
         tmp_callBack(reason, m_snmp, m_pdu, *m_target, m_callData);
         return 0;
@@ -354,7 +354,7 @@ CSNMPMessage* CSNMPMessageQueue::GetEntry(const uint32_t uniqueId)
 
 int CSNMPMessageQueue::DeleteEntry(const uint32_t uniqueId)
 {
-    bool loopAgain = 0;
+    bool loopAgain = false;
     do {
         loopAgain                       = false;
         CSNMPMessageQueueElt* msgEltPtr = m_head.GetNext();
@@ -430,7 +430,7 @@ CSNMPMessage* CSNMPMessageQueue::GetNextTimeoutEntry()
     msec                  bestTime;
     msec                  sendTime(bestTime);
     CSNMPMessage*         msg     = nullptr;
-    CSNMPMessage*         bestmsg = NULL;
+    CSNMPMessage*         bestmsg = nullptr;
 
     if (msgEltPtr)
     {
@@ -637,7 +637,7 @@ int CSNMPMessageQueue::HandleEvents(
 #else // HAVE_POLL_SYSCALL
 
 void CSNMPMessageQueue::GetFdSets(
-    int& maxfds, fd_set& readfds, fd_set&, fd_set&)
+    int& maxfds, fd_set& readfds, fd_set& /*writefds*/, fd_set& /*exceptfds*/)
 {
     SnmpSynchronize const _synchronize(*this); // REENTRANT
     CSNMPMessageQueueElt* msgEltPtr = m_head.GetNext();
@@ -651,8 +651,8 @@ void CSNMPMessageQueue::GetFdSets(
     }
 }
 
-int CSNMPMessageQueue::HandleEvents(
-    const int maxfds, const fd_set& readfds, const fd_set&, const fd_set&)
+int CSNMPMessageQueue::HandleEvents(const int maxfds, const fd_set& readfds,
+    const fd_set& /*writefds*/, const fd_set& /*exceptfds*/)
 {
     fd_set snmp_readfds, snmp_writefds, snmp_errfds;
     int    tmp_maxfds = maxfds;
@@ -683,7 +683,7 @@ int CSNMPMessageQueue::HandleEvents(
             if (!temp_req_id) continue;
 
             CSNMPMessage* msg          = nullptr;
-            bool          redoGetEntry = 0;
+            bool          redoGetEntry = false;
             do {
                 redoGetEntry = false;
                 lock(); // FIXME: not exception save! CK
