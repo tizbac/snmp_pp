@@ -506,7 +506,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES UNITY_BUILD ${OPTION_ENABLE_UNI
 if(MSVC)
   target_link_libraries(${PROJECT_NAME} PUBLIC wsock32 ws2_32)
   target_compile_definitions(${PROJECT_NAME} PUBLIC WIN32)
-  # FIXME: should be warning level 4 (and all warnings as errors! /WX)
   target_compile_options(${PROJECT_NAME} PRIVATE /W3 /wd4251)
   target_compile_definitions(${PROJECT_NAME} PUBLIC _CRT_SECURE_NO_WARNINGS)
 else()

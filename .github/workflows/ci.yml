@@ -48,9 +48,10 @@ jobs:
       - name: Build
         run: cmake --build build --config Release -j 4
 
-        #       - name: Test
-        #         working-directory: build
-        #         run: ctest -C Release --output-on-failure
+      - name: Test
+        if: startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'ubuntu')
+        working-directory: build
+        run: ctest -C Release --timeout 25
 
       - name: Install
         run: cmake --install build --config Release --prefix stage
