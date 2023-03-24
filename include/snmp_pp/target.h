@@ -107,7 +107,8 @@ public:
      */
     SnmpTarget()
         : validity(false), timeout(default_timeout), retries(default_retries),
-          version(version1), ttype(type_base) {};
+          version(version1), ttype(type_base)
+    { }
 
     /**
      * Create a SnmpTarget object with the given Address.
@@ -122,7 +123,7 @@ public:
     /**
      * Destructor that has nothing to do.
      */
-    virtual ~SnmpTarget() {};
+    virtual ~SnmpTarget() { }
 
     /**
      * Return the type of the target object.
@@ -319,7 +320,7 @@ public:
     /**
      * Destructor, that has nothing to do.
      */
-    ~CTarget() override {};
+    ~CTarget() override { }
 
     /**
      * Clone operator.
@@ -501,7 +502,7 @@ public:
     /**
      * Destructor, that has nothing to do.
      */
-    ~UTarget() override {};
+    ~UTarget() override { }
 
     /**
      * Clone operator.

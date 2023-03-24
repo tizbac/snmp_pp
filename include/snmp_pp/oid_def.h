@@ -63,13 +63,13 @@ namespace Snmp_pp
 /** SMI trap oid def */
 class snmpTrapsOid : public Oid {
 public:
-    DLLOPT snmpTrapsOid() : Oid("1.3.6.1.6.3.1.1.5") {};
+    DLLOPT snmpTrapsOid() : Oid("1.3.6.1.6.3.1.1.5") { }
 };
 
 /** SMI Enterprose Oid */
 class snmpTrapEnterpriseOid : public Oid {
 public:
-    DLLOPT snmpTrapEnterpriseOid() : Oid("1.3.6.1.6.3.1.1.4.3.0") {};
+    DLLOPT snmpTrapEnterpriseOid() : Oid("1.3.6.1.6.3.1.1.4.3.0") { }
 };
 
 /** SMI Cold Start Oid */

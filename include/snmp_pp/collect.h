@@ -69,7 +69,7 @@ template <class T>
 class SnmpCollection {
     class cBlock {
     public:
-        cBlock(cBlock* p, cBlock* n) : prev(p), next(n) {};
+        cBlock(cBlock* p, cBlock* n) : prev(p), next(n) { }
         T*      item[MAXT];
         cBlock* prev;
         cBlock* next;

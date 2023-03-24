@@ -90,7 +90,7 @@ class Pdu;
 class DLLOPT CEvents : public SnmpSynchronized {
 public:
     // allow destruction of derived classes
-    ~CEvents() override {};
+    ~CEvents() override { }
 
     // find the next timeout
     virtual int GetNextTimeout(msec& sendTime) = 0;
@@ -119,18 +119,21 @@ public:
 
 class DLLOPT CEventList : public SnmpSynchronized {
 public:
-    CEventList()
-        : m_head(nullptr, nullptr, nullptr), m_msgCount(0), m_done(0) {};
+    CEventList() : m_head(nullptr, nullptr, nullptr), m_msgCount(0), m_done(0)
+    { }
     ~CEventList() override;
 
     // add an event source to the list
     CEvents* AddEntry(CEvents* events);
 
     // tell main_loop to exit after one pass
-    void SetDone() REENTRANT({ m_done += 1; });
+    void SetDone() REENTRANT({ m_done += 1; })
 
-    // see if main loop should terminate
-    int GetDone() { return m_done; }
+        // see if main loop should terminate
+        int GetDone()
+    {
+        return m_done;
+    }
 
     // find the time of the next event that will timeout
     int GetNextTimeout(msec& sendTime);

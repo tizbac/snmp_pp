@@ -100,7 +100,7 @@ class DLLOPT CUTEvent {
 public:
     CUTEvent(const UtId uniqueId, const msec& timeout,
         const ut_callback callBack, const void* callData);
-    ~CUTEvent() {};
+    ~CUTEvent() { }
     UtId GetId() { return m_uniqueId; }
     void GetTimeout(msec& timeout) { timeout = m_timeout; }
 
@@ -121,7 +121,8 @@ class DLLOPT CUTEventQueue : public CEvents {
 public:
     CUTEventQueue(EventListHolder* holder)
         : m_head(nullptr, nullptr, nullptr), m_msgCount(0), m_id(1),
-          my_holder(holder) {};
+          my_holder(holder)
+    { }
     ~CUTEventQueue() override;
     UtId AddEntry(
         const msec& timeout, const ut_callback callBack, const void* callData);
@@ -187,7 +188,7 @@ protected:
 };
 
 #ifdef SNMP_PP_NAMESPACE
-}; // end of namespace Snmp_pp
+} // end of namespace Snmp_pp
 #endif
 
 #endif // _SNMP_USERTIMEOUT_H_

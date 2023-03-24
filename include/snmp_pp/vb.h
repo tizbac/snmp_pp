@@ -94,7 +94,7 @@ public:
      *
      * This constructor creates an unitialized vb.
      */
-    Vb() : iv_vb_value(nullptr), exception_status(SNMP_CLASS_SUCCESS) {};
+    Vb() : iv_vb_value(nullptr), exception_status(SNMP_CLASS_SUCCESS) { }
 
     /**
      * Constructor to initialize the oid.
@@ -103,7 +103,8 @@ public:
      */
     Vb(const Oid& oid)
         : iv_vb_oid(oid), iv_vb_value(nullptr),
-          exception_status(SNMP_CLASS_SUCCESS) {};
+          exception_status(SNMP_CLASS_SUCCESS)
+    { }
 
     /**
      * Copy constructor.

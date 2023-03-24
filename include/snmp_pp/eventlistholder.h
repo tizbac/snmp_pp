@@ -53,7 +53,7 @@ class Snmp;
 class DLLOPT EventListHolder {
 public:
     EventListHolder(Snmp* snmp_session);
-    ~EventListHolder() {};
+    ~EventListHolder() { }
 
     CSNMPMessageQueue*& snmpEventList() { return m_snmpMessageQueue; }
     CNotifyEventQueue*& notifyEventList() { return m_notifyEventQueue; }

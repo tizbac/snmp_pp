@@ -81,7 +81,7 @@ class Snmp;
 class DLLOPT SnmpMessage {
 public:
     // construct a SnmpMessage object
-    SnmpMessage() : bufflen(MAX_SNMP_PACKET), valid_flag(false) {};
+    SnmpMessage() : bufflen(MAX_SNMP_PACKET), valid_flag(false) { }
     // load up using a Pdu, community and SNMP version
     // performs ASN.1 serialization
     // result status returned

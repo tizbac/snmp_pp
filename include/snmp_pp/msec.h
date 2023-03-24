@@ -79,7 +79,7 @@ public:
      *
      * @param in_msec - Time for this object
      */
-    msec(const msec& in_msec) : m_time(in_msec.m_time), m_changed(true) {};
+    msec(const msec& in_msec) : m_time(in_msec.m_time), m_changed(true) { }
 
     /**
      * Constructor using seconds and milli sconds.

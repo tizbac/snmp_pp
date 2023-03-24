@@ -104,7 +104,7 @@ class DLLOPT CUDEvent {
 public:
     CUDEvent(const UdId uniqueId, const int fd, const UdInputMask mask,
         const ud_callback callBack, const void* callData);
-    ~CUDEvent() {};
+    ~CUDEvent() { }
     UdId        GetId() const { return m_uniqueId; }
     int         GetFd() const { return m_fd; }
     UdInputMask GetMask() const { return m_mask; }
@@ -127,7 +127,8 @@ class DLLOPT CUDEventQueue : public CEvents {
 public:
     CUDEventQueue(EventListHolder* holder)
         : m_head(nullptr, nullptr, nullptr), m_msgCount(0), m_id(1),
-          my_holder(holder) {};
+          my_holder(holder)
+    { }
     ~CUDEventQueue() override;
     UdId      AddEntry(const int fd, const UdInputMask mask,
              const ud_callback callBack, const void* callData);
@@ -190,7 +191,7 @@ protected:
 };
 
 #ifdef SNMP_PP_NAMESPACE
-}; // end of namespace Snmp_pp
+} // end of namespace Snmp_pp
 #endif
 
 #endif // _SNMP_USERDEFINED_H_
