@@ -123,7 +123,7 @@ int main(int argc, char** argv)
     //---------[ make a GenAddress and Oid object to retrieve ]---------------
     UdpAddress address(argv[1]); // make a SNMP++ Generic address
     if (!address.valid())
-    { // check validity of address
+    {                            // check validity of address
         std::cout << "Invalid Address or DNS Name, " << argv[1] << "\n";
         return 1;
     }
@@ -151,7 +151,7 @@ int main(int argc, char** argv)
     {
         Oid oid("1.3.6.1.2.1.1.1"); // default is sysDescr
         vb.set_oid(oid);
-        pdu += vb; // add the vb to the Pdu
+        pdu += vb;                  // add the vb to the Pdu
     }
 
     //---------[ determine options to use ]-----------------------------------

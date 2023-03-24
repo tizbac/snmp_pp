@@ -72,7 +72,7 @@ public:
     /**
      * Constructor, sets the time to the current system time.
      */
-    msec() { refresh(); };
+    msec() { refresh(); }
 
     /**
      * Constructor using another msec object
@@ -91,7 +91,7 @@ public:
     {
         m_time.tv_sec  = sec;
         m_time.tv_usec = milsec;
-    };
+    }
 
     DLLOPT friend int operator==(const msec& t1, const msec& t2);
     DLLOPT friend int operator!=(const msec& t1, const msec& t2);
@@ -100,11 +100,11 @@ public:
     DLLOPT friend int operator<=(const msec& t1, const msec& t2)
     {
         return ((t1 < t2) || (t1 == t2));
-    };
+    }
     DLLOPT friend int operator>=(const msec& t1, const msec& t2)
     {
         return ((t1 > t2) || (t1 == t2));
-    };
+    }
 
     msec& operator-=(const long millisec);
     msec& operator-=(const timeval& t1);
@@ -115,7 +115,7 @@ public:
         m_time    = t.m_time;
         m_changed = true;
         return *this;
-    };
+    }
     msec& operator=(const timeval& t1);
 
     /**
@@ -126,7 +126,7 @@ public:
     operator unsigned long() const
     {
         return ((m_time.tv_sec * 1000) + m_time.tv_usec);
-    };
+    }
 
     /**
      * Set the time to the current system time.
@@ -141,7 +141,7 @@ public:
         m_time.tv_sec  = (time_t)-1;
         m_time.tv_usec = 0;
         m_changed      = true;
-    };
+    }
 
     /**
      * Check if the time is infinite.
@@ -151,7 +151,7 @@ public:
     int IsInfinite() const
     {
         return ((m_time.tv_sec == (time_t)-1) && (m_time.tv_usec == 0));
-    };
+    }
 
     /**
      * Get the difference between this and the given time.
@@ -173,7 +173,7 @@ public:
     {
         msec const now;
         now.GetDelta(*this, timeout);
-    };
+    }
 
     /**
      * Return the time as printable string.

@@ -222,7 +222,7 @@ public:
         smival.value.hNumber.hipart = 0;
         smival.value.hNumber.lopart = 0;
         m_changed                   = true;
-    };
+    }
 
     //-----------[ overloaded operators ]----------------------
 

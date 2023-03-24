@@ -123,7 +123,7 @@ int main(int argc, char** argv)
     //---------[ make a GenAddress and Oid object to retrieve ]---------------
     UdpAddress address(argv[1]); // make a SNMP++ Generic address
     if (!address.valid())
-    { // check validity of address
+    {                            // check validity of address
         std::cout << "Invalid Address or DNS Name, " << argv[1] << "\n";
         usage();
     }
@@ -382,7 +382,7 @@ int main(int argc, char** argv)
     pdu.set_notify_id(oid);         // set the id of the trap
     pdu.set_notify_enterprise(ent); // set up the enterprise of the trap
     address.set_port(port);
-    CTarget ctarget(address); // make a target using the address
+    CTarget ctarget(address);       // make a target using the address
 #ifdef _SNMPv3
     UTarget utarget(address);
 

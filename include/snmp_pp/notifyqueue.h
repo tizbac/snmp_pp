@@ -98,14 +98,14 @@ public:
     CNotifyEvent(Snmp* snmp, const OidCollection& trapids,
         const TargetCollection& targets);
     ~CNotifyEvent();
-    Snmp* GetId() { return m_snmp; };
+    Snmp* GetId() { return m_snmp; }
     int   notify_filter(const Oid& trapid, SnmpTarget& target) const;
     int   Callback(SnmpTarget& target, Pdu& pdu, SnmpSocket fd, int status);
     void  get_filter(OidCollection& o, TargetCollection& t)
     {
         o = *notify_ids;
         t = *notify_targets;
-    };
+    }
 
 protected:
     Snmp*             m_snmp;
@@ -130,8 +130,8 @@ public:
     int GetNextTimeout(msec& /*timeout*/) override
     {
         return 1;
-    }; // we have no timeouts
-       // set up parameters for select
+    } // we have no timeouts
+      // set up parameters for select
 #ifdef HAVE_POLL_SYSCALL
     int  GetFdCount();
     bool GetFdArray(struct pollfd* readfds, int& remaining);
@@ -143,16 +143,16 @@ public:
          const fd_set& writefds, const fd_set& exceptfds) override;
 #endif
     // return number of outstanding messages
-    int GetCount() override { return m_msgCount; };
+    int GetCount() override { return m_msgCount; }
 
     int DoRetries(const msec& /*sendtime*/) override
     {
         return 0;
-    }; // nothing to retry
+    }                                        // nothing to retry
 
-    int        Done() override { return 0; }; // we are never done
-    void       set_listen_port(int port) { m_listen_port = port; };
-    int        get_listen_port() { return m_listen_port; };
+    int        Done() override { return 0; } // we are never done
+    void       set_listen_port(int port) { m_listen_port = port; }
+    int        get_listen_port() { return m_listen_port; }
     SnmpSocket get_notify_fd() const;
 
 protected:
@@ -170,8 +170,8 @@ protected:
         CNotifyEventQueueElt* GetNext()
         {
             return m_Next; // NOLINT(clang-analyzer-cplusplus.NewDelete)
-        };
-        CNotifyEvent* GetNotifyEvent() { return m_notifyevent; };
+        }
+        CNotifyEvent* GetNotifyEvent() { return m_notifyevent; }
         CNotifyEvent* TestId(Snmp* snmp);
 
     private:

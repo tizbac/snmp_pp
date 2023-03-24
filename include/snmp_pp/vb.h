@@ -59,13 +59,13 @@
 #ifndef _SNMP_VB_H_
 #define _SNMP_VB_H_
 
-#include "snmp_pp/address.h" // address class def
-#include "snmp_pp/counter.h" // counter
-#include "snmp_pp/ctr64.h"   // 64 bit counters
-#include "snmp_pp/gauge.h"   // gauge class
-#include "snmp_pp/integer.h" // integer class
-#include "snmp_pp/octet.h"   // octet class
-#include "snmp_pp/oid.h"     // oid class def
+#include "snmp_pp/address.h"  // address class def
+#include "snmp_pp/counter.h"  // counter
+#include "snmp_pp/ctr64.h"    // 64 bit counters
+#include "snmp_pp/gauge.h"    // gauge class
+#include "snmp_pp/integer.h"  // integer class
+#include "snmp_pp/octet.h"    // octet class
+#include "snmp_pp/oid.h"      // oid class def
 #include "snmp_pp/snmperrs.h"
 #include "snmp_pp/timetick.h" // time ticks
 
@@ -108,12 +108,12 @@ public:
     /**
      * Copy constructor.
      */
-    Vb(const Vb& vb) : iv_vb_value(nullptr) { *this = vb; };
+    Vb(const Vb& vb) : iv_vb_value(nullptr) { *this = vb; }
 
     /**
      * Destructor that frees all allocated memory.
      */
-    ~Vb() { free_vb(); };
+    ~Vb() { free_vb(); }
 
     /**
      * Overloaded assignment operator.
@@ -123,14 +123,14 @@ public:
     /**
      * Clone operator.
      */
-    Vb* clone() const { return new Vb(*this); };
+    Vb* clone() const { return new Vb(*this); }
 
     //-----[ set oid / get oid ]------------------------------------------
 
     /**
      * Set the oid from another oid.
      */
-    void set_oid(const Oid& oid) { iv_vb_oid = oid; };
+    void set_oid(const Oid& oid) { iv_vb_oid = oid; }
 
     /**
      * Get the oid portion.
@@ -138,7 +138,7 @@ public:
      * @note Check the validity of the object through Vb::valid() before
      *       calling this method.
      */
-    void get_oid(Oid& oid) const { oid = iv_vb_oid; };
+    void get_oid(Oid& oid) const { oid = iv_vb_oid; }
 
     /**
      * Get the oid portion as a const.
@@ -146,7 +146,7 @@ public:
      * @note Check the validity of the object through Vb::valid() before
      *       calling this method.
      */
-    const Oid& get_oid() const { return iv_vb_oid; };
+    const Oid& get_oid() const { return iv_vb_oid; }
 
     //-----[ set value ]--------------------------------------------------
 
@@ -157,7 +157,7 @@ public:
     {
         free_vb();
         iv_vb_value = val.clone();
-    };
+    }
 
     /**
      * Set the value with an int.
@@ -168,7 +168,7 @@ public:
     {
         free_vb();
         iv_vb_value = new SnmpInt32(i);
-    };
+    }
 
     /**
      * Set the value with an unsigned int.
@@ -179,7 +179,7 @@ public:
     {
         free_vb();
         iv_vb_value = new SnmpUInt32(i);
-    };
+    }
 
     /**
      * Set the value with a long int.
@@ -192,7 +192,7 @@ public:
     {
         free_vb();
         iv_vb_value = new SnmpInt32(i);
-    };
+    }
 
     /**
      * Set the value with an uint32_t int.
@@ -205,7 +205,7 @@ public:
     {
         free_vb();
         iv_vb_value = new SnmpUInt32(i);
-    };
+    }
 
     /**
      * Set value using a null terminated string.
@@ -216,7 +216,7 @@ public:
     {
         free_vb();
         iv_vb_value = new OctetStr(ptr);
-    };
+    }
 
     /**
      * Set value using a string and length.
@@ -227,12 +227,12 @@ public:
     {
         free_vb();
         iv_vb_value = new OctetStr(ptr, len);
-    };
+    }
 
     /**
      * Set the value portion of the vb to null, if its not already.
      */
-    void set_null() { free_vb(); };
+    void set_null() { free_vb(); }
 
     //----[ get value ]------------------------------------------------
 
@@ -378,7 +378,7 @@ public:
     SnmpSyntax* clone_value() const
     {
         return ((iv_vb_value) ? iv_vb_value->clone() : nullptr);
-    };
+    }
 
     //-----[ misc]--------------------------------------------------------
 
@@ -409,12 +409,12 @@ public:
     {
         free_vb();
         exception_status = status;
-    };
+    }
 
     /**
      * Get the exception status.
      */
-    SmiUINT32 get_exception_status() const { return exception_status; };
+    SmiUINT32 get_exception_status() const { return exception_status; }
 
     /**
      * Return a formatted version of the value.
@@ -428,10 +428,7 @@ public:
      *
      * @return A null terminated string (may be empty if no Oid has been set).
      */
-    const char* get_printable_oid() const
-    {
-        return iv_vb_oid.get_printable();
-    };
+    const char* get_printable_oid() const { return iv_vb_oid.get_printable(); }
 
     /**
      * Return the validity of a Vb object.
@@ -454,7 +451,7 @@ public:
     {
         free_vb();
         iv_vb_oid.clear();
-    };
+    }
 
     //-----[ protected members ]
 protected:

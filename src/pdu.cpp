@@ -117,7 +117,7 @@ Pdu::Pdu(Vb* pvbs, const int pvb_count)
             vbs[z] = nullptr;
         }
 
-        if (vbs[z] == nullptr) // check for new fail
+        if (vbs[z] == nullptr)                         // check for new fail
         {
             for (int y = 0; y < z; ++y) delete vbs[y]; // free vbs
             validity = false;
@@ -235,7 +235,7 @@ Pdu& Pdu::operator+=(const Vb& vb)
 
     vbs[vb_count] = new Vb(vb); // add the new one
 
-    if (vbs[vb_count]) // up the vb count on success
+    if (vbs[vb_count])          // up the vb count on success
     {
         if (vbs[vb_count]->valid())
         {
@@ -345,7 +345,7 @@ int Pdu::get_vb(Vb& vb, const int index) const
     if (index < 0) return false;         // can't have an index less than 0
     if (index >= vb_count) return false; // can't ask for something not there
 
-    vb = *vbs[index]; // asssign it
+    vb = *vbs[index];                    // asssign it
 
     return vb.valid();
 }
@@ -357,7 +357,7 @@ int Pdu::set_vb(Vb const& vb, const int index)
     if (index >= vb_count) return false; // can't ask for something not there
     if (!vb.valid()) return false;       // don't set invalid vbs
 
-    Vb* victim = vbs[index]; // save in case new fails
+    Vb* victim = vbs[index];             // save in case new fails
     vbs[index] = new Vb(vb);
     if (vbs[index])
     {

@@ -158,7 +158,7 @@ public:
     /**
      * Set the pointer to the salt that should be used.
      */
-    virtual void set_salt(pp_uint64* new_salt) { salt = new_salt; };
+    virtual void set_salt(pp_uint64* new_salt) { salt = new_salt; }
 
     /**
      * Get the maximum length that is needed for the
@@ -506,13 +506,13 @@ public:
         const int msg_len, unsigned char* auth_par_ptr,
         const int auth_par_len) override;
 
-    int get_id() const override { return SNMP_AUTHPROTOCOL_HMACMD5; };
+    int get_id() const override { return SNMP_AUTHPROTOCOL_HMACMD5; }
 
-    const char* get_id_string() const override { return "HMAC-MD5"; };
+    const char* get_id_string() const override { return "HMAC-MD5"; }
 
-    int get_auth_params_len() const override { return 12; };
+    int get_auth_params_len() const override { return 12; }
 
-    int get_hash_len() const override { return SNMPv3_AP_OUTPUT_LENGTH_MD5; };
+    int get_hash_len() const override { return SNMPv3_AP_OUTPUT_LENGTH_MD5; }
 };
 
 /**
@@ -560,14 +560,14 @@ public:
         return SNMPv3_USM_ERROR; /* not needed for DES! */
     }
 
-    int         get_id() const override { return SNMP_PRIVPROTOCOL_DES; };
-    const char* get_id_string() const override { return "DES"; };
-    int         get_priv_params_len() const override { return 8; };
-    int         get_min_key_len() const override { return 16; };
+    int         get_id() const override { return SNMP_PRIVPROTOCOL_DES; }
+    const char* get_id_string() const override { return "DES"; }
+    int         get_priv_params_len() const override { return 8; }
+    int         get_min_key_len() const override { return 16; }
     void        fix_key_len(unsigned int& key_len) const override
     {
         key_len = (key_len >= 16 ? 16 : 0);
-    };
+    }
 };
 
 #    ifdef _USE_IDEA
@@ -597,16 +597,16 @@ public:
         unsigned int* key_len, const unsigned int max_key_len, Auth* auth)
     {
         return SNMPv3_USM_ERROR; /* not needed for IDEA! */
-    };
+    }
 
-    int         get_id() const { return SNMP_PRIVPROTOCOL_IDEA; };
-    const char* get_id_string() const { return "IDEA"; };
-    int         get_priv_params_len() const { return 8; };
-    int         get_min_key_len() const { return 16; };
+    int         get_id() const { return SNMP_PRIVPROTOCOL_IDEA; }
+    const char* get_id_string() const { return "IDEA"; }
+    int         get_priv_params_len() const { return 8; }
+    int         get_min_key_len() const { return 16; }
     void        fix_key_len(unsigned int& key_len) const
     {
         key_len = (key_len >= 16 ? 16 : 0);
-    };
+    }
 };
 
 #    endif
@@ -641,14 +641,14 @@ public:
         unsigned int* key_len, const unsigned int max_key_len,
         Auth* auth) override;
 
-    int         get_id() const override { return aes_type; };
+    int         get_id() const override { return aes_type; }
     const char* get_id_string() const override;
-    int         get_priv_params_len() const override { return 8; };
-    int         get_min_key_len() const override { return key_bytes; };
+    int         get_priv_params_len() const override { return 8; }
+    int         get_min_key_len() const override { return key_bytes; }
     void        fix_key_len(unsigned int& key_len) const override
     {
         key_len = (key_len >= (unsigned)key_bytes ? key_bytes : 0);
-    };
+    }
 
 private:
     int aes_type;
@@ -727,15 +727,15 @@ public:
         const unsigned int engine_id_len, unsigned char* key,
         unsigned int* key_len, const unsigned int max_key_len, Auth* auth);
 
-    int         get_id() const { return SNMP_PRIVPROTOCOL_3DESEDE; };
-    const char* get_id_string() const { return "3DESEDE"; };
-    int         get_priv_params_len() const { return 8; };
-    int         get_min_key_len() const { return TRIPLEDES_EDE_KEY_LEN; };
+    int         get_id() const { return SNMP_PRIVPROTOCOL_3DESEDE; }
+    const char* get_id_string() const { return "3DESEDE"; }
+    int         get_priv_params_len() const { return 8; }
+    int         get_min_key_len() const { return TRIPLEDES_EDE_KEY_LEN; }
     void        fix_key_len(unsigned int& key_len) const
     {
         key_len =
             (key_len >= TRIPLEDES_EDE_KEY_LEN ? TRIPLEDES_EDE_KEY_LEN : 0);
-    };
+    }
 #        ifdef _TEST
     bool test();
 #        endif
@@ -795,13 +795,13 @@ protected:
 class DLLOPT AuthSHA : public AuthSHABase {
 private:
 public:
-    int get_id() const override { return SNMP_AUTHPROTOCOL_HMACSHA; };
+    int get_id() const override { return SNMP_AUTHPROTOCOL_HMACSHA; }
 
-    const char* get_id_string() const override { return "HMAC-SHA"; };
+    const char* get_id_string() const override { return "HMAC-SHA"; }
 
-    int get_auth_params_len() const override { return 12; };
+    int get_auth_params_len() const override { return 12; }
 
-    int get_hash_len() const override { return SNMPv3_AP_OUTPUT_LENGTH_SHA; };
+    int get_hash_len() const override { return SNMPv3_AP_OUTPUT_LENGTH_SHA; }
 
 protected:
     class HasherSHA1;
@@ -819,16 +819,16 @@ protected:
 class DLLOPT AuthHMAC128SHA224 : public AuthSHABase {
 private:
 public:
-    int get_id() const override { return SNMP_AUTHPROTOCOL_HMAC128SHA224; };
+    int get_id() const override { return SNMP_AUTHPROTOCOL_HMAC128SHA224; }
 
-    const char* get_id_string() const override { return "HMAC-128-SHA-224"; };
+    const char* get_id_string() const override { return "HMAC-128-SHA-224"; }
 
-    int get_auth_params_len() const override { return 16; };
+    int get_auth_params_len() const override { return 16; }
 
     int get_hash_len() const override
     {
         return SNMPv3_AP_OUTPUT_LENGTH_SHA224;
-    };
+    }
 
 protected:
     class Hasher224;
@@ -843,16 +843,16 @@ protected:
  */
 class DLLOPT AuthHMAC192SHA256 : public AuthSHABase {
 public:
-    int get_id() const override { return SNMP_AUTHPROTOCOL_HMAC192SHA256; };
+    int get_id() const override { return SNMP_AUTHPROTOCOL_HMAC192SHA256; }
 
-    const char* get_id_string() const override { return "HMAC-192-SHA-256"; };
+    const char* get_id_string() const override { return "HMAC-192-SHA-256"; }
 
-    int get_auth_params_len() const override { return 24; };
+    int get_auth_params_len() const override { return 24; }
 
     int get_hash_len() const override
     {
         return SNMPv3_AP_OUTPUT_LENGTH_SHA256;
-    };
+    }
 
 protected:
     class Hasher256;
@@ -867,16 +867,16 @@ protected:
  */
 class DLLOPT AuthHMAC256SHA384 : public AuthSHABase {
 public:
-    int get_id() const override { return SNMP_AUTHPROTOCOL_HMAC256SHA384; };
+    int get_id() const override { return SNMP_AUTHPROTOCOL_HMAC256SHA384; }
 
-    const char* get_id_string() const override { return "HMAC-256-SHA-384"; };
+    const char* get_id_string() const override { return "HMAC-256-SHA-384"; }
 
-    int get_auth_params_len() const override { return 32; };
+    int get_auth_params_len() const override { return 32; }
 
     int get_hash_len() const override
     {
         return SNMPv3_AP_OUTPUT_LENGTH_SHA384;
-    };
+    }
 
 protected:
     class Hasher384;
@@ -891,16 +891,16 @@ protected:
  */
 class DLLOPT AuthHMAC384SHA512 : public AuthSHABase {
 public:
-    int get_id() const override { return SNMP_AUTHPROTOCOL_HMAC384SHA512; };
+    int get_id() const override { return SNMP_AUTHPROTOCOL_HMAC384SHA512; }
 
-    const char* get_id_string() const override { return "HMAC-384-SHA-512"; };
+    const char* get_id_string() const override { return "HMAC-384-SHA-512"; }
 
-    int get_auth_params_len() const override { return 48; };
+    int get_auth_params_len() const override { return 48; }
 
     int get_hash_len() const override
     {
         return SNMPv3_AP_OUTPUT_LENGTH_SHA512;
-    };
+    }
 
 protected:
     class Hasher512;

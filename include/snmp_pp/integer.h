@@ -154,7 +154,7 @@ public:
      *
      * @return value as uint32_t
      */
-    operator uint32_t() const { return smival.value.uNumber; };
+    operator uint32_t() const { return smival.value.uNumber; }
 
     /**
      * Get a printable ASCII value.
@@ -169,7 +169,7 @@ public:
     SnmpSyntax* clone() const override
     {
         return (SnmpSyntax*)new SnmpUInt32(*this);
-    };
+    }
 
     /**
      * Return validity of the object.
@@ -295,7 +295,7 @@ public:
     SnmpSyntax* clone() const override
     {
         return (SnmpSyntax*)new SnmpInt32(*this);
-    };
+    }
 
     /**
      * Return validity of the object.

@@ -69,7 +69,7 @@ public:
 class DLLOPT SnmpSynchronize {
 
 public:
-    SnmpSynchronize(SnmpSynchronized& sync) : s(sync) { s.lock(); };
+    SnmpSynchronize(SnmpSynchronized& sync) : s(sync) { s.lock(); }
     ~SnmpSynchronize() { s.unlock(); }
 
 protected:

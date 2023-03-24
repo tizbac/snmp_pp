@@ -493,14 +493,14 @@ public:
      *
      * @return Pointer to the function set through notify_register()
      */
-    snmp_callback get_notify_callback() { return notifycallback; };
+    snmp_callback get_notify_callback() { return notifycallback; }
 
     /**
      * Get a pointer to the data that is passed to the callback function.
      *
      * @return Pointer to the data set through notify_register()
      */
-    void* get_notify_callback_data() { return notifycallback_data; };
+    void* get_notify_callback_data() { return notifycallback_data; }
 
     //@}
 
@@ -519,7 +519,7 @@ public:
     virtual int send_raw_data(unsigned char* send_buf, size_t send_len,
         UdpAddress& address, SnmpSocket fd = INVALID_SOCKET);
 
-    const IpAddress& get_listen_address() const { return listen_address; };
+    const IpAddress& get_listen_address() const { return listen_address; }
 
     /**
      * Start one thread listening for responses and notifications.
@@ -548,23 +548,23 @@ public:
      */
     void stop_poll_thread();
 
-    EventListHolder* get_eventListHolder() { return eventListHolder; };
+    EventListHolder* get_eventListHolder() { return eventListHolder; }
 
 protected:
     /**
      * Check for the status of the worker thread.
      * @return true - if running, false - otherwise
      */
-    bool is_running() const { return m_isThreadRunning; };
+    bool is_running() const { return m_isThreadRunning; }
 
-        /**
-         * This is a working thread for the recovery of the pending events.
-         *
-         * @param snmp [in] pointer to the whole object
-         *
-         * @return  0 - if successful,
-         *          1 - in the case of error
-         */
+    /**
+     * This is a working thread for the recovery of the pending events.
+     *
+     * @param snmp [in] pointer to the whole object
+     *
+     * @return  0 - if successful,
+     *          1 - in the case of error
+     */
 #ifdef WIN32
     static int process_thread(Snmp* snmp);
 #else

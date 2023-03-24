@@ -269,7 +269,7 @@ int SHAFinal(unsigned char* digest, SHA_CTX* ctx)
     /* How many padding bytes do we need? */
     i = (ctx->count[0] >> 3) & 0x3f; /* # of bytes mod 64 */
     if (i >= 56)
-        i = 120 - i; /* # of padding bytes needed */
+        i = 120 - i;                 /* # of padding bytes needed */
     else
         i = 56 - i;
 

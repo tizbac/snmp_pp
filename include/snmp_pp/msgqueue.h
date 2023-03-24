@@ -96,11 +96,11 @@ public:
         size_t rawPduLen, const Address& address, snmp_callback callBack,
         void* callData);
     virtual ~CSNMPMessage();
-    uint32_t   GetId() const { return m_uniqueId; };
-    void       ResetId(const uint32_t newId) { m_uniqueId = newId; };
+    uint32_t   GetId() const { return m_uniqueId; }
+    void       ResetId(const uint32_t newId) { m_uniqueId = newId; }
     void       SetSendTime();
-    void       GetSendTime(msec& sendTime) const { sendTime = m_sendTime; };
-    SnmpSocket GetSocket() const { return m_socket; };
+    void       GetSendTime(msec& sendTime) const { sendTime = m_sendTime; }
+    SnmpSocket GetSocket() const { return m_socket; }
     int        SetPdu(
                const int reason, const Pdu& pdu, const UdpAddress& fromaddress);
     int GetPdu(int& reason, Pdu& pdu)
@@ -108,13 +108,13 @@ public:
         pdu    = m_pdu;
         reason = m_reason;
         return 0;
-    };
-    int         GetReceived() const { return m_received; };
+    }
+    int         GetReceived() const { return m_received; }
     int         ResendMessage();
     int         Callback(const int reason);
-    SnmpTarget* GetTarget() { return m_target; };
-    bool        IsLocked() const { return m_locked; };
-    void        SetLocked(const bool l) { m_locked = l; };
+    SnmpTarget* GetTarget() { return m_target; }
+    bool        IsLocked() const { return m_locked; }
+    void        SetLocked(const bool l) { m_locked = l; }
 
 protected:
     uint32_t       m_uniqueId;
@@ -165,7 +165,7 @@ public:
 #endif
 
     // return number of outstanding messages
-    int GetCount() override { return m_msgCount; };
+    int GetCount() override { return m_msgCount; }
 
     int DoRetries(const msec& sendtime) override;
 

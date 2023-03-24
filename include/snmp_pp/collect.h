@@ -159,7 +159,7 @@ public:
     {
         if (this == &c) return *this; // check for self assignment
 
-        clear(); // delete the data
+        clear();                      // delete the data
 
         if (c.count == 0) return *this;
 

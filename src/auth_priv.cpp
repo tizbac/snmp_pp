@@ -291,9 +291,9 @@ typedef des_key_schedule DESCBCType;
 
 #            endif // RSAEURO
 
-#        endif // _USE_LIBTOMCRYPT
+#        endif     // _USE_LIBTOMCRYPT
 
-#    endif // _USE_OPENSSL
+#    endif         // _USE_OPENSSL
 
 // 3DES key extension used by two classes
 int des3_extend_short_key(const unsigned char* /* password */,
@@ -1118,8 +1118,8 @@ int AuthMD5::auth_out_msg(const unsigned char* key, unsigned char* msg,
     MD5HashStateType   md5_hash_state {};
     unsigned int const key_len = 16; /* We use only 16 Byte Key! */
     unsigned char      digest[16];
-    unsigned char      k_ipad[65]; /* inner padding - key XORd with ipad */
-    unsigned char      k_opad[65]; /* outer padding - key XORd with opad */
+    unsigned char      k_ipad[65];   /* inner padding - key XORd with ipad */
+    unsigned char      k_opad[65];   /* outer padding - key XORd with opad */
 
     memset((char*)(auth_par_ptr), 0, 12);
 

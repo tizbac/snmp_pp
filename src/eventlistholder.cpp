@@ -114,7 +114,7 @@ int EventListHolder::SNMPProcessPendingEvents()
 
     pevents_mutex.lock(); // FIXME: not exception save! CK
 
-    timeout = 1; // chosen a very small timeout
+    timeout = 1;          // chosen a very small timeout
     // in order to avoid busy looping but keep overall performance
 
     do {

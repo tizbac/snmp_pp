@@ -463,7 +463,7 @@ public:
             if (smival.value.oid.ptr[z] < o.smival.value.oid.ptr[z])
                 return -1; // less than
             if (smival.value.oid.ptr[z] > o.smival.value.oid.ptr[z])
-                return 1; // greater than
+                return 1;  // greater than
             ++z;
         }
 
@@ -512,7 +512,7 @@ public:
             if (smival.value.oid.ptr[z] < o.smival.value.oid.ptr[z])
                 return -1; // less than
             if (smival.value.oid.ptr[z] > o.smival.value.oid.ptr[z])
-                return 1; // greater than
+                return 1;  // greater than
             ++z;
         }
 
@@ -541,7 +541,7 @@ public:
     const char* get_printable() const override
     {
         return get_printable(1, smival.value.oid.len, (char*&)iv_str);
-    };
+    }
 
     /**
      * Get a printable ASCII string of the right part of the value.
@@ -554,7 +554,7 @@ public:
     {
         return get_printable(
             smival.value.oid.len - n + 1, n, (char*&)iv_part_str);
-    };
+    }
 
     /**
      * Get a printable ASCII string of a part of the value.
@@ -583,7 +583,7 @@ public:
     const char* get_printable(const uint32_t start, const uint32_t n) const
     {
         return get_printable(start, n, (char*&)iv_part_str);
-    };
+    }
 
     /**
      * Clone this object.

@@ -97,16 +97,16 @@ private:
         const OctetStr*    security_name, // optional v3
         const int          security_model);        // optional v3
 public:
-    int load(const Pdu&    pdu,       // Pdu to serialize
-        const OctetStr&    community, // community name to use
-        const snmp_version version)   // SNMP version, v1 or v2
+    int load(const Pdu&    pdu,           // Pdu to serialize
+        const OctetStr&    community,     // community name to use
+        const snmp_version version)       // SNMP version, v1 or v2
     {
         return load(
 #ifdef _SNMPv3
             0,
 #endif
             pdu, community, version, 0, 0, 0);
-    };
+    }
 
     // load up message using ASN.1 data stream
     // status is returned
@@ -129,7 +129,7 @@ public:
         snmp_version& version)   // version
     {
         return unload(pdu, community, version, 0, 0, 0, 0, 0);
-    };
+    }
 
 #ifdef _SNMPv3
     int loadv3(v3MP*       mpv3,      // v3 message processing model
@@ -149,20 +149,20 @@ public:
         SmiINT32& security_model, UdpAddress& from_addr, Snmp& snmp_session);
 
     // returns true if the message in the buffer is a v3 message
-    bool is_v3_message() { return v3MP::is_v3_msg(databuff, (int)bufflen); };
+    bool is_v3_message() { return v3MP::is_v3_msg(databuff, (int)bufflen); }
 
 #endif
 
     // return the validity of the message
-    bool valid() const { return valid_flag; };
+    bool valid() const { return valid_flag; }
 
     // return raw data
     // check validity
-    unsigned char* data() { return databuff; };
+    unsigned char* data() { return databuff; }
 
     // returns len
     // check validity
-    uint32_t len() const { return bufflen; };
+    uint32_t len() const { return bufflen; }
 
 protected:
     unsigned char databuff[MAX_SNMP_PACKET] {};

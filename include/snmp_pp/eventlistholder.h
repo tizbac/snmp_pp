@@ -55,13 +55,13 @@ public:
     EventListHolder(Snmp* snmp_session);
     ~EventListHolder() {};
 
-    CSNMPMessageQueue*& snmpEventList() { return m_snmpMessageQueue; };
-    CNotifyEventQueue*& notifyEventList() { return m_notifyEventQueue; };
+    CSNMPMessageQueue*& snmpEventList() { return m_snmpMessageQueue; }
+    CNotifyEventQueue*& notifyEventList() { return m_notifyEventQueue; }
 #ifdef _USER_DEFINED_EVENTS
-    CUDEventQueue*& udEventList() { return m_udEventQueue; };
+    CUDEventQueue*& udEventList() { return m_udEventQueue; }
 #endif
 #ifdef _USER_DEFINED_TIMEOUTS
-    CUTEventQueue*& utEventList() { return m_utEventQueue; };
+    CUTEventQueue*& utEventList() { return m_utEventQueue; }
 #endif
 
     uint32_t SNMPGetNextTimeout();
@@ -115,18 +115,18 @@ public:
     void SNMPRemoveTimeOut(const UtId utId)
     {
         m_utEventQueue->DeleteEntry(utId);
-    };
+    }
 #endif
 
-        //--------[ userdefined
-        //]---------------------------------------------------
+    //--------[ userdefined
+    //]---------------------------------------------------
 #ifdef _USER_DEFINED_EVENTS
     UdId SNMPAddInput(const int source, const UdInputMask condition,
         const ud_callback callBack, const void* callData);
     void SNMPRemoveInput(const UdId udId)
     {
         m_udEventQueue->DeleteEntry(udId);
-    };
+    }
 #endif
 
 private:
@@ -139,7 +139,7 @@ private:
 #ifdef _USER_DEFINED_TMEOUTS
     CUTEventQueue* m_utEventQueue; // contains all user-defined timeouts
 #endif
-    CEventList m_eventList; // contains all expected events
+    CEventList m_eventList;        // contains all expected events
 
     SnmpSynchronized pevents_mutex;
 };

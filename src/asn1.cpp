@@ -189,7 +189,7 @@ unsigned char* asn_parse_unsigned_int(
 
     *intp = value; // assign return value
 
-    return bufp; // return the bumped pointer
+    return bufp;   // return the bumped pointer
 }
 
 /*
@@ -1061,8 +1061,8 @@ void clear_pdu(struct snmp_pdu* pdu, bool clear_all)
         if (vp->name) free((char*)vp->name);             // free the oid part
         if (vp->val.string) free((char*)vp->val.string); // free deep data
         struct variable_list* ovp = vp;
-        vp                        = vp->next_variable; // go to the next one
-        free((char*)ovp);                              // free up vb itself
+        vp                        = vp->next_variable;   // go to the next one
+        free((char*)ovp);                                // free up vb itself
     }
     pdu->variables = nullptr;
 

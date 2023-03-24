@@ -697,7 +697,7 @@ int CNotifyEventQueue::HandleEvents(
 
         if ((readfds[i].revents & POLLIN) == 0) continue; // nothing to receive
 
-        if (readfds[i].fd != m_notify_fd) continue; // not our socket
+        if (readfds[i].fd != m_notify_fd) continue;       // not our socket
 
         status = receive_snmp_notification(
             m_notify_fd, *m_snmpSession, pdu, &target);
@@ -716,7 +716,7 @@ int CNotifyEventQueue::HandleEvents(
                 notifyEltPtr->GetNotifyEvent()->Callback(
                     *target, pdu, m_notify_fd, status);
                 notifyEltPtr = notifyEltPtr->GetNext();
-            } // for each snmp object
+            }       // for each snmp object
         }
         if (target) // receive_snmp_notification calls new
             delete target;
@@ -745,11 +745,11 @@ int CNotifyEventQueue::HandleEvents(const int /*maxfds*/,
     const fd_set& /*exceptfds*/)
 {
     SnmpSynchronize const _synchronize(*this); // REENTRANT
-    int status = SNMP_CLASS_SUCCESS;
+    int                   status = SNMP_CLASS_SUCCESS;
 
     if (m_notify_fd == INVALID_SOCKET) return status;
 
-    Pdu pdu;
+    Pdu         pdu;
     SnmpTarget* target = nullptr;
 
     // pull the notifiaction off the socket
@@ -774,7 +774,7 @@ int CNotifyEventQueue::HandleEvents(const int /*maxfds*/,
                 notifyEltPtr->GetNotifyEvent()->Callback(
                     *target, pdu, m_notify_fd, status);
                 notifyEltPtr = notifyEltPtr->GetNext();
-            } // for each snmp object
+            }       // for each snmp object
         }
         if (target) // receive_snmp_notification calls new
             delete target;

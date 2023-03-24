@@ -205,7 +205,7 @@ public:
         m_changed = true;
         validity  = true;
         return smival.value.string.ptr[i];
-    };
+    }
 
     /**
      * Allow access as if it was an array for const OctetStr objects.
@@ -215,14 +215,14 @@ public:
     unsigned char operator[](int i) const
     {
         return smival.value.string.ptr[i];
-    };
+    }
 
     /**
      * Return the syntax.
      *
      * @return This method always returns sNMP_SYNTAX_OCTETS.
      */
-    SmiUINT32 get_syntax() const override { return sNMP_SYNTAX_OCTETS; };
+    SmiUINT32 get_syntax() const override { return sNMP_SYNTAX_OCTETS; }
 
     /**
      * Return the space needed for serialization.
@@ -232,7 +232,7 @@ public:
     /**
      * Return validity of the object.
      */
-    bool valid() const override { return validity; };
+    bool valid() const override { return validity; }
 
     /**
      * Clone this object.
@@ -242,7 +242,7 @@ public:
     SnmpSyntax* clone() const override
     {
         return (SnmpSyntax*)new OctetStr(*this);
-    };
+    }
 
     /**
      * Map other SnmpSyntax objects to OctetStr.
@@ -291,13 +291,13 @@ public:
     static void set_hex_output_type(const enum OutputType ot)
     {
         hex_output_type = ot;
-    };
+    }
 
     /**
      * Set the char get_printable_hex() and get_printable_clear()
      * will use for non printable characters.
      */
-    static void set_np_char(const char np) { nonprintable_char = np; };
+    static void set_np_char(const char np) { nonprintable_char = np; }
 
     /**
      * Set the data on an already constructed OctetStr.
@@ -312,12 +312,12 @@ public:
     /**
      * Get the length of the string.
      */
-    uint32_t len() const { return smival.value.string.len; };
+    uint32_t len() const { return smival.value.string.len; }
 
     /**
      * Get a pointer to internal data.
      */
-    unsigned char* data() const { return smival.value.string.ptr; };
+    unsigned char* data() const { return smival.value.string.ptr; }
 
     // compare n elements of an octet
     int nCompare(const uint32_t n, const OctetStr& o) const;
@@ -366,7 +366,7 @@ protected:
         OutputFunctionClear
     };
 
-    SNMP_PP_MUTABLE char* output_buffer; // formatted Octet value
+    SNMP_PP_MUTABLE char* output_buffer;    // formatted Octet value
     SNMP_PP_MUTABLE unsigned int
                          output_buffer_len; // allocated space for string
     SNMP_PP_MUTABLE bool m_changed;
@@ -393,7 +393,7 @@ public:
     /**
      * Constructor creating a valid zero length OpaqueStr.
      */
-    OpaqueStr() : OctetStr() { smival.syntax = sNMP_SYNTAX_OPAQUE; };
+    OpaqueStr() : OctetStr() { smival.syntax = sNMP_SYNTAX_OPAQUE; }
 
     /**
      * Constructs a OpaqueStr with the given value.
@@ -404,7 +404,7 @@ public:
     OpaqueStr(const char* str) : OctetStr(str)
     {
         smival.syntax = sNMP_SYNTAX_OPAQUE;
-    };
+    }
 
     /**
      * Constructs a OpaqueStr with the given value.
@@ -417,7 +417,7 @@ public:
         : OctetStr(str, length)
     {
         smival.syntax = sNMP_SYNTAX_OPAQUE;
-    };
+    }
 
     /**
      * Construct a OpaqueStr from an OctetStr.
@@ -428,7 +428,7 @@ public:
     OpaqueStr(const OctetStr& octet) : OctetStr(octet)
     {
         smival.syntax = sNMP_SYNTAX_OPAQUE;
-    };
+    }
 
     /**
      * Construct a OpaqueStr from another OpaqueStr.
@@ -439,7 +439,7 @@ public:
     OpaqueStr(const OpaqueStr& opaque) : OctetStr(opaque)
     {
         smival.syntax = sNMP_SYNTAX_OPAQUE;
-    };
+    }
 
     /**
      * Clone this object.
@@ -453,7 +453,7 @@ public:
      *
      * @return This method always returns sNMP_SYNTAX_OPAQUE.
      */
-    SmiUINT32 get_syntax() const override { return sNMP_SYNTAX_OPAQUE; };
+    SmiUINT32 get_syntax() const override { return sNMP_SYNTAX_OPAQUE; }
 
     /**
      * Map other SnmpSyntax objects to OpaqueStr.

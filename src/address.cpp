@@ -992,7 +992,7 @@ bool IpAddress::parse_address(const char* inaddr)
 
             return true;
         }
-#        endif // SNMP_PP_IPv6
+#        endif         // SNMP_PP_IPv6
         if (lookupResult->h_length == sizeof(in_addr))
         {
             if (!lookupResult->h_addr_list[0])
@@ -1028,7 +1028,7 @@ bool IpAddress::parse_address(const char* inaddr)
     }
 #    endif // PPC603
 
-#endif // HAVE_GETADDRINFO
+#endif     // HAVE_GETADDRINFO
     return true;
 }
 
@@ -1126,7 +1126,7 @@ int IpAddress::addr_to_friendly()
 #        endif
 #    else
         lookupResult = gethostbyaddr((char*)&ipAddr, sizeof(in_addr),
-            AF_INET); // TODO: Use getaddrinfo()! CK
+            AF_INET);                                // TODO: Use getaddrinfo()! CK
 #    endif
     }
     else
@@ -1164,7 +1164,7 @@ int IpAddress::addr_to_friendly()
 #        endif // HAVE_GETHOSTBYADDR_R
 #    else
         return -1;
-#    endif // SNMP_PP_IPv6
+#    endif     // SNMP_PP_IPv6
     }
     // if we found the name, then update the iv friendly name
 #    if defined(CPU) && CPU == PPC603
@@ -1471,7 +1471,7 @@ SnmpSyntax& UdpAddress::operator=(const SnmpSyntax& val)
 
     if (this == &val) return *this; // protect against assignment from itself
 
-    valid_flag   = false; // will get set true if really valid
+    valid_flag   = false;           // will get set true if really valid
     addr_changed = true;
     if (val.valid())
     {
@@ -1530,7 +1530,7 @@ Address& UdpAddress::operator=(const Address& val)
 
     if (this == &val) return *this; // protect against assignment from itself
 
-    valid_flag   = false; // will get set true if really valid
+    valid_flag   = false;           // will get set true if really valid
     addr_changed = true;
     if (val.valid())
     {
@@ -1588,7 +1588,7 @@ UdpAddress& UdpAddress::operator=(const UdpAddress& udpaddr)
     ADDRESS_TRACE;
 
     if (this == &udpaddr)
-        return *this; // protect against assignment from itself
+        return *this;             // protect against assignment from itself
 
     (IpAddress&)* this = udpaddr; // use ancestor assignment for ipaddr value
     if (ip_version == version_ipv4)
@@ -1616,7 +1616,7 @@ UdpAddress& UdpAddress::operator=(const IpAddress& ipaddr)
     ADDRESS_TRACE;
 
     if (this == &ipaddr)
-        return *this; // protect against assignment from itself
+        return *this;             // protect against assignment from itself
 
     IpAddress::operator=(ipaddr); // use ancestor assignment for ipaddr value
 
@@ -2252,7 +2252,7 @@ SnmpSyntax& IpxSockAddress::operator=(const SnmpSyntax& val)
 {
     if (this == &val) return *this; // protect against assignment from itself
 
-    valid_flag = false; // will set to true if really valid
+    valid_flag = false;             // will set to true if really valid
     if (val.valid())
     {
         switch (val.get_syntax())
@@ -2286,7 +2286,7 @@ Address& IpxSockAddress::operator=(const Address& val)
 {
     if (this == &val) return *this; // protect against assignment from itself
 
-    valid_flag = false; // will set to true if really valid
+    valid_flag = false;             // will set to true if really valid
     if (val.valid())
     {
         switch (val.get_syntax())
@@ -2320,7 +2320,7 @@ Address& IpxSockAddress::operator=(const Address& val)
 IpxSockAddress& IpxSockAddress::operator=(const IpxSockAddress& ipxaddr)
 {
     if (this == &ipxaddr)
-        return *this; // protect against assignment from itself
+        return *this;                 // protect against assignment from itself
 
     (IpxAddress&)* this = ipxaddr;    // use ancestor assignment for ipx addr
     set_socket(ipxaddr.get_socket()); // copy socket value
@@ -2391,7 +2391,7 @@ unsigned short IpxSockAddress::get_socket() const
     }
     return 0; // don't use uninitialized memory
 }
-#endif // _IPX_ADDRESS
+#endif        // _IPX_ADDRESS
 
 #ifdef _MAC_ADDRESS
 //========================================================================
@@ -2473,7 +2473,7 @@ Address& MacAddress::operator=(const Address& val)
 {
     if (this == &val) return *this; // protect against assignment from itself
 
-    valid_flag = false; // will set to true if really valid
+    valid_flag = false;             // will set to true if really valid
     if (val.valid())
     {
         switch (val.get_syntax())
@@ -2497,7 +2497,7 @@ SnmpSyntax& MacAddress::operator=(const SnmpSyntax& val)
 {
     if (this == &val) return *this; // protect against assignment from itself
 
-    valid_flag = false; // will set to true if really valid
+    valid_flag = false;             // will set to true if really valid
     if (val.valid())
     {
         switch (val.get_syntax())
@@ -2843,7 +2843,7 @@ SnmpSyntax& GenAddress::operator=(const SnmpSyntax& val)
 
     if (this == &val) return *this; // protect against assignment from itself
 
-    valid_flag = false; // will get set to true if really valid
+    valid_flag = false;             // will get set to true if really valid
     if (address)
     {
         delete address;
@@ -2946,7 +2946,7 @@ bool GenAddress::parse_address(
         if (valid_flag && ((IpxSockAddress*)address)->get_socket())
             return true; // ok its an ipxsock address
 
-        delete address; // otherwise delete it and try another
+        delete address;  // otherwise delete it and try another
     }
 
     if ((use_type == Address::type_invalid) || (use_type == Address::type_ipx))
@@ -2956,9 +2956,9 @@ bool GenAddress::parse_address(
         valid_flag = address->valid();
         if (valid_flag) return true; // ok its an ipx address
 
-        delete address; // otherwise delete it and try another
+        delete address;              // otherwise delete it and try another
     }
-#endif // _IPX_ADDRESS
+#endif                               // _IPX_ADDRESS
 
     // TM: Must try the derived classes first...one pitfall of the
     // following solution is if someone creates with a port/socket of 0 the
@@ -2973,7 +2973,7 @@ bool GenAddress::parse_address(
         if (valid_flag && ((UdpAddress*)address)->get_port())
             return true; // ok its a udp address
 
-        delete address; // otherwise delete it and try another
+        delete address;  // otherwise delete it and try another
     }
 
     if ((use_type == Address::type_invalid) || (use_type == Address::type_ip))
@@ -2983,7 +2983,7 @@ bool GenAddress::parse_address(
         valid_flag = address->valid();
         if (valid_flag) return true; // ok its an ip address
 
-        delete address; // otherwise delete it and try another
+        delete address;              // otherwise delete it and try another
     }
 
 #ifdef _MAC_ADDRESS
@@ -2994,9 +2994,9 @@ bool GenAddress::parse_address(
         valid_flag = address->valid();
         if (valid_flag) return true; // ok, its a mac
 
-        delete address; // otherwise its invalid
+        delete address;              // otherwise its invalid
     }
-#endif // _MAC_ADDRESS
+#endif                               // _MAC_ADDRESS
 
     address = nullptr;
     return false;

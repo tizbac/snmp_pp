@@ -89,7 +89,7 @@
         && !defined                                          _AIX
 extern int h_errno; // defined in WinSock header, but not for UX?!
 #    endif
-#endif // __unix
+#endif              // __unix
 
 #ifdef SNMP_PP_NAMESPACE
 namespace Snmp_pp

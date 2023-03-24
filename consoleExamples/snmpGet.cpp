@@ -122,7 +122,7 @@ int main(int argc, char** argv)
     //---------[ make a GenAddress ]------------------------------------------
     UdpAddress address(argv[1]); // make a SNMP++ Generic address
     if (!address.valid())
-    { // check validity of address
+    {                            // check validity of address
         std::cout << "Invalid Address or DNS Name, " << argv[1] << "\n";
         usage();
     }

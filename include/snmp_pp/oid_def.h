@@ -75,37 +75,37 @@ public:
 /** SMI Cold Start Oid */
 class coldStartOid : public snmpTrapsOid {
 public:
-    DLLOPT coldStartOid() { *this += ".1"; };
+    DLLOPT coldStartOid() { *this += ".1"; }
 };
 
 /** SMI WarmStart Oid */
 class warmStartOid : public snmpTrapsOid {
 public:
-    DLLOPT warmStartOid() { *this += ".2"; };
+    DLLOPT warmStartOid() { *this += ".2"; }
 };
 
 /** SMI LinkDown Oid */
 class linkDownOid : public snmpTrapsOid {
 public:
-    DLLOPT linkDownOid() { *this += ".3"; };
+    DLLOPT linkDownOid() { *this += ".3"; }
 };
 
 /** SMI LinkUp Oid */
 class linkUpOid : public snmpTrapsOid {
 public:
-    DLLOPT linkUpOid() { *this += ".4"; };
+    DLLOPT linkUpOid() { *this += ".4"; }
 };
 
 /** SMI Authentication Failure Oid */
 class authenticationFailureOid : public snmpTrapsOid {
 public:
-    DLLOPT authenticationFailureOid() { *this += ".5"; };
+    DLLOPT authenticationFailureOid() { *this += ".5"; }
 };
 
 /** SMI egpneighborloss Oid */
 class egpNeighborLossOid : public snmpTrapsOid {
 public:
-    DLLOPT egpNeighborLossOid() { *this += ".6"; };
+    DLLOPT egpNeighborLossOid() { *this += ".6"; }
 };
 
 #ifdef SNMP_PP_NAMESPACE

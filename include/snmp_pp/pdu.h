@@ -109,7 +109,7 @@ public:
     Pdu(const Pdu& pdu) : vbs(nullptr), vbs_size(0), vb_count(0)
     {
         *this = pdu;
-    };
+    }
 
     /**
      * Destructor
@@ -135,7 +135,7 @@ public:
      *
      * @return Pointer to a newly created Pdu object, that is identical to this
      */
-    Pdu* clone() const { return new Pdu(*this); };
+    Pdu* clone() const { return new Pdu(*this); }
 
     /**
      * Get Pointers to all Vbs from Pdu.
@@ -186,7 +186,7 @@ public:
      * @param index - The Vb to return starting with 0.
      * @return A const reference to the Vb
      */
-    const Vb& get_vb(const int index) const { return *vbs[index]; };
+    const Vb& get_vb(const int index) const { return *vbs[index]; }
 
     /**
      * Set a particular vb.
@@ -205,7 +205,7 @@ public:
      *
      * @return The number of Vb objects within the pdu.
      */
-    int get_vb_count() const { return vb_count; };
+    int get_vb_count() const { return vb_count; }
 
     /**
      * Get a Vb.
@@ -214,45 +214,45 @@ public:
      *
      * @param i zero based index
      */
-    Vb& operator[](const int i) { return *vbs[i]; };
+    Vb& operator[](const int i) { return *vbs[i]; }
 
     /**
      * Get the error status.
      *
      * @return The SNMP error status
      */
-    int get_error_status() const { return error_status; };
+    int get_error_status() const { return error_status; }
 
     /**
      * Set the error status.
      *
      * @param err - The new SNMP error status.
      */
-    void set_error_status(const int err) { error_status = err; };
+    void set_error_status(const int err) { error_status = err; }
 
     /**
      * Clear the error status.
      */
-    void clear_error_status() { error_status = 0; };
+    void clear_error_status() { error_status = 0; }
 
     /**
      * Get the error index.
      *
      * @return The SNMP error index
      */
-    int get_error_index() const { return error_index; };
+    int get_error_index() const { return error_index; }
 
     /**
      * Set the error index.
      *
      * @param index - The new SNMP error index.
      */
-    void set_error_index(const int index) { error_index = index; };
+    void set_error_index(const int index) { error_index = index; }
 
     /**
      * Clear the error index.
      */
-    void clear_error_index() { error_index = 0; };
+    void clear_error_index() { error_index = 0; }
 
     /**
      * Clear error status and error index.
@@ -268,29 +268,29 @@ public:
      *
      * @return The SNMP request id
      */
-    uint32_t get_request_id() const { return request_id; };
+    uint32_t get_request_id() const { return request_id; }
 
     /**
      * Set the request id.
      *
      * @param rid - The new SNMP request id
      */
-    void set_request_id(const uint32_t rid) { request_id = rid; };
+    void set_request_id(const uint32_t rid) { request_id = rid; }
 
     /**
      * Get the pdu type.
      */
-    unsigned short get_type() const { return pdu_type; };
+    unsigned short get_type() const { return pdu_type; }
 
     /**
      * Set the pdu type.
      */
-    void set_type(unsigned short type) { pdu_type = type; };
+    void set_type(unsigned short type) { pdu_type = type; }
 
     /**
      * Returns validity of Pdu instance.
      */
-    bool valid() const { return validity; };
+    bool valid() const { return validity; }
 
     /**
      * Trim off vbs.
@@ -311,12 +311,12 @@ public:
     /**
      * Set notify timestamp.
      */
-    void set_notify_timestamp(const TimeTicks& ts) { notify_timestamp = ts; };
+    void set_notify_timestamp(const TimeTicks& ts) { notify_timestamp = ts; }
 
     /**
      * Get notify timestamp.
      */
-    void get_notify_timestamp(TimeTicks& ts) const { ts = notify_timestamp; };
+    void get_notify_timestamp(TimeTicks& ts) const { ts = notify_timestamp; }
 
     /**
      * Set the notify id.
@@ -327,7 +327,7 @@ public:
     {
         notify_id = id;
         return (notify_id.len() == id.len());
-    };
+    }
 
     /**
      * Get the notify id.
@@ -338,7 +338,7 @@ public:
     {
         id = notify_id;
         return (notify_id.len() == id.len());
-    };
+    }
 
     /**
      * Set the notify enterprise.
@@ -349,7 +349,7 @@ public:
     {
         notify_enterprise = e;
         return (notify_enterprise.len() == e.len());
-    };
+    }
 
     /**
      * Get the notify enterprise.
@@ -360,7 +360,7 @@ public:
     {
         e = notify_enterprise;
         return (notify_enterprise.len() == e.len());
-    };
+    }
 
 #ifdef _SNMPv3
     /**
@@ -372,14 +372,14 @@ public:
      *                SNMP_SECURITY_LEVEL_AUTH_NOPRIV,
      *                SNMP_SECURITY_LEVEL_AUTH_PRIV
      */
-    void set_security_level(const int level) { security_level = level; };
+    void set_security_level(const int level) { security_level = level; }
 
     /**
      * Return the security level of the Pdu.
      *
      * @return - the security level
      */
-    int get_security_level() const { return security_level; };
+    int get_security_level() const { return security_level; }
 
     /**
      * Set the context name of the Pdu.
@@ -390,7 +390,7 @@ public:
     {
         context_name = name;
         return (context_name.valid() && name.valid());
-    };
+    }
 
     /**
      * Set the context name of the Pdu.
@@ -401,7 +401,7 @@ public:
     {
         context_name = name;
         return context_name.valid();
-    };
+    }
 
     /**
      * Get the context name of the Pdu.
@@ -412,14 +412,14 @@ public:
     {
         name = context_name;
         return (context_name.valid() && name.valid());
-    };
+    }
 
     /**
      * Get the context name of the Pdu.
      *
      * @return - Return the context name as an OctetStr
      */
-    const OctetStr& get_context_name() const { return context_name; };
+    const OctetStr& get_context_name() const { return context_name; }
 
     /**
      * Set the context engine id of the Pdu.
@@ -430,7 +430,7 @@ public:
     {
         context_engine_id = id;
         return (context_engine_id.valid() && id.valid());
-    };
+    }
 
     /**
      * Set the context engine id of the Pdu.
@@ -441,7 +441,7 @@ public:
     {
         context_engine_id = id;
         return context_engine_id.valid();
-    };
+    }
 
     /**
      * Get the context engine id of the Pdu.
@@ -452,17 +452,14 @@ public:
     {
         id = context_engine_id;
         return (context_engine_id.valid() && id.valid());
-    };
+    }
 
     /**
      * Get the context engine id of the Pdu.
      *
      * @return - Return the context engine id as an OctetStr
      */
-    const OctetStr& get_context_engine_id() const
-    {
-        return context_engine_id;
-    };
+    const OctetStr& get_context_engine_id() const { return context_engine_id; }
 
     /**
      * Set the SNMPv3 message id (msgID)
@@ -484,7 +481,7 @@ public:
      *
      * @param l - the maximum size
      */
-    void set_maxsize_scopedpdu(uint32_t l) { maxsize_scopedpdu = l; };
+    void set_maxsize_scopedpdu(uint32_t l) { maxsize_scopedpdu = l; }
 
     /**
      * Get the maximum size of the scoped pdu to be included in a
@@ -492,7 +489,7 @@ public:
      *
      * @return - the maximum size
      */
-    uint32_t get_maxsize_scopedpdu() const { return maxsize_scopedpdu; };
+    uint32_t get_maxsize_scopedpdu() const { return maxsize_scopedpdu; }
 
 #endif // _SNMPv3
 
@@ -547,7 +544,7 @@ protected:
     TimeTicks  notify_timestamp; // a timestamp associated with an infor
     Oid        notify_id;        // an id
     Oid        notify_enterprise;
-    GenAddress v1_trap_address; // address object
+    GenAddress v1_trap_address;  // address object
     bool       v1_trap_address_set {};
 #ifdef _SNMPv3
     // specific Objects for SNMPv3

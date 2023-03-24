@@ -164,7 +164,7 @@ public:
      *
      * @return - engine_boots value if initialized, 0 else
      */
-    uint32_t get_local_boots() { return (table ? table[0].engine_boots : 0); };
+    uint32_t get_local_boots() { return (table ? table[0].engine_boots : 0); }
 
     /**
      * Return the engineTime value of this snmp entity.
@@ -343,7 +343,7 @@ public:
     {
         if (entries > 0) return table;
         return nullptr;
-    };
+    }
 
     const UsmUserNameTableEntry* peek_next(
         const UsmUserNameTableEntry* e) const;
@@ -371,7 +371,7 @@ public:
      *
      * @return - number of entries
      */
-    int size() const { return entries; };
+    int size() const { return entries; }
 
     /**
      * Get the userName from a securityName
@@ -557,7 +557,7 @@ public:
     {
         if (entries > 0) return table;
         return nullptr;
-    };
+    }
 
     const UsmUserTableEntry* peek_next(const UsmUserTableEntry* e) const;
 
@@ -1516,11 +1516,11 @@ int USM::key_update_commit(struct UsmKeyUpdate* uku, int update_type)
 
 int USM::generate_msg(unsigned char* globalData, // message header, admin data
     int                              globalDataLength,
-    int             maxMessageSize,   // of the sending SNMP entity
-    const OctetStr& securityEngineID, // authoritative SNMP entity
-    const OctetStr& securityName,     // on behalf of this principal
-    int             securityLevel,    // Level of Security requested
-    unsigned char*  scopedPDU,        // message (plaintext) payload
+    int             maxMessageSize,              // of the sending SNMP entity
+    const OctetStr& securityEngineID,            // authoritative SNMP entity
+    const OctetStr& securityName,                // on behalf of this principal
+    int             securityLevel,               // Level of Security requested
+    unsigned char*  scopedPDU,                   // message (plaintext) payload
     int scopedPDULength, struct SecurityStateReference* securityStateReference,
     unsigned char* wholeMsg, // OUT complete generated message
     int*           wholeMsgLength)     // OUT length of generated message
@@ -1767,7 +1767,7 @@ int USM::generate_msg(unsigned char* globalData, // message header, admin data
             globalDataLength,
             &startAuthPar, // for MD5, SHA,...
             usmSecurityParams, buffer.get_ptr(),
-            bufLength); // the msgData
+            bufLength);    // the msgData
         if (wholeMsgPtr == nullptr)
         {
             debugprintf(0, "usm: could not generate wholeMsg");
@@ -1806,7 +1806,7 @@ int USM::generate_msg(unsigned char* globalData, // message header, admin data
             globalDataLength,
             &startAuthPar, // dummy ( no auth)
             usmSecurityParams, buffer.get_ptr(),
-            bufLength); // the msgData
+            bufLength);    // the msgData
         if (wholeMsgPtr == nullptr)
         {
             debugprintf(0, "usm: could not generate wholeMsg");
@@ -1828,13 +1828,13 @@ int USM::generate_msg(unsigned char* globalData, // message header, admin data
 int USM::process_msg(int maxMessageSize,     // of the sending SNMP entity
     unsigned char*       securityParameters, // for the received message
     int securityParametersLength, int securityParametersPosition,
-    SmiINT32       securityLevel,  // Level of Security
-    unsigned char* wholeMsg,       // as received on the wire
-    int            wholeMsgLength, // length as received on the wire
+    SmiINT32       securityLevel,            // Level of Security
+    unsigned char* wholeMsg,                 // as received on the wire
+    int            wholeMsgLength,           // length as received on the wire
     unsigned char* msgData, int msgDataLength,
-    OctetStr&      security_engine_id, // authoritative SNMP entity
-    OctetStr&      security_name,      // identification of the principal
-    unsigned char* scopedPDU,          // message (plaintext) payload
+    OctetStr&      security_engine_id,       // authoritative SNMP entity
+    OctetStr&      security_name,            // identification of the principal
+    unsigned char* scopedPDU,                // message (plaintext) payload
     int*           scopedPDULength,
     long* maxSizeResponseScopedPDU, // maximum size of the Response PDU
     struct SecurityStateReference* securityStateReference,

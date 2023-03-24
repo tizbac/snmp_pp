@@ -154,14 +154,14 @@ int main(int argc, char** argv)
     //---------[ make a GenAddress and Oid object to retrieve ]---------------
     UdpAddress address(argv[1]); // make a SNMP++ Generic address
     if (!address.valid())
-    { // check validity of address
+    {                            // check validity of address
         std::cout << "Invalid Address or DNS Name, " << argv[1] << "\n";
         usage();
     }
     int oid_count = 0;
     Oid oid("1.3.6.1.2.1.1.1"); // default is sysDescr
     if (argc >= 3)
-    { // if 3 args, then use the callers Oid
+    {                           // if 3 args, then use the callers Oid
         if (strstr(argv[2], "-") == 0)
         {
             oid = argv[2];
@@ -513,7 +513,7 @@ int main(int argc, char** argv)
 
     snmp.stop_poll_thread(); // stop poll thread
 
-    Snmp::socket_cleanup(); // Shut down socket subsystem
+    Snmp::socket_cleanup();  // Shut down socket subsystem
 #ifdef _SNMPv3
     delete v3_MP;
 #endif

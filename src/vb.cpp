@@ -84,7 +84,7 @@ Vb& Vb::operator=(const Vb& vb)
 {
     if (this == &vb) return *this; // check for self assignment
 
-    free_vb(); // free up target to begin with
+    free_vb();                     // free up target to begin with
 
     //-----[ reassign the Oid portion 1st ]
     vb.get_oid(iv_vb_oid);

@@ -101,8 +101,8 @@ public:
     CUTEvent(const UtId uniqueId, const msec& timeout,
         const ut_callback callBack, const void* callData);
     ~CUTEvent() {};
-    UtId GetId() { return m_uniqueId; };
-    void GetTimeout(msec& timeout) { timeout = m_timeout; };
+    UtId GetId() { return m_uniqueId; }
+    void GetTimeout(msec& timeout) { timeout = m_timeout; }
 
     int Callback();
 
@@ -142,18 +142,18 @@ public:
     { } // we never have any event sources
 
     // return number of outstanding messages
-    int GetCount() override { return m_msgCount; };
+    int GetCount() override { return m_msgCount; }
 
     int HandleEvents(const int /*maxfds*/, const fd_set& /*readfds*/,
         const fd_set& /*writefds*/, const fd_set& /*exceptfds*/) override
     {
         msec const now;
         return DoRetries(now);
-    };
+    }
 
     int DoRetries(const msec& sendtime) override;
 
-    int Done() override { return 0; }; // we are never done
+    int Done() override { return 0; } // we are never done
 
 protected:
     /*-----------------------------------------------------------*/
@@ -170,8 +170,8 @@ protected:
         CUTEventQueueElt* GetNext()
         {
             return m_Next; // NOLINT(clang-analyzer-cplusplus.NewDelete)
-        };
-        CUTEvent* GetUTEvent() { return m_utevent; };
+        }
+        CUTEvent* GetUTEvent() { return m_utevent; }
         CUTEvent* TestId(const UtId uniqueId);
 
     private:

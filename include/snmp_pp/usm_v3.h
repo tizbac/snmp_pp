@@ -93,9 +93,9 @@ namespace Snmp_pp
  * none.
  */
 //@{
-#    define SNMP_PRIVPROTOCOL_NONE   1 ///< None
-#    define SNMP_PRIVPROTOCOL_DES    2 ///< DES
-#    define SNMP_PRIVPROTOCOL_AES128 4 ///< AES128 (RFC 3826)
+#    define SNMP_PRIVPROTOCOL_NONE   1   ///< None
+#    define SNMP_PRIVPROTOCOL_DES    2   ///< DES
+#    define SNMP_PRIVPROTOCOL_AES128 4   ///< AES128 (RFC 3826)
 
 #    define SNMP_PRIVPROTOCOL_IDEA    9  ///< IDEA (non standard)
 #    define SNMP_PRIVPROTOCOL_AES192  20 ///< AES192 (non standard)
@@ -275,18 +275,18 @@ public:
      * Enables the discovery mode of the USM, i.e. the USM accepts all messages
      * with unknown engine ids and adds these engine ids to its tables.
      */
-    void set_discovery_mode() { discovery_mode = true; };
+    void set_discovery_mode() { discovery_mode = true; }
 
     /**
      * Disables the discovery mode of the USM, i.e. the USM will not accept any
      * message with an unknown engine id.
      */
-    void unset_discovery_mode() { discovery_mode = false; };
+    void unset_discovery_mode() { discovery_mode = false; }
 
     /**
      * Return true if the USM discovery mode is enabled, false else.
      */
-    bool is_discovery_enabled() const { return discovery_mode; };
+    bool is_discovery_enabled() const { return discovery_mode; }
 
     /**
      * Add a new user to the usmUserNameTable. If the User is already known
@@ -382,7 +382,7 @@ public:
     {
         return add_usm_user(security_name, security_name, auth_protocol,
             priv_protocol, auth_password, priv_password, engine_id);
-    };
+    }
 
     /**
      * Delete all occurrences of the user with the given security name
@@ -686,7 +686,7 @@ public:
     const OctetStr& get_local_engine_id() const
     {
         return local_snmp_engine_id;
-    };
+    }
 
     /**
      * Get the number of received messages with an unsupported securityLevel
@@ -696,7 +696,7 @@ public:
     uint32_t get_stats_unsupported_sec_levels() const
     {
         return usmStatsUnsupportedSecLevels;
-    };
+    }
 
     /**
      * Get the number of received messages outside time window
@@ -706,7 +706,7 @@ public:
     uint32_t get_stats_not_in_time_windows() const
     {
         return usmStatsNotInTimeWindows;
-    };
+    }
 
     /**
      * Get the number of received messages with a unknown userName
@@ -716,7 +716,7 @@ public:
     uint32_t get_stats_unknown_user_names() const
     {
         return usmStatsUnknownUserNames;
-    };
+    }
 
     /**
      * Get the number of received messages with a unknown engineID
@@ -726,14 +726,14 @@ public:
     uint32_t get_stats_unknown_engine_ids() const
     {
         return usmStatsUnknownEngineIDs;
-    };
+    }
 
     /**
      * Get the number of received messages with a wrong digest
      *
      * @return - usmStatsWrongDigests
      */
-    uint32_t get_stats_wrong_digests() const { return usmStatsWrongDigests; };
+    uint32_t get_stats_wrong_digests() const { return usmStatsWrongDigests; }
 
     /**
      * Get the number of received messages with decryption errors
@@ -743,7 +743,7 @@ public:
     uint32_t get_stats_decryption_errors() const
     {
         return usmStatsDecryptionErrors;
-    };
+    }
 
     //@{
     /**
@@ -919,11 +919,11 @@ protected:
      */
     int generate_msg(unsigned char* globalData, // message header, admin data
         int                         globalDataLength,
-        int             maxMessageSize,   // of the sending SNMP entity
-        const OctetStr& securityEngineID, // authoritative SNMP entity
-        const OctetStr& securityName,     // on behalf of this principal
-        int             securityLevel,    // Level of Security requested
-        unsigned char*  scopedPDU,        // message (plaintext) payload
+        int             maxMessageSize,         // of the sending SNMP entity
+        const OctetStr& securityEngineID,       // authoritative SNMP entity
+        const OctetStr& securityName,           // on behalf of this principal
+        int             securityLevel,          // Level of Security requested
+        unsigned char*  scopedPDU,              // message (plaintext) payload
         int             scopedPDULength,
         struct SecurityStateReference* securityStateReference,
         unsigned char* wholeMsg, // OUT complete generated message
@@ -959,15 +959,15 @@ protected:
     int process_msg(int maxMessageSize,     // of the sending SNMP entity
         unsigned char*  securityParameters, // for the received message
         int securityParametersLength, int securityParametersPosition,
-        SmiINT32       securityLevel,  // Level of Security
-        unsigned char* wholeMsg,       // as received on the wire
-        int            wholeMsgLength, // length as received on the wire
+        SmiINT32       securityLevel,       // Level of Security
+        unsigned char* wholeMsg,            // as received on the wire
+        int            wholeMsgLength,      // length as received on the wire
         unsigned char* msgData, int msgDataLength,
-        OctetStr&      security_engine_id, // authoritative SNMP entity
-        OctetStr&      security_name,      // identification of the principal
-        unsigned char* scopedPDU,          // message (plaintext) payload
+        OctetStr&      security_engine_id,  // authoritative SNMP entity
+        OctetStr&      security_name,       // identification of the principal
+        unsigned char* scopedPDU,           // message (plaintext) payload
         int*           scopedPDULength,
-        long* maxSizeResponseScopedPDU, // maximum size of the Response PDU
+        long* maxSizeResponseScopedPDU,     // maximum size of the Response PDU
         struct SecurityStateReference* securityStateReference,
         // reference to security state
         // information, needed for response

@@ -80,7 +80,7 @@ namespace Snmp_pp
 struct DLLOPT SmiVALUE { /* smiVALUE portion of VarBind */
     SmiVALUE() : syntax(sNMP_SYNTAX_NULL) { memset(&value, 0, sizeof(value)); }
 
-    SmiUINT32 syntax; /* Insert SNMP_SYNTAX_<type> */
+    SmiUINT32 syntax;      /* Insert SNMP_SYNTAX_<type> */
     union {
         SmiINT sNumber;    /* SNMP_SYNTAX_INT
                               SNMP_SYNTAX_INT32 */

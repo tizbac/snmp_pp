@@ -105,9 +105,9 @@ public:
     CUDEvent(const UdId uniqueId, const int fd, const UdInputMask mask,
         const ud_callback callBack, const void* callData);
     ~CUDEvent() {};
-    UdId        GetId() const { return m_uniqueId; };
-    int         GetFd() const { return m_fd; };
-    UdInputMask GetMask() const { return m_mask; };
+    UdId        GetId() const { return m_uniqueId; }
+    int         GetFd() const { return m_fd; }
+    UdInputMask GetMask() const { return m_mask; }
 
     int Callback();
 
@@ -140,13 +140,13 @@ public:
     int GetNextTimeout(msec& /*sendTime*/) override
     {
         return SNMP_CLASS_INVALID_OPERATION;
-    }; // We never have a timeout
+    } // We never have a timeout
 
     // set up parameters for select
     void GetFdSets(int& maxfds, fd_set& readfds, fd_set& writefds,
         fd_set& exceptfds) override;
     // return number of user-defined event handlers
-    int GetCount() override { return m_msgCount; };
+    int GetCount() override { return m_msgCount; }
 
     int HandleEvents(const int maxfds, const fd_set& readfds,
         const fd_set& writefds, const fd_set& exceptfds) override;
@@ -154,9 +154,9 @@ public:
     int DoRetries(const msec& /*sendtime*/) override
     {
         return SNMP_CLASS_SUCCESS;
-    }; // no timeouts, so just return;
+    }                                 // no timeouts, so just return;
 
-    int Done() override { return 0; }; // we are never done
+    int Done() override { return 0; } // we are never done
 
 protected:
     /*-----------------------------------------------------------*/

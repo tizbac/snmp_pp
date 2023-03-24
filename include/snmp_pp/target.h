@@ -117,7 +117,7 @@ public:
           version(version1), ttype(type_base), my_address(address)
     {
         if (my_address.valid()) validity = true;
-    };
+    }
 
     /**
      * Destructor that has nothing to do.
@@ -132,28 +132,28 @@ public:
      * method can be used to check the type of the object before doing a
      * cast to CTarget or UTarget.
      */
-    target_type get_type() const { return ttype; };
+    target_type get_type() const { return ttype; }
 
     /**
      * Returns the validity of the target object.
      *
      * @return true, if the target is valid.
      */
-    bool valid() const { return validity; };
+    bool valid() const { return validity; }
 
     /**
      * Set the retry value.
      *
      * @param r - The number of retries if no response is received.
      */
-    void set_retry(const int r) { retries = r; };
+    void set_retry(const int r) { retries = r; }
 
     /**
      * Get the retry value.
      *
      * @return The number of retries on timeout.
      */
-    int get_retry() const { return retries; };
+    int get_retry() const { return retries; }
 
     /**
      * Set the timeout for requests.
@@ -162,14 +162,14 @@ public:
      *
      * @param t - Timeout in 10ms, so 100 will set the timeout to 1 second.
      */
-    void set_timeout(const uint32_t t) { timeout = t; };
+    void set_timeout(const uint32_t t) { timeout = t; }
 
     /**
      * Get the timeout.
      *
      * @return The timeout for requests sent using this target object.
      */
-    uint32_t get_timeout() const { return timeout; };
+    uint32_t get_timeout() const { return timeout; }
 
     /**
      * Change the default timeout.
@@ -179,7 +179,7 @@ public:
      *
      * @param t - The new default timeout value
      */
-    static void set_default_timeout(const uint32_t t) { default_timeout = t; };
+    static void set_default_timeout(const uint32_t t) { default_timeout = t; }
 
     /**
      * Change the default retries vlaue.
@@ -189,7 +189,7 @@ public:
      *
      * @param r - The new retries value
      */
-    static void set_default_retries(const int r) { default_retries = r; };
+    static void set_default_retries(const int r) { default_retries = r; }
 
     /**
      * Clone operator.
@@ -217,7 +217,7 @@ public:
      *
      * @return The target address.
      */
-    const GenAddress& get_address() const { return my_address; };
+    const GenAddress& get_address() const { return my_address; }
 
     /**
      * Set the address object.
@@ -233,14 +233,14 @@ public:
      * @return The SNMP version of this target object.
      * @see enum snmp_version
      */
-    snmp_version get_version() const { return version; };
+    snmp_version get_version() const { return version; }
 
     /**
      * Set the SNMP version of this target.
      *
      * @param v - The SNMP version that should be used for sending messages.
      */
-    void set_version(const snmp_version v) { version = v; };
+    void set_version(const snmp_version v) { version = v; }
 
     /**
      * Overloeaded compare operator.
@@ -258,12 +258,12 @@ public:
     virtual void clear();
 
 protected:
-    bool         validity;   ///< Validity of the object
-    uint32_t     timeout;    ///< xmit timeout in 10 milli secs
-    int          retries;    ///< number of retries
-    snmp_version version;    ///< SNMP version to use
-    target_type  ttype;      ///< Type of the target
-    GenAddress   my_address; ///< Address object
+    bool         validity;           ///< Validity of the object
+    uint32_t     timeout;            ///< xmit timeout in 10 milli secs
+    int          retries;            ///< number of retries
+    snmp_version version;            ///< SNMP version to use
+    target_type  ttype;              ///< Type of the target
+    GenAddress   my_address;         ///< Address object
 
     static uint32_t default_timeout; ///< default timeout for new objects
     static int      default_retries; ///< default retries for new objects
@@ -335,7 +335,7 @@ public:
     SnmpTarget* clone() const override
     {
         return (SnmpTarget*)new CTarget(*this);
-    };
+    }
 
     /**
      * Get the read community name.
@@ -345,28 +345,28 @@ public:
     const char* get_readcommunity() const
     {
         return (const char*)read_community.get_printable();
-    };
+    }
 
     /**
      * Get the read community name.
      *
      * @param oct - OctetStr that will be filled with the read community name.
      */
-    void get_readcommunity(OctetStr& oct) const { oct = read_community; };
+    void get_readcommunity(OctetStr& oct) const { oct = read_community; }
 
     /**
      * Set the read community name.
      *
      * @param str - The new read community name
      */
-    void set_readcommunity(const char* str) { read_community = str; };
+    void set_readcommunity(const char* str) { read_community = str; }
 
     /**
      * Set the read community name.
      *
      * @param oct - The new read community name
      */
-    void set_readcommunity(const OctetStr& oct) { read_community = oct; };
+    void set_readcommunity(const OctetStr& oct) { read_community = oct; }
 
     /**
      * Get the write community name.
@@ -376,28 +376,28 @@ public:
     const char* get_writecommunity() const
     {
         return (const char*)write_community.get_printable();
-    };
+    }
 
     /**
      * Get the write community name.
      *
      * @param oct - OctetStr that will be filled with the write community name.
      */
-    void get_writecommunity(OctetStr& oct) const { oct = write_community; };
+    void get_writecommunity(OctetStr& oct) const { oct = write_community; }
 
     /**
      * Set the write community name.
      *
      * @param str - The new write community name
      */
-    void set_writecommunity(const char* str) { write_community = str; };
+    void set_writecommunity(const char* str) { write_community = str; }
 
     /**
      * Set the write community name.
      *
      * @param oct - The new write community name
      */
-    void set_writecommunity(const OctetStr& oct) { write_community = oct; };
+    void set_writecommunity(const OctetStr& oct) { write_community = oct; }
 
     /**
      * Overloaded assignment operator.
@@ -517,7 +517,7 @@ public:
     SnmpTarget* clone() const override
     {
         return (SnmpTarget*)new UTarget(*this);
-    };
+    }
 
     /**
      * Set the address object.
@@ -534,28 +534,28 @@ public:
      *
      * @return A const reference to the security name.
      */
-    const OctetStr& get_security_name() const { return security_name; };
+    const OctetStr& get_security_name() const { return security_name; }
 
     /**
      * Get the security name.
      *
      * @param oct - OctetStr that will be filled with the security name.
      */
-    void get_security_name(OctetStr& oct) const { oct = security_name; };
+    void get_security_name(OctetStr& oct) const { oct = security_name; }
 
     /**
      * Set the security name.
      *
      * @param str - The new security name
      */
-    void set_security_name(const char* str) { security_name = str; };
+    void set_security_name(const char* str) { security_name = str; }
 
     /**
      * Set the security name.
      *
      * @param oct - The new security name
      */
-    void set_security_name(const OctetStr& oct) { security_name = oct; };
+    void set_security_name(const OctetStr& oct) { security_name = oct; }
 
 #ifdef _SNMPv3
     /**
@@ -568,7 +568,7 @@ public:
      *
      * @param str - The engine id to use
      */
-    void set_engine_id(const char* str) { engine_id = str; };
+    void set_engine_id(const char* str) { engine_id = str; }
 
     /**
      * Set the engine id.
@@ -580,21 +580,21 @@ public:
      *
      * @param oct - The engine id to use
      */
-    void set_engine_id(const OctetStr& oct) { engine_id = oct; };
+    void set_engine_id(const OctetStr& oct) { engine_id = oct; }
 
     /**
      * Get the engine id.
      *
      * @return A const reference to the enigne id of this target.
      */
-    const OctetStr& get_engine_id() const { return engine_id; };
+    const OctetStr& get_engine_id() const { return engine_id; }
 
     /**
      * Get the engine id.
      *
      * @param oct - OctetStr that will be filled with the engine id
      */
-    void get_engine_id(OctetStr& oct) const { oct = engine_id; };
+    void get_engine_id(OctetStr& oct) const { oct = engine_id; }
 #endif
 
     /**
@@ -602,14 +602,14 @@ public:
      *
      * @return An integer representing the security_model of this target.
      */
-    int get_security_model() const { return security_model; };
+    int get_security_model() const { return security_model; }
 
     /**
      * Set the security_model.
      *
      * @param sec_model - The security model to use.
      */
-    void set_security_model(int sec_model) { security_model = sec_model; };
+    void set_security_model(int sec_model) { security_model = sec_model; }
 
     /**
      * Overloaded assignment operator.

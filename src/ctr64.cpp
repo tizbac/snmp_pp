@@ -83,7 +83,7 @@ const char* Counter64::get_printable() const
 //----------------[ general Value = operator ]---------------------
 SnmpSyntax& Counter64::operator=(const SnmpSyntax& val)
 {
-    if (this == &val) return *this; // protect against assignment from itself
+    if (this == &val) return *this;  // protect against assignment from itself
 
     smival.value.hNumber.lopart = 0; // pessimistic - assume no mapping
     smival.value.hNumber.hipart = 0;

@@ -64,7 +64,7 @@ SnmpSyntax& SnmpUInt32::operator=(const SnmpSyntax& in_val)
 {
     if (this == &in_val) return *this; // handle assignement from itself
 
-    valid_flag = false; // will get set true if really valid
+    valid_flag = false;                // will get set true if really valid
     if (in_val.valid())
     {
         switch (in_val.get_syntax())
@@ -127,7 +127,7 @@ SnmpSyntax& SnmpInt32::operator=(const SnmpSyntax& in_val)
 {
     if (this == &in_val) return *this; // handle assignement from itself
 
-    valid_flag = false; // will get set true if really valid
+    valid_flag = false;                // will get set true if really valid
     if (in_val.valid())
     {
         switch (in_val.get_syntax())

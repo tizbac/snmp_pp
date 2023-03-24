@@ -216,7 +216,7 @@ OctetStr& OctetStr::operator=(const char* str)
 //=============[ assignment to another oid object overloaded ]========
 OctetStr& OctetStr::operator=(const OctetStr& octet)
 {
-    if (this == &octet) return *this; // protect against assignment from self
+    if (this == &octet) return *this;  // protect against assignment from self
 
     if (!octet.validity) return *this; // don't assign from invalid objs
 
@@ -468,7 +468,7 @@ int OctetStr::nCompare(const uint32_t n, const OctetStr& o) const
         if (smival.value.string.ptr[z] < o.smival.value.string.ptr[z])
             return -1; // less than
         if (smival.value.string.ptr[z] > o.smival.value.string.ptr[z])
-            return 1; // greater than
+            return 1;  // greater than
         z++;
     }
 
@@ -709,7 +709,7 @@ const char* OctetStr::get_printable_hex() const
     /*----------------------------------------*/
     while (local_len > 0)
     {
-        cnt     = 16; /* print 16 bytes per line */
+        cnt     = 16;            /* print 16 bytes per line */
         buf_ptr = char_buf;
         sprintf(line_ptr, "  "); // FIXME: use std::string! CK
         line_ptr += 2;           /* indent */

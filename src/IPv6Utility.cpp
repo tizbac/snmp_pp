@@ -243,7 +243,7 @@ static const char* inet_ntop6(const unsigned char* src, char* dst, size_t size)
 }
 #        endif /* AF_INET6 */
 
-#    endif /* HAVE_INET_NTOP */
+#    endif     /* HAVE_INET_NTOP */
 
 #    ifndef HAVE_INET_PTON
 static int inet_pton4(const char* src, unsigned char* dst);
@@ -431,6 +431,6 @@ static int inet_pton6(const char* src, unsigned char* dst)
 }
 #        endif // AF_INET6
 
-#    endif /* HAVE_INET_PTON */
+#    endif     /* HAVE_INET_PTON */
 
-#endif // defined(WIN32) && defined(SNMP_PP_IPv6)
+#endif         // defined(WIN32) && defined(SNMP_PP_IPv6)

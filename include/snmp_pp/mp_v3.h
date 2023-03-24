@@ -135,19 +135,19 @@ public:
      *
      * @return - SNMPv3_MP_OK or SNMPv3_MP_ERROR
      */
-    void get_local_engine_id(OctetStr& id) { id = own_engine_id_oct; };
+    void get_local_engine_id(OctetStr& id) { id = own_engine_id_oct; }
 
     /**
      * Get the engine id of this SNMP entity as a OctetStr reference.
      *
      * @return Local engine id.
      */
-    const OctetStr& get_local_engine_id() const { return own_engine_id_oct; };
+    const OctetStr& get_local_engine_id() const { return own_engine_id_oct; }
 
     /**
      * Get a pointer to the USM object that is used by the v3MP.
      */
-    USM* get_usm() { return usm; };
+    USM* get_usm() { return usm; }
 
     /**
      * Free all allocated ressources of the v3MP and leave it in an
@@ -174,7 +174,7 @@ public:
         const OctetStr& engine_id, const OctetStr& host, int port)
     {
         return engine_id_table.add_entry(engine_id, host, port);
-    };
+    }
 
     /**
      * Remove an entry from the engine id table.
@@ -187,7 +187,7 @@ public:
     int remove_from_engine_id_table(const OctetStr& host, int port)
     {
         return engine_id_table.delete_entry(host, port);
-    };
+    }
 
     /**
      * Remove an entry from the engine id table.
@@ -199,7 +199,7 @@ public:
     int remove_from_engine_id_table(const OctetStr& engine_id)
     {
         return engine_id_table.delete_entry(engine_id);
-    };
+    }
 
     /**
      * Get the engine id of the SNMP entity at the given host/port.
@@ -215,7 +215,7 @@ public:
         OctetStr& engine_id, const OctetStr& hostport) const
     {
         return engine_id_table.get_entry(engine_id, hostport);
-    };
+    }
 
     /**
      * Get the engineID of the SNMP entity at the given host/port.
@@ -231,7 +231,7 @@ public:
         OctetStr& engineID, const OctetStr& host, int port) const
     {
         return engine_id_table.get_entry(engineID, host, port);
-    };
+    }
 
     /**
      * Remove all entries from the engine id table.
@@ -239,7 +239,7 @@ public:
      * @return - SNMPv3_MP_NOT_INITIALIZED, SNMPv3_MP_ERROR,
      *           SNMPv3_MP_OK
      */
-    int reset_engine_id_table() { return engine_id_table.reset(); };
+    int reset_engine_id_table() { return engine_id_table.reset(); }
 
     /**
      * Remove all occurences of this engine id from v3MP and USM.
@@ -261,14 +261,14 @@ public:
     uint32_t get_stats_unknown_security_models() const
     {
         return snmpUnknownSecurityModels;
-    };
+    }
 
     /**
      * Get the value of the status counter snmpInvalidMsgs.
      *
      * @return - The status counter
      */
-    uint32_t get_stats_invalid_msgs() const { return snmpInvalidMsgs; };
+    uint32_t get_stats_invalid_msgs() const { return snmpInvalidMsgs; }
 
     /**
      * Get the value of the status counter snmpUnknownPDUHandlers.
@@ -278,22 +278,22 @@ public:
     uint32_t get_stats_unknown_pdu_handlers() const
     {
         return snmpUnknownPDUHandlers;
-    };
+    }
 
     /**
      * Increment the value of the status counter snmpUnknownSecurityModels.
      */
-    void inc_stats_unknown_security_models() { snmpUnknownSecurityModels++; };
+    void inc_stats_unknown_security_models() { snmpUnknownSecurityModels++; }
 
     /**
      * Increment the value of the status counter snmpInvalidMsgs.
      */
-    void inc_stats_invalid_msgs() { snmpInvalidMsgs++; };
+    void inc_stats_invalid_msgs() { snmpInvalidMsgs++; }
 
     /**
      * Increment the value of the status counter snmpUnknownPDUHandlers.
      */
-    void inc_stats_unknown_pdu_handlers() { snmpUnknownPDUHandlers++; };
+    void inc_stats_unknown_pdu_handlers() { snmpUnknownPDUHandlers++; }
 
     // temporary pointer will be removed...
     static v3MP* instance;
@@ -374,7 +374,7 @@ protected:
     void delete_from_cache(uint32_t requestID, const bool local_request = true)
     {
         cache.delete_entry(requestID, local_request);
-    };
+    }
 
 public:
     /**
@@ -390,7 +390,7 @@ public:
         uint32_t requestID, uint32_t messageID, const bool local_request)
     {
         cache.delete_entry(requestID, messageID, local_request);
-    };
+    }
 
 private:
     /**
@@ -619,7 +619,7 @@ private:
 
         void delete_content(struct Cache::Entry_T& ce);
 
-        void set_usm(USM* usm_to_use) { usm = usm_to_use; };
+        void set_usm(USM* usm_to_use) { usm = usm_to_use; }
 
     private:
 #    ifdef _THREADS

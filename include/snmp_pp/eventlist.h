@@ -130,7 +130,7 @@ public:
     void SetDone() REENTRANT({ m_done += 1; });
 
     // see if main loop should terminate
-    int GetDone() { return m_done; };
+    int GetDone() { return m_done; }
 
     // find the time of the next event that will timeout
     int GetNextTimeout(msec& sendTime);
@@ -150,7 +150,7 @@ public:
 #endif
 
     // return number of outstanding messages
-    int GetCount() { return m_msgCount; };
+    int GetCount() { return m_msgCount; }
 
     // process any timeout events
     int DoRetries(const msec& sendtime);

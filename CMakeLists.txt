@@ -496,10 +496,10 @@ if(CMAKE_SKIP_INSTALL_RULES)
   add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
   target_link_libraries(${PROJECT_NAME} PUBLIC ${PROJECT_NAME}_project_options ${PROJECT_NAME}_project_warnings)
 
-# target_link_libraries(
-#   ${PROJECT_NAME} PRIVATE $<BUILD_LOCAL_INTERFACE:${PROJECT_NAME}_project_options>
-#                           $<BUILD_LOCAL_INTERFACE:${PROJECT_NAME}_project_warnings>
-# )
+  # target_link_libraries(
+  #   ${PROJECT_NAME} PRIVATE $<BUILD_LOCAL_INTERFACE:${PROJECT_NAME}_project_options>
+  #                           $<BUILD_LOCAL_INTERFACE:${PROJECT_NAME}_project_warnings>
+  # )
 endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES UNITY_BUILD ${OPTION_ENABLE_UNITY})
 
@@ -509,7 +509,10 @@ if(MSVC)
   target_compile_options(${PROJECT_NAME} PRIVATE /W3 /wd4251)
   target_compile_definitions(${PROJECT_NAME} PUBLIC _CRT_SECURE_NO_WARNINGS)
 else()
-  target_compile_options(${PROJECT_NAME} PUBLIC -Wno-conversion -Wshadow -Wno-unused-parameter -Wno-deprecated-declarations -Wno-old-style-cast -Wno-extra-semi)
+  target_compile_options(
+    ${PROJECT_NAME} PUBLIC -Wno-conversion -Wshadow -Wno-unused-parameter -Wno-deprecated-declarations -Wno-old-style-cast
+                           -Wno-extra-semi
+  )
 endif()
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE 1)
@@ -530,8 +533,8 @@ target_include_directories(
 target_include_directories(
   ${PROJECT_NAME}
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/PackageProjectInclude>
-         $<BUILD_INTERFACE:${CRYPTO_INCLUDE_DIRS}> $<INSTALL_INTERFACE:include>
+         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/PackageProjectInclude> $<BUILD_INTERFACE:${CRYPTO_INCLUDE_DIRS}>
+         $<INSTALL_INTERFACE:include>
 )
 
 # Note: for SameMajorVersion upgrade stategy
@@ -597,10 +600,10 @@ packageProject(
   # location of the target's public headers
   INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include
   # should match the target's INSTALL_INTERFACE include directory
-  INCLUDE_DESTINATION include
-  # (optional) option to install only header files with matching pattern
-  INCLUDE_HEADER_PATTERN "*.h"
-  # semicolon separated list of the project's dependencies
+  INCLUDE_DESTINATION
+    include # (optional) option to install only header files with matching pattern
+    INCLUDE_HEADER_PATTERN "*.h"
+    # semicolon separated list of the project's dependencies
   DEPENDENCIES "${CRYPTO_LIB}; Threads"
   # (optional) create a header containing the version info
   # Note: that the path to headers should be lowercase

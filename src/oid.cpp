@@ -186,7 +186,7 @@ const char* Oid::get_printable(
 
     if (buffer) delete[] buffer; // delete the previous output string
 
-    buffer = new char[nz]; // allocate some space for the output string
+    buffer = new char[nz];       // allocate some space for the output string
     if (buffer == nullptr) return nullptr;
 
     buffer[0] = 0; // init the string
@@ -389,15 +389,15 @@ int Oid::get_asn1_length() const
     {
         uint32_t const v = smival.value.oid.ptr[i];
 
-        if (v < 0x80) //  7 bits long subid
+        if (v < 0x80)            //  7 bits long subid
             length += 1;
-        else if (v < 0x4000) // 14 bits long subid
+        else if (v < 0x4000)     // 14 bits long subid
             length += 2;
-        else if (v < 0x200000) // 21 bits long subid
+        else if (v < 0x200000)   // 21 bits long subid
             length += 3;
         else if (v < 0x10000000) // 28 bits long subid
             length += 4;
-        else // 32 bits long subid
+        else                     // 32 bits long subid
             length += 5;
     }
 

@@ -56,7 +56,7 @@
 #include "snmp_pp/snmperrs.h"    // pv3Errs, nErrs
 #include "snmp_pp/snmpmsg.h"     // asn serialization class
 #include "snmp_pp/usm_v3.h"
-#include "snmp_pp/uxsnmp.h" // class def for this module
+#include "snmp_pp/uxsnmp.h"      // class def for this module
 #include "snmp_pp/v3.h"
 #include "snmp_pp/vb.h"
 
@@ -184,8 +184,8 @@ static const char* nErrs[] = {
     "SNMP++: Invalid (null) Callback Function", // 13
                                                 // SNMP_CLASS_INVALID_CALLBACK
     "SNMP++: Invalid Request Id",               // 14 SNMP_CLASS_INVALID_REQID
-    "SNMP++: Invalid Notification Id", // 15 SNMP_CLASS_INVALID_NOTIFYID
-                                       // 16 SNMP_CLASS_INVALID_OPERATION
+    "SNMP++: Invalid Notification Id",   // 15 SNMP_CLASS_INVALID_NOTIFYID
+                                         // 16 SNMP_CLASS_INVALID_OPERATION
     "SNMP++: SNMP Operation not supported on specified Target",
     "SNMP++: Invalid Object Identifier", // 17 SNMP_CLASS_INVALID_OID
     "SNMP++: Invalid Address",           // 18 SNMP_CLASS_INVALID_ADDRESS
@@ -199,7 +199,7 @@ static const char* nErrs[] = {
     "SNMP++: Transport access denied",    // 23 SNMP_CLASS_TL_ACCESS_DENIED
     "SNMP++: Blocked Mode Shutdown",      // 24 SNMP_CLASS_SHUTDOWN
 
-    "Unknown error code", // unknown error code
+    "Unknown error code",                 // unknown error code
 };
 //@}
 

@@ -136,7 +136,7 @@ struct snmp_pdu {
     SmiUINT32 errindex; // Error index
 
     // Trap information
-    oid_t*    enterprise; // System OID
+    oid_t*    enterprise;    // System OID
     int       enterprise_length;
     ipaddr    agent_addr;    // address of object generating trap
     int       trap_type;     // trap type
