@@ -38,7 +38,7 @@ option(SNMP_PP_IPXADDR "Enable IpxAddress class" OFF)
 option(SNMP_PP_IPv6 "Enable support for IPv6" ON)
 option(SNMP_PP_LIBDES "Search for DES library (At least needed for Windows!)" ON)
 option(SNMP_PP_LIBTOMCRYPT "Search for Tomcrypt library" OFF)
-option(SNMP_PP_LOGGING "Enable logging" OFF)
+option(SNMP_PP_LOGGING "Enable logging" ${PROJECT_IS_TOP_LEVEL})
 option(SNMP_PP_MACADDR "Enable MacAddress class" OFF)
 option(SNMP_PP_OPENSSL "Search for OpenSSL library" ON)
 
@@ -256,16 +256,8 @@ endif()
 
 option(USE_OUTPUT_PATH "build all libaries and runtime files at the bin directory" YES)
 if(USE_OUTPUT_PATH)
-  # -----------------------------------------------------------------------
-  # Where to put all the LIBRARY targets when built. This variable is used to initialize the
-  # LIBRARY_OUTPUT_DIRECTORY property on all the targets.
-  # -----------------------------------------------------------------------
+  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
   set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-
-  # -----------------------------------------------------------------------
-  # Where to put all the RUNTIME targets when built. This variable is used to initialize the
-  # RUNTIME_OUTPUT_DIRECTORY property on all the targets.
-  # -----------------------------------------------------------------------
   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 endif()
 
@@ -467,7 +459,15 @@ if(OPTION_ENABLE_COVERAGE)
   set(ENABLE_COVERAGE "ENABLE_COVERAGE")
 endif()
 
-option(OPTION_ENABLE_UNITY "Enable Unity builds of projects" ON)
+if(SNMP_PP_LOGGING)
+  set(OPTION_ENABLE_UNITY
+      OFF
+      CACHE STRING "forced" FORCE
+  )
+else()
+  option(OPTION_ENABLE_UNITY "Enable Unity builds of projects" ON)
+endif()
+
 if(OPTION_ENABLE_UNITY)
   set(ENABLE_UNITY "ENABLE_UNITY")
 endif()
