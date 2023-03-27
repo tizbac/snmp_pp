@@ -325,7 +325,7 @@ CSNMPMessage* CSNMPMessageQueue::AddEntry(uint32_t id, Snmp* snmp,
     ++m_msgCount;
 
 #ifndef _NO_LOGGING
-    int count = m_msgCount;
+    int const count = m_msgCount;
 #endif
 
     unlock();

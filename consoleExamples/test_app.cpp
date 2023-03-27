@@ -109,7 +109,7 @@ int main(int argc, char** argv)
             }
             else
             {
-                for (int i = 0; i < NUM_SYS_VBS; i++) pdu += vbl[i];
+                for (const auto& i : vbl) { pdu += i; }
             }
         }
         else

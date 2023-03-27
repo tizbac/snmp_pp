@@ -255,8 +255,7 @@ AgentLog::AgentLog()
 {
     int* log_profile = nullptr;
 #if defined(WITH_LOG_PROFILES) && defined(DEFAULT_LOG_PROFILE)
-    map<string, int*>::const_iterator item =
-        logfilter_profiles.find(DEFAULT_LOG_PROFILE);
+    auto const item = logfilter_profiles.find(DEFAULT_LOG_PROFILE);
     if (item != logfilter_profiles.end())
         log_profile = item->second;
     else
@@ -269,9 +268,8 @@ AgentLog::AgentLog()
 #if defined(WITH_LOG_PROFILES)
 void AgentLog::set_profile(const char* const logprofile)
 {
-    int*                              log_profile;
-    map<string, int*>::const_iterator item =
-        logfilter_profiles.find(logprofile);
+    int*       log_profile;
+    auto const item = logfilter_profiles.find(logprofile);
     if (item != logfilter_profiles.end())
         log_profile = item->second;
     else
