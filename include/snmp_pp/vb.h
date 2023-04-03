@@ -1,60 +1,60 @@
 /*_############################################################################
-  _##
-  _##  vb.h
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  vb.h
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 /*===================================================================
-
-  Copyright (c) 1999
-  Hewlett-Packard Company
-
-  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  Permission to use, copy, modify, distribute and/or sell this software
-  and/or its documentation is hereby granted without fee. User agrees
-  to display the above copyright notice and this license notice in all
-  copies of the software and any documentation of the software. User
-  agrees to assume all liability for the use of the software; Hewlett-Packard
-  makes no representations about the suitability of this software for any
-  purpose. It is provided "AS-IS without warranty of any kind,either express
-  or implied. User hereby grants a royalty-free license to any and all
-  derivatives based upon this software code base.
-
-
-  SNMP++ V B . H
-
-  VARIABLE BINDING CLASS DEFINITION
-
-  DESCRIPTION:
-  This module contains the class definition for the variable binding
-  class. The VB class is an encapsulation of a SNMP VB. A VB object is
-  composed of an SNMP++ Oid and an SMI value. The Vb class utilizes Oid
-  objects and thus requires the Oid class. The Vb class may be used
-  stand alone and does not require use of any other snmp library.
-
-  DESIGN + AUTHOR:  Peter E. Mellquist
-
-=====================================================================*/
+ *
+ * Copyright (c) 1999
+ * Hewlett-Packard Company
+ *
+ * ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * Permission to use, copy, modify, distribute and/or sell this software
+ * and/or its documentation is hereby granted without fee. User agrees
+ * to display the above copyright notice and this license notice in all
+ * copies of the software and any documentation of the software. User
+ * agrees to assume all liability for the use of the software; Hewlett-Packard
+ * makes no representations about the suitability of this software for any
+ * purpose. It is provided "AS-IS without warranty of any kind,either express
+ * or implied. User hereby grants a royalty-free license to any and all
+ * derivatives based upon this software code base.
+ *
+ *
+ * SNMP++ V B . H
+ *
+ * VARIABLE BINDING CLASS DEFINITION
+ *
+ * DESCRIPTION:
+ * This module contains the class definition for the variable binding
+ * class. The VB class is an encapsulation of a SNMP VB. A VB object is
+ * composed of an SNMP++ Oid and an SMI value. The Vb class utilizes Oid
+ * objects and thus requires the Oid class. The Vb class may be used
+ * stand alone and does not require use of any other snmp library.
+ *
+ * DESIGN + AUTHOR:  Peter E. Mellquist
+ *
+ * =====================================================================*/
 
 #ifndef _SNMP_VB_H_
 #define _SNMP_VB_H_
@@ -75,6 +75,7 @@ namespace Snmp_pp
 #endif
 
 //------------[ VB Class Def ]-------------------------------------
+
 /**
  * The Vb class is the encapsulation of the SNMP variable binding.
  *
@@ -274,29 +275,29 @@ public:
     int get_value(SmiUINT32& i) const;
 
 #if 0
-  /**
-   * Get the value.
-   *
-   * This method will only return success if the value of the vb is SMI INT32.
-   *
-   * @param i - returned value
-   *
-   * @return SNMP_CLASS_SUCCESS on success, else SNMP_CLASS_INVALID.
-   */
-  int get_value(long &i) const;
+    /**
+     * Get the value.
+     *
+     * This method will only return success if the value of the vb is SMI INT32.
+     *
+     * @param i - returned value
+     *
+     * @return SNMP_CLASS_SUCCESS on success, else SNMP_CLASS_INVALID.
+     */
+    int get_value(long&i) const;
 
-  /**
-   * Get the value.
-   *
-   * This method will only return success if the value of the vb can
-   * be mapped to an uint32_t (SMI types uint32, counter32, gauge
-   * and timeticks).
-   *
-   * @param i - returned value
-   *
-   * @return SNMP_CLASS_SUCCESS on success, else SNMP_CLASS_INVALID.
-   */
-  int get_value(uint32_t &i) const;
+    /**
+     * Get the value.
+     *
+     * This method will only return success if the value of the vb can
+     * be mapped to an uint32_t (SMI types uint32, counter32, gauge
+     * and timeticks).
+     *
+     * @param i - returned value
+     *
+     * @return SNMP_CLASS_SUCCESS on success, else SNMP_CLASS_INVALID.
+     */
+    int get_value(uint32_t&i) const;
 #endif
 
     /**
@@ -378,7 +379,7 @@ public:
      */
     SnmpSyntax* clone_value() const
     {
-        return ((iv_vb_value) ? iv_vb_value->clone() : nullptr);
+        return (iv_vb_value) ? iv_vb_value->clone() : nullptr;
     }
 
     //-----[ misc]--------------------------------------------------------

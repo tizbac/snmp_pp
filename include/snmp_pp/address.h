@@ -1,56 +1,56 @@
 /*_############################################################################
-  _##
-  _##  address.h
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  address.h
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 /*
-  Copyright (c) 1999
-  Hewlett-Packard Company
-
-  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  Permission to use, copy, modify, distribute and/or sell this software
-  and/or its documentation is hereby granted without fee. User agrees
-  to display the above copyright notice and this license notice in all
-  copies of the software and any documentation of the software. User
-  agrees to assume all liability for the use of the software; Hewlett-Packard
-  makes no representations about the suitability of this software for any
-  purpose. It is provided "AS-IS without warranty of any kind,either express
-  or implied. User hereby grants a royalty-free license to any and all
-  derivatives based upon this software code base.
-
-
-  SNMP++ A D D R E S S . H
-
-  ADDRESS CLASS DEFINITION
-
-  DESIGN + AUTHOR:   Peter E Mellquist
-
-  DESCRIPTION:
-  Address class definition. Encapsulates various network
-  addresses into easy to use, safe and portable classes.
-
-=====================================================================*/
+ * Copyright (c) 1999
+ * Hewlett-Packard Company
+ *
+ * ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * Permission to use, copy, modify, distribute and/or sell this software
+ * and/or its documentation is hereby granted without fee. User agrees
+ * to display the above copyright notice and this license notice in all
+ * copies of the software and any documentation of the software. User
+ * agrees to assume all liability for the use of the software; Hewlett-Packard
+ * makes no representations about the suitability of this software for any
+ * purpose. It is provided "AS-IS without warranty of any kind,either express
+ * or implied. User hereby grants a royalty-free license to any and all
+ * derivatives based upon this software code base.
+ *
+ *
+ * SNMP++ A D D R E S S . H
+ *
+ * ADDRESS CLASS DEFINITION
+ *
+ * DESIGN + AUTHOR:   Peter E Mellquist
+ *
+ * DESCRIPTION:
+ * Address class definition. Encapsulates various network
+ * addresses into easy to use, safe and portable classes.
+ *
+ * =====================================================================*/
 
 #ifndef _SNMP_ADDRESS_H_
 #define _SNMP_ADDRESS_H_
@@ -131,6 +131,7 @@ class DLLOPT Address : public SnmpSyntax {
 
 public:
     //----[ enumerated types for address types ]---------------------------
+
     /**
      * Type returned by Address::get_type().
      */
@@ -190,7 +191,10 @@ public:
     /// overloaded >= operator, is a1 >= a2
     DLLOPT friend bool operator>=(const Address& lhs, const Address& rhs)
     {
-        if ((lhs > rhs) || (lhs == rhs)) return true;
+        if ((lhs > rhs) || (lhs == rhs))
+        {
+            return true;
+        }
         return false;
     }
 
@@ -200,7 +204,10 @@ public:
     /// overloaded <= operator, is a1 <= a2
     DLLOPT friend bool operator<=(const Address& lhs, const Address& rhs)
     {
-        if ((lhs < rhs) || (lhs == rhs)) return true;
+        if ((lhs < rhs) || (lhs == rhs))
+        {
+            return true;
+        }
         return false;
     }
 
@@ -285,10 +292,12 @@ public:
     virtual addr_type get_type() const = 0;
 
     using SnmpSyntax::operator=;
+
     /**
      * Overloaded assignment operator.
      */
     virtual Address& operator=(const Address& val) = 0;
+
     virtual Address& operator=(const char* str)
     {
         valid_flag   = parse_address(str);
@@ -415,7 +424,10 @@ public:
      */
     const char* get_printable() const override
     {
-        if (addr_changed) format_output();
+        if (addr_changed)
+        {
+            format_output();
+        }
         return output_buffer;
     }
 
@@ -426,7 +438,10 @@ public:
      */
     operator const char*() const override
     {
-        if (addr_changed) format_output();
+        if (addr_changed)
+        {
+            format_output();
+        }
         return output_buffer;
     }
 
@@ -657,7 +672,10 @@ public:
      */
     const char* get_printable() const override
     {
-        if (addr_changed) format_output();
+        if (addr_changed)
+        {
+            format_output();
+        }
         return output_buffer;
     }
 
@@ -668,7 +686,10 @@ public:
      */
     operator const char*() const override
     {
-        if (addr_changed) format_output();
+        if (addr_changed)
+        {
+            format_output();
+        }
         return output_buffer;
     }
 
@@ -742,7 +763,6 @@ protected:
 //---------[ 802.3 MAC Address Class ]-------------------------------------
 //-------------------------------------------------------------------------
 class DLLOPT MacAddress : public Address {
-
 public:
     // constructor, no arguments
     MacAddress();
@@ -772,6 +792,7 @@ public:
     virtual int get_asn1_length() const { return MACLEN + 2; }
 
     using Address::operator=;
+
     /**
      * Map other SnmpSyntax objects to MacAddress.
      */
@@ -801,7 +822,10 @@ public:
      */
     virtual const char* get_printable() const
     {
-        if (addr_changed) format_output();
+        if (addr_changed)
+        {
+            format_output();
+        }
         return output_buffer;
     }
 
@@ -812,7 +836,10 @@ public:
      */
     virtual operator const char*() const
     {
-        if (addr_changed) format_output();
+        if (addr_changed)
+        {
+            format_output();
+        }
         return output_buffer;
     }
 
@@ -856,7 +883,6 @@ protected:
 //---------[ IPX Address Class ]------------------------------------------
 //------------------------------------------------------------------------
 class DLLOPT IpxAddress : public Address {
-
 public:
     // constructor no args
     IpxAddress();
@@ -886,6 +912,7 @@ public:
     virtual int get_asn1_length() const { return IPXLEN + 2; }
 
     using Address::operator=;
+
     /**
      * Map other SnmpSyntax objects to IpxAddress.
      */
@@ -920,7 +947,10 @@ public:
      */
     virtual const char* get_printable() const
     {
-        if (addr_changed) format_output();
+        if (addr_changed)
+        {
+            format_output();
+        }
         return output_buffer;
     }
 
@@ -931,7 +961,10 @@ public:
      */
     virtual operator const char*() const
     {
-        if (addr_changed) format_output();
+        if (addr_changed)
+        {
+            format_output();
+        }
         return output_buffer;
     }
 
@@ -973,7 +1006,6 @@ protected:
 //---------[ IpxSock Address Class ]--------------------------------------
 //------------------------------------------------------------------------
 class DLLOPT IpxSockAddress : public IpxAddress {
-
 public:
     // constructor, no args
     IpxSockAddress();
@@ -1040,7 +1072,10 @@ public:
      */
     virtual const char* get_printable() const
     {
-        if (addr_changed) format_output();
+        if (addr_changed)
+        {
+            format_output();
+        }
         return output_buffer;
     }
 
@@ -1051,7 +1086,10 @@ public:
      */
     virtual operator const char*() const
     {
-        if (addr_changed) format_output();
+        if (addr_changed)
+        {
+            format_output();
+        }
         return output_buffer;
     }
 
@@ -1130,7 +1168,10 @@ public:
      */
     ~GenAddress() override
     {
-        if (address) delete address;
+        if (address)
+        {
+            delete address;
+        }
     }
 
     /**
@@ -1164,6 +1205,7 @@ public:
     }
 
     using Address::operator=;
+
     /**
      * Overloaded assignment operator for a GenAddress.
      */
@@ -1212,7 +1254,10 @@ public:
      */
     void clear() override
     {
-        if (address) address->clear();
+        if (address)
+        {
+            address->clear();
+        }
     }
 
     /**

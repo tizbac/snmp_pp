@@ -1,44 +1,44 @@
 /*_############################################################################
-  _##
-  _##  idea.h
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  idea.h
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 
 /*
-
-idea.h
-
-Author: Tatu Ylonen <ylo@cs.hut.fi>
-
-Copyright (c) 1995 Tatu Ylonen <ylo@cs.hut.fi>, Espoo, Finland
-                   All rights reserved
-
-Created: Sun Jun 25 04:44:30 1995 ylo
-
-The IDEA encryption algorithm.
-
-*/
+ *
+ * idea.h
+ *
+ * Author: Tatu Ylonen <ylo@cs.hut.fi>
+ *
+ * Copyright (c) 1995 Tatu Ylonen <ylo@cs.hut.fi>, Espoo, Finland
+ *                 All rights reserved
+ *
+ * Created: Sun Jun 25 04:44:30 1995 ylo
+ *
+ * The IDEA encryption algorithm.
+ *
+ */
 
 #ifndef _SNMP_IDEA_H_
 #define _SNMP_IDEA_H_
@@ -71,16 +71,16 @@ void idea_destroy_context(IDEAContext* c);
 void idea_transform(IDEAContext* c, word32 l, word32 r, word32* output);
 
 /* Encrypts len bytes from src to dest in CFB mode.  Len need not be a multiple
-   of 8; if it is not, iv at return will contain garbage.
-   Otherwise, iv will be modified at end to a value suitable for continuing
-   encryption. */
+ * of 8; if it is not, iv at return will contain garbage.
+ * Otherwise, iv will be modified at end to a value suitable for continuing
+ * encryption. */
 void idea_cfb_encrypt(IDEAContext* c, unsigned char* iv, unsigned char* dest,
     const unsigned char* src, unsigned int len);
 
 /* Decrypts len bytes from src to dest in CFB mode.  Len need not be a multiple
-   of 8; if it is not, iv at return will contain garbage.
-   Otherwise, iv will be modified at end to a value suitable for continuing
-   decryption. */
+ * of 8; if it is not, iv at return will contain garbage.
+ * Otherwise, iv will be modified at end to a value suitable for continuing
+ * decryption. */
 void idea_cfb_decrypt(IDEAContext* c, unsigned char* iv, unsigned char* dest,
     const unsigned char* src, unsigned int len);
 
@@ -92,19 +92,19 @@ void idea_cfb_decrypt(IDEAContext* c, unsigned char* iv, unsigned char* dest,
 #endif
 
 /*
-
-getput.h
-
-Author: Tatu Ylonen <ylo@cs.hut.fi>
-
-Copyright (c) 1995 Tatu Ylonen <ylo@cs.hut.fi>, Espoo, Finland
-                   All rights reserved
-
-Created: Wed Jun 28 22:36:30 1995 ylo
-
-Macros for storing and retrieving data in msb first and lsb first order.
-
-*/
+ *
+ * getput.h
+ *
+ * Author: Tatu Ylonen <ylo@cs.hut.fi>
+ *
+ * Copyright (c) 1995 Tatu Ylonen <ylo@cs.hut.fi>, Espoo, Finland
+ *                 All rights reserved
+ *
+ * Created: Wed Jun 28 22:36:30 1995 ylo
+ *
+ * Macros for storing and retrieving data in msb first and lsb first order.
+ *
+ */
 
 #ifdef SNMP_PP_NAMESPACE
 namespace Snmp_pp

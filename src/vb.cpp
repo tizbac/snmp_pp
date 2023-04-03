@@ -1,56 +1,56 @@
 /*_############################################################################
-  _##
-  _##  vb.cpp
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  vb.cpp
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 /*===================================================================
-
-  Copyright (c) 1999
-  Hewlett-Packard Company
-
-  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  Permission to use, copy, modify, distribute and/or sell this software
-  and/or its documentation is hereby granted without fee. User agrees
-  to display the above copyright notice and this license notice in all
-  copies of the software and any documentation of the software. User
-  agrees to assume all liability for the use of the software; Hewlett-Packard
-  makes no representations about the suitability of this software for any
-  purpose. It is provided "AS-IS" without warranty of any kind,either express
-  or implied. User hereby grants a royalty-free license to any and all
-  derivatives based upon this software code base.
-
-
-  V B . C P P
-
-  VARIABLE BINDING CLASS IMPLEMENTATION
-
-  DESCRIPTION:
-  This module contains the class implementation of the VB class.
-  The Vb class is an encapsulation of the snmp variable binding.
-
-  DESIGN + AUTHOR:  Peter E Mellquist
-=====================================================================*/
+ *
+ * Copyright (c) 1999
+ * Hewlett-Packard Company
+ *
+ * ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * Permission to use, copy, modify, distribute and/or sell this software
+ * and/or its documentation is hereby granted without fee. User agrees
+ * to display the above copyright notice and this license notice in all
+ * copies of the software and any documentation of the software. User
+ * agrees to assume all liability for the use of the software; Hewlett-Packard
+ * makes no representations about the suitability of this software for any
+ * purpose. It is provided "AS-IS" without warranty of any kind,either express
+ * or implied. User hereby grants a royalty-free license to any and all
+ * derivatives based upon this software code base.
+ *
+ *
+ * V B . C P P
+ *
+ * VARIABLE BINDING CLASS IMPLEMENTATION
+ *
+ * DESCRIPTION:
+ * This module contains the class implementation of the VB class.
+ * The Vb class is an encapsulation of the snmp variable binding.
+ *
+ * DESIGN + AUTHOR:  Peter E Mellquist
+ * =====================================================================*/
 
 #include "snmp_pp/vb.h" // include vb class defs
 
@@ -72,7 +72,9 @@ bool Vb::valid() const
 {
     if (iv_vb_oid.valid()
         && ((iv_vb_value == nullptr) || (iv_vb_value && iv_vb_value->valid())))
+    {
         return true;
+    }
     return false;
 }
 
@@ -82,15 +84,20 @@ bool Vb::valid() const
 // before assigning source
 Vb& Vb::operator=(const Vb& vb)
 {
-    if (this == &vb) return *this; // check for self assignment
-
-    free_vb();                     // free up target to begin with
+    if (this == &vb)
+    {
+        return *this; // check for self assignment
+    }
+    free_vb();        // free up target to begin with
 
     //-----[ reassign the Oid portion 1st ]
     vb.get_oid(iv_vb_oid);
 
     //-----[ next set the vb value portion ]
-    if (vb.iv_vb_value) iv_vb_value = vb.iv_vb_value->clone();
+    if (vb.iv_vb_value)
+    {
+        iv_vb_value = vb.iv_vb_value->clone();
+    }
 
     exception_status = vb.exception_status;
 
@@ -150,36 +157,36 @@ int Vb::get_value(uint32_t& i) const
 //--------------[ Vb::get_value(long int &i) ]-------------------------
 // get the signed long int
 // returns 0 on success and a value
-int Vb::get_value(long &i) const
+int Vb::get_value(long&i) const
 {
-   if (iv_vb_value &&
-       iv_vb_value->valid() &&
-       (iv_vb_value->get_syntax() == sNMP_SYNTAX_INT32 ))
-   {
-     i = *((SnmpInt32 *)iv_vb_value);	// SnmpInt32 has cast to long
-     return SNMP_CLASS_SUCCESS;
-   }
-   return SNMP_CLASS_INVALID;
+    if (iv_vb_value &&
+        iv_vb_value->valid() &&
+        (iv_vb_value->get_syntax() == sNMP_SYNTAX_INT32))
+    {
+        i = *((SnmpInt32 *)iv_vb_value); // SnmpInt32 has cast to long
+        return SNMP_CLASS_SUCCESS;
+    }
+    return SNMP_CLASS_INVALID;
 }
-
 
 //-----------------[  Vb::get_value(uint32_t int &i) ]--------------
 // get the uint32_t int
 // returns 0 on success and a value
-int Vb::get_value(uint32_t &i) const
+int Vb::get_value(uint32_t&i) const
 {
-  if (iv_vb_value &&
-      iv_vb_value->valid() &&
-      ((iv_vb_value->get_syntax() == sNMP_SYNTAX_UINT32 ) ||
-       (iv_vb_value->get_syntax() == sNMP_SYNTAX_CNTR32 ) ||
-       (iv_vb_value->get_syntax() == sNMP_SYNTAX_GAUGE32 ) ||
-       (iv_vb_value->get_syntax() == sNMP_SYNTAX_TIMETICKS )))
-  {
-    i = *((SnmpUInt32 *)iv_vb_value);	// SnmpUint32 has cast to ulong
-    return SNMP_CLASS_SUCCESS;
-  }
-  return SNMP_CLASS_INVALID;
+    if (iv_vb_value &&
+        iv_vb_value->valid() &&
+        ((iv_vb_value->get_syntax() == sNMP_SYNTAX_UINT32) ||
+         (iv_vb_value->get_syntax() == sNMP_SYNTAX_CNTR32) ||
+         (iv_vb_value->get_syntax() == sNMP_SYNTAX_GAUGE32) ||
+         (iv_vb_value->get_syntax() == sNMP_SYNTAX_TIMETICKS)))
+    {
+        i = *((SnmpUInt32 *)iv_vb_value); // SnmpUint32 has cast to ulong
+        return SNMP_CLASS_SUCCESS;
+    }
+    return SNMP_CLASS_INVALID;
 }
+
 #endif
 
 //-----------------[  Vb::get_value(pp_uint64 &i) ]--------------
@@ -215,7 +222,10 @@ int Vb::get_value(unsigned char* ptr, uint32_t& len) const
         return SNMP_CLASS_SUCCESS;
     }
 
-    if (ptr) ptr[0] = 0;
+    if (ptr)
+    {
+        ptr[0] = 0;
+    }
     len = 0;
     return SNMP_CLASS_INVALID;
 }
@@ -231,19 +241,29 @@ int Vb::get_value(unsigned char* ptr, uint32_t& len, const uint32_t maxlen,
     {
         auto* p_os = (OctetStr*)iv_vb_value;
         len        = p_os->len();
-        if (len > maxlen) len = maxlen;
+        if (len > maxlen)
+        {
+            len = maxlen;
+        }
         memcpy(ptr, p_os->data(), len);
         if (add_null_byte)
         {
             if (len == maxlen)
+            {
                 ptr[len - 1] = 0;
+            }
             else
+            {
                 ptr[len] = 0;
+            }
         }
         return SNMP_CLASS_SUCCESS;
     }
 
-    if (ptr) ptr[0] = 0;
+    if (ptr)
+    {
+        ptr[0] = 0;
+    }
     len = 0;
     return SNMP_CLASS_INVALID;
 }
@@ -254,7 +274,10 @@ int Vb::get_value(SnmpSyntax& val) const
     if (iv_vb_value)
     {
         val = *iv_vb_value;
-        if (val.valid()) return SNMP_CLASS_SUCCESS;
+        if (val.valid())
+        {
+            return SNMP_CLASS_SUCCESS;
+        }
         return SNMP_CLASS_INVALID;
     }
     // TM: should set val to be invalid
@@ -277,7 +300,10 @@ int Vb::get_value(char* ptr) const
         return SNMP_CLASS_SUCCESS;
     }
 
-    if (ptr) ptr[0] = 0;
+    if (ptr)
+    {
+        ptr[0] = 0;
+    }
     return SNMP_CLASS_INVALID;
 }
 
@@ -290,9 +316,13 @@ int Vb::get_value(char* ptr) const
 SmiUINT32 Vb::get_syntax() const
 {
     if (exception_status != SNMP_CLASS_SUCCESS)
+    {
         return exception_status;
+    }
     else
-        return (iv_vb_value ? iv_vb_value->get_syntax() : sNMP_SYNTAX_NULL);
+    {
+        return iv_vb_value ? iv_vb_value->get_syntax() : sNMP_SYNTAX_NULL;
+    }
 }
 
 void Vb::set_syntax(const SmiUINT32 syntax)
@@ -303,34 +333,79 @@ void Vb::set_syntax(const SmiUINT32 syntax)
 
     switch (syntax)
     {
-    case sNMP_SYNTAX_INT32: iv_vb_value = new SnmpInt32(); break;
-    case sNMP_SYNTAX_TIMETICKS: iv_vb_value = new TimeTicks(); break;
-    case sNMP_SYNTAX_CNTR32: iv_vb_value = new Counter32(); break;
-    case sNMP_SYNTAX_GAUGE32:
+    case sNMP_SYNTAX_INT32: {
+        iv_vb_value = new SnmpInt32();
+        break;
+    }
+
+    case sNMP_SYNTAX_TIMETICKS: {
+        iv_vb_value = new TimeTicks();
+        break;
+    }
+
+    case sNMP_SYNTAX_CNTR32: {
+        iv_vb_value = new Counter32();
+        break;
+    }
+
+    case sNMP_SYNTAX_GAUGE32: {
         iv_vb_value = new Gauge32();
         break;
-        /* Not distinguishable from Gauge32
-                case sNMP_SYNTAX_UINT32:
-                        iv_vb_value = new SnmpUInt32();
-                        break;
-        */
-    case sNMP_SYNTAX_CNTR64: iv_vb_value = new Counter64(); break;
+    }
+
+    /* Not distinguishable from Gauge32
+     *      case sNMP_SYNTAX_UINT32:
+     *              iv_vb_value = new SnmpUInt32();
+     *              break;
+     */
+    case sNMP_SYNTAX_CNTR64: {
+        iv_vb_value = new Counter64();
+        break;
+    }
+
     case sNMP_SYNTAX_BITS:
-    case sNMP_SYNTAX_OCTETS: iv_vb_value = new OctetStr(); break;
-    case sNMP_SYNTAX_OPAQUE: iv_vb_value = new OpaqueStr(); break;
-    case sNMP_SYNTAX_IPADDR: iv_vb_value = new IpAddress(); break;
-    case sNMP_SYNTAX_OID: iv_vb_value = new Oid(); break;
-    case sNMP_SYNTAX_NULL: break;
-    case sNMP_SYNTAX_NOSUCHINSTANCE:
+    case sNMP_SYNTAX_OCTETS: {
+        iv_vb_value = new OctetStr();
+        break;
+    }
+
+    case sNMP_SYNTAX_OPAQUE: {
+        iv_vb_value = new OpaqueStr();
+        break;
+    }
+
+    case sNMP_SYNTAX_IPADDR: {
+        iv_vb_value = new IpAddress();
+        break;
+    }
+
+    case sNMP_SYNTAX_OID: {
+        iv_vb_value = new Oid();
+        break;
+    }
+
+    case sNMP_SYNTAX_NULL: {
+        break;
+    }
+
+    case sNMP_SYNTAX_NOSUCHINSTANCE: {
         exception_status = sNMP_SYNTAX_NOSUCHINSTANCE;
         break;
-    case sNMP_SYNTAX_NOSUCHOBJECT:
+    }
+
+    case sNMP_SYNTAX_NOSUCHOBJECT: {
         exception_status = sNMP_SYNTAX_NOSUCHOBJECT;
         break;
-    case sNMP_SYNTAX_ENDOFMIBVIEW:
+    }
+
+    case sNMP_SYNTAX_ENDOFMIBVIEW: {
         exception_status = sNMP_SYNTAX_ENDOFMIBVIEW;
         break;
-    case sNMP_SYNTAX_SEQUENCE: break;
+    }
+
+    case sNMP_SYNTAX_SEQUENCE: {
+        break;
+    }
     }
 }
 
@@ -339,7 +414,10 @@ const static char blank_string[] = "";
 // return the printabel value
 const char* Vb::get_printable_value() const
 {
-    if (iv_vb_value) return iv_vb_value->get_printable();
+    if (iv_vb_value)
+    {
+        return iv_vb_value->get_printable();
+    }
     return blank_string;
 }
 
@@ -347,8 +425,10 @@ int Vb::get_asn1_length() const
 {
     // FIXME: Header for vbs is always 4 Bytes!
     if (iv_vb_value)
+    {
         return iv_vb_oid.get_asn1_length() + iv_vb_value->get_asn1_length()
             + 4;
+    }
 
     return iv_vb_oid.get_asn1_length() + 2 + 4;
 }

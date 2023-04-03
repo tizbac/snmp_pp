@@ -1,56 +1,56 @@
 /*_############################################################################
-  _##
-  _##  target.h
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  target.h
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 /*===================================================================
-
-  Copyright (c) 1999
-  Hewlett-Packard Company
-
-  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  Permission to use, copy, modify, distribute and/or sell this software
-  and/or its documentation is hereby granted without fee. User agrees
-  to display the above copyright notice and this license notice in all
-  copies of the software and any documentation of the software. User
-  agrees to assume all liability for the use of the software; Hewlett-Packard
-  makes no representations about the suitability of this software for any
-  purpose. It is provided "AS-IS" without warranty of any kind,either express
-  or implied. User hereby grants a royalty-free license to any and all
-  derivatives based upon this software code base.
-
-
-  SNMP++  T A R G E T . H
-
-  TARGET CLASS DEFINITION
-
-  DESIGN + AUTHOR:  Peter E Mellquist
-
-  DESCRIPTION:
-  Target class defines target SNMP agents.
-
-=====================================================================*/
+ *
+ * Copyright (c) 1999
+ * Hewlett-Packard Company
+ *
+ * ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * Permission to use, copy, modify, distribute and/or sell this software
+ * and/or its documentation is hereby granted without fee. User agrees
+ * to display the above copyright notice and this license notice in all
+ * copies of the software and any documentation of the software. User
+ * agrees to assume all liability for the use of the software; Hewlett-Packard
+ * makes no representations about the suitability of this software for any
+ * purpose. It is provided "AS-IS" without warranty of any kind,either express
+ * or implied. User hereby grants a royalty-free license to any and all
+ * derivatives based upon this software code base.
+ *
+ *
+ * SNMP++  T A R G E T . H
+ *
+ * TARGET CLASS DEFINITION
+ *
+ * DESIGN + AUTHOR:  Peter E Mellquist
+ *
+ * DESCRIPTION:
+ * Target class defines target SNMP agents.
+ *
+ * =====================================================================*/
 
 #ifndef _SNMP_TARGET_H_
 #define _SNMP_TARGET_H_
@@ -70,12 +70,13 @@ namespace Snmp_pp
 #endif
 
 //----[ enumerated types for SNMP versions ]---------------------------
+
 /**
  * The SNMP version to use is passed with this enum.
  */
 enum snmp_version {
-    version1, ///< (0) SNMPv1
-    version2c ///< (1) SNMPv2c
+    version1,      ///< (0) SNMPv1
+    version2c      ///< (1) SNMPv2c
 #ifdef _SNMPv3
     ,
     version2stern, ///< (2) Dont use this!
@@ -84,6 +85,7 @@ enum snmp_version {
 };
 
 //----[ Target class ]-------------------------------------------------
+
 /**
  * Abstract class used to provide a virtual interface into Targets.
  *
@@ -117,7 +119,10 @@ public:
         : validity(false), timeout(default_timeout), retries(default_retries),
           version(version1), ttype(type_base), my_address(address)
     {
-        if (my_address.valid()) validity = true;
+        if (my_address.valid())
+        {
+            validity = true;
+        }
     }
 
     /**
@@ -271,6 +276,7 @@ protected:
 };
 
 //----[  CTarget class ]----------------------------------------------
+
 /**
  * Community based target object.
  * This target can be used for SNMPv1 and SNMPv2c messages.
@@ -450,6 +456,7 @@ typedef SnmpCollection<SnmpTarget> TargetCollection;
 #endif
 
 //----[  UTarget class ]----------------------------------------------
+
 /**
  * User based Target.
  *

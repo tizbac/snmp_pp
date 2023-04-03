@@ -1,48 +1,48 @@
 /*_############################################################################
-  _##
-  _##  snmpBulk.cpp
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  snmpBulk.cpp
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 /*
-  snmpBulk.cpp
-
-  Copyright (c) 1996
-  Hewlett-Packard Company
-
-  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  Permission to use, copy, modify, distribute and/or sell this software
-  and/or its documentation is hereby granted without fee. User agrees
-  to display the above copyright notice and this license notice in all
-  copies of the software and any documentation of the software. User
-  agrees to assume all liability for the use of the software; Hewlett-Packard
-  makes no representations about the suitability of this software for any
-  purpose. It is provided "AS-IS" without warranty of any kind,either express
-  or implied. User hereby grants a royalty-free license to any and all
-  derivatives based upon this software code base.
-
-  Peter E. Mellquist
-*/
+ * snmpBulk.cpp
+ *
+ * Copyright (c) 1996
+ * Hewlett-Packard Company
+ *
+ * ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * Permission to use, copy, modify, distribute and/or sell this software
+ * and/or its documentation is hereby granted without fee. User agrees
+ * to display the above copyright notice and this license notice in all
+ * copies of the software and any documentation of the software. User
+ * agrees to assume all liability for the use of the software; Hewlett-Packard
+ * makes no representations about the suitability of this software for any
+ * purpose. It is provided "AS-IS" without warranty of any kind,either express
+ * or implied. User hereby grants a royalty-free license to any and all
+ * derivatives based upon this software code base.
+ *
+ * Peter E. Mellquist
+ */
 
 #include "snmp_pp/snmp_pp.h"
 
@@ -105,9 +105,18 @@ static void help()
 int main(int argc, char** argv)
 {
     //---------[ check the arg count ]----------------------------------------
-    if (argc < 2) usage();
-    if (strstr(argv[1], "-h") != 0) help();
-    if (strstr(argv[1], "-?") != 0) usage();
+    if (argc < 2)
+    {
+        usage();
+    }
+    if (strstr(argv[1], "-h") != 0)
+    {
+        help();
+    }
+    if (strstr(argv[1], "-?") != 0)
+    {
+        usage();
+    }
 
 #if !defined(_NO_LOGGING) && !defined(WITH_LOG_PROFILES)
     // Set filter for logging
@@ -131,7 +140,7 @@ int main(int argc, char** argv)
     Vb  vb;  // construct a Vb object
     int oid_count = 0;
     if (argc >= 3)
-    { // if 3 args, then use the callers Oid
+    {        // if 3 args, then use the callers Oid
         int i = 2;
         while ((i < argc) && (strstr(argv[i], "-") == 0))
         {
@@ -196,7 +205,10 @@ int main(int argc, char** argv)
             ptr++;
             ptr++;
             retries = atoi(ptr);
-            if ((retries < 0) || (retries > 5)) retries = 1;
+            if ((retries < 0) || (retries > 5))
+            {
+                retries = 1;
+            }
             continue;
         }
         if (strstr(argv[x], "-t") != 0)
@@ -205,7 +217,10 @@ int main(int argc, char** argv)
             ptr++;
             ptr++;
             timeout = atoi(ptr);
-            if ((timeout < 100) || (timeout > 500)) timeout = 100;
+            if ((timeout < 100) || (timeout > 500))
+            {
+                timeout = 100;
+            }
             continue;
         }
         if (strstr(argv[x], "-n") != 0)
@@ -214,7 +229,10 @@ int main(int argc, char** argv)
             ptr++;
             ptr++;
             non_reps = atoi(ptr);
-            if ((non_reps < 0) || (non_reps > 10)) non_reps = 0;
+            if ((non_reps < 0) || (non_reps > 10))
+            {
+                non_reps = 0;
+            }
         }
         if (strstr(argv[x], "-m") != 0)
         { // parse for max repetitions
@@ -222,7 +240,10 @@ int main(int argc, char** argv)
             ptr++;
             ptr++;
             max_reps = atoi(ptr);
-            if (max_reps < 0) max_reps = 1;
+            if (max_reps < 0)
+            {
+                max_reps = 1;
+            }
         }
         if (strstr(argv[x], "-C") != 0)
         {
@@ -263,14 +284,22 @@ int main(int argc, char** argv)
             ptr = argv[x];
             ptr += 5;
             if (strcasecmp(ptr, "SHA") == 0)
+            {
                 authProtocol = SNMP_AUTHPROTOCOL_HMACSHA;
+            }
             else if (strcasecmp(ptr, "MD5") == 0)
+            {
                 authProtocol = SNMP_AUTHPROTOCOL_HMACMD5;
+            }
             else if (strcasecmp(ptr, "NONE") == 0)
+            {
                 authProtocol = SNMP_AUTHPROTOCOL_NONE;
+            }
             else
+            {
                 std::cout << "Warning: ignoring unknown auth protocol: " << ptr
                           << std::endl;
+            }
             continue;
         }
         if (strstr(argv[x], "-priv") != 0)
@@ -278,22 +307,38 @@ int main(int argc, char** argv)
             ptr = argv[x];
             ptr += 5;
             if (strcasecmp(ptr, "DES") == 0)
+            {
                 privProtocol = SNMP_PRIVPROTOCOL_DES;
+            }
             else if (strcasecmp(ptr, "3DESEDE") == 0)
+            {
                 privProtocol = SNMP_PRIVPROTOCOL_3DESEDE;
+            }
             else if (strcasecmp(ptr, "IDEA") == 0)
+            {
                 privProtocol = SNMP_PRIVPROTOCOL_IDEA;
+            }
             else if (strcasecmp(ptr, "AES128") == 0)
+            {
                 privProtocol = SNMP_PRIVPROTOCOL_AES128;
+            }
             else if (strcasecmp(ptr, "AES192") == 0)
+            {
                 privProtocol = SNMP_PRIVPROTOCOL_AES192;
+            }
             else if (strcasecmp(ptr, "AES256") == 0)
+            {
                 privProtocol = SNMP_PRIVPROTOCOL_AES256;
+            }
             else if (strcasecmp(ptr, "NONE") == 0)
+            {
                 privProtocol = SNMP_PRIVPROTOCOL_NONE;
+            }
             else
+            {
                 std::cout << "Warning: ignoring unknown priv protocol: " << ptr
                           << std::endl;
+            }
             continue;
         }
         if (strstr(argv[x], "-sn") != 0)
@@ -310,7 +355,9 @@ int main(int argc, char** argv)
             securityLevel = atoi(ptr);
             if ((securityLevel < SNMP_SECURITY_LEVEL_NOAUTH_NOPRIV)
                 || (securityLevel > SNMP_SECURITY_LEVEL_AUTH_PRIV))
+            {
                 securityLevel = SNMP_SECURITY_LEVEL_AUTH_PRIV;
+            }
             continue;
         }
         if (strstr(argv[x], "-sm") != 0)
@@ -320,7 +367,9 @@ int main(int argc, char** argv)
             securityModel = atoi(ptr);
             if ((securityModel < SNMP_SECURITY_MODEL_V1)
                 || (securityModel > SNMP_SECURITY_MODEL_USM))
+            {
                 securityModel = SNMP_SECURITY_MODEL_USM;
+            }
             continue;
         }
         if (strstr(argv[x], "-cn") != 0)
@@ -458,6 +507,7 @@ int main(int argc, char** argv)
               << std::endl;
 #ifdef _SNMPv3
     if (version == version3)
+    {
         std::cout << std::endl
                   << "securityName= " << securityName.get_printable()
                   << ", securityLevel= " << securityLevel
@@ -465,6 +515,7 @@ int main(int argc, char** argv)
                   << "contextName= " << contextName.get_printable()
                   << ", contextEngineID= " << contextEngineID.get_printable()
                   << std::endl;
+    }
     else
 #endif
         std::cout << " Community=" << community.get_printable() << std::endl
@@ -473,7 +524,9 @@ int main(int argc, char** argv)
     SnmpTarget* target;
 #ifdef _SNMPv3
     if (version == version3)
+    {
         target = &utarget;
+    }
     else
 #endif
         target = &ctarget;
@@ -500,12 +553,17 @@ int main(int argc, char** argv)
             {
                 std::cout << "Value = " << vb.get_printable_value() << "\n\n";
             }
-            else { std::cout << "End of MIB view.\n\n"; }
+            else
+            {
+                std::cout << "End of MIB view.\n\n";
+            }
         }
     }
     else
+    {
         std::cout << "SNMP++ GetBulk Error, " << snmp.error_msg(status)
                   << "\n";
+    }
 
     Snmp::socket_cleanup(); // Shut down socket subsystem
 }

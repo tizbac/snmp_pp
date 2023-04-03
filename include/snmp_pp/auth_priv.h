@@ -1,29 +1,29 @@
 /*_############################################################################
-  _##
-  _##  auth_priv.h
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  auth_priv.h
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 
 #ifndef _SNMP_AUTH_PRIV_H_
 #define _SNMP_AUTH_PRIV_H_
@@ -560,17 +560,22 @@ public:
         return SNMPv3_USM_ERROR; /* not needed for DES! */
     }
 
-    int         get_id() const override { return SNMP_PRIVPROTOCOL_DES; }
+    int get_id() const override { return SNMP_PRIVPROTOCOL_DES; }
+
     const char* get_id_string() const override { return "DES"; }
-    int         get_priv_params_len() const override { return 8; }
-    int         get_min_key_len() const override { return 16; }
-    void        fix_key_len(unsigned int& key_len) const override
+
+    int get_priv_params_len() const override { return 8; }
+
+    int get_min_key_len() const override { return 16; }
+
+    void fix_key_len(unsigned int& key_len) const override
     {
         key_len = (key_len >= 16 ? 16 : 0);
     }
 };
 
 #    ifdef _USE_IDEA
+
 /**
  * Encryption module using IDEA.
  *
@@ -599,11 +604,15 @@ public:
         return SNMPv3_USM_ERROR; /* not needed for IDEA! */
     }
 
-    int         get_id() const { return SNMP_PRIVPROTOCOL_IDEA; }
+    int get_id() const { return SNMP_PRIVPROTOCOL_IDEA; }
+
     const char* get_id_string() const { return "IDEA"; }
-    int         get_priv_params_len() const { return 8; }
-    int         get_min_key_len() const { return 16; }
-    void        fix_key_len(unsigned int& key_len) const
+
+    int get_priv_params_len() const { return 8; }
+
+    int get_min_key_len() const { return 16; }
+
+    void fix_key_len(unsigned int& key_len) const
     {
         key_len = (key_len >= 16 ? 16 : 0);
     }
@@ -641,11 +650,15 @@ public:
         unsigned int* key_len, const unsigned int max_key_len,
         Auth* auth) override;
 
-    int         get_id() const override { return aes_type; }
+    int get_id() const override { return aes_type; }
+
     const char* get_id_string() const override;
-    int         get_priv_params_len() const override { return 8; }
-    int         get_min_key_len() const override { return key_bytes; }
-    void        fix_key_len(unsigned int& key_len) const override
+
+    int get_priv_params_len() const override { return 8; }
+
+    int get_min_key_len() const override { return key_bytes; }
+
+    void fix_key_len(unsigned int& key_len) const override
     {
         key_len = (key_len >= (unsigned)key_bytes ? key_bytes : 0);
     }
@@ -679,7 +692,8 @@ public:
         Auth* auth) override;
 
     const char* get_id_string() const override;
-    int         get_id() const override { return own_aes_type; }
+
+    int get_id() const override { return own_aes_type; }
 
     static int map_aes_type(const int t);
 
@@ -690,6 +704,7 @@ private:
 #    endif // _USE_LIBTOMCRYPT or _USE_OPENSSL
 
 #    ifdef _USE_3DES_EDE
+
 /**
  * Encryption module using TripleDES-EDE KEY
  *
@@ -727,15 +742,20 @@ public:
         const unsigned int engine_id_len, unsigned char* key,
         unsigned int* key_len, const unsigned int max_key_len, Auth* auth);
 
-    int         get_id() const { return SNMP_PRIVPROTOCOL_3DESEDE; }
+    int get_id() const { return SNMP_PRIVPROTOCOL_3DESEDE; }
+
     const char* get_id_string() const { return "3DESEDE"; }
-    int         get_priv_params_len() const { return 8; }
-    int         get_min_key_len() const { return TRIPLEDES_EDE_KEY_LEN; }
-    void        fix_key_len(unsigned int& key_len) const
+
+    int get_priv_params_len() const { return 8; }
+
+    int get_min_key_len() const { return TRIPLEDES_EDE_KEY_LEN; }
+
+    void fix_key_len(unsigned int& key_len) const
     {
         key_len =
             (key_len >= TRIPLEDES_EDE_KEY_LEN ? TRIPLEDES_EDE_KEY_LEN : 0);
     }
+
 #        ifdef _TEST
     bool test();
 #        endif
@@ -772,12 +792,14 @@ protected:
     class Hasher {
     public:
         Hasher() { }
+
         virtual ~Hasher() { }
 
         virtual int init() = 0;
         virtual int update(
             const unsigned char* data, const unsigned int data_len) = 0;
-        virtual int final(unsigned char* digest)                    = 0;
+
+        virtual int final(unsigned char* digest) = 0;
 
         virtual int get_key_length() const = 0;
 

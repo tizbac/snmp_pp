@@ -1,57 +1,57 @@
 /*_############################################################################
-  _##
-  _##  pdu.cpp
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  pdu.cpp
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 /*===================================================================
-
-  Copyright (c) 1999
-  Hewlett-Packard Company
-
-  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  Permission to use, copy, modify, distribute and/or sell this software
-  and/or its documentation is hereby granted without fee. User agrees
-  to display the above copyright notice and this license notice in all
-  copies of the software and any documentation of the software. User
-  agrees to assume all liability for the use of the software; Hewlett-Packard
-  makes no representations about the suitability of this software for any
-  purpose. It is provided "AS-IS" without warranty of any kind,either express
-  or implied. User hereby grants a royalty-free license to any and all
-  derivatives based upon this software code base.
-
-
-  P D U . C P P
-
-  PDU CLASS IMPLEMENTATION
-
-  DESIGN + AUTHOR:  Peter E Mellquist
-
-  DESCRIPTION:
-  Pdu class implementation. Encapsulation of an SMI Protocol
-  Data Unit (PDU) in C++.
-
-=====================================================================*/
+ *
+ * Copyright (c) 1999
+ * Hewlett-Packard Company
+ *
+ * ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * Permission to use, copy, modify, distribute and/or sell this software
+ * and/or its documentation is hereby granted without fee. User agrees
+ * to display the above copyright notice and this license notice in all
+ * copies of the software and any documentation of the software. User
+ * agrees to assume all liability for the use of the software; Hewlett-Packard
+ * makes no representations about the suitability of this software for any
+ * purpose. It is provided "AS-IS" without warranty of any kind,either express
+ * or implied. User hereby grants a royalty-free license to any and all
+ * derivatives based upon this software code base.
+ *
+ *
+ * P D U . C P P
+ *
+ * PDU CLASS IMPLEMENTATION
+ *
+ * DESIGN + AUTHOR:  Peter E Mellquist
+ *
+ * DESCRIPTION:
+ * Pdu class implementation. Encapsulation of an SMI Protocol
+ * Data Unit (PDU) in C++.
+ *
+ * =====================================================================*/
 
 #include "snmp_pp/pdu.h" // include Pdu class definition
 
@@ -91,11 +91,15 @@ Pdu::Pdu(Vb* pvbs, const int pvb_count)
       maxsize_scopedpdu(0)
 #endif
 {
-    if (pvb_count == 0) return; // zero is ok
-
+    if (pvb_count == 0)
+    {
+        return; // zero is ok
+    }
     vbs = new Vb*[pvb_count];
     if (vbs)
+    {
         vbs_size = pvb_count;
+    }
     else
     {
         vbs_size = 0;
@@ -107,9 +111,13 @@ Pdu::Pdu(Vb* pvbs, const int pvb_count)
     for (int z = 0; z < pvb_count; ++z)
     {
         if (pvbs[z].valid())
+        {
             vbs[z] = new Vb(pvbs[z]);
+        }
         else
+        {
             vbs[z] = nullptr;
+        }
 
         if ((vbs[z]) && !vbs[z]->valid())
         {
@@ -117,9 +125,12 @@ Pdu::Pdu(Vb* pvbs, const int pvb_count)
             vbs[z] = nullptr;
         }
 
-        if (vbs[z] == nullptr)                         // check for new fail
+        if (vbs[z] == nullptr) // check for new fail
         {
-            for (int y = 0; y < z; ++y) delete vbs[y]; // free vbs
+            for (int y = 0; y < z; ++y)
+            {
+                delete vbs[y]; // free vbs
+            }
             validity = false;
             return;
         }
@@ -148,8 +159,10 @@ Pdu::~Pdu()
 //=====================[ assignment to another Pdu object overloaded ]===
 Pdu& Pdu::operator=(const Pdu& pdu)
 {
-    if (this == &pdu) return *this; // check for self assignment
-
+    if (this == &pdu)
+    {
+        return *this; // check for self assignment
+    }
     // Initialize all mv's
     error_status      = pdu.error_status;
     error_index       = pdu.error_index;
@@ -166,7 +179,10 @@ Pdu& Pdu::operator=(const Pdu& pdu)
     maxsize_scopedpdu = pdu.maxsize_scopedpdu;
 #endif
     v1_trap_address_set = pdu.v1_trap_address_set;
-    if (pdu.v1_trap_address_set) v1_trap_address = pdu.v1_trap_address;
+    if (pdu.v1_trap_address_set)
+    {
+        v1_trap_address = pdu.v1_trap_address;
+    }
 
     validity = true;
 
@@ -179,7 +195,10 @@ Pdu& Pdu::operator=(const Pdu& pdu)
     vb_count = 0;
 
     // check for zero case
-    if (pdu.vb_count == 0) return *this;
+    if (pdu.vb_count == 0)
+    {
+        return *this;
+    }
 
     // allocate array
     if (vbs_size < pdu.vb_count)
@@ -187,7 +206,9 @@ Pdu& Pdu::operator=(const Pdu& pdu)
         delete[] vbs;
         vbs = new Vb*[pdu.vb_count];
         if (vbs)
+        {
             vbs_size = pdu.vb_count;
+        }
         else
         {
             vbs_size = 0;
@@ -226,11 +247,16 @@ Pdu& Pdu::operator=(const Pdu& pdu)
 // append operator, appends a variable binding
 Pdu& Pdu::operator+=(const Vb& vb)
 {
-    if (!vb.valid()) return *this; // dont add invalid Vbs
-
+    if (!vb.valid())
+    {
+        return *this; // dont add invalid Vbs
+    }
     if (vb_count + 1 > vbs_size)
     {
-        if (!extend_vbs()) return *this;
+        if (!extend_vbs())
+        {
+            return *this;
+        }
     }
 
     vbs[vb_count] = new Vb(vb); // add the new one
@@ -255,13 +281,19 @@ Pdu& Pdu::operator+=(const Vb& vb)
 //=====================[ extract Vbs from Pdu ]==========================
 int Pdu::get_vblist(Vb* pvbs, const int pvb_count) const
 {
-    if ((!pvbs) || (pvb_count < 0) || (pvb_count > vb_count)) return false;
+    if ((!pvbs) || (pvb_count < 0) || (pvb_count > vb_count))
+    {
+        return false;
+    }
 
     // loop through all vbs and assign to params
     for (int z = 0; z < pvb_count; ++z)
     {
         pvbs[z] = *vbs[z];
-        if (!pvbs[z].valid()) return false;
+        if (!pvbs[z].valid())
+        {
+            return false;
+        }
     }
 
     return true;
@@ -271,10 +303,13 @@ int Pdu::get_vblist(Vb* pvbs, const int pvb_count) const
 int Pdu::set_vblist(Vb const* pvbs, const int pvb_count)
 {
     // if invalid then don't destroy
-    if (((!pvbs) && (pvb_count > 0)) || (pvb_count < 0)) return false;
+    if (((!pvbs) && (pvb_count > 0)) || (pvb_count < 0))
+    {
+        return false;
+    }
 
     // free up current vbs
-    for (int z = 0; z < vb_count; ++z) delete vbs[z];
+    for (int z = 0; z < vb_count; ++z) { delete vbs[z]; }
     vb_count = 0;
 
     // check for zero case
@@ -293,7 +328,9 @@ int Pdu::set_vblist(Vb const* pvbs, const int pvb_count)
         delete[] vbs;
         vbs = new Vb*[pvb_count];
         if (vbs)
+        {
             vbs_size = pvb_count;
+        }
         else
         {
             vbs_size = 0;
@@ -315,12 +352,17 @@ int Pdu::set_vblist(Vb const* pvbs, const int pvb_count)
             }
         }
         else
+        {
             vbs[y] = nullptr;
+        }
 
         // check for errors
         if (!vbs[y])
         {
-            for (int x = 0; x < y; ++x) delete vbs[x]; // free vbs
+            for (int x = 0; x < y; ++x)
+            {
+                delete vbs[x]; // free vbs
+            }
             validity = false;
             return false;
         }
@@ -342,10 +384,15 @@ int Pdu::set_vblist(Vb const* pvbs, const int pvb_count)
 // index is zero based
 int Pdu::get_vb(Vb& vb, const int index) const
 {
-    if (index < 0) return false;         // can't have an index less than 0
-    if (index >= vb_count) return false; // can't ask for something not there
-
-    vb = *vbs[index];                    // asssign it
+    if (index < 0)
+    {
+        return false; // can't have an index less than 0
+    }
+    if (index >= vb_count)
+    {
+        return false; // can't ask for something not there
+    }
+    vb = *vbs[index]; // asssign it
 
     return vb.valid();
 }
@@ -353,15 +400,26 @@ int Pdu::get_vb(Vb& vb, const int index) const
 //===================[ set a particular vb ]=============================
 int Pdu::set_vb(Vb const& vb, const int index)
 {
-    if (index < 0) return false;         // can't have an index less than 0
-    if (index >= vb_count) return false; // can't ask for something not there
-    if (!vb.valid()) return false;       // don't set invalid vbs
-
-    Vb* victim = vbs[index];             // save in case new fails
+    if (index < 0)
+    {
+        return false; // can't have an index less than 0
+    }
+    if (index >= vb_count)
+    {
+        return false; // can't ask for something not there
+    }
+    if (!vb.valid())
+    {
+        return false;        // don't set invalid vbs
+    }
+    Vb* victim = vbs[index]; // save in case new fails
     vbs[index] = new Vb(vb);
     if (vbs[index])
     {
-        if (vbs[index]->valid()) { delete victim; }
+        if (vbs[index]->valid())
+        {
+            delete victim;
+        }
         else
         {
             delete vbs[index];
@@ -381,7 +439,10 @@ int Pdu::set_vb(Vb const& vb, const int index)
 int Pdu::trim(const int count)
 {
     // verify that count is legal
-    if ((count < 0) || (count > vb_count)) return false;
+    if ((count < 0) || (count > vb_count))
+    {
+        return false;
+    }
 
     int lp = count;
 
@@ -402,11 +463,14 @@ int Pdu::trim(const int count)
 int Pdu::delete_vb(const int p)
 {
     // position has to be in range
-    if ((p < 0) || (p > vb_count - 1)) return false;
+    if ((p < 0) || (p > vb_count - 1))
+    {
+        return false;
+    }
 
     delete vbs[p]; // safe to remove it
 
-    for (int z = p; z < vb_count - 1; ++z) vbs[z] = vbs[z + 1];
+    for (int z = p; z < vb_count - 1; ++z) { vbs[z] = vbs[z + 1]; }
 
     vb_count--;
 
@@ -416,7 +480,10 @@ int Pdu::delete_vb(const int p)
 // Get the SNMPv1 trap address
 bool Pdu::get_v1_trap_address(GenAddress& address) const
 {
-    if (!v1_trap_address_set) return false;
+    if (!v1_trap_address_set)
+    {
+        return false;
+    }
 
     address = v1_trap_address;
     return true;
@@ -436,19 +503,29 @@ int Pdu::get_asn1_length() const
     int length = 0;
 
     // length for all vbs
-    for (int i = 0; i < vb_count; ++i) length += vbs[i]->get_asn1_length();
+    for (int i = 0; i < vb_count; ++i) { length += vbs[i]->get_asn1_length(); }
 
     // header for vbs
     if (length < 0x80)
+    {
         length += 2;
+    }
     else if (length <= 0xFF)
+    {
         length += 3;
+    }
     else if (length <= 0xFFFF)
+    {
         length += 4;
+    }
     else if (length <= 0xFFFFFF)
+    {
         length += 5;
+    }
     else
+    {
         length += 6;
+    }
 
     // req id, error status, error index
     SnmpInt32 i32(request_id ? request_id : PDU_MAX_RID);
@@ -460,15 +537,25 @@ int Pdu::get_asn1_length() const
 
     // header for data_pdu
     if (length < 0x80)
+    {
         length += 2;
+    }
     else if (length <= 0xFF)
+    {
         length += 3;
+    }
     else if (length <= 0xFFFF)
+    {
         length += 4;
+    }
     else if (length <= 0xFFFFFF)
+    {
         length += 5;
+    }
     else
+    {
         length += 6;
+    }
 
 #ifdef _SNMPv3
     // now the scopedpdu part sequence (4), context engine, id context name
@@ -479,7 +566,10 @@ int Pdu::get_asn1_length() const
     {
         // assume that encryption increases the data to a multiple of 16
         int const mod = length % 16;
-        if (mod) length += 16 - mod;
+        if (mod)
+        {
+            length += 16 - mod;
+        }
 
         length += 4;
     }
@@ -500,7 +590,9 @@ bool Pdu::extend_vbs()
             return true;
         }
         else
+        {
             return false;
+        }
     }
 
     Vb** tmp = vbs;
@@ -511,7 +603,7 @@ bool Pdu::extend_vbs()
         return false;
     }
 
-    for (int y = 0; y < vb_count; ++y) vbs[y] = tmp[y];
+    for (int y = 0; y < vb_count; ++y) { vbs[y] = tmp[y]; }
     vbs_size *= 2;
     delete[] tmp;
     return true;
@@ -530,7 +622,7 @@ void Pdu::clear()
     v1_trap_address_set = false;
     validity            = true;
 
-    for (int z = 0; z < vb_count; ++z) delete vbs[z];
+    for (int z = 0; z < vb_count; ++z) { delete vbs[z]; }
     vb_count = 0;
 
 #ifdef _SNMPv3
@@ -553,7 +645,9 @@ bool Pdu::match_type(const int request, const int response)
     case sNMP_PDU_GETBULK:
     case sNMP_PDU_INFORM: {
         if ((response == sNMP_PDU_RESPONSE) || (response == sNMP_PDU_REPORT))
+        {
             return true;
+        }
         if ((response == sNMP_PDU_GET) || (response == sNMP_PDU_GETNEXT)
             || (response == sNMP_PDU_SET) || (response == sNMP_PDU_GETBULK)
             || (response == sNMP_PDU_INFORM) || (response == sNMP_PDU_V1TRAP)
@@ -563,12 +657,14 @@ bool Pdu::match_type(const int request, const int response)
         }
         return false;
     }
+
     case sNMP_PDU_REPORT:
     case sNMP_PDU_RESPONSE:
     case sNMP_PDU_V1TRAP:
     case sNMP_PDU_TRAP: {
         return false;
     }
+
     default: {
         debugprintf(0, "Unknown request pdu type (%d).", request);
         return false;

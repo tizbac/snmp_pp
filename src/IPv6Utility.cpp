@@ -1,29 +1,29 @@
 /*_############################################################################
-  _##
-  _##  IPv6Utility.cpp
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  IPv6Utility.cpp
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 /*
  * Copyright (C) 2004, 2005  Internet Systems Consortium, Inc. ("ISC")
  * Copyright (C) 1996-2001  Internet Software Consortium.
@@ -41,16 +41,16 @@
  * PERFORMANCE OF THIS SOFTWARE.
  */
 /*===================================================================
-
-  SNMP++ IPv6Utility.h
-
-  DESCRIPTION:
-  This module contains the Utility functions for IPV6 support functions
-  required for WIN32 environment
-
-  Adapted and integrated into snmp++ by Ragavan Tetchinamourty
-
-=====================================================================*/
+ *
+ * SNMP++ IPv6Utility.h
+ *
+ * DESCRIPTION:
+ * This module contains the Utility functions for IPV6 support functions
+ * required for WIN32 environment
+ *
+ * Adapted and integrated into snmp++ by Ragavan Tetchinamourty
+ *
+ * =====================================================================*/
 
 #include "snmp_pp/IPv6Utility.h"
 
@@ -73,11 +73,13 @@
 static int snprintf(char* str, int n, char* fmt, ...)
 {
     va_list a;
+
     va_start(a, fmt);
     int ret = vsnprintf(str, n, fmt, a);
     va_end(a);
     return ret;
 }
+
 #    endif
 
 #    ifndef HAVE_INET_NTOP
@@ -87,6 +89,7 @@ static const char* inet_ntop4(
 #        ifdef AF_INET6
 static const char* inet_ntop6(
     const unsigned char* src, char* dst, size_t size);
+
 #        endif
 
 /* char *
@@ -101,11 +104,19 @@ const char* inet_ntop(int af, const void* src, char* dst, size_t size)
 {
     switch (af)
     {
-    case AF_INET: return (inet_ntop4((const unsigned char*)src, dst, size));
+    case AF_INET: {
+        return inet_ntop4((const unsigned char*)src, dst, size);
+    }
+
 #        ifdef AF_INET6
-    case AF_INET6: return (inet_ntop6((const unsigned char*)src, dst, size));
+    case AF_INET6: {
+        return inet_ntop6((const unsigned char*)src, dst, size);
+    }
 #        endif
-    default: errno = EAFNOSUPPORT; return (NULL);
+    default: {
+        errno = EAFNOSUPPORT;
+        return NULL;
+    }
     }
     /* NOTREACHED */
 }
@@ -132,11 +143,11 @@ static const char* inet_ntop4(const unsigned char* src, char* dst, size_t size)
     if (len >= size)
     {
         errno = ENOSPC;
-        return (NULL);
+        return NULL;
     }
     memcpy(dst, tmp, len + 1);
 
-    return (dst);
+    return dst;
 }
 
 /* const char *
@@ -156,6 +167,7 @@ static const char* inet_ntop6(const unsigned char* src, char* dst, size_t size)
      * to use pointer overlays.  All the world's not a VAX.
      */
     char tmp[sizeof "ffff:ffff:ffff:ffff:ffff:ffff:255.255.255.255"], *tp;
+
     struct {
         int base, len;
     } best, cur;
@@ -169,7 +181,9 @@ static const char* inet_ntop6(const unsigned char* src, char* dst, size_t size)
      */
     memset(words, '\0', sizeof words);
     for (i = 0; i < NS_IN6ADDRSZ; i++)
+    {
         words[i / 2] |= (src[i] << ((1 - (i % 2)) << 3));
+    }
     best.base = -1;
     cur.base  = -1;
     for (i = 0; i < (NS_IN6ADDRSZ / NS_INT16SZ); i++)
@@ -177,24 +191,37 @@ static const char* inet_ntop6(const unsigned char* src, char* dst, size_t size)
         if (words[i] == 0)
         {
             if (cur.base == -1)
+            {
                 cur.base = i, cur.len = 1;
+            }
             else
+            {
                 cur.len++;
+            }
         }
         else
         {
             if (cur.base != -1)
             {
-                if (best.base == -1 || cur.len > best.len) best = cur;
+                if (best.base == -1 || cur.len > best.len)
+                {
+                    best = cur;
+                }
                 cur.base = -1;
             }
         }
     }
     if (cur.base != -1)
     {
-        if (best.base == -1 || cur.len > best.len) best = cur;
+        if (best.base == -1 || cur.len > best.len)
+        {
+            best = cur;
+        }
     }
-    if (best.base != -1 && best.len < 2) best.base = -1;
+    if (best.base != -1 && best.len < 2)
+    {
+        best.base = -1;
+    }
 
     /*
      * Format the result.
@@ -205,17 +232,25 @@ static const char* inet_ntop6(const unsigned char* src, char* dst, size_t size)
         /* Are we inside the best run of 0x00's? */
         if (best.base != -1 && i >= best.base && i < (best.base + best.len))
         {
-            if (i == best.base) *tp++ = ':';
+            if (i == best.base)
+            {
+                *tp++ = ':';
+            }
             continue;
         }
         /* Are we following an initial run of 0x00s or any real hex? */
-        if (i != 0) *tp++ = ':';
+        if (i != 0)
+        {
+            *tp++ = ':';
+        }
         /* Is this address an encapsulated IPv4? */
         if (i == 6 && best.base == 0
             && (best.len == 6 || (best.len == 5 && words[5] == 0xffff)))
         {
             if (!inet_ntop4(src + 12, tp, sizeof tmp - (tp - tmp)))
-                return (NULL);
+            {
+                return NULL;
+            }
             tp += strlen(tp);
             break;
         }
@@ -227,7 +262,9 @@ static const char* inet_ntop6(const unsigned char* src, char* dst, size_t size)
     /* Was it a trailing run of 0x00's? */
     if (best.base != -1
         && (best.base + best.len) == (NS_IN6ADDRSZ / NS_INT16SZ))
+    {
         *tp++ = ':';
+    }
     *tp++ = '\0';
 
     /*
@@ -236,19 +273,22 @@ static const char* inet_ntop6(const unsigned char* src, char* dst, size_t size)
     if ((size_t)(tp - tmp) > size)
     {
         errno = ENOSPC;
-        return (NULL);
+        return NULL;
     }
     memcpy(dst, tmp, tp - tmp);
-    return (dst);
+    return dst;
 }
+
 #        endif /* AF_INET6 */
 
 #    endif     /* HAVE_INET_NTOP */
 
 #    ifndef HAVE_INET_PTON
 static int inet_pton4(const char* src, unsigned char* dst);
+
 #        ifdef AF_INET6
 static int inet_pton6(const char* src, unsigned char* dst);
+
 #        endif
 
 /* int
@@ -263,25 +303,25 @@ static int inet_pton6(const char* src, unsigned char* dst);
  *	Paul Vixie, 1996.
  */
 /* Not needed with Winsock 2
-int
-inet_pton(int af,
-          const char *src,
-          void *dst)
-{
-        switch (af) {
-        case AF_INET:
-                return (inet_pton4(src, (unsigned char *)dst));
-#ifdef AF_INET6
-        case AF_INET6:
-                return (inet_pton6(src, (unsigned char *)dst));
-#endif
-        default:
-                errno = EAFNOSUPPORT;
-                return (-1);
-        }
-        / * NOTREACHED * /
-}
-*/
+ * int
+ * inet_pton(int af,
+ *        const char *src,
+ *        void *dst)
+ * {
+ *      switch (af) {
+ *      case AF_INET:
+ *              return (inet_pton4(src, (unsigned char *)dst));
+ #ifdef AF_INET6
+ *      case AF_INET6:
+ *              return (inet_pton6(src, (unsigned char *)dst));
+ #endif
+ *      default:
+ *              errno = EAFNOSUPPORT;
+ *              return (-1);
+ *      }
+ *      / * NOTREACHED * /
+ * }
+ */
 
 /* int
  * inet_pton4(src, dst)
@@ -310,26 +350,40 @@ static int inet_pton4(const char* src, unsigned char* dst)
         {
             unsigned int newstr = *tp * 10 + (pch - digits);
 
-            if (newstr > 255) return (0);
+            if (newstr > 255)
+            {
+                return 0;
+            }
             *tp = newstr;
             if (!saw_digit)
             {
-                if (++octets > 4) return (0);
+                if (++octets > 4)
+                {
+                    return 0;
+                }
                 saw_digit = 1;
             }
         }
         else if (ch == '.' && saw_digit)
         {
-            if (octets == 4) return (0);
+            if (octets == 4)
+            {
+                return 0;
+            }
             *++tp     = 0;
             saw_digit = 0;
         }
         else
-            return (0);
+        {
+            return 0;
+        }
     }
-    if (octets < 4) return (0);
+    if (octets < 4)
+    {
+        return 0;
+    }
     memcpy(dst, tmp, NS_INADDRSZ);
-    return (1);
+    return 1;
 }
 
 /* int
@@ -360,7 +414,12 @@ static int inet_pton6(const char* src, unsigned char* dst)
     colonp = NULL;
     /* Leading :: requires some special handling. */
     if (*src == ':')
-        if (*++src != ':') return (0);
+    {
+        if (*++src != ':')
+        {
+            return 0;
+        }
+    }
     curtok     = src;
     saw_xdigit = 0;
     val        = 0;
@@ -369,12 +428,17 @@ static int inet_pton6(const char* src, unsigned char* dst)
         const char* pch;
 
         if ((pch = strchr((xdigits = xdigits_l), ch)) == NULL)
+        {
             pch = strchr((xdigits = xdigits_u), ch);
+        }
         if (pch != NULL)
         {
             val <<= 4;
             val |= (pch - xdigits);
-            if (val > 0xffff) return (0);
+            if (val > 0xffff)
+            {
+                return 0;
+            }
             saw_xdigit = 1;
             continue;
         }
@@ -383,11 +447,17 @@ static int inet_pton6(const char* src, unsigned char* dst)
             curtok = src;
             if (!saw_xdigit)
             {
-                if (colonp) return (0);
+                if (colonp)
+                {
+                    return 0;
+                }
                 colonp = tp;
                 continue;
             }
-            if (tp + NS_INT16SZ > endp) return (0);
+            if (tp + NS_INT16SZ > endp)
+            {
+                return 0;
+            }
             *tp++      = (unsigned char)(val >> 8) & 0xff;
             *tp++      = (unsigned char)val & 0xff;
             saw_xdigit = 0;
@@ -401,11 +471,14 @@ static int inet_pton6(const char* src, unsigned char* dst)
             saw_xdigit = 0;
             break; /* '\0' was seen by inet_pton4(). */
         }
-        return (0);
+        return 0;
     }
     if (saw_xdigit)
     {
-        if (tp + NS_INT16SZ > endp) return (0);
+        if (tp + NS_INT16SZ > endp)
+        {
+            return 0;
+        }
         *tp++ = (unsigned char)(val >> 8) & 0xff;
         *tp++ = (unsigned char)val & 0xff;
     }
@@ -425,10 +498,14 @@ static int inet_pton6(const char* src, unsigned char* dst)
         }
         tp = endp;
     }
-    if (tp != endp) return (0);
+    if (tp != endp)
+    {
+        return 0;
+    }
     memcpy(dst, tmp, NS_IN6ADDRSZ);
-    return (1);
+    return 1;
 }
+
 #        endif // AF_INET6
 
 #    endif     /* HAVE_INET_PTON */

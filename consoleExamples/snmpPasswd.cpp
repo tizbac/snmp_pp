@@ -1,29 +1,29 @@
 /*_############################################################################
-  _##
-  _##  snmpPasswd.cpp
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  snmpPasswd.cpp
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 
 #include "snmp_pp/snmp_pp.h"
 
@@ -45,9 +45,11 @@ void KeyChange(Snmp* snmp, Pdu& myPdu, const OctetStr& user,
 
     uku = usm->key_update_prepare(user, target, newpass, myPdu, type, stat);
     if (uku == NULL)
+    {
         std::cout << "Key update preparation failed *************" << std::endl
                   << "with " << snmp->error_msg(stat) << std::endl
                   << std::endl;
+    }
 
     if ((status = snmp->set(myPdu, target)) == SNMP_CLASS_SUCCESS)
     {
@@ -141,9 +143,18 @@ static void help()
 int main(int argc, char** argv)
 {
     //---------[ check the arg count ]----------------------------------------
-    if (argc < 4) usage();
-    if (strstr(argv[1], "-h") != 0) help();
-    if (strstr(argv[1], "-?") != 0) usage();
+    if (argc < 4)
+    {
+        usage();
+    }
+    if (strstr(argv[1], "-h") != 0)
+    {
+        help();
+    }
+    if (strstr(argv[1], "-?") != 0)
+    {
+        usage();
+    }
 
 #    if !defined(_NO_LOGGING) && !defined(WITH_LOG_PROFILES)
     // Set filter for logging
@@ -206,7 +217,10 @@ int main(int argc, char** argv)
             ptr++;
             ptr++;
             retries = atoi(ptr);
-            if ((retries < 0) || (retries > 5)) retries = 1;
+            if ((retries < 0) || (retries > 5))
+            {
+                retries = 1;
+            }
             continue;
         }
         if (strstr(argv[x], "-t") != 0)
@@ -215,7 +229,10 @@ int main(int argc, char** argv)
             ptr++;
             ptr++;
             timeout = atoi(ptr);
-            if ((timeout < 100) || (timeout > 500)) timeout = 100;
+            if ((timeout < 100) || (timeout > 500))
+            {
+                timeout = 100;
+            }
             continue;
         }
         if (strstr(argv[x], "-C") != 0)
@@ -255,14 +272,22 @@ int main(int argc, char** argv)
             ptr = argv[x];
             ptr += 5;
             if (strcasecmp(ptr, "SHA") == 0)
+            {
                 authProtocol = SNMP_AUTHPROTOCOL_HMACSHA;
+            }
             else if (strcasecmp(ptr, "MD5") == 0)
+            {
                 authProtocol = SNMP_AUTHPROTOCOL_HMACMD5;
+            }
             else if (strcasecmp(ptr, "NONE") == 0)
+            {
                 authProtocol = SNMP_AUTHPROTOCOL_NONE;
+            }
             else
+            {
                 std::cout << "Warning: ignoring unknown auth protocol: " << ptr
                           << std::endl;
+            }
             continue;
         }
         if (strstr(argv[x], "-priv") != 0)
@@ -270,22 +295,38 @@ int main(int argc, char** argv)
             ptr = argv[x];
             ptr += 5;
             if (strcasecmp(ptr, "DES") == 0)
+            {
                 privProtocol = SNMP_PRIVPROTOCOL_DES;
+            }
             else if (strcasecmp(ptr, "3DESEDE") == 0)
+            {
                 privProtocol = SNMP_PRIVPROTOCOL_3DESEDE;
+            }
             else if (strcasecmp(ptr, "IDEA") == 0)
+            {
                 privProtocol = SNMP_PRIVPROTOCOL_IDEA;
+            }
             else if (strcasecmp(ptr, "AES128") == 0)
+            {
                 privProtocol = SNMP_PRIVPROTOCOL_AES128;
+            }
             else if (strcasecmp(ptr, "AES192") == 0)
+            {
                 privProtocol = SNMP_PRIVPROTOCOL_AES192;
+            }
             else if (strcasecmp(ptr, "AES256") == 0)
+            {
                 privProtocol = SNMP_PRIVPROTOCOL_AES256;
+            }
             else if (strcasecmp(ptr, "NONE") == 0)
+            {
                 privProtocol = SNMP_PRIVPROTOCOL_NONE;
+            }
             else
+            {
                 std::cout << "Warning: ignoring unknown priv protocol: " << ptr
                           << std::endl;
+            }
             continue;
         }
         if (strstr(argv[x], "-sn") != 0)
@@ -302,7 +343,9 @@ int main(int argc, char** argv)
             securityLevel = atoi(ptr);
             if ((securityLevel < SNMP_SECURITY_LEVEL_NOAUTH_NOPRIV)
                 || (securityLevel > SNMP_SECURITY_LEVEL_AUTH_PRIV))
+            {
                 securityLevel = SNMP_SECURITY_LEVEL_AUTH_PRIV;
+            }
             continue;
         }
         if (strstr(argv[x], "-sm") != 0)
@@ -312,7 +355,9 @@ int main(int argc, char** argv)
             securityModel = atoi(ptr);
             if ((securityModel < SNMP_SECURITY_MODEL_V1)
                 || (securityModel > SNMP_SECURITY_MODEL_USM))
+            {
                 securityModel = SNMP_SECURITY_MODEL_USM;
+            }
             continue;
         }
         if (strstr(argv[x], "-cn") != 0)
@@ -420,7 +465,7 @@ int main(int argc, char** argv)
     pdu += vb;                            // add the vb to the Pdu
 
     address.set_port(port);
-    CTarget ctarget(address); // make a target using the address
+    CTarget ctarget(address);             // make a target using the address
     UTarget utarget(address);
 
     if (version == version3)
@@ -449,6 +494,7 @@ int main(int argc, char** argv)
               << ((version == version3) ? (version) : (version + 1))
               << " Retries=" << retries << " Timeout=" << timeout * 10 << "ms";
     if (version == version3)
+    {
         std::cout << std::endl
                   << "securityName= " << securityName.get_printable()
                   << ", securityLevel= " << securityLevel
@@ -456,15 +502,22 @@ int main(int argc, char** argv)
                   << "contextName= " << contextName.get_printable()
                   << ", contextEngineID= " << contextEngineID.get_printable()
                   << std::endl;
+    }
     else
+    {
         std::cout << " Community=" << community.get_printable() << std::endl
                   << std::flush;
+    }
 
     SnmpTarget* target;
     if (version == version3)
+    {
         target = &utarget;
+    }
     else
+    {
         target = &ctarget;
+    }
     Pdu pduKeyChange;
     if (version == version3)
     {
@@ -483,4 +536,5 @@ int main(int argc, char** argv)
 #else
 
 int main() { std::cout << "This example needs _SNMPv3 defined.\n"; }
+
 #endif

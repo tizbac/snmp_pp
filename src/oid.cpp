@@ -1,56 +1,56 @@
 /*_############################################################################
-  _##
-  _##  oid.cpp
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  oid.cpp
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 /*===================================================================
-
-  Copyright (c) 1999
-  Hewlett-Packard Company
-
-  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  Permission to use, copy, modify, distribute and/or sell this software
-  and/or its documentation is hereby granted without fee. User agrees
-  to display the above copyright notice and this license notice in all
-  copies of the software and any documentation of the software. User
-  agrees to assume all liability for the use of the software; Hewlett-Packard
-  makes no representations about the suitability of this software for any
-  purpose. It is provided "AS-IS" without warranty of any kind,either express
-  or implied. User hereby grants a royalty-free license to any and all
-  derivatives based upon this software code base.
-
-  O I D. C P P
-
-  OID CLASS IMPLEMENTATION
-
-  DESIGN + AUTHOR:         Peter E. Mellquist
-
-  DESCRIPTION:
-  This module contains the implementation of the oid class. This
-  includes all protected and public member functions. The oid class
-  may be compiled stand alone without the use of any other library.
-=====================================================================*/
+ *
+ * Copyright (c) 1999
+ * Hewlett-Packard Company
+ *
+ * ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * Permission to use, copy, modify, distribute and/or sell this software
+ * and/or its documentation is hereby granted without fee. User agrees
+ * to display the above copyright notice and this license notice in all
+ * copies of the software and any documentation of the software. User
+ * agrees to assume all liability for the use of the software; Hewlett-Packard
+ * makes no representations about the suitability of this software for any
+ * purpose. It is provided "AS-IS" without warranty of any kind,either express
+ * or implied. User hereby grants a royalty-free license to any and all
+ * derivatives based upon this software code base.
+ *
+ * O I D. C P P
+ *
+ * OID CLASS IMPLEMENTATION
+ *
+ * DESIGN + AUTHOR:         Peter E. Mellquist
+ *
+ * DESCRIPTION:
+ * This module contains the implementation of the oid class. This
+ * includes all protected and public member functions. The oid class
+ * may be compiled stand alone without the use of any other library.
+ * =====================================================================*/
 
 #include "snmp_pp/oid.h" // include def for oid class
 
@@ -76,9 +76,13 @@ Oid::Oid(const char* oid_string, const bool is_dotted_oid_string)
     smival.value.oid.ptr = nullptr;
 
     if (is_dotted_oid_string)
+    {
         StrToOid(oid_string, &smival.value.oid);
+    }
     else
+    {
         set_data(oid_string, oid_string ? strlen(oid_string) : 0);
+    }
 }
 
 //=============[Oid::operator = const char * dotted_string ]==============
@@ -109,9 +113,15 @@ Oid& Oid::operator+=(const char* a)
 {
     size_t n = 0;
 
-    if (!a) return *this;
+    if (!a)
+    {
+        return *this;
+    }
 
-    if (*a == '.') ++a;
+    if (*a == '.')
+    {
+        ++a;
+    }
 
     n = (smival.value.oid.len * SNMPCHARSIZE) + (smival.value.oid.len) + 1
         + SAFE_UINT_CAST(strlen(a));
@@ -121,8 +131,11 @@ Oid& Oid::operator+=(const char* a)
         // TODO: optimize this function (use std::string and save result for
         // get_printable() too)! CK
         OidToStr(&smival.value.oid, n, ptr);
-        if (ptr[0]) strlcat(ptr, ".", n); // TODO: CWE-119! CK
-        strlcat(ptr, a, n);               // TODO: CWE-119! CK
+        if (ptr[0])
+        {
+            strlcat(ptr, ".", n); // TODO: CWE-119! CK
+        }
+        strlcat(ptr, a, n);       // TODO: CWE-119! CK
 
         delete_oid_ptr();
 
@@ -141,7 +154,10 @@ void Oid::set_data(const SmiUINT32* raw_oid, const unsigned int oid_len)
         delete_oid_ptr();
 
         smival.value.oid.ptr = (SmiLPUINT32) new uint32_t[oid_len];
-        if (!smival.value.oid.ptr) return;
+        if (!smival.value.oid.ptr)
+        {
+            return;
+        }
     }
     memcpy((SmiLPBYTE)smival.value.oid.ptr, (SmiLPBYTE)raw_oid,
         (size_t)(oid_len * sizeof(SmiUINT32)));
@@ -157,13 +173,21 @@ void Oid::set_data(const char* str, const unsigned int str_len)
         delete_oid_ptr();
 
         smival.value.oid.ptr = (SmiLPUINT32) new uint32_t[str_len];
-        if (!smival.value.oid.ptr) return;
+        if (!smival.value.oid.ptr)
+        {
+            return;
+        }
     }
 
-    if ((!str) || (str_len == 0)) return;
+    if ((!str) || (str_len == 0))
+    {
+        return;
+    }
 
     for (unsigned int i = 0; i < str_len; i++)
+    {
         smival.value.oid.ptr[i] = (uint32_t)str[i];
+    }
 
     smival.value.oid.len = str_len;
     m_changed            = true;
@@ -176,7 +200,10 @@ void Oid::set_data(const char* str, const unsigned int str_len)
 const char* Oid::get_printable(
     const uint32_t start, const uint32_t n, char*& buffer) const
 {
-    if (!m_changed && (buffer == iv_str)) return buffer;
+    if (!m_changed && (buffer == iv_str))
+    {
+        return buffer;
+    }
 
     uint32_t       nz       = 0;
     uint32_t const my_start = start - 1;
@@ -184,15 +211,23 @@ const char* Oid::get_printable(
 
     nz = (smival.value.oid.len * (SNMPCHARSIZE + 1)) + 1;
 
-    if (buffer) delete[] buffer; // delete the previous output string
-
-    buffer = new char[nz];       // allocate some space for the output string
-    if (buffer == nullptr) return nullptr;
+    if (buffer)
+    {
+        delete[] buffer;   // delete the previous output string
+    }
+    buffer = new char[nz]; // allocate some space for the output string
+    if (buffer == nullptr)
+    {
+        return nullptr;
+    }
 
     buffer[0] = 0; // init the string
 
     // cannot ask for more than there is..
-    if ((start == 0) || (my_end > smival.value.oid.len)) return buffer;
+    if ((start == 0) || (my_end > smival.value.oid.len))
+    {
+        return buffer;
+    }
 
     char* cur_ptr = buffer;
     bool  first   = true;
@@ -202,9 +237,13 @@ const char* Oid::get_printable(
     {
         // if not at begin, pad with a dot
         if (first)
+        {
             first = false;
+        }
         else
+        {
             *cur_ptr++ = '.';
+        }
 
         // TODO: convert data element to a string, but use std::string! CK
         cur_ptr +=
@@ -230,7 +269,10 @@ int Oid::StrToOid(const char* str, SmiLPOID dstOid) const
     SmiLPUINT32  temp = nullptr;
     unsigned int nz   = 0;
 
-    if (str && *str) { nz = SAFE_UINT_CAST(strlen(str)); }
+    if (str && *str)
+    {
+        nz = SAFE_UINT_CAST(strlen(str));
+    }
     else
     {
         dstOid->len = 0;
@@ -239,12 +281,17 @@ int Oid::StrToOid(const char* str, SmiLPOID dstOid) const
     }
     temp = (SmiLPUINT32) new uint32_t[nz];
 
-    if (temp == nullptr) return -1; // return if can't get the mem
-
+    if (temp == nullptr)
+    {
+        return -1; // return if can't get the mem
+    }
     while ((*str) && (index < nz))
     {
         // skip over the dot
-        if (*str == '.') ++str;
+        if (*str == '.')
+        {
+            ++str;
+        }
 
         // convert digits
         if (isdigit(*str))
@@ -252,7 +299,7 @@ int Oid::StrToOid(const char* str, SmiLPOID dstOid) const
             uint32_t number = 0;
 
             // grab a digit token and convert it to a int32_t int
-            while (isdigit(*str)) number = (number * 10) + *(str++) - '0';
+            while (isdigit(*str)) { number = (number * 10) + *(str++) - '0'; }
 
             // stuff the value into the array and bump the counter
             temp[index++] = number;
@@ -336,7 +383,10 @@ int Oid::OidToStr(const SmiOID* srcOid, size_t size, char* str) const
     str[0] = 0; // init the string
 
     // verify there is something to copy
-    if (srcOid->len == 0) return -1;
+    if (srcOid->len == 0)
+    {
+        return -1;
+    }
 
     // loop through and build up a string
     for (uint32_t index = 0; index < srcOid->len; ++index)
@@ -346,10 +396,16 @@ int Oid::OidToStr(const SmiOID* srcOid, size_t size, char* str) const
             szNumber, sizeof(szNumber), "%" PRIu32, srcOid->ptr[index]);
 
         // verify len is not over
-        if (totLen + cur_len + 1 >= size) return -2;
+        if (totLen + cur_len + 1 >= size)
+        {
+            return -2;
+        }
 
         // if not at begin, pad with a dot
-        if (totLen) str[totLen++] = '.';
+        if (totLen)
+        {
+            str[totLen++] = '.';
+        }
 
         // copy the string token into the main string
         strlcpy(str + totLen, szNumber, size); // TODO: CWE-119! CK
@@ -363,8 +419,10 @@ int Oid::OidToStr(const SmiOID* srcOid, size_t size, char* str) const
 //================[ general Value = operator ]========================
 SnmpSyntax& Oid::operator=(const SnmpSyntax& val)
 {
-    if (this == &val) return *this; // protect against assignment from self
-
+    if (this == &val)
+    {
+        return *this; // protect against assignment from self
+    }
     delete_oid_ptr();
 
     // assign new value
@@ -372,10 +430,11 @@ SnmpSyntax& Oid::operator=(const SnmpSyntax& val)
     {
         switch (val.get_syntax())
         {
-        case sNMP_SYNTAX_OID:
+        case sNMP_SYNTAX_OID: {
             set_data(((Oid&)val).smival.value.oid.ptr,
                 (unsigned int)((Oid&)val).smival.value.oid.len);
             break;
+        }
         }
     }
     return *this;
@@ -389,22 +448,36 @@ int Oid::get_asn1_length() const
     {
         uint32_t const v = smival.value.oid.ptr[i];
 
-        if (v < 0x80)            //  7 bits long subid
+        if (v < 0x80) //  7 bits long subid
+        {
             length += 1;
-        else if (v < 0x4000)     // 14 bits long subid
+        }
+        else if (v < 0x4000) // 14 bits long subid
+        {
             length += 2;
-        else if (v < 0x200000)   // 21 bits long subid
+        }
+        else if (v < 0x200000) // 21 bits long subid
+        {
             length += 3;
+        }
         else if (v < 0x10000000) // 28 bits long subid
+        {
             length += 4;
-        else                     // 32 bits long subid
+        }
+        else // 32 bits long subid
+        {
             length += 5;
+        }
     }
 
     if (length < 128)
+    {
         return length + 2;
+    }
     else if (length < 256)
+    {
         return length + 3;
+    }
     return length + 4;
 }
 

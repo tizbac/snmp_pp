@@ -1,29 +1,29 @@
 /*_############################################################################
-  _##
-  _##  snmpDiscover.cpp
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  snmpDiscover.cpp
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 
 #include "snmp_pp/snmp_pp.h"
 
@@ -67,9 +67,18 @@ static void help()
 int main(int argc, char** argv)
 {
     //---------[ check the arg count ]----------------------------------------
-    if (argc < 2) usage();
-    if (strstr(argv[1], "-h") != 0) help();
-    if (strstr(argv[1], "-?") != 0) usage();
+    if (argc < 2)
+    {
+        usage();
+    }
+    if (strstr(argv[1], "-h") != 0)
+    {
+        help();
+    }
+    if (strstr(argv[1], "-?") != 0)
+    {
+        usage();
+    }
 
 #if !defined(_NO_LOGGING) && !defined(WITH_LOG_PROFILES)
     // Set filter for logging
@@ -122,7 +131,10 @@ int main(int argc, char** argv)
             ptr++;
             ptr++;
             retries = atoi(ptr);
-            if ((retries < 0) || (retries > 5)) retries = 1;
+            if ((retries < 0) || (retries > 5))
+            {
+                retries = 1;
+            }
             continue;
         }
         if (strstr(argv[x], "-t") != 0)
@@ -131,7 +143,10 @@ int main(int argc, char** argv)
             ptr++;
             ptr++;
             timeout = atoi(ptr);
-            if ((timeout < 100) || (timeout > 500)) timeout = 100;
+            if ((timeout < 100) || (timeout > 500))
+            {
+                timeout = 100;
+            }
             continue;
         }
         if (strstr(argv[x], "-C") != 0)
@@ -214,7 +229,9 @@ int main(int argc, char** argv)
               << " Retries=" << retries << " Timeout=" << timeout * 10 << "ms";
 #ifdef _SNMPv3
     if (version == version3)
+    {
         std::cout << std::endl;
+    }
     else
 #endif
         std::cout << " Community=" << community.get_printable() << std::endl
@@ -245,14 +262,20 @@ int main(int argc, char** argv)
     int                  dummy_pos;
 
     for (int n = 0; n < addresses.size(); ++n)
+    {
         if (filtered_addrs.find(addresses[n], dummy_pos))
+        {
             filtered_addrs += addresses[n];
+        }
+    }
 
     // print out all addressess
     std::cout << "Found " << filtered_addrs.size() << " agents." << std::endl;
     for (int m = 0; m < filtered_addrs.size(); ++m)
+    {
         std::cout << "Answer received from: "
                   << filtered_addrs[m].get_printable() << std::endl;
+    }
 
     Snmp::socket_cleanup(); // Shut down socket subsystem
 }

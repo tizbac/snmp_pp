@@ -1,29 +1,29 @@
 /*_############################################################################
-  _##
-  _##  log.h
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  log.h
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 
 #ifndef _SNMP_LOG_H_
 #define _SNMP_LOG_H_
@@ -490,6 +490,7 @@ protected:
 class DLLOPT DefaultLog {
 public:
     DefaultLog() { }
+
     ~DefaultLog() { }
 
     /**
@@ -508,7 +509,10 @@ public:
     static void init(AgentLog* logger)
     {
         lock(); // FIXME: not exception save! CK
-        if (instance) delete instance;
+        if (instance)
+        {
+            delete instance;
+        }
         instance = logger;
         unlock();
     }
@@ -545,7 +549,11 @@ public:
     static inline AgentLog* log()
     {
         AgentLog* r = instance;
-        if (!r) r = init_ts();
+
+        if (!r)
+        {
+            r = init_ts();
+        }
         return r;
     }
 
@@ -574,7 +582,10 @@ public:
      */
     static LogEntry* log_entry()
     {
-        if (!entry) { create_log_entry("main", ERROR_LOG | 1); }
+        if (!entry)
+        {
+            create_log_entry("main", ERROR_LOG | 1);
+        }
         return entry;
     }
 
@@ -583,7 +594,10 @@ public:
      */
     static void delete_log_entry()
     {
-        if (entry) delete entry;
+        if (entry)
+        {
+            delete entry;
+        }
         entry = nullptr;
     }
 

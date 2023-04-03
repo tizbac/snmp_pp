@@ -1,53 +1,53 @@
 /*_############################################################################
-  _##
-  _##  snmpmsg.cpp
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  snmpmsg.cpp
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 /*===================================================================
-
-  Copyright (c) 1996
-  Hewlett-Packard Company
-
-  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  Permission to use, copy, modify, distribute and/or sell this software
-  and/or its documentation is hereby granted without fee. User agrees
-  to display the above copyright notice and this license notice in all
-  copies of the software and any documentation of the software. User
-  agrees to assume all liability for the use of the software; Hewlett-Packard
-  makes no representations about the suitability of this software for any
-  purpose. It is provided "AS-IS" without warranty of any kind,either express
-  or implied. User hereby grants a royalty-free license to any and all
-  derivatives based upon this software code base.
-
-  SNMP++ S N M P M S G . C P P
-
-  SNMPMESSAGE CLASS DEFINITION
-
-  DESIGN + AUTHOR:  Peter E Mellquist
-
-  DESCRIPTION:      ASN.1	encoding / decoding class
-=====================================================================*/
+ *
+ * Copyright (c) 1996
+ * Hewlett-Packard Company
+ *
+ * ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * Permission to use, copy, modify, distribute and/or sell this software
+ * and/or its documentation is hereby granted without fee. User agrees
+ * to display the above copyright notice and this license notice in all
+ * copies of the software and any documentation of the software. User
+ * agrees to assume all liability for the use of the software; Hewlett-Packard
+ * makes no representations about the suitability of this software for any
+ * purpose. It is provided "AS-IS" without warranty of any kind,either express
+ * or implied. User hereby grants a royalty-free license to any and all
+ * derivatives based upon this software code base.
+ *
+ * SNMP++ S N M P M S G . C P P
+ *
+ * SNMPMESSAGE CLASS DEFINITION
+ *
+ * DESIGN + AUTHOR:  Peter E Mellquist
+ *
+ * DESCRIPTION:      ASN.1	encoding / decoding class
+ * =====================================================================*/
 
 #include "snmp_pp/snmpmsg.h" // header file for SnmpMessage
 
@@ -85,28 +85,30 @@ int convertVbToSmival(const Vb& tempvb, SmiVALUE* smival)
     smival->syntax = tempvb.get_syntax();
     switch (smival->syntax)
     {
-
-        // case sNMP_SYNTAX_NULL
+    // case sNMP_SYNTAX_NULL
     case sNMP_SYNTAX_NULL:
     case sNMP_SYNTAX_NOSUCHOBJECT:
     case sNMP_SYNTAX_NOSUCHINSTANCE:
-    case sNMP_SYNTAX_ENDOFMIBVIEW:
+    case sNMP_SYNTAX_ENDOFMIBVIEW: {
         break;
+    }
 
-        // case sNMP_SYNTAX_INT32:
-    case sNMP_SYNTAX_INT:
+    // case sNMP_SYNTAX_INT32:
+    case sNMP_SYNTAX_INT: {
         tempvb.get_value(smival->value.sNumber);
         break;
+    }
 
-        //    case sNMP_SYNTAX_UINT32:
+    //    case sNMP_SYNTAX_UINT32:
     case sNMP_SYNTAX_GAUGE32:
     case sNMP_SYNTAX_CNTR32:
-    case sNMP_SYNTAX_TIMETICKS:
+    case sNMP_SYNTAX_TIMETICKS: {
         //  case sNMP_SYNTAX_UINT32:
         tempvb.get_value(smival->value.uNumber);
         break;
+    }
 
-        // case Counter64
+    // case Counter64
     case sNMP_SYNTAX_CNTR64: {
         Counter64 c64;
         tempvb.get_value(c64);
@@ -130,7 +132,9 @@ int convertVbToSmival(const Vb& tempvb, SmiVALUE* smival)
             if (smival->value.string.ptr)
             {
                 for (int i = 0; i < (int)smival->value.string.len; i++)
+                {
                     smival->value.string.ptr[i] = os[i];
+                }
             }
             else
             {
@@ -153,7 +157,9 @@ int convertVbToSmival(const Vb& tempvb, SmiVALUE* smival)
             if (smival->value.oid.ptr)
             {
                 for (int i = 0; i < (int)smival->value.oid.len; i++)
+                {
                     smival->value.oid.ptr[i] = oid[i];
+                }
             }
             else
             {
@@ -164,7 +170,9 @@ int convertVbToSmival(const Vb& tempvb, SmiVALUE* smival)
     }
     break;
 
-    default: return SNMP_CLASS_INTERNAL_ERROR;
+    default: {
+        return SNMP_CLASS_INTERNAL_ERROR;
+    }
     }
     return SNMP_CLASS_SUCCESS;
 }
@@ -177,11 +185,15 @@ void freeSmivalDescriptor(SmiVALUE* smival)
     case sNMP_SYNTAX_OCTETS:
     case sNMP_SYNTAX_OPAQUE:
     case sNMP_SYNTAX_IPADDR:
-    case sNMP_SYNTAX_BITS: // obsoleted in SNMPv2 Draft Std
+    case sNMP_SYNTAX_BITS: { // obsoleted in SNMPv2 Draft Std
         delete[] smival->value.string.ptr;
         break;
+    }
 
-    case sNMP_SYNTAX_OID: delete[] smival->value.oid.ptr; break;
+    case sNMP_SYNTAX_OID: {
+        delete[] smival->value.oid.ptr;
+        break;
+    }
     }
     smival->syntax = sNMP_SYNTAX_NULL;
 }
@@ -195,6 +207,7 @@ int SnmpMessage::unloadv3(Pdu& pdu,           // Pdu returned
     SmiINT32& security_model, UdpAddress& from_addr, Snmp& snmp_session)
 {
     OctetStr tmp;
+
     return unload(pdu, tmp, version, &engine_id, &security_name,
         &security_model, &from_addr, &snmp_session);
 }
@@ -214,7 +227,10 @@ int SnmpMessage::load(
     Pdu        temppdu;
 
     // make sure pdu is valid
-    if (!pdu->valid()) return SNMP_CLASS_INVALID_PDU;
+    if (!pdu->valid())
+    {
+        return SNMP_CLASS_INVALID_PDU;
+    }
 
     // create a raw pdu
     snmp_pdu* raw_pdu = nullptr;
@@ -310,17 +326,29 @@ int SnmpMessage::load(
         }
         raw_pdu->specific_type = 0;
         if (trapid == coldStart)
+        {
             raw_pdu->trap_type = 0; // cold start
+        }
         else if (trapid == warmStart)
+        {
             raw_pdu->trap_type = 1; // warm start
+        }
         else if (trapid == linkDown)
+        {
             raw_pdu->trap_type = 2; // link down
+        }
         else if (trapid == linkUp)
+        {
             raw_pdu->trap_type = 3; // link up
+        }
         else if (trapid == authenticationFailure)
+        {
             raw_pdu->trap_type = 4; // authentication failure
+        }
         else if (trapid == egpNeighborLoss)
+        {
             raw_pdu->trap_type = 5; // egp neighbor loss
+        }
         else
         {
             raw_pdu->trap_type = 6; // enterprise specific
@@ -330,11 +358,17 @@ int SnmpMessage::load(
             raw_pdu->specific_type = (int)trapid[(int)(trapid.len() - 1)];
 
             trapid.trim(1);
-            if (trapid[(int)(trapid.len() - 1)] == 0) trapid.trim(1);
+            if (trapid[(int)(trapid.len() - 1)] == 0)
+            {
+                trapid.trim(1);
+            }
             enterprise = trapid;
         }
 
-        if (raw_pdu->trap_type != 6) pdu->get_notify_enterprise(enterprise);
+        if (raw_pdu->trap_type != 6)
+        {
+            pdu->get_notify_enterprise(enterprise);
+        }
         if (enterprise.len() > 0)
         {
             // note!!
@@ -407,7 +441,9 @@ int SnmpMessage::load(
         if ((raw_pdu->command == sNMP_PDU_GET)
             || (raw_pdu->command == sNMP_PDU_GETNEXT)
             || (raw_pdu->command == sNMP_PDU_GETBULK))
+        {
             tempvb.set_null();
+        }
         status = convertVbToSmival(tempvb, &smival);
         if (status != SNMP_CLASS_SUCCESS)
         {
@@ -451,7 +487,6 @@ int SnmpMessage::load(
                 && ((int)pdu->get_maxsize_scopedpdu()
                     < pdu->get_asn1_length()))
             {
-
                 LOG_BEGIN(loggerModuleName, ERROR_LOG | 1);
                 LOG("SNMPMessage: *BUG*: Serialized response pdu is too big "
                     "(len) (max)");
@@ -496,7 +531,9 @@ int SnmpMessage::load(
         snmp_free_pdu(raw_pdu);
 #ifdef _SNMPv3
         if (version == version3)
+        {
             return status;
+        }
         else
 #endif
             // NOTE: This is an assumption - in most cases during normal
@@ -532,7 +569,9 @@ int SnmpMessage::load(unsigned char* data, uint32_t len)
         valid_flag = true;
     }
     else
+    {
         return SNMP_ERROR_WRONG_LENGTH;
+    }
 
     return SNMP_CLASS_SUCCESS;
 }
@@ -547,7 +586,10 @@ int SnmpMessage::unload(Pdu& pdu,           // Pdu object
 {
     pdu.clear();
 
-    if (!valid_flag) return SNMP_CLASS_INVALID;
+    if (!valid_flag)
+    {
+        return SNMP_CLASS_INVALID;
+    }
 
     snmp_pdu* raw_pdu = snmp_pdu_create(0); // free with snmp_free_pdu(raw_pdu)
     int       status  = 0;
@@ -631,17 +673,35 @@ int SnmpMessage::unload(Pdu& pdu,           // Pdu object
         }
         switch (raw_pdu->trap_type)
         {
-        case 0: pdu.set_notify_id(coldStart); break;
+        case 0: {
+            pdu.set_notify_id(coldStart);
+            break;
+        }
 
-        case 1: pdu.set_notify_id(warmStart); break;
+        case 1: {
+            pdu.set_notify_id(warmStart);
+            break;
+        }
 
-        case 2: pdu.set_notify_id(linkDown); break;
+        case 2: {
+            pdu.set_notify_id(linkDown);
+            break;
+        }
 
-        case 3: pdu.set_notify_id(linkUp); break;
+        case 3: {
+            pdu.set_notify_id(linkUp);
+            break;
+        }
 
-        case 4: pdu.set_notify_id(authenticationFailure); break;
+        case 4: {
+            pdu.set_notify_id(authenticationFailure);
+            break;
+        }
 
-        case 5: pdu.set_notify_id(egpNeighborLoss); break;
+        case 5: {
+            pdu.set_notify_id(egpNeighborLoss);
+            break;
+        }
 
         case 6: { // enterprise specific
             // base id + specific #
@@ -651,6 +711,7 @@ int SnmpMessage::unload(Pdu& pdu,           // Pdu object
             pdu.set_notify_id(eOid);
             break;
         }
+
         default: {
             LOG_BEGIN(loggerModuleName, WARNING_LOG | 3);
             LOG("SNMPMessage: Received trap with illegal trap type");
@@ -668,7 +729,6 @@ int SnmpMessage::unload(Pdu& pdu,           // Pdu object
 
     for (vp = raw_pdu->variables; vp; vp = vp->next_variable, vb_nr++)
     {
-
         // extract the oid portion
         tempoid.set_data((SmiUINT32*)vp->name, (unsigned int)vp->name_length);
         tempvb.set_oid(tempoid);
@@ -676,14 +736,14 @@ int SnmpMessage::unload(Pdu& pdu,           // Pdu object
         // extract the value portion
         switch (vp->type)
         {
-
-            // octet string
+        // octet string
         case sNMP_SYNTAX_OCTETS: {
             OctetStr const octets(
                 (unsigned char*)vp->val.string, (uint32_t)vp->val_len);
             tempvb.set_value(octets);
         }
         break;
+
         case sNMP_SYNTAX_OPAQUE: {
             OpaqueStr const octets(
                 (unsigned char*)vp->val.string, (uint32_t)vp->val_len);
@@ -691,7 +751,7 @@ int SnmpMessage::unload(Pdu& pdu,           // Pdu object
         }
         break;
 
-            // object id
+        // object id
         case sNMP_SYNTAX_OID: {
             Oid const oid((SmiLPUINT32)vp->val.objid, (int)vp->val_len);
             tempvb.set_value(oid);
@@ -707,7 +767,7 @@ int SnmpMessage::unload(Pdu& pdu,           // Pdu object
         }
         break;
 
-            // timeticks
+        // timeticks
         case sNMP_SYNTAX_TIMETICKS: {
             TimeTicks const timeticks((uint32_t) * (vp->val.integer));
             tempvb.set_value(timeticks);
@@ -723,26 +783,27 @@ int SnmpMessage::unload(Pdu& pdu,           // Pdu object
         }
         break;
 
-            // 32 bit counter
+        // 32 bit counter
         case sNMP_SYNTAX_CNTR32: {
             Counter32 const counter32((uint32_t) * (vp->val.integer));
             tempvb.set_value(counter32);
         }
         break;
 
-            // 32 bit gauge
+        // 32 bit gauge
         case sNMP_SYNTAX_GAUGE32: {
             Gauge32 const gauge32((uint32_t) * (vp->val.integer));
             tempvb.set_value(gauge32);
         }
         break;
 
-            // ip address
+        // ip address
         case sNMP_SYNTAX_IPADDR: {
             char buffer[42] {};
             buffer[0] = 0; // in case we receive an inavlid length IP
 
             if (vp->val_len == 16)
+            {
                 snprintf(buffer, sizeof(buffer),
                     "%02x%02x:%02x%02x:%02x%02x:%02x%02x:"
                     "%02x%02x:%02x%02x:%02x%02x:%02x%02x",
@@ -752,51 +813,59 @@ int SnmpMessage::unload(Pdu& pdu,           // Pdu object
                     vp->val.string[9], vp->val.string[10], vp->val.string[11],
                     vp->val.string[12], vp->val.string[13], vp->val.string[14],
                     vp->val.string[15]);
+            }
             else if (vp->val_len == 4)
+            {
                 snprintf(buffer, sizeof(buffer), "%d.%d.%d.%d",
                     vp->val.string[0], vp->val.string[1], vp->val.string[2],
                     vp->val.string[3]);
+            }
             IpAddress const ipaddress(buffer);
             tempvb.set_value(ipaddress);
         }
         break;
 
-            // 32 bit integer
+        // 32 bit integer
         case sNMP_SYNTAX_INT: {
             SnmpInt32 const int32((long)*(vp->val.integer));
             tempvb.set_value(int32);
         }
         break;
 
-            // 32 bit unsigned integer
-            /* Not distinguishable from Gauge32
-                case sNMP_SYNTAX_UINT32:
-                  {
-                    SnmpUInt32 uint32((uint32_t) *(vp->val.integer));
-                    tempvb.set_value(uint32);
-                  }
-                  break;
-            */
-            // v2 counter 64's
+        // 32 bit unsigned integer
+
+        /* Not distinguishable from Gauge32
+         *  case sNMP_SYNTAX_UINT32:
+         *    {
+         *      SnmpUInt32 uint32((uint32_t) *(vp->val.integer));
+         *      tempvb.set_value(uint32);
+         *    }
+         *    break;
+         */
+        // v2 counter 64's
         case sNMP_SYNTAX_CNTR64: { // Frank Fock (was empty before)
             Counter64 const c64(((counter64*)vp->val.counter64)->high,
                 ((counter64*)vp->val.counter64)->low);
             tempvb.set_value(c64);
             break;
         }
-        case sNMP_SYNTAX_NULL:
+
+        case sNMP_SYNTAX_NULL: {
             tempvb.set_null();
             break;
+        }
 
-            // v2 vb exceptions
+        // v2 vb exceptions
         case sNMP_SYNTAX_NOSUCHOBJECT:
         case sNMP_SYNTAX_NOSUCHINSTANCE:
-        case sNMP_SYNTAX_ENDOFMIBVIEW:
+        case sNMP_SYNTAX_ENDOFMIBVIEW: {
             tempvb.set_exception_status(vp->type);
             break;
+        }
 
-        default: tempvb.set_null();
-
+        default: {
+            tempvb.set_null();
+        }
         } // end switch
 
         // append the vb to the pdu

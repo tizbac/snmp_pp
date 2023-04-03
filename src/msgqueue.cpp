@@ -1,52 +1,52 @@
 /*_############################################################################
-  _##
-  _##  msgqueue.cpp
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  msgqueue.cpp
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 /*===================================================================
-
-  Copyright (c) 1999
-  Hewlett-Packard Company
-
-  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  Permission to use, copy, modify, distribute and/or sell this software
-  and/or its documentation is hereby granted without fee. User agrees
-  to display the above copyright notice and this license notice in all
-  copies of the software and any documentation of the software. User
-  agrees to assume all liability for the use of the software; Hewlett-Packard
-  makes no representations about the suitability of this software for any
-  purpose. It is provided "AS-IS" without warranty of any kind,either express
-  or implied. User hereby grants a royalty-free license to any and all
-  derivatives based upon this software code base.
-
-      M S G Q U E U E . C P P
-
-      MSG QUEUE CLASS DECLARATION
-
-      Author:           Peter E Mellquist
-
-=====================================================================*/
+ *
+ * Copyright (c) 1999
+ * Hewlett-Packard Company
+ *
+ * ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * Permission to use, copy, modify, distribute and/or sell this software
+ * and/or its documentation is hereby granted without fee. User agrees
+ * to display the above copyright notice and this license notice in all
+ * copies of the software and any documentation of the software. User
+ * agrees to assume all liability for the use of the software; Hewlett-Packard
+ * makes no representations about the suitability of this software for any
+ * purpose. It is provided "AS-IS" without warranty of any kind,either express
+ * or implied. User hereby grants a royalty-free license to any and all
+ * derivatives based upon this software code base.
+ *
+ *    M S G Q U E U E . C P P
+ *
+ *    MSG QUEUE CLASS DECLARATION
+ *
+ *    Author:           Peter E Mellquist
+ *
+ * =====================================================================*/
 
 #include <libsnmp.h>
 
@@ -172,15 +172,30 @@ int CSNMPMessage::SetPdu(
         && (m_pdu.get_type() == sNMP_PDU_RESPONSE))
     {
         // remove the first two vbs of the pdu if sysUpTime and notify_id
-        if (m_pdu.get_vb_count() < 2) return 0;
+        if (m_pdu.get_vb_count() < 2)
+        {
+            return 0;
+        }
 
         const Vb& vb1 = m_pdu.get_vb(0);
-        if (vb1.get_syntax() != sNMP_SYNTAX_TIMETICKS) return 0;
-        if (vb1.get_oid() != SNMP_MSG_OID_SYSUPTIME) return 0;
+        if (vb1.get_syntax() != sNMP_SYNTAX_TIMETICKS)
+        {
+            return 0;
+        }
+        if (vb1.get_oid() != SNMP_MSG_OID_SYSUPTIME)
+        {
+            return 0;
+        }
 
         const Vb& vb2 = m_pdu.get_vb(1);
-        if (vb2.get_syntax() != sNMP_SYNTAX_OID) return 0;
-        if (vb2.get_oid() != SNMP_MSG_OID_TRAPID) return 0;
+        if (vb2.get_syntax() != sNMP_SYNTAX_OID)
+        {
+            return 0;
+        }
+        if (vb2.get_oid() != SNMP_MSG_OID_TRAPID)
+        {
+            return 0;
+        }
 
         TimeTicks timeticks;
         Oid       oid;
@@ -227,7 +242,10 @@ int CSNMPMessage::ResendMessage()
     SetSendTime();
     int const status =
         send_snmp_request(m_socket, m_rawPdu, m_rawPduLen, *m_address);
-    if (status != 0) return SNMP_CLASS_TL_FAILED;
+    if (status != 0)
+    {
+        return SNMP_CLASS_TL_FAILED;
+    }
 
     return SNMP_CLASS_SUCCESS;
 }
@@ -254,22 +272,40 @@ CSNMPMessageQueue::CSNMPMessageQueueElt::CSNMPMessageQueueElt(
     : m_message(message), m_Next(next), m_previous(previous)
 {
     /* Finish insertion into doubly linked list */
-    if (m_Next) m_Next->m_previous = this;
-    if (m_previous) m_previous->m_Next = this;
+    if (m_Next)
+    {
+        m_Next->m_previous = this;
+    }
+    if (m_previous)
+    {
+        m_previous->m_Next = this;
+    }
 }
 
 CSNMPMessageQueue::CSNMPMessageQueueElt::~CSNMPMessageQueueElt()
 {
     /* Do deletion form doubly linked list */
-    if (m_Next) m_Next->m_previous = m_previous;
-    if (m_previous) m_previous->m_Next = m_Next;
-    if (m_message) delete m_message;
+    if (m_Next)
+    {
+        m_Next->m_previous = m_previous;
+    }
+    if (m_previous)
+    {
+        m_previous->m_Next = m_Next;
+    }
+    if (m_message)
+    {
+        delete m_message;
+    }
 }
 
 CSNMPMessage* CSNMPMessageQueue::CSNMPMessageQueueElt::TestId(
     const uint32_t uniqueId)
 {
-    if (m_message && (m_message->GetId() == uniqueId)) return m_message;
+    if (m_message && (m_message->GetId() == uniqueId))
+    {
+        return m_message;
+    }
     return nullptr;
 }
 
@@ -283,6 +319,7 @@ CSNMPMessageQueue::CSNMPMessageQueue(EventListHolder* holder, Snmp* session)
 CSNMPMessageQueue::~CSNMPMessageQueue()
 {
     CSNMPMessageQueueElt* leftOver = nullptr;
+
     lock(); // FIXME: not exception save! CK
             /*--------------------------------------------------------*/
             /* walk the list deleting any elements still on the queue */
@@ -296,7 +333,9 @@ CSNMPMessageQueue::~CSNMPMessageQueue()
             lock();
         }
         else
+        {
             delete leftOver;
+        }
     }
     unlock();
 }
@@ -346,7 +385,10 @@ CSNMPMessage* CSNMPMessageQueue::GetEntry(const uint32_t uniqueId)
     while (msgEltPtr)
     {
         CSNMPMessage* returnVal = msgEltPtr->TestId(uniqueId);
-        if (returnVal) return returnVal;
+        if (returnVal)
+        {
+            return returnVal;
+        }
         msgEltPtr = msgEltPtr->GetNext();
     }
     return nullptr;
@@ -355,6 +397,7 @@ CSNMPMessage* CSNMPMessageQueue::GetEntry(const uint32_t uniqueId)
 int CSNMPMessageQueue::DeleteEntry(const uint32_t uniqueId)
 {
     bool loopAgain = false;
+
     do {
         loopAgain                       = false;
         CSNMPMessageQueueElt* msgEltPtr = m_head.GetNext();
@@ -419,7 +462,9 @@ void CSNMPMessageQueue::DeleteSocketEntry(const SnmpSocket socket)
             }
         }
         else
+        {
             msgEltPtr = msgEltPtr->GetNext();
+        }
     }
     unlock();
 }
@@ -457,8 +502,10 @@ int CSNMPMessageQueue::GetNextTimeout(msec& sendTime)
 {
     CSNMPMessage* msg = GetNextTimeoutEntry();
 
-    if (!msg) return 1; // nothing in the queue...
-
+    if (!msg)
+    {
+        return 1; // nothing in the queue...
+    }
     msg->GetSendTime(sendTime);
     return 0;
 }
@@ -471,7 +518,10 @@ int CSNMPMessageQueue::GetFdCount()
 
     CSNMPMessageQueueElt* msgEltPtr = m_head.GetNext();
 
-    if (!msgEltPtr) return 0;
+    if (!msgEltPtr)
+    {
+        return 0;
+    }
 
 #    ifndef SNMP_PP_IPv6
     // we have at least one message in the queue and Snmp class
@@ -485,7 +535,10 @@ int CSNMPMessageQueue::GetFdCount()
 
     while (msgEltPtr)
     {
-        if (msgEltPtr->GetMessage()->GetSocket() != firstSocket) return 2;
+        if (msgEltPtr->GetMessage()->GetSocket() != firstSocket)
+        {
+            return 2;
+        }
         msgEltPtr = msgEltPtr->GetNext();
     }
     return 1;
@@ -497,9 +550,16 @@ bool CSNMPMessageQueue::GetFdArray(struct pollfd* readfds, int& remaining)
     SnmpSynchronize _synchronize(*this); // instead of REENTRANT()
 
     CSNMPMessageQueueElt* msgEltPtr = m_head.GetNext();
-    if (!msgEltPtr) return true;
 
-    if (remaining <= 0) return false;
+    if (!msgEltPtr)
+    {
+        return true;
+    }
+
+    if (remaining <= 0)
+    {
+        return false;
+    }
 
     SnmpSocket firstSocket = msgEltPtr->GetMessage()->GetSocket();
     readfds[0].fd          = firstSocket;
@@ -518,7 +578,10 @@ bool CSNMPMessageQueue::GetFdArray(struct pollfd* readfds, int& remaining)
     {
         if (msgEltPtr->GetMessage()->GetSocket() != firstSocket)
         {
-            if (remaining <= 0) return false;
+            if (remaining <= 0)
+            {
+                return false;
+            }
             readfds[1].fd     = msgEltPtr->GetMessage()->GetSocket();
             readfds[1].events = POLLIN;
             remaining--;
@@ -551,7 +614,10 @@ int CSNMPMessageQueue::HandleEvents(
                 readfds[i].fd, *m_snmpSession, tmppdu, fromaddress, engine_id);
 
             uint32_t temp_req_id = tmppdu.get_request_id();
-            if (!temp_req_id) continue;
+            if (!temp_req_id)
+            {
+                continue;
+            }
 
             CSNMPMessage* msg = 0;
             bool          redoGetEntry;
@@ -646,7 +712,10 @@ void CSNMPMessageQueue::GetFdSets(
     {
         SnmpSocket const sock = msgEltPtr->GetMessage()->GetSocket();
         FD_SET(sock, &readfds);
-        if (maxfds < SAFE_INT_CAST(sock + 1)) maxfds = SAFE_INT_CAST(sock + 1);
+        if (maxfds < SAFE_INT_CAST(sock + 1))
+        {
+            maxfds = SAFE_INT_CAST(sock + 1);
+        }
         msgEltPtr = msgEltPtr->GetNext();
     }
 }
@@ -680,7 +749,10 @@ int CSNMPMessageQueue::HandleEvents(const int maxfds, const fd_set& readfds,
                 fd, *m_snmpSession, tmppdu, fromaddress, engine_id);
 
             uint32_t const temp_req_id = tmppdu.get_request_id();
-            if (!temp_req_id) continue;
+            if (!temp_req_id)
+            {
+                continue;
+            }
 
             CSNMPMessage* msg          = nullptr;
             bool          redoGetEntry = false;
@@ -731,7 +803,6 @@ int CSNMPMessageQueue::HandleEvents(const int maxfds, const fd_set& readfds,
                     if (tmppdu.get_type() == sNMP_PDU_REPORT
                         || tmppdu.get_type() == sNMP_PDU_RESPONSE)
                     {
-
                         UdpAddress const addr = target->get_address();
 
                         LOG_BEGIN(loggerModuleName, DEBUG_LOG | 14);
@@ -774,14 +845,16 @@ int CSNMPMessageQueue::DoRetries(const msec& now)
     CSNMPMessage* msg = nullptr;
     msec          sendTime(0, 0);
     int           status = SNMP_CLASS_SUCCESS;
+
     lock(); // FIXME: not exception save! CK
     while ((msg = GetNextTimeoutEntry()))
     {
         msg->GetSendTime(sendTime);
 
         if (sendTime > now)
+        {
             break; // the next timeout is still in the future...so we are done
-
+        }
         if (msg->IsLocked())
         {
             unlock();
@@ -805,7 +878,9 @@ int CSNMPMessageQueue::DoRetries(const msec& now)
 #ifdef _SNMPv3
                 // delete entry in cache
                 if (m_snmpSession->get_mpv3())
+                {
                     m_snmpSession->get_mpv3()->delete_from_cache(req_id);
+                }
 
                 LOG_BEGIN(loggerModuleName, INFO_LOG | 6);
                 LOG("MsgQueue: Message timed out, removed id from v3MP cache "
@@ -837,9 +912,13 @@ int CSNMPMessageQueue::Done(uint32_t id)
     CSNMPMessage* msg = GetEntry(id);
 
     if (!msg)
+    {
         return 1; // the message is not in the queue...must have timed out
-
-    if (msg->GetReceived()) return 1;
+    }
+    if (msg->GetReceived())
+    {
+        return 1;
+    }
 
     return 0;
 }

@@ -1,29 +1,29 @@
 /*_############################################################################
-  _##
-  _##  usm_v3.cpp
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  usm_v3.cpp
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 
 #include "snmp_pp/config_snmp_pp.h"
 
@@ -164,7 +164,7 @@ public:
      *
      * @return - engine_boots value if initialized, 0 else
      */
-    uint32_t get_local_boots() { return (table ? table[0].engine_boots : 0); }
+    uint32_t get_local_boots() { return table ? table[0].engine_boots : 0; }
 
     /**
      * Return the engineTime value of this snmp entity.
@@ -341,7 +341,10 @@ public:
 
     const UsmUserNameTableEntry* peek_first() const
     {
-        if (entries > 0) return table;
+        if (entries > 0)
+        {
+            return table;
+        }
         return nullptr;
     }
 
@@ -555,7 +558,10 @@ public:
 
     const UsmUserTableEntry* peek_first() const
     {
-        if (entries > 0) return table;
+        if (entries > 0)
+        {
+            return table;
+        }
         return nullptr;
     }
 
@@ -602,49 +608,73 @@ struct SecurityStateReference {
 void USM::inc_stats_unsupported_sec_levels()
 {
     if (usmStatsUnsupportedSecLevels == MAXUINT32)
+    {
         usmStatsUnsupportedSecLevels = 0;
+    }
     else
+    {
         usmStatsUnsupportedSecLevels++;
+    }
 }
 
 void USM::inc_stats_not_in_time_windows()
 {
     if (usmStatsNotInTimeWindows == MAXUINT32)
+    {
         usmStatsNotInTimeWindows = 0;
+    }
     else
+    {
         usmStatsNotInTimeWindows++;
+    }
 }
 
 void USM::inc_stats_unknown_user_names()
 {
     if (usmStatsUnknownUserNames == MAXUINT32)
+    {
         usmStatsUnknownUserNames = 0;
+    }
     else
+    {
         usmStatsUnknownUserNames++;
+    }
 }
 
 void USM::inc_stats_unknown_engine_ids()
 {
     if (usmStatsUnknownEngineIDs == MAXUINT32)
+    {
         usmStatsUnknownEngineIDs = 0;
+    }
     else
+    {
         usmStatsUnknownEngineIDs++;
+    }
 }
 
 void USM::inc_stats_wrong_digests()
 {
     if (usmStatsWrongDigests == MAXUINT32)
+    {
         usmStatsWrongDigests = 0;
+    }
     else
+    {
         usmStatsWrongDigests++;
+    }
 }
 
 void USM::inc_stats_decryption_errors()
 {
     if (usmStatsDecryptionErrors == MAXUINT32)
+    {
         usmStatsDecryptionErrors = 0;
+    }
     else
+    {
         usmStatsDecryptionErrors++;
+    }
 }
 
 void USM::delete_sec_state_reference(struct SecurityStateReference* ssr)
@@ -652,8 +682,14 @@ void USM::delete_sec_state_reference(struct SecurityStateReference* ssr)
     if (ssr)
     {
         ssr->msgUserName[0] = 0;
-        if (ssr->securityName) delete[] ssr->securityName;
-        if (ssr->securityEngineID) delete[] ssr->securityEngineID;
+        if (ssr->securityName)
+        {
+            delete[] ssr->securityName;
+        }
+        if (ssr->securityEngineID)
+        {
+            delete[] ssr->securityEngineID;
+        }
         if (ssr->authKey)
         {
             memset(ssr->authKey, 0, ssr->authKeyLength);
@@ -672,7 +708,10 @@ struct SecurityStateReference* USM::get_new_sec_state_reference()
 {
     auto* res = new SecurityStateReference;
 
-    if (!res) return nullptr;
+    if (!res)
+    {
+        return nullptr;
+    }
 
     memset(res, 0, sizeof(struct SecurityStateReference));
     return res;
@@ -691,27 +730,45 @@ USM::USM(unsigned int engine_boots, const OctetStr& engine_id,
       usm_add_user_cb(nullptr)
 {
     auth_priv = new AuthPriv(result);
-    if (result != SNMPv3_USM_OK) return;
+    if (result != SNMPv3_USM_OK)
+    {
+        return;
+    }
     auth_priv->add_default_modules();
 
     usm_user_name_table = new USMUserNameTable(result);
-    if (result != SNMPv3_USM_OK) return;
+    if (result != SNMPv3_USM_OK)
+    {
+        return;
+    }
 
     usm_user_table = new USMUserTable(result);
-    if (result != SNMPv3_USM_OK) return;
+    if (result != SNMPv3_USM_OK)
+    {
+        return;
+    }
 
     usm_time_table = new USMTimeTable(this, engine_boots, result);
-    if (result != SNMPv3_USM_OK) return;
+    if (result != SNMPv3_USM_OK)
+    {
+        return;
+    }
 
     *msgID = (engine_boots & 0x7FFF) << 16;
 }
 
 USM::~USM()
 {
-    if (usm_time_table) delete usm_time_table;
+    if (usm_time_table)
+    {
+        delete usm_time_table;
+    }
     usm_time_table = nullptr;
 
-    if (usm_user_table) delete usm_user_table;
+    if (usm_user_table)
+    {
+        delete usm_user_table;
+    }
     usm_user_table = nullptr;
 
     if (usm_user_name_table)
@@ -729,7 +786,10 @@ USM::~USM()
 
 int USM::remove_all_users()
 {
-    if (usm_user_table) delete usm_user_table;
+    if (usm_user_table)
+    {
+        delete usm_user_table;
+    }
     usm_user_table = nullptr;
     if (usm_user_name_table)
     {
@@ -738,7 +798,10 @@ int USM::remove_all_users()
     }
     int result          = 0;
     usm_user_name_table = new USMUserNameTable(result);
-    if (result != SNMPv3_USM_OK) return result;
+    if (result != SNMPv3_USM_OK)
+    {
+        return result;
+    }
 
     usm_user_table = new USMUserTable(result);
     return result;
@@ -751,7 +814,9 @@ int USM::remove_engine_id(const OctetStr& engine_id)
     int const retval2 = usm_user_table->delete_engine_id(engine_id);
 
     if ((retval1 == SNMPv3_USM_ERROR) || (retval2 == SNMPv3_USM_ERROR))
+    {
         return SNMPv3_USM_ERROR;
+    }
 
     return SNMPv3_USM_OK;
 }
@@ -760,7 +825,9 @@ int USM::remove_engine_id(const OctetStr& engine_id)
 int USM::remove_time_information(const OctetStr& engine_id)
 {
     if (usm_time_table->delete_entry(engine_id) == SNMPv3_USM_ERROR)
+    {
         return SNMPv3_USM_ERROR;
+    }
 
     return SNMPv3_USM_OK;
 }
@@ -772,6 +839,7 @@ int USM::update_key(const unsigned char* user_name,
 {
     OctetStr key(new_key, new_key_len);
     int      res = 0;
+
     res = usm_user_table->update_key(OctetStr(user_name, user_name_len),
         OctetStr(engine_id, engine_id_len), key, type_of_key);
     key.clear();
@@ -796,11 +864,17 @@ int USM::add_usm_user(const OctetStr& user_name, const OctetStr& security_name,
 
     int const result = usm_user_name_table->add_entry(user_name, security_name,
         auth_protocol, priv_protocol, auth_password, priv_password);
-    if (result != SNMPv3_USM_OK) return result;
+    if (result != SNMPv3_USM_OK)
+    {
+        return result;
+    }
 
     struct UsmUser* dummy = nullptr;
     dummy                 = get_user(local_snmp_engine_id, security_name);
-    if (dummy) free_user(dummy);
+    if (dummy)
+    {
+        free_user(dummy);
+    }
 
     return SNMPv3_USM_OK;
 }
@@ -824,7 +898,10 @@ int USM::add_usm_user(const OctetStr& user_name, const OctetStr& security_name,
         priv_password.len(), auth_key.data(), &auth_key_len, priv_key.data(),
         &priv_key_len);
 
-    if (res != SNMPv3_USM_OK) return res;
+    if (res != SNMPv3_USM_OK)
+    {
+        return res;
+    }
 
     auth_key.set_len(auth_key_len);
     priv_key.set_len(priv_key_len);
@@ -941,7 +1018,10 @@ struct UsmUser* USM::get_user(
                 // there is a entry for this security_name in the usmUserTable
                 // so return an entry for this user to do engine_id discovery
                 auto* res = new UsmUser;
-                if (!res) return nullptr;
+                if (!res)
+                {
+                    return nullptr;
+                }
 
                 res->engineID       = nullptr;
                 res->engineIDLength = 0;
@@ -1102,11 +1182,23 @@ struct UsmUser* USM::get_user(
 // Free the structure returned from get_user().
 void USM::free_user(struct UsmUser*& user)
 {
-    if (!user) return;
+    if (!user)
+    {
+        return;
+    }
 
-    if (user->engineID) delete[] user->engineID;
-    if (user->usmUserName) delete[] user->usmUserName;
-    if (user->securityName) delete[] user->securityName;
+    if (user->engineID)
+    {
+        delete[] user->engineID;
+    }
+    if (user->usmUserName)
+    {
+        delete[] user->usmUserName;
+    }
+    if (user->securityName)
+    {
+        delete[] user->securityName;
+    }
 
     if (user->authKey)
     {
@@ -1135,7 +1227,9 @@ void USM::delete_usm_user(const OctetStr& security_name)
     if ((get_user_name(
             username, &length, security_name.data(), security_name.len()))
         == SNMPv3_USM_OK)
+    {
         delete_localized_user(OctetStr(username, length));
+    }
 }
 
 int USM::get_security_name(const unsigned char* user_name,
@@ -1145,11 +1239,17 @@ int USM::get_security_name(const unsigned char* user_name,
 
     result = usm_user_name_table->get_security_name(
         user_name, user_name_len, security_name);
-    if (result == SNMPv3_USM_OK) return SNMPv3_USM_OK;
+    if (result == SNMPv3_USM_OK)
+    {
+        return SNMPv3_USM_OK;
+    }
 
     result = usm_user_table->get_security_name(
         user_name, user_name_len, security_name);
-    if (result == SNMPv3_USM_OK) return SNMPv3_USM_OK;
+    if (result == SNMPv3_USM_OK)
+    {
+        return SNMPv3_USM_OK;
+    }
 
     if (user_name_len != 0)
     {
@@ -1170,14 +1270,20 @@ int USM::get_user_name(unsigned char* user_name, long int* user_name_len,
     result = usm_user_name_table->get_user_name(
         user_name, user_name_len, security_name, security_name_len);
 
-    if (result == SNMPv3_USM_OK) return SNMPv3_USM_OK;
+    if (result == SNMPv3_USM_OK)
+    {
+        return SNMPv3_USM_OK;
+    }
 
     *user_name_len = buf_len;
 
     result = usm_user_table->get_user_name(
         user_name, user_name_len, security_name, security_name_len);
 
-    if (result == SNMPv3_USM_OK) return SNMPv3_USM_OK;
+    if (result == SNMPv3_USM_OK)
+    {
+        return SNMPv3_USM_OK;
+    }
     if (security_name_len != 0)
     {
         LOG_BEGIN(loggerModuleName, WARNING_LOG | 5);
@@ -1302,6 +1408,7 @@ struct UsmKeyUpdate* USM::key_update_prepare(const OctetStr& securityName,
         oldKey = OctetStr(user->authKey, user->authKeyLength);
         break;
     }
+
     case PRIVKEY:
     case OWNPRIVKEY: {
         status = auth_priv->password_to_key_priv(user->authProtocol,
@@ -1310,6 +1417,7 @@ struct UsmKeyUpdate* USM::key_update_prepare(const OctetStr& securityName,
         oldKey = OctetStr(user->privKey, user->privKeyLength);
         break;
     }
+
     default: {
         debugprintf(0, "usmPrepareKeyUpdate: wrong type specified.");
         status = SNMPv3_USM_ERROR;
@@ -1353,18 +1461,22 @@ struct UsmKeyUpdate* USM::key_update_prepare(const OctetStr& securityName,
         userOid += "6";
         break;
     }
+
     case OWNAUTHKEY: {
         userOid += "7";
         break;
     }
+
     case PRIVKEY: {
         userOid += "9";
         break;
     }
+
     case OWNPRIVKEY: {
         userOid += "10";
         break;
     }
+
     default: {
         debugprintf(0, "KeyChange error: wrong type:");
         status = SNMPv3_USM_ERROR;
@@ -1417,7 +1529,10 @@ void USM::key_update_abort(struct UsmKeyUpdate* uku) { delete uku; }
 
 int USM::key_update_commit(struct UsmKeyUpdate* uku, int update_type)
 {
-    if (!uku) return SNMPv3_USM_ERROR;
+    if (!uku)
+    {
+        return SNMPv3_USM_ERROR;
+    }
 
     int            result = 0;
     OctetStr const userName;
@@ -1431,6 +1546,7 @@ int USM::key_update_commit(struct UsmKeyUpdate* uku, int update_type)
         delete uku;
         return result;
     }
+
     case USM_PasswordKeyUpdate: {
         result = update_key(uku->securityName.data(), uku->securityName.len(),
             uku->engineID.data(), uku->engineID.len(), uku->newKey.data(),
@@ -1440,7 +1556,10 @@ int USM::key_update_commit(struct UsmKeyUpdate* uku, int update_type)
         if (!entry || (result != SNMPv3_USM_OK))
         {
             delete uku;
-            if (entry) usm_user_name_table->delete_cloned_entry(entry);
+            if (entry)
+            {
+                usm_user_name_table->delete_cloned_entry(entry);
+            }
             return SNMPv3_USM_ERROR;
         }
 
@@ -1457,6 +1576,7 @@ int USM::key_update_commit(struct UsmKeyUpdate* uku, int update_type)
                 uku->newPassword, privPass);
             break;
         }
+
         case OWNPRIVKEY:
         case PRIVKEY: {
             OctetStr const authPass(
@@ -1471,6 +1591,7 @@ int USM::key_update_commit(struct UsmKeyUpdate* uku, int update_type)
         usm_user_name_table->delete_cloned_entry(entry);
         return result;
     }
+
     case USM_PasswordAllKeyUpdate: {
         struct UsmUserNameTableEntry* entry = nullptr;
         entry = usm_user_name_table->get_cloned_entry(uku->securityName);
@@ -1494,6 +1615,7 @@ int USM::key_update_commit(struct UsmKeyUpdate* uku, int update_type)
                 uku->newPassword, privPass);
             break;
         }
+
         case OWNPRIVKEY:
         case PRIVKEY: {
             OctetStr const authPass =
@@ -1530,7 +1652,10 @@ int USM::generate_msg(unsigned char* globalData, // message header, admin data
     unsigned char*        bufPtr  = buffer.get_ptr();
     unsigned char*        buf2Ptr = buffer2.get_ptr();
 
-    if (!bufPtr || !buf2Ptr) return SNMPv3_USM_ERROR;
+    if (!bufPtr || !buf2Ptr)
+    {
+        return SNMPv3_USM_ERROR;
+    }
 
     unsigned char*               wholeMsgPtr  = nullptr;
     int                          startAuthPar = 0;
@@ -1549,7 +1674,10 @@ int USM::generate_msg(unsigned char* globalData, // message header, admin data
         // this is a response message
         // responseMsg = 1;
         user = new UsmUser;
-        if (!user) return SNMPv3_USM_ERROR;
+        if (!user)
+        {
+            return SNMPv3_USM_ERROR;
+        }
         if (securityStateReference->securityEngineID)
         {
             user->engineIDLength =
@@ -1618,7 +1746,10 @@ int USM::generate_msg(unsigned char* globalData, // message header, admin data
         {
             // discovery
             user = new UsmUser;
-            if (!user) return SNMPv3_USM_ERROR;
+            if (!user)
+            {
+                return SNMPv3_USM_ERROR;
+            }
             memset(user, 0, sizeof(UsmUser));
         }
         else
@@ -1707,7 +1838,10 @@ int USM::generate_msg(unsigned char* globalData, // message header, admin data
                     0, "usm: Privacy requested, but no UserPrivProtocol");
                 return_value = SNMPv3_USM_UNSUPPORTED_SECURITY_LEVEL;
             }
-            else { return_value = SNMPv3_USM_ENCRYPTION_ERROR; }
+            else
+            {
+                return_value = SNMPv3_USM_ENCRYPTION_ERROR;
+            }
 
             debugprintf(0, "usm: Encryption error (result %i).", enc_result);
 
@@ -2063,16 +2197,20 @@ int USM::process_msg(int maxMessageSize,     // of the sending SNMP entity
         {
             switch (rc)
             {
-            case SNMPv3_USM_AUTHENTICATION_FAILURE:
+            case SNMPv3_USM_AUTHENTICATION_FAILURE: {
                 debugprintf(0, "usmProcessMsg: Authentication failure.");
                 inc_stats_wrong_digests();
                 /* set securityLevel for Report */
                 break;
-            case SNMPv3_USM_UNSUPPORTED_AUTHPROTOCOL:
+            }
+
+            case SNMPv3_USM_UNSUPPORTED_AUTHPROTOCOL: {
                 debugprintf(0, "usmProcessMsg: unknown AuthProtocol");
                 inc_stats_unsupported_sec_levels();
                 break;
-            default:
+            }
+
+            default: {
                 debugprintf(0,
                     "usmProcessMsg: error authenticating msg."
                     " Error code (%i).",
@@ -2080,6 +2218,7 @@ int USM::process_msg(int maxMessageSize,     // of the sending SNMP entity
                 // todo: is it ok to increment this counter?
                 inc_stats_unsupported_sec_levels();
                 break;
+            }
             }
             securityStateReference->securityLevel =
                 securityLevel; // SNMP_SECURITY_LEVEL_NOAUTH_NOPRIV;
@@ -2200,7 +2339,10 @@ int USM::process_msg(int maxMessageSize,     // of the sending SNMP entity
 
     free_user(user);
 
-    if (notInTime) return SNMPv3_USM_NOT_IN_TIME_WINDOW;
+    if (notInTime)
+    {
+        return SNMPv3_USM_NOT_IN_TIME_WINDOW;
+    }
 
     return SNMPv3_USM_OK;
 }
@@ -2330,7 +2472,10 @@ unsigned char* USM::build_whole_msg(unsigned char* outBuf, int* maxLength,
     secParPtr = build_sec_params(
         secParPtr, &dummy, securityParameters, positionAuthPar);
 
-    if (!secParPtr) return nullptr;
+    if (!secParPtr)
+    {
+        return nullptr;
+    }
     secParLength = SAFE_INT_CAST(secParPtr - secPar.get_ptr());
 
     SmiINT32 const dummyVersion = 3;
@@ -2354,7 +2499,10 @@ unsigned char* USM::build_whole_msg(unsigned char* outBuf, int* maxLength,
     bufPtr += globalDataLength;
 
     *positionAuthPar += SAFE_INT_CAST(bufPtr - buf.get_ptr()) + 2;
-    if (secParLength > 0x7f) *positionAuthPar += 2;
+    if (secParLength > 0x7f)
+    {
+        *positionAuthPar += 2;
+    }
 
     debugprintf(
         3, "Coding octstr securityParameter, length = 0x%lx", secParLength);
@@ -2411,7 +2559,10 @@ unsigned char* USM::build_whole_msg(unsigned char* outBuf, int* maxLength,
 
 inline void USM::delete_user_ptr(struct UsmUser* user)
 {
-    if (!user) return;
+    if (!user)
+    {
+        return;
+    }
     if (user->engineID)
     {
         delete[] user->engineID;
@@ -2554,7 +2705,10 @@ USMTimeTable::~USMTimeTable()
 int USMTimeTable::add_entry(const OctetStr& engine_id,
     const SmiINT32 engine_boots, const SmiINT32 engine_time)
 {
-    if (!table) return SNMPv3_USM_ERROR;
+    if (!table)
+    {
+        return SNMPv3_USM_ERROR;
+    }
 
     LOG_BEGIN(loggerModuleName, INFO_LOG | 11);
     LOG("USMTimeTable: Adding entry (engine id) (boot) (time)");
@@ -2570,7 +2724,10 @@ int USMTimeTable::add_entry(const OctetStr& engine_id,
         /* resize Table */
         auto* tmp = new struct Entry_T[4 * max_entries];
 
-        if (!tmp) return SNMPv3_USM_ERROR;
+        if (!tmp)
+        {
+            return SNMPv3_USM_ERROR;
+        }
 
         memcpy(tmp, table, entries * sizeof(Entry_T));
 
@@ -2601,7 +2758,10 @@ int USMTimeTable::add_entry(const OctetStr& engine_id,
 // Delete this engine id from the table.
 int USMTimeTable::delete_entry(const OctetStr& engine_id)
 {
-    if (!table) return SNMPv3_USM_ERROR;
+    if (!table)
+    {
+        return SNMPv3_USM_ERROR;
+    }
 
     LOG_BEGIN(loggerModuleName, INFO_LOG | 12);
     LOG("USMTimeTable: Deleting entry (engine id)");
@@ -2611,22 +2771,30 @@ int USMTimeTable::delete_entry(const OctetStr& engine_id)
     BEGIN_REENTRANT_CODE_BLOCK;
 
     for (int i = 1; i < entries; i++) /* start from 1 */
+    {
         if (unsignedCharCompare(table[i].engine_id, table[i].engine_id_len,
                 engine_id.data(), engine_id.len()))
         {
-            if (i != entries - 1) table[i] = table[entries - 1];
+            if (i != entries - 1)
+            {
+                table[i] = table[entries - 1];
+            }
 
             entries--;
 
             return SNMPv3_USM_OK;
         }
+    }
 
     return SNMPv3_USM_OK;
 }
 
 unsigned long USMTimeTable::get_local_time()
 {
-    if (!table) return 0;
+    if (!table)
+    {
+        return 0;
+    }
 
     BEGIN_REENTRANT_CODE_BLOCK;
 
@@ -2638,7 +2806,10 @@ unsigned long USMTimeTable::get_local_time()
 
 int USMTimeTable::get_local_time(SmiINT32& engine_boots, SmiINT32& engine_time)
 {
-    if (!table) return SNMPv3_USM_ERROR;
+    if (!table)
+    {
+        return SNMPv3_USM_ERROR;
+    }
 
     BEGIN_REENTRANT_CODE_BLOCK;
 
@@ -2660,11 +2831,15 @@ int USMTimeTable::get_local_time(SmiINT32& engine_boots, SmiINT32& engine_time)
 int USMTimeTable::get_time(
     const OctetStr& engine_id, SmiINT32& engine_boots, SmiINT32& engine_time)
 {
-    if (!table) return SNMPv3_USM_ERROR;
+    if (!table)
+    {
+        return SNMPv3_USM_ERROR;
+    }
 
     BEGIN_REENTRANT_CODE_BLOCK;
 
     for (int i = 0; i < entries; i++)
+    {
         if (unsignedCharCompare(table[i].engine_id, table[i].engine_id_len,
                 engine_id.data(), engine_id.len()))
         {
@@ -2684,6 +2859,7 @@ int USMTimeTable::get_time(
 
             return SNMPv3_USM_OK;
         }
+    }
 
     /* no entry */
     engine_boots = 0;
@@ -2701,7 +2877,10 @@ int USMTimeTable::check_time(const OctetStr& engine_id,
     const SmiINT32 engine_boots, const SmiINT32 engine_time)
 
 {
-    if (!table) return SNMPv3_USM_ERROR;
+    if (!table)
+    {
+        return SNMPv3_USM_ERROR;
+    }
 
     BEGIN_REENTRANT_CODE_BLOCK;
 
@@ -2741,6 +2920,7 @@ int USMTimeTable::check_time(const OctetStr& engine_id,
     }
 
     for (int i = 1; i < entries; i++)
+    {
         if (unsignedCharCompare(table[i].engine_id, table[i].engine_id_len,
                 engine_id.data(), engine_id.len()))
         {
@@ -2778,6 +2958,7 @@ int USMTimeTable::check_time(const OctetStr& engine_id,
                 return SNMPv3_USM_OK;
             }
         }
+    }
 
     LOG_BEGIN(loggerModuleName, DEBUG_LOG | 9);
     LOG("USMTimeTable: Check time, engine id not found");
@@ -2789,20 +2970,30 @@ int USMTimeTable::check_time(const OctetStr& engine_id,
 
 int USMTimeTable::check_engine_id(const OctetStr& engine_id)
 {
-    if (!table) return SNMPv3_USM_ERROR;
+    if (!table)
+    {
+        return SNMPv3_USM_ERROR;
+    }
 
     {
         // Begin reentrant code block
         BEGIN_REENTRANT_CODE_BLOCK;
 
         for (int i = 0; i < entries; i++)
+        {
             if (unsignedCharCompare(table[i].engine_id, table[i].engine_id_len,
                     engine_id.data(), engine_id.len()))
+            {
                 return SNMPv3_USM_OK;
+            }
+        }
     }
 
     /* if in discovery mode:  accept all EngineID's (rfc2264 page 26) */
-    if (usm->is_discovery_enabled()) return add_entry(engine_id, 0, 0);
+    if (usm->is_discovery_enabled())
+    {
+        return add_entry(engine_id, 0, 0);
+    }
 
     LOG_BEGIN(loggerModuleName, DEBUG_LOG | 9);
     LOG("USMTimeTable: Check id, not found (id)");
@@ -2858,18 +3049,23 @@ int USMUserNameTable::add_entry(const OctetStr& user_name,
     const SmiINT32 priv_proto, const OctetStr& auth_pass,
     const OctetStr& priv_pass)
 {
-    if (!table) return SNMPv3_USM_ERROR;
+    if (!table)
+    {
+        return SNMPv3_USM_ERROR;
+    }
 
     BEGIN_REENTRANT_CODE_BLOCK;
 
     int found = 0;
     int i     = 0;
     for (i = 0; i < entries; i++)
+    {
         if (table[i].usmUserName == user_name)
         {
             found = 1;
             break;
         }
+    }
 
     if (found)
     {
@@ -2901,8 +3097,11 @@ int USMUserNameTable::add_entry(const OctetStr& user_name,
             /* resize Table */
             struct UsmUserNameTableEntry* tmp = nullptr;
             tmp = new struct UsmUserNameTableEntry[4 * max_entries];
-            if (!tmp) return SNMPv3_USM_ERROR;
-            for (i = 0; i < entries; i++) tmp[i] = table[i];
+            if (!tmp)
+            {
+                return SNMPv3_USM_ERROR;
+            }
+            for (i = 0; i < entries; i++) { tmp[i] = table[i]; }
 
             struct UsmUserNameTableEntry* victim = table;
             table                                = tmp;
@@ -2919,12 +3118,18 @@ int USMUserNameTable::add_entry(const OctetStr& user_name,
         table[entries].authPasswordLength = auth_pass.len();
         table[entries].authPassword =
             v3strcpy(auth_pass.data(), auth_pass.len());
-        if (!table[entries].authPassword) return SNMPv3_USM_ERROR;
+        if (!table[entries].authPassword)
+        {
+            return SNMPv3_USM_ERROR;
+        }
 
         table[entries].privPasswordLength = priv_pass.len();
         table[entries].privPassword =
             v3strcpy(priv_pass.data(), priv_pass.len());
-        if (!table[entries].privPassword) return SNMPv3_USM_ERROR;
+        if (!table[entries].privPassword)
+        {
+            return SNMPv3_USM_ERROR;
+        }
 
         entries++;
     }
@@ -2934,11 +3139,15 @@ int USMUserNameTable::add_entry(const OctetStr& user_name,
 
 int USMUserNameTable::delete_security_name(const OctetStr& security_name)
 {
-    if (!table) return SNMPv3_USM_ERROR;
+    if (!table)
+    {
+        return SNMPv3_USM_ERROR;
+    }
 
     BEGIN_REENTRANT_CODE_BLOCK;
 
     for (int i = 0; i < entries; i++)
+    {
         if (table[i].usmUserSecurityName == security_name)
         {
             memset(table[i].authPassword, 0, table[i].authPasswordLength);
@@ -2946,19 +3155,31 @@ int USMUserNameTable::delete_security_name(const OctetStr& security_name)
             memset(table[i].privPassword, 0, table[i].privPasswordLength);
             delete[] table[i].privPassword;
             entries--;
-            if (entries > i) table[i] = table[entries];
+            if (entries > i)
+            {
+                table[i] = table[entries];
+            }
             break;
         }
+    }
     return SNMPv3_USM_OK;
 }
 
 const struct UsmUserNameTableEntry* USMUserNameTable::get_entry(
     const OctetStr& security_name)
 {
-    if (!table) return nullptr;
+    if (!table)
+    {
+        return nullptr;
+    }
 
     for (int i = 0; i < entries; i++)
-        if (table[i].usmUserSecurityName == security_name) return &table[i];
+    {
+        if (table[i].usmUserSecurityName == security_name)
+        {
+            return &table[i];
+        }
+    }
     return nullptr;
 }
 
@@ -2969,7 +3190,10 @@ struct UsmUserNameTableEntry* USMUserNameTable::get_cloned_entry(
     const struct UsmUserNameTableEntry* e   = get_entry(security_name);
     struct UsmUserNameTableEntry*       res = nullptr;
 
-    if (e) { res = new struct UsmUserNameTableEntry; }
+    if (e)
+    {
+        res = new struct UsmUserNameTableEntry;
+    }
 
     if (res)
     {
@@ -2996,7 +3220,10 @@ struct UsmUserNameTableEntry* USMUserNameTable::get_cloned_entry(
 void USMUserNameTable::delete_cloned_entry(
     struct UsmUserNameTableEntry*& entry)
 {
-    if (!entry) return;
+    if (!entry)
+    {
+        return;
+    }
 
     if (entry->authPassword)
     {
@@ -3018,11 +3245,15 @@ void USMUserNameTable::delete_cloned_entry(
 int USMUserNameTable::get_security_name(const unsigned char* user_name,
     const long int user_name_len, OctetStr& security_name)
 {
-    if (!table) return SNMPv3_USM_ERROR;
+    if (!table)
+    {
+        return SNMPv3_USM_ERROR;
+    }
 
     BEGIN_REENTRANT_CODE_BLOCK;
 
     for (int i = 0; i < entries; i++)
+    {
         if (unsignedCharCompare(table[i].usmUserName.data(),
                 table[i].usmUserName.len(), user_name, user_name_len))
         {
@@ -3036,6 +3267,7 @@ int USMUserNameTable::get_security_name(const unsigned char* user_name,
 
             return SNMPv3_USM_OK;
         }
+    }
 
     if (user_name_len != 0)
     {
@@ -3052,9 +3284,13 @@ int USMUserNameTable::get_user_name(unsigned char* user_name,
     const long int security_name_len)
 {
     uint32_t const buf_len = *user_name_len;
-    *user_name_len         = 0;
 
-    if (!table) return SNMPv3_USM_ERROR;
+    *user_name_len = 0;
+
+    if (!table)
+    {
+        return SNMPv3_USM_ERROR;
+    }
 
     BEGIN_REENTRANT_CODE_BLOCK;
 
@@ -3108,8 +3344,14 @@ int USMUserNameTable::save_to_file(const char* name, AuthPriv* ap)
     {
         LOG_BEGIN(loggerModuleName, ERROR_LOG | 1);
         LOG("USMUserNameTable: save_to_file called with illegal param");
-        if (!name) { LOG("filename"); }
-        if (!ap) { LOG("AuthPriv pointer"); }
+        if (!name)
+        {
+            LOG("filename");
+        }
+        if (!ap)
+        {
+            LOG("AuthPriv pointer");
+        }
         LOG_END;
 
         return SNMPv3_USM_ERROR;
@@ -3286,8 +3528,14 @@ int USMUserNameTable::load_from_file(const char* name, AuthPriv* ap)
     {
         LOG_BEGIN(loggerModuleName, ERROR_LOG | 1);
         LOG("USMUserNameTable: load_to_file called with illegal param");
-        if (!name) { LOG("filename"); }
-        if (!ap) { LOG("AuthPriv pointer"); }
+        if (!name)
+        {
+            LOG("filename");
+        }
+        if (!ap)
+        {
+            LOG("AuthPriv pointer");
+        }
         LOG_END;
 
         return SNMPv3_USM_ERROR;
@@ -3426,10 +3674,19 @@ int USMUserNameTable::load_from_file(const char* name, AuthPriv* ap)
 const UsmUserNameTableEntry* USMUserNameTable::peek_next(
     const UsmUserNameTableEntry* e) const
 {
-    if (e == nullptr) return nullptr;
-    if (e - table < 0) return nullptr;
-    if (e - table >= entries - 1) return nullptr;
-    return (e + 1);
+    if (e == nullptr)
+    {
+        return nullptr;
+    }
+    if (e - table < 0)
+    {
+        return nullptr;
+    }
+    if (e - table >= entries - 1)
+    {
+        return nullptr;
+    }
+    return e + 1;
 }
 
 /* ---------------------------- USMUserTable ------------------- */
@@ -3453,10 +3710,18 @@ USMUserTable::~USMUserTable()
     {
         for (int i = 0; i < entries; i++)
         {
-            if (table[i].usmUserEngineID) delete[] table[i].usmUserEngineID;
-            if (table[i].usmUserName) delete[] table[i].usmUserName;
+            if (table[i].usmUserEngineID)
+            {
+                delete[] table[i].usmUserEngineID;
+            }
+            if (table[i].usmUserName)
+            {
+                delete[] table[i].usmUserName;
+            }
             if (table[i].usmUserSecurityName)
+            {
                 delete[] table[i].usmUserSecurityName;
+            }
             if (table[i].usmUserAuthKey)
             {
                 memset(
@@ -3483,9 +3748,13 @@ int USMUserTable::get_user_name(unsigned char* user_name,
 
 {
     long const buf_len = *user_name_len;
-    *user_name_len     = 0;
 
-    if (!table) return SNMPv3_USM_ERROR;
+    *user_name_len = 0;
+
+    if (!table)
+    {
+        return SNMPv3_USM_ERROR;
+    }
 
     BEGIN_REENTRANT_CODE_BLOCK;
 
@@ -3532,7 +3801,10 @@ int USMUserTable::get_user_name(unsigned char* user_name,
 int USMUserTable::get_security_name(const unsigned char* user_name,
     const long user_name_len, OctetStr& sec_name)
 {
-    if (!table) return SNMPv3_USM_ERROR;
+    if (!table)
+    {
+        return SNMPv3_USM_ERROR;
+    }
 
     BEGIN_REENTRANT_CODE_BLOCK;
 
@@ -3564,11 +3836,15 @@ int USMUserTable::get_security_name(const unsigned char* user_name,
 
 int USMUserTable::delete_entries(const OctetStr& user_name)
 {
-    if (!table) return SNMPv3_USM_ERROR;
+    if (!table)
+    {
+        return SNMPv3_USM_ERROR;
+    }
 
     BEGIN_REENTRANT_CODE_BLOCK;
 
     for (int i = 0; i < entries; i++)
+    {
         if (unsignedCharCompare(table[i].usmUserName,
                 table[i].usmUserNameLength, user_name.data(), user_name.len()))
         {
@@ -3576,17 +3852,22 @@ int USMUserTable::delete_entries(const OctetStr& user_name)
             delete_entry(i);
             i--;
         }
+    }
     return SNMPv3_USM_OK;
 }
 
 // Delete all entries of this user from the usmUserTable
 int USMUserTable::delete_engine_id(const OctetStr& engine_id)
 {
-    if (!table) return SNMPv3_USM_ERROR;
+    if (!table)
+    {
+        return SNMPv3_USM_ERROR;
+    }
 
     BEGIN_REENTRANT_CODE_BLOCK;
 
     for (int i = 0; i < entries; i++)
+    {
         if (unsignedCharCompare(table[i].usmUserEngineID,
                 table[i].usmUserEngineIDLength, engine_id.data(),
                 engine_id.len()))
@@ -3595,19 +3876,25 @@ int USMUserTable::delete_engine_id(const OctetStr& engine_id)
             delete_entry(i);
             i--;
         }
+    }
     return SNMPv3_USM_OK;
 }
 
 int USMUserTable::delete_entry(
     const OctetStr& engine_id, const OctetStr& user_name)
 {
-    if (!table) return SNMPv3_USM_ERROR;
+    if (!table)
+    {
+        return SNMPv3_USM_ERROR;
+    }
 
     BEGIN_REENTRANT_CODE_BLOCK;
 
     for (int i = 0; i < entries; i++)
+    {
         if (unsignedCharCompare(table[i].usmUserName,
                 table[i].usmUserNameLength, user_name.data(), user_name.len()))
+        {
             if (unsignedCharCompare(table[i].usmUserEngineID,
                     table[i].usmUserEngineIDLength, engine_id.data(),
                     engine_id.len()))
@@ -3616,12 +3903,17 @@ int USMUserTable::delete_entry(
                 delete_entry(i);
                 i--;
             }
+        }
+    }
     return SNMPv3_USM_OK;
 }
 
 const struct UsmUserTableEntry* USMUserTable::get_entry(const int number)
 {
-    if ((entries < number) || (number < 1)) return nullptr;
+    if ((entries < number) || (number < 1))
+    {
+        return nullptr;
+    }
 
     return &table[number - 1];
 }
@@ -3629,16 +3921,25 @@ const struct UsmUserTableEntry* USMUserTable::get_entry(const int number)
 const struct UsmUserTableEntry* USMUserTable::get_entry(
     const OctetStr& engine_id, const OctetStr& sec_name)
 {
-    if (!table) return nullptr;
+    if (!table)
+    {
+        return nullptr;
+    }
 
     for (int i = 0; i < entries; i++)
+    {
         if (unsignedCharCompare(table[i].usmUserSecurityName,
                 table[i].usmUserSecurityNameLength, sec_name.data(),
                 sec_name.len()))
+        {
             if (unsignedCharCompare(table[i].usmUserEngineID,
                     table[i].usmUserEngineIDLength, engine_id.data(),
                     engine_id.len()))
+            {
                 return &table[i];
+            }
+        }
+    }
     return nullptr;
 }
 
@@ -3649,7 +3950,10 @@ struct UsmUserTableEntry* USMUserTable::get_cloned_entry(
     const struct UsmUserTableEntry* e   = get_entry(engine_id, sec_name);
     struct UsmUserTableEntry*       res = nullptr;
 
-    if (e) { res = new struct UsmUserTableEntry; }
+    if (e)
+    {
+        res = new struct UsmUserTableEntry;
+    }
 
     if (res)
     {
@@ -3686,11 +3990,23 @@ struct UsmUserTableEntry* USMUserTable::get_cloned_entry(
 
 void USMUserTable::delete_cloned_entry(struct UsmUserTableEntry*& entry)
 {
-    if (!entry) return;
+    if (!entry)
+    {
+        return;
+    }
 
-    if (entry->usmUserEngineID) delete[] entry->usmUserEngineID;
-    if (entry->usmUserName) delete[] entry->usmUserName;
-    if (entry->usmUserSecurityName) delete[] entry->usmUserSecurityName;
+    if (entry->usmUserEngineID)
+    {
+        delete[] entry->usmUserEngineID;
+    }
+    if (entry->usmUserName)
+    {
+        delete[] entry->usmUserName;
+    }
+    if (entry->usmUserSecurityName)
+    {
+        delete[] entry->usmUserSecurityName;
+    }
 
     if (entry->usmUserAuthKey)
     {
@@ -3712,13 +4028,20 @@ void USMUserTable::delete_cloned_entry(struct UsmUserTableEntry*& entry)
 const struct UsmUserTableEntry* USMUserTable::get_entry(
     const OctetStr& sec_name)
 {
-    if (!table) return nullptr;
+    if (!table)
+    {
+        return nullptr;
+    }
 
     for (int i = 0; i < entries; i++)
+    {
         if (unsignedCharCompare(table[i].usmUserSecurityName,
                 table[i].usmUserSecurityNameLength, sec_name.data(),
                 sec_name.len()))
+        {
             return &table[i];
+        }
+    }
     return nullptr;
 }
 
@@ -3735,7 +4058,10 @@ int USMUserTable::add_entry(const OctetStr& engine_id,
     LOG(priv_proto);
     LOG_END;
 
-    if (!table) return SNMPv3_USM_ERROR;
+    if (!table)
+    {
+        return SNMPv3_USM_ERROR;
+    }
 
     BEGIN_REENTRANT_CODE_BLOCK;
 
@@ -3744,16 +4070,21 @@ int USMUserTable::add_entry(const OctetStr& engine_id,
         /* resize Table */
         struct UsmUserTableEntry* tmp = nullptr;
         tmp = new struct UsmUserTableEntry[4 * max_entries];
-        if (!tmp) return SNMPv3_USM_ERROR;
-        for (int i = 0; i < entries; i++) tmp[i] = table[i];
+        if (!tmp)
+        {
+            return SNMPv3_USM_ERROR;
+        }
+        for (int i = 0; i < entries; i++) { tmp[i] = table[i]; }
         delete[] table;
         table = tmp;
         max_entries *= 4;
     }
 
     for (int i = 0; i < entries; i++)
+    {
         if (unsignedCharCompare(table[i].usmUserName,
                 table[i].usmUserNameLength, user_name.data(), user_name.len()))
+        {
             if (unsignedCharCompare(table[i].usmUserEngineID,
                     table[i].usmUserEngineIDLength, engine_id.data(),
                     engine_id.len()))
@@ -3762,6 +4093,8 @@ int USMUserTable::add_entry(const OctetStr& engine_id,
                 delete_entry(i);
                 break;
             }
+        }
+    }
 
     /* add user at the last position */
     table[entries].usmUserEngineIDLength = engine_id.len();
@@ -3792,13 +4125,18 @@ int USMUserTable::update_key(const OctetStr& user_name,
     LOG(key_type);
     LOG_END;
 
-    if (!table) return SNMPv3_USM_ERROR;
+    if (!table)
+    {
+        return SNMPv3_USM_ERROR;
+    }
 
     BEGIN_REENTRANT_CODE_BLOCK;
 
     for (int i = 0; i < entries; i++)
+    {
         if (unsignedCharCompare(table[i].usmUserName,
                 table[i].usmUserNameLength, user_name.data(), user_name.len()))
+        {
             if (unsignedCharCompare(table[i].usmUserEngineID,
                     table[i].usmUserEngineIDLength, engine_id.data(),
                     engine_id.len()))
@@ -3824,6 +4162,7 @@ int USMUserTable::update_key(const OctetStr& user_name,
                         v3strcpy(new_key.data(), new_key.len());
                     return SNMPv3_USM_OK;
                 }
+
                 case PRIVKEY:
                 case OWNPRIVKEY: {
                     if (table[i].usmUserPrivKey)
@@ -3837,6 +4176,7 @@ int USMUserTable::update_key(const OctetStr& user_name,
                         v3strcpy(new_key.data(), new_key.len());
                     return SNMPv3_USM_OK;
                 }
+
                 default: {
                     LOG_BEGIN(loggerModuleName, WARNING_LOG | 3);
                     LOG("USMUserTable: setting new key failed (wrong type).");
@@ -3846,6 +4186,8 @@ int USMUserTable::update_key(const OctetStr& user_name,
                 }
                 }
             }
+        }
+    }
 
     LOG_BEGIN(loggerModuleName, INFO_LOG | 7);
     LOG("USMUserTable: setting new key failed (user) not found");
@@ -3861,9 +4203,18 @@ void USMUserTable::delete_entry(const int nr)
      * All checks have been made, so dont check again!
      */
 
-    if (table[nr].usmUserEngineID) delete[] table[nr].usmUserEngineID;
-    if (table[nr].usmUserName) delete[] table[nr].usmUserName;
-    if (table[nr].usmUserSecurityName) delete[] table[nr].usmUserSecurityName;
+    if (table[nr].usmUserEngineID)
+    {
+        delete[] table[nr].usmUserEngineID;
+    }
+    if (table[nr].usmUserName)
+    {
+        delete[] table[nr].usmUserName;
+    }
+    if (table[nr].usmUserSecurityName)
+    {
+        delete[] table[nr].usmUserSecurityName;
+    }
     if (table[nr].usmUserAuthKey)
     {
         memset(table[nr].usmUserAuthKey, 0, table[nr].usmUserAuthKeyLength);
@@ -3895,8 +4246,14 @@ int USMUserTable::save_to_file(const char* name, AuthPriv* ap)
     {
         LOG_BEGIN(loggerModuleName, ERROR_LOG | 1);
         LOG("USMUserTable: save_to_file called with illegal param");
-        if (!name) { LOG("filename"); }
-        if (!ap) { LOG("AuthPriv pointer"); }
+        if (!name)
+        {
+            LOG("filename");
+        }
+        if (!ap)
+        {
+            LOG("AuthPriv pointer");
+        }
         LOG_END;
 
         return SNMPv3_USM_ERROR;
@@ -4089,8 +4446,14 @@ int USMUserTable::load_from_file(const char* name, AuthPriv* ap)
     {
         LOG_BEGIN(loggerModuleName, ERROR_LOG | 1);
         LOG("USMUserTable: load_from_file called with illegal param");
-        if (!name) { LOG("filename"); }
-        if (!ap) { LOG("AuthPriv pointer"); }
+        if (!name)
+        {
+            LOG("filename");
+        }
+        if (!ap)
+        {
+            LOG("AuthPriv pointer");
+        }
         LOG_END;
 
         return SNMPv3_USM_ERROR;
@@ -4237,10 +4600,19 @@ int USMUserTable::load_from_file(const char* name, AuthPriv* ap)
 const UsmUserTableEntry* USMUserTable::peek_next(
     const UsmUserTableEntry* e) const
 {
-    if (e == nullptr) return nullptr;
-    if (e - table < 0) return nullptr;
-    if (e - table >= entries - 1) return nullptr;
-    return (e + 1);
+    if (e == nullptr)
+    {
+        return nullptr;
+    }
+    if (e - table < 0)
+    {
+        return nullptr;
+    }
+    if (e - table >= entries - 1)
+    {
+        return nullptr;
+    }
+    return e + 1;
 }
 
 #    ifdef SNMP_PP_NAMESPACE
