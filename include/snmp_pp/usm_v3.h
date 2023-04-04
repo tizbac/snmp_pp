@@ -182,32 +182,32 @@ struct UsmKeyUpdate;
 
 struct UsmUserTableEntry {
     unsigned char* usmUserEngineID;
-    long int       usmUserEngineIDLength;
+    int32_t        usmUserEngineIDLength;
     unsigned char* usmUserName;
-    long int       usmUserNameLength;
+    int32_t        usmUserNameLength;
     unsigned char* usmUserSecurityName;
-    long int       usmUserSecurityNameLength;
+    int32_t        usmUserSecurityNameLength;
     SmiINT32       usmUserAuthProtocol;
     unsigned char* usmUserAuthKey;
-    long int       usmUserAuthKeyLength;
+    int32_t        usmUserAuthKeyLength;
     SmiINT32       usmUserPrivProtocol;
     unsigned char* usmUserPrivKey;
-    long int       usmUserPrivKeyLength;
+    int32_t        usmUserPrivKeyLength;
 };
 
 struct UsmUser {
     unsigned char* engineID;
-    long int       engineIDLength;
+    int32_t        engineIDLength;
     unsigned char* usmUserName;
-    long int       usmUserNameLength;
+    int32_t        usmUserNameLength;
     unsigned char* securityName;
-    long int       securityNameLength;
+    int32_t        securityNameLength;
     SmiINT32       authProtocol;
     unsigned char* authKey;
-    long int       authKeyLength;
+    int32_t        authKeyLength;
     SmiINT32       privProtocol;
     unsigned char* privKey;
-    long int       privKeyLength;
+    int32_t        privKeyLength;
 };
 
 struct UsmUserNameTableEntry {
@@ -216,9 +216,9 @@ struct UsmUserNameTableEntry {
     SmiINT32       usmUserAuthProtocol;
     SmiINT32       usmUserPrivProtocol;
     unsigned char* authPassword;
-    long int       authPasswordLength;
+    int32_t        authPasswordLength;
     unsigned char* privPassword;
-    long int       privPasswordLength;
+    int32_t        privPasswordLength;
 };
 
 //-----------[ async methods callback ]-----------------------------------
@@ -544,9 +544,9 @@ public:
      * @return - SNMPv3_USM_ERROR (no such entry or not initialized),
      *           SNMPv3_USM_OK
      */
-    int update_key(const unsigned char* user_name, const long user_name_len,
-        const unsigned char* engine_id, const long engine_id_len,
-        const unsigned char* new_key, const long new_key_len,
+    int update_key(const unsigned char* user_name, const int32_t user_name_len,
+        const unsigned char* engine_id, const int32_t engine_id_len,
+        const unsigned char* new_key, const int32_t new_key_len,
         const int type_of_key);
 
     /**
@@ -584,7 +584,7 @@ public:
      * small), SNMPv3_USM_OK
      */
     int get_security_name(const unsigned char* user_name,
-        const long int user_name_len, OctetStr& security_name);
+        const int32_t user_name_len, OctetStr& security_name);
 
     /**
      * Get the user name from a security name.
@@ -599,8 +599,8 @@ public:
      * @return - SNMPv3_USM_ERROR (not initialized, not found, buffer too
      * small), SNMPv3_USM_OK
      */
-    int get_user_name(unsigned char* user_name, long int* user_name_len,
-        const unsigned char* security_name, const long int security_name_len);
+    int get_user_name(unsigned char* user_name, int32_t* user_name_len,
+        const unsigned char* security_name, const int32_t security_name_len);
 
     /**
      * Prepare a key update in the USM. The following procedure is used: To
@@ -1032,9 +1032,9 @@ private:
      * NULL on error
      */
     unsigned char* build_whole_msg(unsigned char* outBuf, int* maxLength,
-        unsigned char* globalData, long int globalDataLength,
+        unsigned char* globalData, int32_t globalDataLength,
         int* positionAuthPar, struct UsmSecurityParameters securityParameters,
-        unsigned char* msgData, long int msgDataLength);
+        unsigned char* msgData, int32_t msgDataLength);
 
     /**
      * Delete the pointers in the structure

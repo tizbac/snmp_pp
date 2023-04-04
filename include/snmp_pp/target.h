@@ -351,7 +351,7 @@ public:
      */
     const char* get_readcommunity() const
     {
-        return (const char*)read_community.get_printable();
+        return read_community.get_printable();
     }
 
     /**
@@ -382,7 +382,7 @@ public:
      */
     const char* get_writecommunity() const
     {
-        return (const char*)write_community.get_printable();
+        return write_community.get_printable();
     }
 
     /**

@@ -311,7 +311,7 @@ public:
      * small), SNMPv3_USM_OK
      */
     int get_security_name(const unsigned char* user_name,
-        const long int user_name_len, OctetStr& security_name);
+        const int32_t user_name_len, OctetStr& security_name);
 
     /**
      * Get the userName from a securityName
@@ -326,8 +326,8 @@ public:
      * @return - SNMPv3_USM_ERROR (not initialized, not found, buffer too
      * small), SNMPv3_USM_OK
      */
-    int get_user_name(unsigned char* user_name, long int* user_name_len,
-        const unsigned char* security_name, const long int security_name_len);
+    int get_user_name(unsigned char* user_name, int32_t* user_name_len,
+        const unsigned char* security_name, const int32_t security_name_len);
 
     /**
      * Save all entries into a file.
@@ -389,7 +389,7 @@ public:
      * @return - SNMPv3_USM_ERROR (not initialized, not found, buffer too
      * small), SNMPv3_USM_OK
      */
-    int get_user_name(unsigned char* user_name, long int* user_name_len,
+    int get_user_name(unsigned char* user_name, int32_t* user_name_len,
         const unsigned char* sec_name, const long sec_name_len);
 
     /**
@@ -578,13 +578,13 @@ private:
 
 struct UsmSecurityParameters {
     unsigned char  msgAuthoritativeEngineID[MAXLENGTH_ENGINEID];
-    long int       msgAuthoritativeEngineIDLength;
+    int32_t        msgAuthoritativeEngineIDLength;
     SmiINT32       msgAuthoritativeEngineBoots;
     SmiINT32       msgAuthoritativeEngineTime;
     unsigned char  msgUserName[MAXLEN_USMUSERNAME];
-    long int       msgUserNameLength;
+    int32_t        msgUserNameLength;
     unsigned char* msgAuthenticationParameters;
-    long int       msgAuthenticationParametersLength;
+    int32_t        msgAuthenticationParametersLength;
     unsigned char* msgPrivacyParameters;
     unsigned int   msgPrivacyParametersLength;
 };
@@ -833,9 +833,9 @@ int USM::remove_time_information(const OctetStr& engine_id)
 }
 
 int USM::update_key(const unsigned char* user_name,
-    const long int user_name_len, const unsigned char* engine_id,
-    const long int engine_id_len, const unsigned char* new_key,
-    const long int new_key_len, const int type_of_key)
+    const int32_t user_name_len, const unsigned char* engine_id,
+    const int32_t engine_id_len, const unsigned char* new_key,
+    const int32_t new_key_len, const int type_of_key)
 {
     OctetStr key(new_key, new_key_len);
     int      res = 0;
@@ -1222,7 +1222,7 @@ void USM::delete_usm_user(const OctetStr& security_name)
     usm_user_name_table->delete_security_name(security_name);
 
     unsigned char username[MAXLEN_USMUSERNAME + 1];
-    long int      length = MAXLEN_USMUSERNAME;
+    int32_t       length = MAXLEN_USMUSERNAME;
 
     if ((get_user_name(
             username, &length, security_name.data(), security_name.len()))
@@ -1233,7 +1233,7 @@ void USM::delete_usm_user(const OctetStr& security_name)
 }
 
 int USM::get_security_name(const unsigned char* user_name,
-    const long int user_name_len, OctetStr& security_name)
+    const int32_t user_name_len, OctetStr& security_name)
 {
     int result = 0;
 
@@ -1261,11 +1261,11 @@ int USM::get_security_name(const unsigned char* user_name,
     return SNMPv3_USM_ERROR;
 }
 
-int USM::get_user_name(unsigned char* user_name, long int* user_name_len,
-    const unsigned char* security_name, const long int security_name_len)
+int USM::get_user_name(unsigned char* user_name, int32_t* user_name_len,
+    const unsigned char* security_name, const int32_t security_name_len)
 {
-    int            result  = 0;
-    long int const buf_len = *user_name_len;
+    int           result  = 0;
+    int32_t const buf_len = *user_name_len;
 
     result = usm_user_name_table->get_user_name(
         user_name, user_name_len, security_name, security_name_len);
@@ -2454,16 +2454,16 @@ unsigned char* USM::build_sec_params(unsigned char* outBuf, int* maxLength,
 }
 
 unsigned char* USM::build_whole_msg(unsigned char* outBuf, int* maxLength,
-    unsigned char* globalData, long int globalDataLength, int* positionAuthPar,
+    unsigned char* globalData, int32_t globalDataLength, int* positionAuthPar,
     struct UsmSecurityParameters securityParameters, unsigned char* msgData,
-    long int msgDataLength)
+    int32_t msgDataLength)
 {
     Buffer<unsigned char> buf(MAX_SNMP_PACKET);
     unsigned char*        bufPtr = buf.get_ptr();
     Buffer<unsigned char> secPar(MAX_SNMP_PACKET);
     unsigned char*        secParPtr    = secPar.get_ptr();
     unsigned char*        outBufPtr    = outBuf;
-    long int              secParLength = 0;
+    int32_t               secParLength = 0;
     int                   length       = *maxLength;
     int                   totalLength  = 0;
 
@@ -3243,7 +3243,7 @@ void USMUserNameTable::delete_cloned_entry(
 }
 
 int USMUserNameTable::get_security_name(const unsigned char* user_name,
-    const long int user_name_len, OctetStr& security_name)
+    const int32_t user_name_len, OctetStr& security_name)
 {
     if (!table)
     {
@@ -3280,8 +3280,8 @@ int USMUserNameTable::get_security_name(const unsigned char* user_name,
 }
 
 int USMUserNameTable::get_user_name(unsigned char* user_name,
-    long int* user_name_len, const unsigned char* security_name,
-    const long int security_name_len)
+    int32_t* user_name_len, const unsigned char* security_name,
+    const int32_t security_name_len)
 {
     uint32_t const buf_len = *user_name_len;
 
@@ -3743,7 +3743,7 @@ USMUserTable::~USMUserTable()
 }
 
 int USMUserTable::get_user_name(unsigned char* user_name,
-    long int* user_name_len, const unsigned char* sec_name,
+    int32_t* user_name_len, const unsigned char* sec_name,
     const long sec_name_len)
 
 {

@@ -138,7 +138,7 @@ namespace Snmp_pp
  *
  * SNMP-related types from RFC1442 (SMI). (obsoleted)
  *
- * https://datatracker.ietf.org/doc/html/rfc2578#section-7.1.10
+ * https://www.rfc-editor.org/rfc/rfc2578#section-7.1.1
  */
 //@{
 

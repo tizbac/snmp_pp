@@ -135,13 +135,12 @@ public:
         // in this case the size to allocate is the same size as the source oid
         if (oid.smival.value.oid.len)
         {
-            smival.value.oid.ptr =
-                (SmiLPUINT32) new SmiUINT32[oid.smival.value.oid.len];
+            smival.value.oid.ptr = new SmiUINT32[oid.smival.value.oid.len];
             if (smival.value.oid.ptr)
             {
                 // NOLINTNEXTLINE(clang-analyzer-optin.cplusplus.VirtualCall)
-                OidCopy((SmiLPOID) & (oid.smival.value.oid),
-                    (SmiLPOID)&smival.value.oid);
+                OidCopy(
+                    (SmiLPOID) & (oid.smival.value.oid), &smival.value.oid);
             }
         }
     }
@@ -161,7 +160,7 @@ public:
 
         if (raw_oid && (oid_len > 0))
         {
-            smival.value.oid.ptr = (SmiLPUINT32) new SmiUINT32[oid_len];
+            smival.value.oid.ptr = new SmiUINT32[oid_len];
             if (smival.value.oid.ptr)
             {
                 smival.value.oid.len = oid_len;
@@ -225,8 +224,7 @@ public:
             (SmiLPUINT32) new SmiUINT32[oid.smival.value.oid.len];
         if (smival.value.oid.ptr)
         {
-            OidCopy((SmiLPOID) & (oid.smival.value.oid),
-                (SmiLPOID)&smival.value.oid);
+            OidCopy((SmiLPOID) & (oid.smival.value.oid), &smival.value.oid);
         }
         return *this;
     }
@@ -359,7 +357,7 @@ public:
         if (smival.value.oid.ptr)
         {
             memcpy((SmiLPBYTE)new_oid, (SmiLPBYTE)smival.value.oid.ptr,
-                (size_t)(smival.value.oid.len * sizeof(SmiUINT32)));
+                (smival.value.oid.len * sizeof(SmiUINT32)));
 
             delete[] smival.value.oid.ptr;
         }
@@ -369,7 +367,7 @@ public:
 
         memcpy((SmiLPBYTE)&new_oid[smival.value.oid.len],
             (SmiLPBYTE)o.smival.value.oid.ptr,
-            (size_t)(o.smival.value.oid.len * sizeof(SmiUINT32)));
+            (o.smival.value.oid.len * sizeof(SmiUINT32)));
 
         smival.value.oid.len += o.smival.value.oid.len;
 
