@@ -211,7 +211,7 @@ public:
      *
      * @param i - initial value
      */
-    SnmpInt32(const long i = 0)
+    SnmpInt32(const int32_t i = 0)
         : SnmpSyntax(), valid_flag(true), m_changed(true)
     {
         smival.value.sNumber = i;
@@ -248,7 +248,7 @@ public:
      * @param i - new value
      * @return self reference
      */
-    SnmpInt32& operator=(const long i)
+    SnmpInt32& operator=(const int32_t i)
     {
         smival.value.sNumber = i;
         valid_flag           = true;
@@ -284,7 +284,7 @@ public:
      *
      * @return value as long
      */
-    operator long() const { return (long)smival.value.sNumber; }
+    operator int32_t() const { return (int32_t)smival.value.sNumber; }
 
     /**
      * Get a printable ASCII value.

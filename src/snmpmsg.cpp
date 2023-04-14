@@ -827,7 +827,7 @@ int SnmpMessage::unload(Pdu& pdu,           // Pdu object
 
         // 32 bit integer
         case sNMP_SYNTAX_INT: {
-            SnmpInt32 const int32((long)*(vp->val.integer));
+            SnmpInt32 const int32((int32_t)*(vp->val.integer));
             tempvb.set_value(int32);
         }
         break;

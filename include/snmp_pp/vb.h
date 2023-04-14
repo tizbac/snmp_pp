@@ -166,7 +166,7 @@ public:
      *
      * The syntax of the Vb will be set to SMI INT32.
      */
-    void set_value(const int i)
+    void set_value(const int32_t i)
     {
         free_vb();
         iv_vb_value = new SnmpInt32(i);
@@ -190,10 +190,10 @@ public:
      *
      * The syntax of the Vb will be set to SMI INT32.
      */
-    void set_value(const long i)
+    void set_value(const int64_t i)
     {
         free_vb();
-        iv_vb_value = new SnmpInt32(i);
+        iv_vb_value = new SnmpInt32(static_cast<int32_t>(i));
     }
 
     /**
@@ -203,10 +203,10 @@ public:
      *
      * The syntax of the Vb will be set to SMI UINT32.
      */
-    void set_value(const unsigned long i)
+    void set_value(const uint64_t i)
     {
         free_vb();
-        iv_vb_value = new SnmpUInt32(i);
+        iv_vb_value = new SnmpUInt32(static_cast<uint32_t>(i));
     }
 
     /**
@@ -225,7 +225,7 @@ public:
      *
      * The syntax of the Vb will be set to SMI octet.
      */
-    void set_value(const unsigned char* ptr, const unsigned int len)
+    void set_value(const unsigned char* ptr, const uint32_t len)
     {
         free_vb();
         iv_vb_value = new OctetStr(ptr, len);
