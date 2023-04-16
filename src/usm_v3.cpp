@@ -107,8 +107,7 @@ public:
      * @param engine_boots - The new value for the snmpEngineBoots counter
      * @param result       - OUT: Result of the creation of the table
      */
-    USMTimeTable(
-        const USM* owner, const unsigned int engine_boots, int& result);
+    USMTimeTable(const USM* owner, const uint32_t engine_boots, int& result);
 
     ~USMTimeTable() override;
 
@@ -171,7 +170,7 @@ public:
      *
      * @return - engine_time value if initialized, 0 else
      */
-    unsigned long get_local_time();
+    int get_local_time();
 
     /**
      * Check if the given values for engineBoots and engineTime are
@@ -311,7 +310,7 @@ public:
      * small), SNMPv3_USM_OK
      */
     int get_security_name(const unsigned char* user_name,
-        const int32_t user_name_len, OctetStr& security_name);
+        const SmiINT32 user_name_len, OctetStr& security_name);
 
     /**
      * Get the userName from a securityName
@@ -326,8 +325,8 @@ public:
      * @return - SNMPv3_USM_ERROR (not initialized, not found, buffer too
      * small), SNMPv3_USM_OK
      */
-    int get_user_name(unsigned char* user_name, int32_t* user_name_len,
-        const unsigned char* security_name, const int32_t security_name_len);
+    int get_user_name(unsigned char* user_name, SmiINT32* user_name_len,
+        const unsigned char* security_name, const SmiINT32 security_name_len);
 
     /**
      * Save all entries into a file.
@@ -389,7 +388,7 @@ public:
      * @return - SNMPv3_USM_ERROR (not initialized, not found, buffer too
      * small), SNMPv3_USM_OK
      */
-    int get_user_name(unsigned char* user_name, int32_t* user_name_len,
+    int get_user_name(unsigned char* user_name, SmiINT32* user_name_len,
         const unsigned char* sec_name, const long sec_name_len);
 
     /**
@@ -578,15 +577,15 @@ private:
 
 struct UsmSecurityParameters {
     unsigned char  msgAuthoritativeEngineID[MAXLENGTH_ENGINEID];
-    int32_t        msgAuthoritativeEngineIDLength;
+    SmiINT32       msgAuthoritativeEngineIDLength;
     SmiINT32       msgAuthoritativeEngineBoots;
     SmiINT32       msgAuthoritativeEngineTime;
     unsigned char  msgUserName[MAXLEN_USMUSERNAME];
-    int32_t        msgUserNameLength;
+    SmiINT32       msgUserNameLength;
     unsigned char* msgAuthenticationParameters;
-    int32_t        msgAuthenticationParametersLength;
+    SmiINT32       msgAuthenticationParametersLength;
     unsigned char* msgPrivacyParameters;
-    unsigned int   msgPrivacyParametersLength;
+    SmiUINT32      msgPrivacyParametersLength;
 };
 
 struct SecurityStateReference {
@@ -717,8 +716,8 @@ struct SecurityStateReference* USM::get_new_sec_state_reference()
     return res;
 }
 
-USM::USM(unsigned int engine_boots, const OctetStr& engine_id,
-    const v3MP* v3_mp, unsigned int* msgID, int& result)
+USM::USM(uint32_t engine_boots, const OctetStr& engine_id, const v3MP* v3_mp,
+    SmiUINT32* msgID, int& result)
     : local_snmp_engine_id(engine_id), v3mp(v3_mp),
 
       discovery_mode(true),
@@ -833,9 +832,9 @@ int USM::remove_time_information(const OctetStr& engine_id)
 }
 
 int USM::update_key(const unsigned char* user_name,
-    const int32_t user_name_len, const unsigned char* engine_id,
-    const int32_t engine_id_len, const unsigned char* new_key,
-    const int32_t new_key_len, const int type_of_key)
+    const SmiINT32 user_name_len, const unsigned char* engine_id,
+    const SmiINT32 engine_id_len, const unsigned char* new_key,
+    const SmiINT32 new_key_len, const int type_of_key)
 {
     OctetStr key(new_key, new_key_len);
     int      res = 0;
@@ -848,8 +847,8 @@ int USM::update_key(const unsigned char* user_name,
 
 int USM::add_localized_user(const OctetStr& engine_id,
     const OctetStr& user_name, const OctetStr& security_name,
-    const long auth_protocol, const OctetStr& auth_key,
-    const long priv_protocol, const OctetStr& priv_key)
+    const SmiINT32 auth_protocol, const OctetStr& auth_key,
+    const SmiINT32 priv_protocol, const OctetStr& priv_key)
 {
     return usm_user_table->add_entry(engine_id, user_name, security_name,
         auth_protocol, auth_key, priv_protocol, priv_key);
@@ -890,8 +889,8 @@ int USM::add_usm_user(const OctetStr& user_name, const OctetStr& security_name,
     auth_key.set_len(SNMPv3_USM_MAX_KEY_LEN);
     priv_key.set_len(SNMPv3_USM_MAX_KEY_LEN);
 
-    unsigned int auth_key_len = auth_key.len();
-    unsigned int priv_key_len = priv_key.len();
+    SmiUINT32 auth_key_len = auth_key.len();
+    SmiUINT32 priv_key_len = priv_key.len();
 
     int res = build_localized_keys(engine_id, auth_protocol, priv_protocol,
         auth_password.data(), auth_password.len(), priv_password.data(),
@@ -938,10 +937,9 @@ int USM::delete_localized_user(
 
 int USM::build_localized_keys(const OctetStr& engine_id, const int auth_prot,
     const int priv_prot, const unsigned char* auth_password,
-    const unsigned int auth_password_len, const unsigned char* priv_password,
-    const unsigned int priv_password_len, unsigned char* auth_key,
-    unsigned int* auth_key_len, unsigned char* priv_key,
-    unsigned int* priv_key_len)
+    const SmiUINT32 auth_password_len, const unsigned char* priv_password,
+    const SmiUINT32 priv_password_len, unsigned char* auth_key,
+    SmiUINT32* auth_key_len, unsigned char* priv_key, SmiUINT32* priv_key_len)
 {
     int res = auth_priv->password_to_key_auth(auth_prot, auth_password,
         auth_password_len, engine_id.data(), engine_id.len(), auth_key,
@@ -1091,8 +1089,8 @@ struct UsmUser* USM::get_user(
             // We can add a new user:
             unsigned char privKey[SNMPv3_USM_MAX_KEY_LEN];
             unsigned char authKey[SNMPv3_USM_MAX_KEY_LEN];
-            unsigned int  authKeyLength = SNMPv3_USM_MAX_KEY_LEN;
-            unsigned int  privKeyLength = SNMPv3_USM_MAX_KEY_LEN;
+            SmiUINT32     authKeyLength = SNMPv3_USM_MAX_KEY_LEN;
+            SmiUINT32     privKeyLength = SNMPv3_USM_MAX_KEY_LEN;
 
             int const res = build_localized_keys(engine_id,
                 name_table_entry->usmUserAuthProtocol,
@@ -1222,7 +1220,7 @@ void USM::delete_usm_user(const OctetStr& security_name)
     usm_user_name_table->delete_security_name(security_name);
 
     unsigned char username[MAXLEN_USMUSERNAME + 1];
-    int32_t       length = MAXLEN_USMUSERNAME;
+    SmiINT32      length = MAXLEN_USMUSERNAME;
 
     if ((get_user_name(
             username, &length, security_name.data(), security_name.len()))
@@ -1233,7 +1231,7 @@ void USM::delete_usm_user(const OctetStr& security_name)
 }
 
 int USM::get_security_name(const unsigned char* user_name,
-    const int32_t user_name_len, OctetStr& security_name)
+    const SmiINT32 user_name_len, OctetStr& security_name)
 {
     int result = 0;
 
@@ -1261,11 +1259,11 @@ int USM::get_security_name(const unsigned char* user_name,
     return SNMPv3_USM_ERROR;
 }
 
-int USM::get_user_name(unsigned char* user_name, int32_t* user_name_len,
-    const unsigned char* security_name, const int32_t security_name_len)
+int USM::get_user_name(unsigned char* user_name, SmiINT32* user_name_len,
+    const unsigned char* security_name, const SmiINT32 security_name_len)
 {
-    int           result  = 0;
-    int32_t const buf_len = *user_name_len;
+    int            result  = 0;
+    SmiINT32 const buf_len = *user_name_len;
 
     result = usm_user_name_table->get_user_name(
         user_name, user_name_len, security_name, security_name_len);
@@ -1394,7 +1392,7 @@ struct UsmKeyUpdate* USM::key_update_prepare(const OctetStr& securityName,
 
     /* set old and new key */
     unsigned char key[SNMPv3_USM_MAX_KEY_LEN];
-    unsigned int  key_len = SNMPv3_USM_MAX_KEY_LEN;
+    SmiUINT32     key_len = SNMPv3_USM_MAX_KEY_LEN;
     OctetStr      newKey;
     OctetStr      oldKey;
 
@@ -1488,7 +1486,7 @@ struct UsmKeyUpdate* USM::key_update_prepare(const OctetStr& securityName,
     userOid += engineID.len();
     publicOid += engineID.len();
 
-    for (unsigned int j = 0; j < engineID.len(); j++)
+    for (SmiUINT32 j = 0; j < engineID.len(); j++)
     {
         userOid += (engineID)[j];
         publicOid += (engineID)[j];
@@ -1498,7 +1496,7 @@ struct UsmKeyUpdate* USM::key_update_prepare(const OctetStr& securityName,
     userOid += os.len();
     publicOid += os.len();
 
-    for (unsigned int k = 0; k < os.len(); k++)
+    for (SmiUINT32 k = 0; k < os.len(); k++)
     {
         userOid += os[k];
         publicOid += os[k];
@@ -1662,11 +1660,11 @@ int USM::generate_msg(unsigned char* globalData, // message header, admin data
     struct UsmUser*              user         = nullptr;
     struct UsmSecurityParameters usmSecurityParams { };
 
-    int          bufLength   = 0;
-    unsigned int buf2Length  = buffer2.get_len();
-    int          totalLength = 0;    // Bytes encoded
-    int restLength = maxMessageSize; // max Bytes left in packet-buffer
-    int rc         = 0;
+    int       bufLength   = 0;
+    SmiUINT32 buf2Length  = buffer2.get_len();
+    int       totalLength = 0;              // Bytes encoded
+    int       restLength  = maxMessageSize; // max Bytes left in packet-buffer
+    int       rc          = 0;
     // int responseMsg = 0;
 
     if (securityStateReference)
@@ -1970,7 +1968,7 @@ int USM::process_msg(int maxMessageSize,     // of the sending SNMP entity
     OctetStr&      security_name,            // identification of the principal
     unsigned char* scopedPDU,                // message (plaintext) payload
     int*           scopedPDULength,
-    long* maxSizeResponseScopedPDU, // maximum size of the Response PDU
+    SmiINT32* maxSizeResponseScopedPDU, // maximum size of the Response PDU
     struct SecurityStateReference* securityStateReference,
     // reference to security state
     // information, needed for response
@@ -2273,13 +2271,13 @@ int USM::process_msg(int maxMessageSize,     // of the sending SNMP entity
         }
 
         // decrypt Message
-        unsigned int tmp_length = *scopedPDULength;
-        int const    dec_result = auth_priv->decrypt_msg(user->privProtocol,
-               user->privKey, user->privKeyLength, encryptedScopedPDU.get_ptr(),
-               encryptedScopedPDULength, scopedPDU, &tmp_length,
-               (unsigned char*)&privParam, privParamLength, engineBoots,
-               engineTime);
-        *scopedPDULength        = tmp_length;
+        SmiUINT32 tmp_length = *scopedPDULength;
+        int const dec_result = auth_priv->decrypt_msg(user->privProtocol,
+            user->privKey, user->privKeyLength, encryptedScopedPDU.get_ptr(),
+            encryptedScopedPDULength, scopedPDU, &tmp_length,
+            (unsigned char*)&privParam, privParamLength, engineBoots,
+            engineTime);
+        *scopedPDULength     = tmp_length;
         if (dec_result != SNMPv3_USM_OK)
         {
             int return_value = 0;
@@ -2454,16 +2452,16 @@ unsigned char* USM::build_sec_params(unsigned char* outBuf, int* maxLength,
 }
 
 unsigned char* USM::build_whole_msg(unsigned char* outBuf, int* maxLength,
-    unsigned char* globalData, int32_t globalDataLength, int* positionAuthPar,
+    unsigned char* globalData, SmiINT32 globalDataLength, int* positionAuthPar,
     struct UsmSecurityParameters securityParameters, unsigned char* msgData,
-    int32_t msgDataLength)
+    SmiINT32 msgDataLength)
 {
     Buffer<unsigned char> buf(MAX_SNMP_PACKET);
     unsigned char*        bufPtr = buf.get_ptr();
     Buffer<unsigned char> secPar(MAX_SNMP_PACKET);
     unsigned char*        secParPtr    = secPar.get_ptr();
     unsigned char*        outBufPtr    = outBuf;
-    int32_t               secParLength = 0;
+    SmiINT32              secParLength = 0;
     int                   length       = *maxLength;
     int                   totalLength  = 0;
 
@@ -2656,7 +2654,7 @@ void USM::unlock_user_table() { usm_user_table->unlock(); }
 /* ----------------------- class USMTimeTable --------------------*/
 
 USMTimeTable::USMTimeTable(
-    const USM* owner, const unsigned int engine_boots, int& result)
+    const USM* owner, const uint32_t engine_boots, int& result)
 {
     time_t now = 0;
 
@@ -2789,7 +2787,7 @@ int USMTimeTable::delete_entry(const OctetStr& engine_id)
     return SNMPv3_USM_OK;
 }
 
-unsigned long USMTimeTable::get_local_time()
+int USMTimeTable::get_local_time()
 {
     if (!table)
     {
@@ -3243,7 +3241,7 @@ void USMUserNameTable::delete_cloned_entry(
 }
 
 int USMUserNameTable::get_security_name(const unsigned char* user_name,
-    const int32_t user_name_len, OctetStr& security_name)
+    const SmiINT32 user_name_len, OctetStr& security_name)
 {
     if (!table)
     {
@@ -3280,8 +3278,8 @@ int USMUserNameTable::get_security_name(const unsigned char* user_name,
 }
 
 int USMUserNameTable::get_user_name(unsigned char* user_name,
-    int32_t* user_name_len, const unsigned char* security_name,
-    const int32_t security_name_len)
+    SmiINT32* user_name_len, const unsigned char* security_name,
+    const SmiINT32 security_name_len)
 {
     uint32_t const buf_len = *user_name_len;
 
@@ -3743,7 +3741,7 @@ USMUserTable::~USMUserTable()
 }
 
 int USMUserTable::get_user_name(unsigned char* user_name,
-    int32_t* user_name_len, const unsigned char* sec_name,
+    SmiINT32* user_name_len, const unsigned char* sec_name,
     const long sec_name_len)
 
 {

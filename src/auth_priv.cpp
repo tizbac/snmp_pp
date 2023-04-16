@@ -1641,11 +1641,12 @@ const char* PrivAES::get_id_string() const
     }
 }
 
-int PrivAES::encrypt(const unsigned char* key, const unsigned int key_len,
-    const unsigned char* buffer, const unsigned int buffer_len,
-    unsigned char* out_buffer, unsigned int* out_buffer_len,
-    unsigned char* privacy_params, unsigned int* privacy_params_len,
-    const uint32_t engine_boots, const uint32_t engine_time)
+int PrivAES::encrypt(const unsigned char* key,
+    [[maybe_unused]] const unsigned int key_len, const unsigned char* buffer,
+    const unsigned int buffer_len, unsigned char* out_buffer,
+    unsigned int* out_buffer_len, unsigned char* privacy_params,
+    unsigned int* privacy_params_len, const uint32_t engine_boots,
+    const uint32_t engine_time)
 {
     if (*out_buffer_len < buffer_len)
     {
@@ -1774,11 +1775,12 @@ int PrivAES::encrypt(const unsigned char* key, const unsigned int key_len,
     return SNMPv3_USM_OK;
 }
 
-int PrivAES::decrypt(const unsigned char* key, const unsigned int key_len,
-    const unsigned char* buffer, const unsigned int buffer_len,
-    unsigned char* out_buffer, unsigned int* out_buffer_len,
-    const unsigned char* privacy_params, const unsigned int privacy_params_len,
-    const uint32_t engine_boots, const uint32_t engine_time)
+int PrivAES::decrypt(const unsigned char* key,
+    [[maybe_unused]] const unsigned int key_len, const unsigned char* buffer,
+    const unsigned int buffer_len, unsigned char* out_buffer,
+    unsigned int* out_buffer_len, const unsigned char* privacy_params,
+    const unsigned int privacy_params_len, const uint32_t engine_boots,
+    const uint32_t engine_time)
 {
     if (*out_buffer_len < buffer_len)
     {

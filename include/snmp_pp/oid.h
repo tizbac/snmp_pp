@@ -422,7 +422,7 @@ public:
      * @param raw_oid - Array of new values
      * @param oid_len - Length of the array raw_oid
      */
-    void set_data(const SmiUINT32* raw_oid, const unsigned int oid_len);
+    void set_data(const SmiUINT32* raw_oid, const size_t oid_len);
 
     /**
      * Set the data from raw form.
@@ -430,7 +430,7 @@ public:
      * @param str     - Array of new values (a string)
      * @param str_len - Length of the array raw_oid
      */
-    void set_data(const char* str, const unsigned int str_len);
+    void set_data(const char* str, const size_t str_len);
 
     /**
      * Get the length of the oid.

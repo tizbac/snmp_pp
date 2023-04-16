@@ -92,7 +92,7 @@ CSNMPMessage::CSNMPMessage(uint32_t id, Snmp* snmp, SnmpSocket socket,
 
     m_rawPdu = new unsigned char[rawPduLen];
     memcpy(m_rawPdu, rawPdu, rawPduLen);
-    m_address = (Address*)address.clone();
+    m_address = dynamic_cast<Address*>(address.clone());
     m_target  = target.clone();
 
     SetSendTime();

@@ -99,7 +99,7 @@ v3MP::EngineIdTable::~EngineIdTable()
 
 // Add an entry to the table.
 int v3MP::EngineIdTable::add_entry(
-    const OctetStr& engine_id, const OctetStr& host, int port)
+    const OctetStr& snmpEngineID, const OctetStr& host, int port)
 {
     if (!table)
     {
@@ -111,7 +111,7 @@ int v3MP::EngineIdTable::add_entry(
         LOG_BEGIN(loggerModuleName, WARNING_LOG | 0);
         LOG("v3MP::EngineIdTable: rejected new entry because upper limit "
             "reached (id) (host) (port) (limit)");
-        LOG(engine_id.get_printable());
+        LOG(snmpEngineID.get_printable());
         LOG(host.get_printable());
         LOG(port);
         LOG(upper_limit_entries);
@@ -121,7 +121,7 @@ int v3MP::EngineIdTable::add_entry(
 
     LOG_BEGIN(loggerModuleName, INFO_LOG | 9);
     LOG("v3MP::EngineIdTable: adding new entry (id) (host) (port)");
-    LOG(engine_id.get_printable());
+    LOG(snmpEngineID.get_printable());
     LOG(host.get_printable());
     LOG(port);
     LOG_END;
@@ -131,30 +131,30 @@ int v3MP::EngineIdTable::add_entry(
     for (int i = 0; i < entries; i++)
     {
         if (((table[i].port == port) && (table[i].host == host))
-            || (table[i].engine_id == engine_id))
+            || (table[i].snmpEngineID == snmpEngineID))
         {
             LOG_BEGIN(loggerModuleName, INFO_LOG | 2);
             LOG("v3MP::EngineIdTable: replace entry (old id) (old host) (old "
                 "port) (id) (host) (port)");
-            LOG(table[i].engine_id.get_printable());
+            LOG(table[i].snmpEngineID.get_printable());
             LOG(table[i].host.get_printable());
             LOG(table[i].port);
-            LOG(engine_id.get_printable());
+            LOG(snmpEngineID.get_printable());
             LOG(host.get_printable());
             LOG(port);
             LOG_END;
 
-            table[i].engine_id = engine_id;
-            table[i].host      = host;
-            table[i].port      = port;
+            table[i].snmpEngineID = snmpEngineID;
+            table[i].host         = host;
+            table[i].port         = port;
 
             return SNMPv3_MP_OK; // host is in table
         }
     }
 
-    table[entries].engine_id = engine_id;
-    table[entries].host      = host;
-    table[entries].port      = port;
+    table[entries].snmpEngineID = snmpEngineID;
+    table[entries].host         = host;
+    table[entries].port         = port;
 
     entries++;
     if (entries == max_entries)
@@ -177,9 +177,9 @@ int v3MP::EngineIdTable::add_entry(
     return SNMPv3_MP_OK;
 }
 
-// Get the engine_id of the SNMP entity at the given host/port.
+// Get the snmpEngineID of the SNMP entity at the given host/port.
 int v3MP::EngineIdTable::get_entry(
-    OctetStr& engine_id, const OctetStr& hostport) const
+    OctetStr& snmpEngineID, const OctetStr& hostport) const
 {
     int   port = 0;
     char  host[MAX_HOST_NAME_LENGTH + 1];
@@ -209,19 +209,19 @@ int v3MP::EngineIdTable::get_entry(
         if (*(ptr - 1) == ']')
         {
             *(ptr - 1) = '\0';
-            return get_entry(engine_id, &(host[1]), port);
+            return get_entry(snmpEngineID, &(host[1]), port);
         }
         else
         {
             return SNMPv3_MP_ERROR;
         }
     }
-    return get_entry(engine_id, host, port);
+    return get_entry(snmpEngineID, host, port);
 }
 
 // Get the engineID of the SNMP entity at the given host/port.
 int v3MP::EngineIdTable::get_entry(
-    OctetStr& engine_id, const OctetStr& host, int port) const
+    OctetStr& snmpEngineID, const OctetStr& host, int port) const
 {
     if (!table)
     {
@@ -251,7 +251,7 @@ int v3MP::EngineIdTable::get_entry(
         return SNMPv3_MP_ERROR;
     }
 
-    engine_id = table[i].engine_id;
+    snmpEngineID = table[i].snmpEngineID;
 
     return SNMPv3_MP_OK;
 }
@@ -276,7 +276,7 @@ int v3MP::EngineIdTable::reset()
 }
 
 // Remove the given engine id from the table.
-int v3MP::EngineIdTable::delete_entry(const OctetStr& engine_id)
+int v3MP::EngineIdTable::delete_entry(const OctetStr& snmpEngineID)
 {
     if (!table)
     {
@@ -289,7 +289,7 @@ int v3MP::EngineIdTable::delete_entry(const OctetStr& engine_id)
 
     for (i = 0; i < entries; i++)
     {
-        if (table[i].engine_id == engine_id)
+        if (table[i].snmpEngineID == snmpEngineID)
         {
             found = 1;
             break;
@@ -300,7 +300,7 @@ int v3MP::EngineIdTable::delete_entry(const OctetStr& engine_id)
         LOG_BEGIN(loggerModuleName, WARNING_LOG | 4);
         LOG("v3MP::EngineIdTable: cannot remove nonexisting entry (engine "
             "id)");
-        LOG(engine_id.get_printable());
+        LOG(snmpEngineID.get_printable());
         LOG_END;
 
         return SNMPv3_MP_ERROR;
@@ -767,10 +767,10 @@ v3MP::~v3MP()
 }
 
 // Remove all occurrences of this engine id from v3MP and USM.
-int v3MP::remove_engine_id(const OctetStr& engine_id)
+int v3MP::remove_engine_id(const OctetStr& snmpEngineID)
 {
-    int const retval1 = engine_id_table.delete_entry(engine_id);
-    int const retval2 = usm->remove_engine_id(engine_id);
+    int const retval1 = engine_id_table.delete_entry(snmpEngineID);
+    int const retval2 = usm->remove_engine_id(snmpEngineID);
 
     if ((retval1 == SNMPv3_MP_NOT_INITIALIZED)
         || (retval2 == SNMPv3_USM_ERROR))
@@ -998,7 +998,7 @@ int v3MP::snmp_parse(Snmp* snmp_session, struct snmp_pdu* pdu,
     int msgSecurityParametersLength = inBufLength, msgDataLength = inBufLength;
     Buffer<unsigned char>          scopedPDU(MAX_SNMP_PACKET);
     int                            scopedPDULength          = MAX_SNMP_PACKET;
-    long                           maxSizeResponseScopedPDU = 0;
+    SmiINT32                       maxSizeResponseScopedPDU = 0;
     struct SecurityStateReference* securityStateReference   = nullptr;
     int                            securityParametersPosition = 0;
     int                            rc                         = 0;

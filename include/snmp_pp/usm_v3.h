@@ -182,32 +182,32 @@ struct UsmKeyUpdate;
 
 struct UsmUserTableEntry {
     unsigned char* usmUserEngineID;
-    int32_t        usmUserEngineIDLength;
+    SmiINT32       usmUserEngineIDLength;
     unsigned char* usmUserName;
-    int32_t        usmUserNameLength;
+    SmiINT32       usmUserNameLength;
     unsigned char* usmUserSecurityName;
-    int32_t        usmUserSecurityNameLength;
+    SmiINT32       usmUserSecurityNameLength;
     SmiINT32       usmUserAuthProtocol;
     unsigned char* usmUserAuthKey;
-    int32_t        usmUserAuthKeyLength;
+    SmiINT32       usmUserAuthKeyLength;
     SmiINT32       usmUserPrivProtocol;
     unsigned char* usmUserPrivKey;
-    int32_t        usmUserPrivKeyLength;
+    SmiINT32       usmUserPrivKeyLength;
 };
 
 struct UsmUser {
     unsigned char* engineID;
-    int32_t        engineIDLength;
+    SmiINT32       engineIDLength;
     unsigned char* usmUserName;
-    int32_t        usmUserNameLength;
+    SmiINT32       usmUserNameLength;
     unsigned char* securityName;
-    int32_t        securityNameLength;
+    SmiINT32       securityNameLength;
     SmiINT32       authProtocol;
     unsigned char* authKey;
-    int32_t        authKeyLength;
+    SmiINT32       authKeyLength;
     SmiINT32       privProtocol;
     unsigned char* privKey;
-    int32_t        privKeyLength;
+    SmiINT32       privKeyLength;
 };
 
 struct UsmUserNameTableEntry {
@@ -216,9 +216,9 @@ struct UsmUserNameTableEntry {
     SmiINT32       usmUserAuthProtocol;
     SmiINT32       usmUserPrivProtocol;
     unsigned char* authPassword;
-    int32_t        authPasswordLength;
+    SmiINT32       authPasswordLength;
     unsigned char* privPassword;
-    int32_t        privPasswordLength;
+    SmiINT32       privPasswordLength;
 };
 
 //-----------[ async methods callback ]-----------------------------------
@@ -456,8 +456,8 @@ public:
      */
     int add_localized_user(const OctetStr& engine_id,
         const OctetStr& user_name, const OctetStr& security_name,
-        const long auth_protocol, const OctetStr& auth_key,
-        const long priv_protocol, const OctetStr& priv_key);
+        const SmiINT32 auth_protocol, const OctetStr& auth_key,
+        const SmiINT32 priv_protocol, const OctetStr& priv_key);
 
     /**
      * Generate localized keys for the given params.
@@ -544,10 +544,10 @@ public:
      * @return - SNMPv3_USM_ERROR (no such entry or not initialized),
      *           SNMPv3_USM_OK
      */
-    int update_key(const unsigned char* user_name, const int32_t user_name_len,
-        const unsigned char* engine_id, const int32_t engine_id_len,
-        const unsigned char* new_key, const int32_t new_key_len,
-        const int type_of_key);
+    int update_key(const unsigned char* user_name,
+        const SmiINT32 user_name_len, const unsigned char* engine_id,
+        const SmiINT32 engine_id_len, const unsigned char* new_key,
+        const SmiINT32 new_key_len, const int type_of_key);
 
     /**
      * Search for a user with the given securityName and engineID
@@ -584,7 +584,7 @@ public:
      * small), SNMPv3_USM_OK
      */
     int get_security_name(const unsigned char* user_name,
-        const int32_t user_name_len, OctetStr& security_name);
+        const SmiINT32 user_name_len, OctetStr& security_name);
 
     /**
      * Get the user name from a security name.
@@ -599,8 +599,8 @@ public:
      * @return - SNMPv3_USM_ERROR (not initialized, not found, buffer too
      * small), SNMPv3_USM_OK
      */
-    int get_user_name(unsigned char* user_name, int32_t* user_name_len,
-        const unsigned char* security_name, const int32_t security_name_len);
+    int get_user_name(unsigned char* user_name, SmiINT32* user_name_len,
+        const unsigned char* security_name, const SmiINT32 security_name_len);
 
     /**
      * Prepare a key update in the USM. The following procedure is used: To
@@ -969,7 +969,7 @@ protected:
         OctetStr&      security_name,       // identification of the principal
         unsigned char* scopedPDU,           // message (plaintext) payload
         int*           scopedPDULength,
-        long* maxSizeResponseScopedPDU,     // maximum size of the Response PDU
+        SmiINT32* maxSizeResponseScopedPDU, // maximum size of the Response PDU
         struct SecurityStateReference* securityStateReference,
         // reference to security state
         // information, needed for response
@@ -1032,9 +1032,9 @@ private:
      * NULL on error
      */
     unsigned char* build_whole_msg(unsigned char* outBuf, int* maxLength,
-        unsigned char* globalData, int32_t globalDataLength,
+        unsigned char* globalData, SmiINT32 globalDataLength,
         int* positionAuthPar, struct UsmSecurityParameters securityParameters,
-        unsigned char* msgData, int32_t msgDataLength);
+        unsigned char* msgData, SmiINT32 msgDataLength);
 
     /**
      * Delete the pointers in the structure

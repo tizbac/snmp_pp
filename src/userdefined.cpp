@@ -243,8 +243,9 @@ void CUDEventQueue::GetFdSets(int& maxfds, fd_set& readfds, fd_set& writefds,
     }
 })
 
-    int CUDEventQueue::HandleEvents(const int maxfds, const fd_set& readfds,
-        const fd_set& writefds, const fd_set& exceptfds) REENTRANT({
+    int CUDEventQueue::HandleEvents(const int /*maxfds*/,
+        const fd_set& readfds, const fd_set& writefds,
+        const fd_set& exceptfds) REENTRANT({
         CUDEventQueueElt* msgEltPtr = m_head.GetNext();
 
         while (msgEltPtr)
@@ -265,6 +266,6 @@ void CUDEventQueue::GetFdSets(int& maxfds, fd_set& readfds, fd_set& writefds,
     })
 
 #ifdef SNMP_PP_NAMESPACE
-}; // end of namespace Snmp_pp
+} // end of namespace Snmp_pp
 
 #endif

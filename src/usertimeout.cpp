@@ -277,5 +277,5 @@ int CUTEventQueue::DoRetries(const msec& sendtime)
 }
 
 #ifdef SNMP_PP_NAMESPACE
-}; // end of namespace Snmp_pp
+} // end of namespace Snmp_pp
 #endif

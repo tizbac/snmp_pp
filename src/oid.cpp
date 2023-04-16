@@ -147,7 +147,7 @@ Oid& Oid::operator+=(const char* a)
 
 //===============[Oid::set_data ]==---=====================================
 // copy data from raw form...
-void Oid::set_data(const SmiUINT32* raw_oid, const unsigned int oid_len)
+void Oid::set_data(const SmiUINT32* raw_oid, const size_t oid_len)
 {
     if (smival.value.oid.len < oid_len)
     {
@@ -166,7 +166,7 @@ void Oid::set_data(const SmiUINT32* raw_oid, const unsigned int oid_len)
 }
 
 // Set the data from raw form.
-void Oid::set_data(const char* str, const unsigned int str_len)
+void Oid::set_data(const char* str, const size_t str_len)
 {
     if (smival.value.oid.len < str_len)
     {
@@ -184,7 +184,7 @@ void Oid::set_data(const char* str, const unsigned int str_len)
         return;
     }
 
-    for (unsigned int i = 0; i < str_len; i++)
+    for (size_t i = 0; i < str_len; i++)
     {
         smival.value.oid.ptr[i] = (uint32_t)str[i];
     }
@@ -193,7 +193,7 @@ void Oid::set_data(const char* str, const unsigned int str_len)
     m_changed            = true;
 }
 
-//==============[Oid::get_printable(unsigned int start, n) ]=============
+//==============[Oid::get_printable(uint32_t start, n) ]=============
 // return a dotted string starting at start,
 // going n positions to the left
 // NOTE, start is 1 based (the first id is at position #1)
@@ -205,7 +205,7 @@ const char* Oid::get_printable(
         return buffer;
     }
 
-    uint32_t       nz       = 0;
+    size_t         nz       = 0;
     uint32_t const my_start = start - 1;
     uint32_t const my_end   = my_start + n;
 
@@ -263,11 +263,11 @@ const char* Oid::get_printable(
 // convert a string to an oid
 int Oid::StrToOid(const char* str, SmiLPOID dstOid) const
 {
-    unsigned int index = 0;
+    uint32_t index = 0;
 
     // make a temp buffer to copy the data into first
-    SmiLPUINT32  temp = nullptr;
-    unsigned int nz   = 0;
+    SmiLPUINT32 temp = nullptr;
+    uint32_t    nz   = 0;
 
     if (str && *str)
     {

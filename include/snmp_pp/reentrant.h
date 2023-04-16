@@ -75,11 +75,14 @@ protected:
     SnmpSynchronized& s;
 };
 
-#define REENTRANT(x)                         \
-    {                                        \
-        SnmpSynchronize _synchronize(*this); \
-        x                                    \
-    }
+// TODO(CK): remove this macro!
+#if 1
+#    define REENTRANT(x)                         \
+        {                                        \
+            SnmpSynchronize _synchronize(*this); \
+            x                                    \
+        }
+#endif
 
 #ifdef SNMP_PP_NAMESPACE
 } // end of namespace Snmp_pp

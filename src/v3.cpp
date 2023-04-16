@@ -153,7 +153,7 @@ void debugprintf(int /*unused*/, const char* /*unused*/, ...) { }
 
 #ifdef _SNMPv3
 
-unsigned char* v3strcpy(const unsigned char* src, const int srclen)
+unsigned char* v3strcpy(const unsigned char* src, const size_t srclen)
 {
     if (!src)
     {
@@ -169,8 +169,8 @@ unsigned char* v3strcpy(const unsigned char* src, const int srclen)
     return res;
 }
 
-int unsignedCharCompare(const unsigned char* str1, const long int ptr1len,
-    const unsigned char* str2, const long int ptr2len)
+int unsignedCharCompare(const unsigned char* str1, const size_t ptr1len,
+    const unsigned char* str2, const size_t ptr2len)
 {
     if (ptr1len != ptr2len)
     {
@@ -180,7 +180,7 @@ int unsignedCharCompare(const unsigned char* str1, const long int ptr1len,
     const unsigned char* ptr1 = str1;
     const unsigned char* ptr2 = str2;
 
-    for (int i = 0; i < ptr1len; ++i)
+    for (size_t i = 0; i < ptr1len; ++i)
     {
         if (*ptr1++ != *ptr2++)
         {
@@ -192,12 +192,12 @@ int unsignedCharCompare(const unsigned char* str1, const long int ptr1len,
 }
 
 // Encode the given string into the output buffer.
-void encodeString(const unsigned char* in, const int in_length, char* out)
+void encodeString(const unsigned char* in, const size_t in_length, char* out)
 {
     char*                out_ptr = out;
     const unsigned char* in_ptr  = in;
 
-    for (int i = 0; i < in_length; i++)
+    for (size_t i = 0; i < in_length; i++)
     {
         *out_ptr++ = 64 + ((*in_ptr >> 4) & 0xF);
         *out_ptr++ = 64 + (*in_ptr++ & 0xF);
@@ -205,7 +205,7 @@ void encodeString(const unsigned char* in, const int in_length, char* out)
 }
 
 // Decode the given encoded string into the output buffer.
-void decodeString(const unsigned char* in, const int in_length, char* out)
+void decodeString(const unsigned char* in, const size_t in_length, char* out)
 {
     char*                out_ptr = out;
     const unsigned char* in_ptr  = in;
@@ -221,7 +221,7 @@ void decodeString(const unsigned char* in, const int in_length, char* out)
         return;
     }
 
-    for (int i = in_length / 2; i > 0; i--)
+    for (size_t i = in_length / 2; i > 0; i--)
     {
         *out_ptr = (*in_ptr++ & 0xF) << 4;
         *out_ptr++ |= (*in_ptr++ & 0xF);

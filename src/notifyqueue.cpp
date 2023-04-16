@@ -178,12 +178,13 @@ int CNotifyEvent::notify_filter(const Oid& trapid, SnmpTarget& target) const
                             if (tmptarget_type == SnmpTarget::type_utarget)
                             {
                                 // both are UTarget
-                                if ((((UTarget*)(&target))->get_security_name()
-                                        == ((UTarget*)tmptarget)
+                                if (((dynamic_cast<UTarget*>(&target))
+                                            ->get_security_name()
+                                        == (dynamic_cast<UTarget*>(tmptarget))
                                                ->get_security_name())
-                                    && (((UTarget*)(&target))
+                                    && ((dynamic_cast<UTarget*>(&target))
                                             ->get_security_model()
-                                        == ((UTarget*)tmptarget)
+                                        == (dynamic_cast<UTarget*>(tmptarget))
                                                ->get_security_model()))
                                 {
                                     target_matches = true;
@@ -196,10 +197,10 @@ int CNotifyEvent::notify_filter(const Oid& trapid, SnmpTarget& target) const
                                 // in case utarget is used with v1 or v2:
                                 if ((tmptarget->get_version()
                                         == target.get_version())
-                                    && (((UTarget*)(&target))
+                                    && ((dynamic_cast<UTarget*>(&target))
                                             ->get_security_name()
                                         == OctetStr(
-                                            ((CTarget*)tmptarget)
+                                            (dynamic_cast<CTarget*>(tmptarget))
                                                 ->get_readcommunity())))
                                 {
                                     target_matches = true;
@@ -215,9 +216,10 @@ int CNotifyEvent::notify_filter(const Oid& trapid, SnmpTarget& target) const
                                 if (tmptarget_type == SnmpTarget::type_ctarget)
                                 {
                                     // both are CTarget
-                                    if (!strcmp(((CTarget*)(&target))
-                                                    ->get_readcommunity(),
-                                            ((CTarget*)tmptarget)
+                                    if (!strcmp(
+                                            (dynamic_cast<CTarget*>(&target))
+                                                ->get_readcommunity(),
+                                            (dynamic_cast<CTarget*>(tmptarget))
                                                 ->get_readcommunity()))
                                     {
                                         target_matches = true;
@@ -229,9 +231,11 @@ int CNotifyEvent::notify_filter(const Oid& trapid, SnmpTarget& target) const
                                 {
                                     if ((tmptarget->get_version()
                                             == target.get_version())
-                                        && (OctetStr(((CTarget*)(&target))
+                                        && (OctetStr((dynamic_cast<CTarget*>(
+                                                          &target))
                                                          ->get_readcommunity())
-                                            == ((UTarget*)tmptarget)
+                                            == (dynamic_cast<UTarget*>(
+                                                    tmptarget))
                                                    ->get_security_name()))
                                     {
                                         target_matches = true;

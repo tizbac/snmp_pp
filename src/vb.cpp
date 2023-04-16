@@ -128,8 +128,9 @@ int Vb::get_value(int32_t& i) const
         && (iv_vb_value->get_syntax() == sNMP_SYNTAX_INT32))
     {
         long lval = 0;
-        lval = *((SnmpInt32*)iv_vb_value); // SnmpInt32 includes cast to long,
-        i    = (int)lval;                  // but not to int.
+        lval      = *(dynamic_cast<SnmpInt32*>(
+            iv_vb_value)); // SnmpInt32 includes cast to long,
+        i         = (int)lval;  // but not to int.
         return SNMP_CLASS_SUCCESS;
     }
     return SNMP_CLASS_INVALID;
@@ -146,7 +147,7 @@ int Vb::get_value(uint32_t& i) const
             || (iv_vb_value->get_syntax() == sNMP_SYNTAX_TIMETICKS)))
     {
         uint32_t lval = 0;
-        lval          = *((SnmpUInt32*)iv_vb_value);
+        lval          = *(dynamic_cast<SnmpUInt32*>(iv_vb_value));
         i             = (unsigned int)lval;
         return SNMP_CLASS_SUCCESS;
     }
@@ -197,7 +198,7 @@ int Vb::get_value(pp_uint64& i) const
     if (iv_vb_value && iv_vb_value->valid()
         && (iv_vb_value->get_syntax() == sNMP_SYNTAX_CNTR64))
     {
-        i = *((Counter64*)iv_vb_value);
+        i = *(dynamic_cast<Counter64*>(iv_vb_value));
         return SNMP_CLASS_SUCCESS;
     }
     return SNMP_CLASS_INVALID;
@@ -215,7 +216,7 @@ int Vb::get_value(unsigned char* ptr, uint32_t& len) const
     if (iv_vb_value && iv_vb_value->valid()
         && (iv_vb_value->get_syntax() == sNMP_SYNTAX_OCTETS))
     {
-        auto* p_os = (OctetStr*)iv_vb_value;
+        auto* p_os = dynamic_cast<OctetStr*>(iv_vb_value);
         len        = p_os->len();
         memcpy(ptr, p_os->data(), len);
         ptr[len] = 0;
@@ -239,7 +240,7 @@ int Vb::get_value(unsigned char* ptr, uint32_t& len, const uint32_t maxlen,
     if (iv_vb_value && iv_vb_value->valid()
         && (iv_vb_value->get_syntax() == sNMP_SYNTAX_OCTETS) && (maxlen > 0))
     {
-        auto* p_os = (OctetStr*)iv_vb_value;
+        auto* p_os = dynamic_cast<OctetStr*>(iv_vb_value);
         len        = p_os->len();
         if (len > maxlen)
         {
@@ -293,7 +294,7 @@ int Vb::get_value(char* ptr) const
     if (iv_vb_value && iv_vb_value->valid()
         && (iv_vb_value->get_syntax() == sNMP_SYNTAX_OCTETS))
     {
-        auto*          p_os = (OctetStr*)iv_vb_value;
+        auto*          p_os = dynamic_cast<OctetStr*>(iv_vb_value);
         uint32_t const len  = p_os->len();
         memcpy(ptr, p_os->data(), len);
         ptr[len] = 0;

@@ -150,8 +150,8 @@ constexpr size_t MAXLENGTH_ENGINEID { 32 };
  *
  * @return 1 if the strings are identical, 0 if not.
  */
-DLLOPT int unsignedCharCompare(const unsigned char* str1,
-    const long int ptr1len, const unsigned char* str2, const long int ptr2len);
+DLLOPT int unsignedCharCompare(const unsigned char* str1, const size_t ptr1len,
+    const unsigned char* str2, const size_t ptr2len);
 
 /**
  * String copy function.
@@ -163,7 +163,7 @@ DLLOPT int unsignedCharCompare(const unsigned char* str1,
  *
  * @return Pointer to a null terminated copy of src (or 0 on error).
  */
-DLLOPT unsigned char* v3strcpy(const unsigned char* src, const int srclen);
+DLLOPT unsigned char* v3strcpy(const unsigned char* src, const size_t srclen);
 
 /**
  * Encode the given string into the output buffer. For each byte
@@ -176,7 +176,7 @@ DLLOPT unsigned char* v3strcpy(const unsigned char* src, const int srclen);
  *                    lenth 2 * in_length
  */
 DLLOPT void encodeString(
-    const unsigned char* in, const int in_length, char* out);
+    const unsigned char* in, const size_t in_length, char* out);
 
 /**
  * Decode the given encoded string into the output buffer.
@@ -187,7 +187,7 @@ DLLOPT void encodeString(
  *                    string). The String will be null terminated.
  */
 DLLOPT void decodeString(
-    const unsigned char* in, const int in_length, char* out);
+    const unsigned char* in, const size_t in_length, char* out);
 
 /**
  * Read the bootCounter of the given engineID stored in the given file.

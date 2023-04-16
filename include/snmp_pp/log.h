@@ -204,7 +204,7 @@ protected:
      * @return true if the value has been added and false if the log
      *         entry is full.
      */
-    virtual bool add_integer(long s);
+    virtual bool add_integer(long l);
 
     /**
      * Add the current time to the log.

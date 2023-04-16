@@ -246,9 +246,9 @@ int EventListHolder::SNMPProcessPendingEvents()
 
         if (nfound > 0)
         { // found something on select
-            status =
-                m_eventList.HandleEvents(maxfds, readfds, writefds, exceptfds);
-            // TODO: TM should we do anything with bad status?
+          // [[maybe_unused]] status =
+            m_eventList.HandleEvents(maxfds, readfds, writefds, exceptfds);
+            // TODO(TM): should we do anything with bad status?
         }
 #    ifdef WIN32
         /* On Win32 select immediately returns -1 if all fd_sets are empty */
@@ -382,7 +382,7 @@ uint32_t EventListHolder::SNMPGetNextTimeout()
         if (sendTime > now)
         {
             sendTime -= now;
-            return (((uint32_t)sendTime) / 10) + 1;
+            return (sendTime / 10) + 1;
         }
         else
         {

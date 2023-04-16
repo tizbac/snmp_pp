@@ -120,12 +120,12 @@ public:
      * snmpEngineBoots counter (The functions getBootCounter() and
      * saveBootCounter() can be used to do this.).
      *
-     * @param engine_id    - The locale engine id
-     * @param engine_boots - The new value for the snmpEngineBoots counter
+     * @param snmpEngineID - The locale engine id
+     * @param engineBoots - The new value for the snmpEngineBoots counter
      * @param construct_status - OUT: SNMPv3_MP_OK or SNMPv3_MP_ERROR
      *
      */
-    v3MP(const OctetStr& engine_id, unsigned int engine_boots,
+    v3MP(const OctetStr& snmpEngineID, uint32_t engineBoots,
         int& construct_status);
 
     /**
@@ -164,16 +164,16 @@ public:
      * mode of the USM is enabled, snmp++ will add entries to this table
      * whenever a new engine id is dicovered.
      *
-     * @param engine_id - The engine id
+     * @param snmpEngineID - The engine id
      * @param host      - The numerical IP address
      * @param port      - The port
      *
      * @return - SNMPv3_MP_ERROR, SNMPv3_MP_OK
      */
     int add_to_engine_id_table(
-        const OctetStr& engine_id, const OctetStr& host, int port)
+        const OctetStr& snmpEngineID, const OctetStr& host, int port)
     {
-        return engine_id_table.add_entry(engine_id, host, port);
+        return engine_id_table.add_entry(snmpEngineID, host, port);
     }
 
     /**
@@ -192,19 +192,19 @@ public:
     /**
      * Remove an entry from the engine id table.
      *
-     * @param engine_id - The engine id
+     * @param snmpEngineID - The engine id
      *
      * @return - SNMPv3_MP_ERROR, SNMPv3_MP_OK
      */
-    int remove_from_engine_id_table(const OctetStr& engine_id)
+    int remove_from_engine_id_table(const OctetStr& snmpEngineID)
     {
-        return engine_id_table.delete_entry(engine_id);
+        return engine_id_table.delete_entry(snmpEngineID);
     }
 
     /**
      * Get the engine id of the SNMP entity at the given host/port.
      *
-     * @param engine_id - OUT: The engine id
+     * @param snmpEngineID - OUT: The engine id
      * @param hostport  - The numerical IP address and port
      *                    (syntax: a.b.c.d/port)
      *
@@ -212,9 +212,9 @@ public:
      *           SNMPv3_MP_OK
      */
     int get_from_engine_id_table(
-        OctetStr& engine_id, const OctetStr& hostport) const
+        OctetStr& snmpEngineID, const OctetStr& hostport) const
     {
-        return engine_id_table.get_entry(engine_id, hostport);
+        return engine_id_table.get_entry(snmpEngineID, hostport);
     }
 
     /**
@@ -244,12 +244,12 @@ public:
     /**
      * Remove all occurences of this engine id from v3MP and USM.
      *
-     * @param engine_id - The engine id to remove
+     * @param snmpEngineID - The engine id to remove
      *
      * @return - SNMPv3_MP_NOT_INITIALIZED, SNMPv3_MP_ERROR,
      *           SNMPv3_MP_OK
      */
-    int remove_engine_id(const OctetStr& engine_id);
+    int remove_engine_id(const OctetStr& snmpEngineID);
 
     // ----------[ Access to status counters for agent++ ]--------------
 
@@ -427,31 +427,31 @@ private:
         /**
          * Add an entry to the table.
          *
-         * @param engine_id - The engineID
+         * @param snmpEngineID - The engineID
          * @param host      - The numerical IP address
          * @param port      - The port
          *
          * @return - SNMPv3_MP_ERROR, SNMPv3_MP_OK
          */
         int add_entry(
-            const OctetStr& engine_id, const OctetStr& host, int port);
+            const OctetStr& snmpEngineID, const OctetStr& host, int port);
 
         /**
-         * Get the engine_id of the SNMP entity at the given host/port.
+         * Get the snmpEngineID of the SNMP entity at the given host/port.
          *
-         * @param engine_id - OUT: The engineID
+         * @param snmpEngineID - OUT: The engineID
          * @param hostport  - The numerical IP address and port
          *                    (syntax: a.b.c.d/port)
          *
          * @return - SNMPv3_MP_NOT_INITIALIZED, SNMPv3_MP_ERROR,
          *           SNMPv3_MP_OK
          */
-        int get_entry(OctetStr& engine_id, const OctetStr& hostport) const;
+        int get_entry(OctetStr& snmpEngineID, const OctetStr& hostport) const;
 
         /**
          * Get the engineID of the SNMP entity at the given host/port.
          *
-         * @param engine_id - OUT: The engineID
+         * @param snmpEngineID - OUT: The engineID
          * @param host      - The numerical IP address
          * @param port      - The port
          *
@@ -459,7 +459,7 @@ private:
          *           SNMPv3_MP_OK
          */
         int get_entry(
-            OctetStr& engine_id, const OctetStr& host, int port) const;
+            OctetStr& snmpEngineID, const OctetStr& host, int port) const;
 
         /**
          * Remove all entries from the engine id table.
@@ -472,12 +472,12 @@ private:
         /**
          * Remove the given engine id from the table.
          *
-         * @param engine_id - The engine id to remove
+         * @param snmpEngineID - The engine id to remove
          *
          * @return - SNMPv3_MP_NOT_INITIALIZED, SNMPv3_MP_ERROR,
          *           SNMPv3_MP_OK
          */
-        int delete_entry(const OctetStr& engine_id);
+        int delete_entry(const OctetStr& snmpEngineID);
 
         /**
          * Remove the entry for the given address/port from the table.
@@ -516,7 +516,7 @@ private:
         bool initialize_table(const int size);
 
         struct Entry_T {
-            OctetStr engine_id;
+            OctetStr snmpEngineID;
             OctetStr host;
             int      port;
         };

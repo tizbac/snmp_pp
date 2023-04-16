@@ -88,7 +88,7 @@ public:
      * @param sec    - Seconds
      * @param milsec - Milli seconds
      */
-    msec(const int sec, const int milsec) : m_changed(true)
+    msec(const long sec, const int milsec) : m_changed(true)
     {
         m_time.tv_sec  = sec;
         m_time.tv_usec = milsec;
@@ -127,14 +127,11 @@ public:
     msec& operator=(const timeval& t1);
 
     /**
-     * Use as an unsigned long.
+     * Use as an time_t.
      *
      * @return Time in milli seconds
      */
-    operator unsigned long() const
-    {
-        return (m_time.tv_sec * 1000) + m_time.tv_usec;
-    }
+    operator time_t() const { return (m_time.tv_sec * 1000) + m_time.tv_usec; }
 
     /**
      * Set the time to the current system time.
@@ -146,7 +143,7 @@ public:
      */
     void SetInfinite()
     {
-        m_time.tv_sec  = (time_t)-1;
+        m_time.tv_sec  = -1;
         m_time.tv_usec = 0;
         m_changed      = true;
     }
@@ -158,7 +155,7 @@ public:
      */
     int IsInfinite() const
     {
-        return (m_time.tv_sec == (time_t)-1) && (m_time.tv_usec == 0);
+        return (m_time.tv_sec == -1) && (m_time.tv_usec == 0);
     }
 
     /**
