@@ -5,7 +5,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # NOTE: We need LANGUAGE C too for libdes. It may be required to build at Windows! CK
 project(
   snmp_pp
-  VERSION 3.4.7.12
+  VERSION 3.4.7.13
   LANGUAGES CXX C
 )
 
@@ -611,10 +611,10 @@ packageProject(
   # location of the target's public headers
   INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include
   # should match the target's INSTALL_INTERFACE include directory
-  INCLUDE_DESTINATION
-    include # (optional) option to install only header files with matching pattern
-    INCLUDE_HEADER_PATTERN "*.h"
-    # semicolon separated list of the project's dependencies
+  INCLUDE_DESTINATION include
+  # (optional) option to install only header files with matching pattern
+  INCLUDE_HEADER_PATTERN "*.h"
+  # semicolon separated list of the project's dependencies
   DEPENDENCIES "${CRYPTO_LIB}; Threads"
   # (optional) create a header containing the version info
   # Note: that the path to headers should be lowercase
