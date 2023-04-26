@@ -1,29 +1,29 @@
 /*_############################################################################
-  _##
-  _##  v3.h
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  v3.h
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 
 #ifndef _SNMP_V3_H_
 #define _SNMP_V3_H_
@@ -93,6 +93,7 @@ DLLOPT void debughexcprintf(int db_level, const char* comment,
 #            define debugprintf(db_level, format...)
 #        else
 void debugprintf(int db_level, const char* format, ...);
+
 #        endif
 #    else
 // disable any warning for wrong number of arguments in macro
@@ -107,10 +108,11 @@ void debugprintf(int db_level, const char* format, ...);
 
 #ifdef _SNMPv3
 
-#    define MAXLENGTH_ENGINEID     32
-#    define MAXLENGTH_CONTEXT_NAME 32
-#    define MAXLENGTH_FILENAME     255
-#    define MAXLENGTH_GLOBALDATA   42 // (2 + 1) + 7 + 7 + 3 + 7 + security
+constexpr size_t MAXLENGTH_ENGINEID { 32 };
+
+#    define MAXLENGTH_CONTEXT_NAME 32U
+#    define MAXLENGTH_FILENAME     255U
+#    define MAXLENGTH_GLOBALDATA   42U // (2 + 1) + 7 + 7 + 3 + 7 + security
 
 #    define oidV3SnmpEngine               "1.3.6.1.6.3.10.2.1"
 #    define oidV3SnmpEngineID             "1.3.6.1.6.3.10.2.1.1.0"
@@ -148,8 +150,8 @@ void debugprintf(int db_level, const char* format, ...);
  *
  * @return 1 if the strings are identical, 0 if not.
  */
-DLLOPT int unsignedCharCompare(const unsigned char* str1,
-    const long int ptr1len, const unsigned char* str2, const long int ptr2len);
+DLLOPT int unsignedCharCompare(const unsigned char* str1, const size_t ptr1len,
+    const unsigned char* str2, const size_t ptr2len);
 
 /**
  * String copy function.
@@ -161,7 +163,7 @@ DLLOPT int unsignedCharCompare(const unsigned char* str1,
  *
  * @return Pointer to a null terminated copy of src (or 0 on error).
  */
-DLLOPT unsigned char* v3strcpy(const unsigned char* src, const int srclen);
+DLLOPT unsigned char* v3strcpy(const unsigned char* src, const size_t srclen);
 
 /**
  * Encode the given string into the output buffer. For each byte
@@ -174,7 +176,7 @@ DLLOPT unsigned char* v3strcpy(const unsigned char* src, const int srclen);
  *                    lenth 2 * in_length
  */
 DLLOPT void encodeString(
-    const unsigned char* in, const int in_length, char* out);
+    const unsigned char* in, const size_t in_length, char* out);
 
 /**
  * Decode the given encoded string into the output buffer.
@@ -185,7 +187,7 @@ DLLOPT void encodeString(
  *                    string). The String will be null terminated.
  */
 DLLOPT void decodeString(
-    const unsigned char* in, const int in_length, char* out);
+    const unsigned char* in, const size_t in_length, char* out);
 
 /**
  * Read the bootCounter of the given engineID stored in the given file.
@@ -228,15 +230,22 @@ public:
     {
         ptr = new T[size];
         if (ptr)
+        {
             len = size;
+        }
         else
+        {
             len = 0;
+        }
     }
 
     /// Destructor: Free allocated buffer
     ~Buffer()
     {
-        if (ptr) delete[] ptr;
+        if (ptr)
+        {
+            delete[] ptr;
+        }
     }
 
     /// Get the buffer pointer
@@ -248,7 +257,10 @@ public:
     /// Overwrite the buffer space with zero.
     void clear()
     {
-        if (ptr) memset(ptr, 0, len * sizeof(T));
+        if (ptr)
+        {
+            memset(ptr, 0, len * sizeof(T));
+        }
     }
 
 private:

@@ -1,11 +1,11 @@
-cmake_minimum_required(VERSION 3.14...3.21)
+cmake_minimum_required(VERSION 3.21...3.26)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # NOTE: We need LANGUAGE C too for libdes. It may be required to build at Windows! CK
 project(
   snmp_pp
-  VERSION 3.4.7.12
+  VERSION 3.4.7.13
   LANGUAGES CXX C
 )
 
@@ -28,13 +28,17 @@ set(SNMP_PP_NAMESPACE ON) # "Enable using of namespace (needed!)" ON)
 set(SNMP_PP_SNMPv3 ON) # "Enable support for SNMPv3 (needed!)" ON)
 set(SNMP_PP_THREADS ON) # "Enable support for threads (needed!)" ON)
 
+if(NOT PROJECT_IS_TOP_LEVEL)
+  option(CMAKE_SKIP_INSTALL_RULES "Whether to disable generation of installation rules" YES)
+endif()
+
 option(SNMP_PP_EXAMPLES "Enable to build examples" ON)
 option(SNMP_PP_EXTENDED_DEBUG "Enable additional debug messages" OFF)
 option(SNMP_PP_IPXADDR "Enable IpxAddress class" OFF)
 option(SNMP_PP_IPv6 "Enable support for IPv6" ON)
 option(SNMP_PP_LIBDES "Search for DES library (At least needed for Windows!)" ON)
 option(SNMP_PP_LIBTOMCRYPT "Search for Tomcrypt library" OFF)
-option(SNMP_PP_LOGGING "Enable logging" OFF)
+option(SNMP_PP_LOGGING "Enable logging" ${PROJECT_IS_TOP_LEVEL})
 option(SNMP_PP_MACADDR "Enable MacAddress class" OFF)
 option(SNMP_PP_OPENSSL "Search for OpenSSL library" ON)
 
@@ -250,18 +254,10 @@ else()
   set(_DEBUG 0)
 endif()
 
-option(USE_OUTPUT_PATH "build all libaries and runtime files at lib and bin directory" YES)
+option(USE_OUTPUT_PATH "build all libaries and runtime files at the bin directory" YES)
 if(USE_OUTPUT_PATH)
-  # -----------------------------------------------------------------------
-  # Where to put all the LIBRARY targets when built. This variable is used to initialize the
-  # LIBRARY_OUTPUT_DIRECTORY property on all the targets.
-  # -----------------------------------------------------------------------
-  set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
-
-  # -----------------------------------------------------------------------
-  # Where to put all the RUNTIME targets when built. This variable is used to initialize the
-  # RUNTIME_OUTPUT_DIRECTORY property on all the targets.
-  # -----------------------------------------------------------------------
+  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 endif()
 
@@ -269,6 +265,9 @@ endif()
 # see https://github.com/cpm-cmake/CPM.cmake for more info
 
 include(CPM)
+
+CPMAddPackage("gh:aminya/project_options@0.26.3")
+list(APPEND CMAKE_MODULE_PATH ${ProjectOptions_SRC_DIR})
 
 if(SNMP_PP_OPENSSL)
   if(APPLE)
@@ -453,25 +452,84 @@ set(MY_SRC_FILES
     src/vb.cpp
 )
 
-option(BUILD_SHARED_LIBS "Global flag to cause add_library() to create shared libraries if on." ON)
+option(BUILD_SHARED_LIBS "Global flag to cause add_library() to create shared libraries if on." YES)
+
+if(APPLE)
+  set(OPTION_ENABLED_SANITIZER
+      "ENABLE_SANITIZER_ADDRESS; ENABLE_SANITIZER_UNDEFINED_BEHAVIOR"
+      CACHE STRING "Enabled sanitizer for debug build"
+  )
+else()
+  set(OPTION_ENABLED_SANITIZER
+      "ENABLE_SANITIZER_MEMORY"
+      CACHE STRING "Enabled sanitizer for debug build"
+  )
+endif()
+option(OPTION_ENABLE_COVERAGE "Enable test coverage of projects" OFF)
+if(OPTION_ENABLE_COVERAGE)
+  set(ENABLE_COVERAGE "ENABLE_COVERAGE")
+endif()
+
+if(SNMP_PP_LOGGING)
+  set(OPTION_ENABLE_UNITY
+      OFF
+      CACHE STRING "forced" FORCE
+  )
+else()
+  option(OPTION_ENABLE_UNITY "Enable Unity builds of projects" ON)
+endif()
+
+if(OPTION_ENABLE_UNITY)
+  set(ENABLE_UNITY "ENABLE_UNITY")
+endif()
+
+project_options(
+  PREFIX
+  ${PROJECT_NAME}
+  ENABLE_CACHE
+  ${ENABLE_COVERAGE}
+  ${OPTION_ENABLED_SANITIZER}
+  #XXX ENABLE_SANITIZER_ADDRESS
+  #XXX ENABLE_SANITIZER_UNDEFINED_BEHAVIOR
+  #XXX ENABLE_SANITIZER_THREAD
+  #XXX ENABLE_SANITIZER_MEMORY
+  # TODO: WARNINGS_AS_ERRORS
+)
+
+set(PROJECT_EXPORT_HEADER ${PROJECT_NAME}/export.h)
 add_library(${PROJECT_NAME} ${MY_HEADER_FILES} ${MY_HEADER_LIB_FILES} ${CMAKE_CURRENT_BINARY_DIR}/config.h ${MY_SRC_FILES})
+
+if(CMAKE_SKIP_INSTALL_RULES)
+  include(GenerateExportHeader)
+  generate_export_header(
+    ${PROJECT_NAME} EXPORT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/PackageProjectInclude/${PROJECT_EXPORT_HEADER}
+  )
+  add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
+  target_link_libraries(${PROJECT_NAME} PUBLIC ${PROJECT_NAME}_project_options ${PROJECT_NAME}_project_warnings)
+
+  # target_link_libraries(
+  #   ${PROJECT_NAME} PRIVATE $<BUILD_LOCAL_INTERFACE:${PROJECT_NAME}_project_options>
+  #                           $<BUILD_LOCAL_INTERFACE:${PROJECT_NAME}_project_warnings>
+  # )
+endif()
+set_target_properties(${PROJECT_NAME} PROPERTIES UNITY_BUILD ${OPTION_ENABLE_UNITY})
 
 if(MSVC)
   target_link_libraries(${PROJECT_NAME} PUBLIC wsock32 ws2_32)
   target_compile_definitions(${PROJECT_NAME} PUBLIC WIN32)
-  # FIXME: should be warning level 4 (and all warnings as errors! /WX)
   target_compile_options(${PROJECT_NAME} PRIVATE /W3 /wd4251)
-  target_compile_definitions(${PROJECT_NAME} PRIVATE _CRT_SECURE_NO_WARNINGS)
+  target_compile_definitions(${PROJECT_NAME} PUBLIC _CRT_SECURE_NO_WARNINGS)
 else()
-  target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Werror -Wno-unused-parameter)
-  # TODO: lots of warnings (more: -Wpedantic)
+  target_compile_options(
+    ${PROJECT_NAME} PUBLIC -Wno-conversion -Wshadow -Wno-unused-parameter -Wno-deprecated-declarations -Wno-old-style-cast
+                           -Wno-extra-semi
+  )
 endif()
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE 1)
-# Set .so version as autoconf does: snmp++ version 1.2.3 will go to .so.12.0.3!
 set_target_properties(
-  ${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION_MAJOR}${PROJECT_VERSION_MINOR}.0.${PROJECT_VERSION_PATCH}
-                             SOVERSION ${PROJECT_VERSION_MAJOR}${PROJECT_VERSION_MINOR}
+  ${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}
+                             SOVERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 )
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD ${CMAKE_CXX_STANDARD})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${CRYPTO_LINKLIBS} Threads::Threads)
@@ -486,7 +544,8 @@ target_include_directories(
 target_include_directories(
   ${PROJECT_NAME}
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-         $<BUILD_INTERFACE:${CRYPTO_INCLUDE_DIRS}> $<INSTALL_INTERFACE:include>
+         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/PackageProjectInclude> $<BUILD_INTERFACE:${CRYPTO_INCLUDE_DIRS}>
+         $<INSTALL_INTERFACE:include>
 )
 
 # Note: for SameMajorVersion upgrade stategy
@@ -535,9 +594,13 @@ if(SNMP_PP_EXAMPLES)
   add_test(NAME basename_test COMMAND ${CMAKE_COMMAND} -E echo $<TARGET_FILE_DIR:test_app>)
 endif()
 
+if(CMAKE_SKIP_INSTALL_RULES)
+  return()
+endif()
+
 install(FILES ${MY_HEADER_LIB_FILES} DESTINATION include)
 
-CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.8.0")
+CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.10.0")
 packageProject(
   # the name of the target to export
   NAME ${PROJECT_NAME}
@@ -549,13 +612,15 @@ packageProject(
   INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include
   # should match the target's INSTALL_INTERFACE include directory
   INCLUDE_DESTINATION include
+  # (optional) option to install only header files with matching pattern
+  INCLUDE_HEADER_PATTERN "*.h"
   # semicolon separated list of the project's dependencies
   DEPENDENCIES "${CRYPTO_LIB}; Threads"
   # (optional) create a header containing the version info
   # Note: that the path to headers should be lowercase
   VERSION_HEADER "${PROJECT_NAME}/version.h"
   # (optional) create a export header using GenerateExportHeader module
-  EXPORT_HEADER "${PROJECT_NAME}/export.h"
+  EXPORT_HEADER "${PROJECT_EXPORT_HEADER}"
   # (optional) install your library with a namespace (Note: do NOT add extra '::')
   NAMESPACE ${PROJECT_NAME}
   # (optional) define the project's version compatibility, defaults to `AnyNewerVersion`

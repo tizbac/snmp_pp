@@ -1,29 +1,29 @@
 /*_############################################################################
-  _##
-  _##  log.cpp
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  log.cpp
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 
 #include <libsnmp.h>
 #include <snmp_pp/log.h>
@@ -40,15 +40,15 @@ using namespace Snmp_pp;
 // default log filter: logs with level less or equal filter value are logged
 // error, warning, event, info, debug:
 // clang-format off
-#define LOG_DEFAULT_OFF      {  0, -1, -1, -1, -1, -1 }
-#define LOG_DEFAULT_QUIET    { 15, 15, -1, -1, -1, -1 }
-#define LOG_DEFAULT_STD      { 15, 15,  5, -1, -1, -1 }
-#define LOG_DEFAULT_EVENTS   { 15, 15, 15, -1, -1, -1 }
-#define LOG_DEFAULT_VERBOSE  { 15, 15, 15,  5, -1, -1 }
-#define LOG_DEFAULT_FULL     { 15, 15, 15, 15, -1, -1 }
-#define LOG_DEFAULT_DEBUG    { 15, 15, 15, 15,  5, -1 }
-#define LOG_DEFAULT_ALL      { 15, 15, 15, 15, 15, 15 }
-#define LOG_DEFAULT_ORIGINAL {  9,  9,  4,  6,  7, 15 }
+#define LOG_DEFAULT_OFF         { 0, -1, -1, -1, -1, -1 }
+#define LOG_DEFAULT_QUIET       { 15, 15, -1, -1, -1, -1 }
+#define LOG_DEFAULT_STD         { 15, 15, 5, -1, -1, -1 }
+#define LOG_DEFAULT_EVENTS      { 15, 15, 15, -1, -1, -1 }
+#define LOG_DEFAULT_VERBOSE     { 15, 15, 15, 5, -1, -1 }
+#define LOG_DEFAULT_FULL        { 15, 15, 15, 15, -1, -1 }
+#define LOG_DEFAULT_DEBUG       { 15, 15, 15, 15, 5, -1 }
+#define LOG_DEFAULT_ALL         { 15, 15, 15, 15, 15, 15 }
+#define LOG_DEFAULT_ORIGINAL    { 9, 9, 4, 6, 7, 15 }
 // clang-format on
 
 #if defined(WITH_LOG_PROFILES)
@@ -87,6 +87,7 @@ static void initLogProfiles()
     logfilter_profiles["all"]      = log_profile_all;
     logfilter_profiles["original"] = log_profile_original;
 }
+
 #endif
 
 /*--------------------------- class LogEntry --------------------------*/
@@ -95,7 +96,7 @@ static void initLogProfiles()
  * Initialize a log entry, showing timestamp, class, and level.
  *
  */
-void LogEntry::init(void)
+void LogEntry::init()
 {
     add_timestamp();
     add_string(": ");
@@ -111,8 +112,8 @@ void LogEntry::init(void)
     }
     else
     {
-        unsigned char* ptc = (unsigned char*)(void*)(&pid);
-        OctetStr       os;
+        auto*    ptc = (unsigned char*)(void*)(&pid);
+        OctetStr os;
         os.set_data(ptc, sizeof(pthread_t));
         add_string(os.get_printable_hex());
     }
@@ -137,17 +138,40 @@ void LogEntry::init(void)
 
     switch (type & LOG_CLASS_MASK)
     {
-    case DEBUG_LOG: add_string("DEBUG  : "); break;
-    case INFO_LOG: add_string("INFO   : "); break;
-    case WARNING_LOG: add_string("WARNING: "); break;
-    case ERROR_LOG: add_string("ERROR  : "); break;
-    case EVENT_LOG: add_string("EVENT  : "); break;
-    case USER_LOG: add_string("USER   : "); break;
+    case DEBUG_LOG: {
+        add_string("DEBUG  : ");
+        break;
+    }
+
+    case INFO_LOG: {
+        add_string("INFO   : ");
+        break;
+    }
+
+    case WARNING_LOG: {
+        add_string("WARNING: ");
+        break;
+    }
+
+    case ERROR_LOG: {
+        add_string("ERROR  : ");
+        break;
+    }
+
+    case EVENT_LOG: {
+        add_string("EVENT  : ");
+        break;
+    }
+
+    case USER_LOG: {
+        add_string("USER   : ");
+        break;
+    }
     }
 
 #ifdef LOG_INDENT
     // indent log by level
-    for (int i = 0; i < (type & LOG_LEVEL_MASK); i++) add_string(" ");
+    for (int i = 0; i < (type & LOG_LEVEL_MASK); i++) { add_string(" "); }
 #endif
 }
 
@@ -162,13 +186,19 @@ LogEntry& LogEntry::operator+=(const char* s)
     // timestamp, etc. is followed by the class and method name,
     // then by the list of arguments.
     if (count == 0)
+    {
         add_string(s);
+    }
     else
     {
         if (count == 1)
+        {
             add_string(": ");
+        }
         else
+        {
             add_string(", ");
+        }
 
         add_string("(");
         add_string(s);
@@ -186,9 +216,13 @@ LogEntry& LogEntry::operator+=(const char* s)
 LogEntry& LogEntry::operator+=(const long l)
 {
     if (count == 1)
+    {
         add_string(": ");
+    }
     else
+    {
         add_string(", ");
+    }
 
     count++;
     add_string("(");
@@ -207,6 +241,7 @@ LogEntry& LogEntry::operator+=(const long l)
 bool LogEntry::add_integer(long l)
 {
     char buf[40];
+
     snprintf(buf, sizeof(buf), "%ld", l);
     return add_string(buf);
 }
@@ -214,10 +249,7 @@ bool LogEntry::add_integer(long l)
 /**
  * Add the current time to the log entry.
  */
-bool LogEntry::add_timestamp(void)
-{
-    return add_string(DefaultLog::log()->now());
-}
+bool LogEntry::add_timestamp() { return add_string(DefaultLog::log()->now()); }
 
 /*------------------------- class LogEntryImpl ------------------------*/
 
@@ -230,9 +262,12 @@ bool LogEntry::add_timestamp(void)
  */
 bool LogEntryImpl::add_string(const char* s)
 {
-    if (output_stopped) return false;
+    if (output_stopped)
+    {
+        return false;
+    }
 
-    size_t len = strlen(s);
+    size_t const len = strlen(s);
     if (len <= bytes_left())
     {
         strlcat(ptr, s, MAX_LOG_SIZE);
@@ -257,50 +292,67 @@ bool LogEntryImpl::add_string(const char* s)
 AgentLog::AgentLog()
 {
     int* log_profile = nullptr;
+
 #if defined(WITH_LOG_PROFILES) && defined(DEFAULT_LOG_PROFILE)
-    map<string, int*>::const_iterator item =
-        logfilter_profiles.find(DEFAULT_LOG_PROFILE);
+    auto const item = logfilter_profiles.find(DEFAULT_LOG_PROFILE);
     if (item != logfilter_profiles.end())
+    {
         log_profile = item->second;
+    }
     else
 #endif
         log_profile = default_logfilter;
 
-    for (int i = 0; i < LOG_TYPES; i++) logfilter[i] = log_profile[i];
+    for (int i = 0; i < LOG_TYPES; i++) { logfilter[i] = log_profile[i]; }
 }
 
 #if defined(WITH_LOG_PROFILES)
 void AgentLog::set_profile(const char* const logprofile)
 {
-    int*                              log_profile;
-    map<string, int*>::const_iterator item =
-        logfilter_profiles.find(logprofile);
-    if (item != logfilter_profiles.end())
-        log_profile = item->second;
-    else
-        log_profile = default_logfilter;
+    int*       log_profile;
+    auto const item = logfilter_profiles.find(logprofile);
 
-    for (int i = 0; i < LOG_TYPES; i++) logfilter[i] = log_profile[i];
+    if (item != logfilter_profiles.end())
+    {
+        log_profile = item->second;
+    }
+    else
+    {
+        log_profile = default_logfilter;
+    }
+
+    for (int i = 0; i < LOG_TYPES; i++) { logfilter[i] = log_profile[i]; }
 }
+
 #endif
 
 void AgentLog::set_filter(int logclass, unsigned char filter)
 {
-    int idx = (logclass / 16) - 1;
+    int const idx = (logclass / 16) - 1;
+
     if ((idx >= 0) && (idx < LOG_TYPES) && ((filter < 16) || (filter == 0xFF)))
+    {
         logfilter[idx] = filter;
+    }
 }
 
 unsigned char AgentLog::get_filter(int logclass) const
 {
-    int idx = (logclass / 16) - 1;
-    if ((idx >= 0) && (idx < LOG_TYPES)) { return logfilter[idx]; }
+    int const idx = (logclass / 16) - 1;
+
+    if ((idx >= 0) && (idx < LOG_TYPES))
+    {
+        return logfilter[idx];
+    }
     return 0;
 }
 
 const char* AgentLog::now(char* buf)
 {
-    if (buf == NULL) buf = static_buf;
+    if (buf == nullptr)
+    {
+        buf = static_buf;
+    }
 
     time_t t = 0;
     time(&t);
@@ -311,15 +363,20 @@ const char* AgentLog::now(char* buf)
     struct tm* stm = localtime(&t);
 #endif
     if (stm)
+    {
         strftime(buf, 18, "%Y%m%d.%H:%M:%S", stm);
+    }
     else
+    {
         buf[0] = 0;
+    }
     return buf;
 }
 
 /*static*/ const char* AgentLog::get_current_time()
 {
     char* buf = new char[18];
+
     DefaultLog::log()->now(buf);
     return buf;
 }
@@ -344,7 +401,10 @@ AgentLogImpl::AgentLogImpl(const char* fname) : AgentLog() { set_dest(fname); }
  */
 AgentLogImpl::~AgentLogImpl()
 {
-    if (close_needed) fclose(logfile);
+    if (close_needed)
+    {
+        fclose(logfile);
+    }
 }
 
 /**
@@ -356,14 +416,20 @@ void AgentLogImpl::set_dest(const char* fname)
 {
     close_needed = false;
     if ((!fname) || (strlen(fname) == 0))
+    {
         logfile = stdout;
+    }
     else
     {
         logfile = fopen(fname, "a");
-        if (logfile == NULL)
+        if (logfile == nullptr)
+        {
             logfile = stdout;
+        }
         else
+        {
             close_needed = true;
+        }
     }
 }
 
@@ -415,8 +481,8 @@ AgentLog& AgentLogImpl::operator+=(const LogEntry* log)
 
 // define the default logs
 
-AgentLog* DefaultLog::instance = 0;
-LogEntry* DefaultLog::entry    = 0;
+AgentLog* DefaultLog::instance = nullptr;
+LogEntry* DefaultLog::entry    = nullptr;
 
 #ifdef _THREADS
 SnmpSynchronized DefaultLog::mutex;
@@ -425,14 +491,18 @@ SnmpSynchronized DefaultLog::mutex;
 void DefaultLog::cleanup()
 {
     lock(); // FIXME: not exception save! CK
-    if (instance) delete instance;
-    instance = 0;
+    if (instance)
+    {
+        delete instance;
+    }
+    instance = nullptr;
     unlock();
 }
 
 AgentLog* DefaultLog::init_ts(AgentLog* logger)
 {
     AgentLog* r = instance;
+
     if (!r)
     {
         lock(); // FIXME: not exception save! CK
@@ -443,7 +513,10 @@ AgentLog* DefaultLog::init_ts(AgentLog* logger)
             initLogProfiles();
 #    endif
 #endif
-            if (!logger) logger = new AgentLogImpl();
+            if (!logger)
+            {
+                logger = new AgentLogImpl();
+            }
             instance = logger;
         }
         r = instance;

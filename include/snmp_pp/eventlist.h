@@ -1,61 +1,61 @@
 /*_############################################################################
-  _##
-  _##  eventlist.h
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  eventlist.h
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 /*===================================================================
-
-  Copyright (c) 1999
-  Hewlett-Packard Company
-
-  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  Permission to use, copy, modify, distribute and/or sell this software
-  and/or its documentation is hereby granted without fee. User agrees
-  to display the above copyright notice and this license notice in all
-  copies of the software and any documentation of the software. User
-  agrees to assume all liability for the use of the software; Hewlett-Packard
-  makes no representations about the suitability of this software for any
-  purpose. It is provided "AS-IS without warranty of any kind,either express
-  or implied. User hereby grants a royalty-free license to any and all
-  derivatives based upon this software code base.
-
-      E V E N T L I S T . H
-
-      CEventList  CLASS DEFINITION
-
-      COPYRIGHT HEWLETT PACKARD COMPANY 1999
-
-      INFORMATION NETWORKS DIVISION
-
-      NETWORK MANAGEMENT SECTION
-
-      DESIGN + AUTHOR:         Tom Murray
-
-      DESCRIPTION:
-        Queue for holding all event sources (snmp messages, user
-        defined input sources, user defined timeouts, etc)
-=====================================================================*/
+ *
+ * Copyright (c) 1999
+ * Hewlett-Packard Company
+ *
+ * ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * Permission to use, copy, modify, distribute and/or sell this software
+ * and/or its documentation is hereby granted without fee. User agrees
+ * to display the above copyright notice and this license notice in all
+ * copies of the software and any documentation of the software. User
+ * agrees to assume all liability for the use of the software; Hewlett-Packard
+ * makes no representations about the suitability of this software for any
+ * purpose. It is provided "AS-IS without warranty of any kind,either express
+ * or implied. User hereby grants a royalty-free license to any and all
+ * derivatives based upon this software code base.
+ *
+ *    E V E N T L I S T . H
+ *
+ *    CEventList  CLASS DEFINITION
+ *
+ *    COPYRIGHT HEWLETT PACKARD COMPANY 1999
+ *
+ *    INFORMATION NETWORKS DIVISION
+ *
+ *    NETWORK MANAGEMENT SECTION
+ *
+ *    DESIGN + AUTHOR:         Tom Murray
+ *
+ *    DESCRIPTION:
+ *      Queue for holding all event sources (snmp messages, user
+ *      defined input sources, user defined timeouts, etc)
+ * =====================================================================*/
 
 #ifndef _SNMP_EVENTLIST_H_
 #define _SNMP_EVENTLIST_H_
@@ -90,7 +90,7 @@ class Pdu;
 class DLLOPT CEvents : public SnmpSynchronized {
 public:
     // allow destruction of derived classes
-    virtual ~CEvents() {};
+    ~CEvents() override { }
 
     // find the next timeout
     virtual int GetNextTimeout(msec& sendTime) = 0;
@@ -103,6 +103,7 @@ public:
 #else
     virtual void GetFdSets(
         int& maxfds, fd_set& readfds, fd_set& writefds, fd_set& exceptfds) = 0;
+
     // process events pending on the active file descriptors
     virtual int HandleEvents(const int maxfds, const fd_set& readfds,
         const fd_set& writefds, const fd_set& exceptfds) = 0;
@@ -119,17 +120,22 @@ public:
 
 class DLLOPT CEventList : public SnmpSynchronized {
 public:
-    CEventList() : m_head(0, 0, 0), m_msgCount(0), m_done(0) {};
-    ~CEventList();
+    CEventList() : m_head(nullptr, nullptr, nullptr), m_msgCount(0), m_done(0)
+    { }
+
+    ~CEventList() override;
 
     // add an event source to the list
     CEvents* AddEntry(CEvents* events);
 
     // tell main_loop to exit after one pass
-    void SetDone() REENTRANT({ m_done += 1; });
+    void SetDone() REENTRANT({ m_done += 1; })
 
-    // see if main loop should terminate
-    int GetDone() { return m_done; };
+        // see if main loop should terminate
+        int GetDone()
+    {
+        return m_done;
+    }
 
     // find the time of the next event that will timeout
     int GetNextTimeout(msec& sendTime);
@@ -149,7 +155,7 @@ public:
 #endif
 
     // return number of outstanding messages
-    int GetCount() { return m_msgCount; };
+    int GetCount() { return m_msgCount; }
 
     // process any timeout events
     int DoRetries(const msec& sendtime);
@@ -168,6 +174,7 @@ private:
         {
             return m_Next; // NOLINT(clang-analyzer-cplusplus.NewDelete)
         }
+
         CEvents* GetEvents() { return m_events; }
 
     private:

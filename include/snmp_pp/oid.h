@@ -1,58 +1,58 @@
 /*_############################################################################
-  _##
-  _##  oid.h
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  oid.h
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 /*===================================================================
-
-  Copyright (c) 1999
-  Hewlett-Packard Company
-
-  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  Permission to use, copy, modify, distribute and/or sell this software
-  and/or its documentation is hereby granted without fee. User agrees
-  to display the above copyright notice and this license notice in all
-  copies of the software and any documentation of the software. User
-  agrees to assume all liability for the use of the software; Hewlett-Packard
-  makes no representations about the suitability of this software for any
-  purpose. It is provided "AS-IS without warranty of any kind,either express
-  or implied. User hereby grants a royalty-free license to any and all
-  derivatives based upon this software code base.
-
-
-  SNMP++ O I D. H
-
-  OID CLASS DEFINITION
-
-  DESIGN + AUTHOR:   Peter E Mellquist
-
-  DESCRIPTION:
-  This class is fully contained and does not rely on or any other
-  SNMP libraries. This class is portable across any platform
-  which supports C++.
-
-=====================================================================*/
+ *
+ * Copyright (c) 1999
+ * Hewlett-Packard Company
+ *
+ * ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * Permission to use, copy, modify, distribute and/or sell this software
+ * and/or its documentation is hereby granted without fee. User agrees
+ * to display the above copyright notice and this license notice in all
+ * copies of the software and any documentation of the software. User
+ * agrees to assume all liability for the use of the software; Hewlett-Packard
+ * makes no representations about the suitability of this software for any
+ * purpose. It is provided "AS-IS without warranty of any kind,either express
+ * or implied. User hereby grants a royalty-free license to any and all
+ * derivatives based upon this software code base.
+ *
+ *
+ * SNMP++ O I D. H
+ *
+ * OID CLASS DEFINITION
+ *
+ * DESIGN + AUTHOR:   Peter E Mellquist
+ *
+ * DESCRIPTION:
+ * This class is fully contained and does not rely on or any other
+ * SNMP libraries. This class is portable across any platform
+ * which supports C++.
+ *
+ * =====================================================================*/
 
 #ifndef _SNMP_OID_H_
 #define _SNMP_OID_H_
@@ -60,6 +60,7 @@
 #include "snmp_pp/collect.h"
 #include "snmp_pp/smival.h"
 
+#include <cassert>
 #include <libsnmp.h>
 
 #ifdef SNMP_PP_NAMESPACE
@@ -93,11 +94,11 @@ public:
     /**
      * Construct an invalid Oid.
      */
-    Oid() : iv_str(0), iv_part_str(0), m_changed(true)
+    Oid() : iv_str(nullptr), iv_part_str(nullptr), m_changed(true)
     {
         smival.syntax        = sNMP_SYNTAX_OID;
         smival.value.oid.len = 0;
-        smival.value.oid.ptr = 0;
+        smival.value.oid.ptr = nullptr;
     }
 
     /**
@@ -123,22 +124,24 @@ public:
      *
      * @param oid - Source Oid
      */
-    Oid(const Oid& oid) : iv_str(0), iv_part_str(0), m_changed(true)
+    Oid(const Oid& oid)
+        : iv_str(nullptr), iv_part_str(nullptr), m_changed(true)
     {
         smival.syntax        = sNMP_SYNTAX_OID;
         smival.value.oid.len = 0;
-        smival.value.oid.ptr = 0;
+        smival.value.oid.ptr = nullptr;
 
         // allocate some memory for the oid
         // in this case the size to allocate is the same size as the source oid
         if (oid.smival.value.oid.len)
         {
-            smival.value.oid.ptr =
-                (SmiLPUINT32) new SmiUINT32[oid.smival.value.oid.len];
+            smival.value.oid.ptr = new SmiUINT32[oid.smival.value.oid.len];
             if (smival.value.oid.ptr)
+            {
                 // NOLINTNEXTLINE(clang-analyzer-optin.cplusplus.VirtualCall)
-                OidCopy((SmiLPOID) & (oid.smival.value.oid),
-                    (SmiLPOID)&smival.value.oid);
+                OidCopy(
+                    (SmiLPOID) & (oid.smival.value.oid), &smival.value.oid);
+            }
         }
     }
 
@@ -149,20 +152,22 @@ public:
      * @param oid_len - length of array
      */
     Oid(const SmiUINT32* raw_oid, int oid_len)
-        : iv_str(0), iv_part_str(0), m_changed(true)
+        : iv_str(nullptr), iv_part_str(nullptr), m_changed(true)
     {
         smival.syntax        = sNMP_SYNTAX_OID;
         smival.value.oid.len = 0;
-        smival.value.oid.ptr = 0;
+        smival.value.oid.ptr = nullptr;
 
         if (raw_oid && (oid_len > 0))
         {
-            smival.value.oid.ptr = (SmiLPUINT32) new SmiUINT32[oid_len];
+            smival.value.oid.ptr = new SmiUINT32[oid_len];
             if (smival.value.oid.ptr)
             {
                 smival.value.oid.len = oid_len;
                 for (int i = 0; i < oid_len; i++)
+                {
                     smival.value.oid.ptr[i] = raw_oid[i];
+                }
             }
         }
     }
@@ -170,11 +175,17 @@ public:
     /**
      * Destructor.
      */
-    virtual ~Oid()
+    ~Oid() override
     {
         delete_oid_ptr();
-        if (iv_str) delete[] iv_str;           // free up the output string
-        if (iv_part_str) delete[] iv_part_str; // free up the output string
+        if (iv_str)
+        {
+            delete[] iv_str; // free up the output string
+        }
+        if (iv_part_str)
+        {
+            delete[] iv_part_str; // free up the output string
+        }
     }
 
     /**
@@ -196,19 +207,25 @@ public:
      */
     virtual Oid& operator=(const Oid& oid)
     {
-        if (this == &oid) return *this; // protect against assignment from self
-
+        if (this == &oid)
+        {
+            return *this; // protect against assignment from self
+        }
         delete_oid_ptr();
 
         // check for zero len on source
-        if (oid.smival.value.oid.len == 0) return *this;
+        if (oid.smival.value.oid.len == 0)
+        {
+            return *this;
+        }
 
         // allocate some memory for the oid
         smival.value.oid.ptr =
             (SmiLPUINT32) new SmiUINT32[oid.smival.value.oid.len];
         if (smival.value.oid.ptr)
-            OidCopy((SmiLPOID) & (oid.smival.value.oid),
-                (SmiLPOID)&smival.value.oid);
+        {
+            OidCopy((SmiLPOID) & (oid.smival.value.oid), &smival.value.oid);
+        }
         return *this;
     }
 
@@ -223,8 +240,11 @@ public:
     bool operator==(const Oid& rhs) const
     {
         // ensure same len, then use nCompare
-        if (len() != rhs.len()) return 0;
-        return (nCompare(rhs) == 0);
+        if (len() != rhs.len())
+        {
+            return false;
+        }
+        return nCompare(rhs) == 0;
     }
 
     /**
@@ -232,7 +252,7 @@ public:
      */
     bool operator!=(const Oid& rhs) const
     {
-        return (!(*this == rhs));
+        return !(*this == rhs);
     } // just invert ==
 
     /**
@@ -241,13 +261,20 @@ public:
     bool operator<(const Oid& rhs) const
     {
         int result = 0;
+
         // call nCompare with the current
         // Oidx, Oidy and len of Oidx
-        if ((result = nCompare(rhs)) < 0) return 1;
-        if (result > 0) return 0;
+        if ((result = nCompare(rhs)) < 0)
+        {
+            return true;
+        }
+        if (result > 0)
+        {
+            return false;
+        }
 
         // if here, equivalent substrings, call the shorter one <
-        return (len() < rhs.len());
+        return len() < rhs.len();
     }
 
     /**
@@ -255,7 +282,7 @@ public:
      */
     bool operator<=(const Oid& rhs) const
     {
-        return ((*this < rhs) || (*this == rhs));
+        return (*this < rhs) || (*this == rhs);
     }
 
     /**
@@ -263,7 +290,7 @@ public:
      */
     bool operator>(const Oid& rhs) const
     {
-        return (!(*this <= rhs));
+        return !(*this <= rhs);
     } // just invert existing <=
 
     /**
@@ -271,7 +298,7 @@ public:
      */
     bool operator>=(const Oid& rhs) const
     {
-        return (!(*this < rhs));
+        return !(*this < rhs);
     } // just invert existing <
 
     /**
@@ -280,6 +307,7 @@ public:
     DLLOPT friend Oid operator+(const Oid& lhs, const Oid& rhs)
     {
         Oid tmp(lhs);
+
         tmp += rhs;
         return tmp;
     }
@@ -298,7 +326,8 @@ public:
      */
     Oid& operator+=(const SmiUINT32 i)
     {
-        Oid other((SmiLPUINT32)&i, 1);
+        Oid const other((SmiLPUINT32)&i, 1);
+
         (*this) += other;
         return *this;
     }
@@ -312,11 +341,14 @@ public:
     {
         SmiLPUINT32 new_oid = nullptr;
 
-        if (o.smival.value.oid.len == 0) return *this;
+        if (o.smival.value.oid.len == 0)
+        {
+            return *this;
+        }
 
         new_oid = (SmiLPUINT32) new SmiUINT32[smival.value.oid.len
             + o.smival.value.oid.len];
-        if (new_oid == 0)
+        if (new_oid == nullptr)
         {
             delete_oid_ptr();
             return *this;
@@ -325,7 +357,7 @@ public:
         if (smival.value.oid.ptr)
         {
             memcpy((SmiLPBYTE)new_oid, (SmiLPBYTE)smival.value.oid.ptr,
-                (size_t)(smival.value.oid.len * sizeof(SmiUINT32)));
+                (smival.value.oid.len * sizeof(SmiUINT32)));
 
             delete[] smival.value.oid.ptr;
         }
@@ -335,7 +367,7 @@ public:
 
         memcpy((SmiLPBYTE)&new_oid[smival.value.oid.len],
             (SmiLPBYTE)o.smival.value.oid.ptr,
-            (size_t)(o.smival.value.oid.len * sizeof(SmiUINT32)));
+            (o.smival.value.oid.len * sizeof(SmiUINT32)));
 
         smival.value.oid.len += o.smival.value.oid.len;
 
@@ -390,7 +422,7 @@ public:
      * @param raw_oid - Array of new values
      * @param oid_len - Length of the array raw_oid
      */
-    void set_data(const SmiUINT32* raw_oid, const unsigned int oid_len);
+    void set_data(const SmiUINT32* raw_oid, const size_t oid_len);
 
     /**
      * Set the data from raw form.
@@ -398,7 +430,7 @@ public:
      * @param str     - Array of new values (a string)
      * @param str_len - Length of the array raw_oid
      */
-    void set_data(const char* str, const unsigned int str_len);
+    void set_data(const char* str, const size_t str_len);
 
     /**
      * Get the length of the oid.
@@ -416,7 +448,10 @@ public:
         if ((n <= smival.value.oid.len) && (n > 0))
         {
             smival.value.oid.len -= n;
-            if (smival.value.oid.len == 0) delete_oid_ptr();
+            if (smival.value.oid.len == 0)
+            {
+                delete_oid_ptr();
+            }
             m_changed = true;
         }
     }
@@ -437,12 +472,16 @@ public:
         // If both oids are too short, decrease len
         if ((smival.value.oid.len < length)
             && (o.smival.value.oid.len < length))
+        {
             length = smival.value.oid.len < o.smival.value.oid.len
                 ? o.smival.value.oid.len
                 : smival.value.oid.len;
+        }
 
-        if (length == 0) return 0; // equal
-
+        if (length == 0)
+        {
+            return 0; // equal
+        }
         // only compare for the minimal length
         if (length > smival.value.oid.len)
         {
@@ -459,17 +498,27 @@ public:
         while (z < length)
         {
             if (smival.value.oid.ptr[z] < o.smival.value.oid.ptr[z])
+            {
                 return -1; // less than
+            }
             if (smival.value.oid.ptr[z] > o.smival.value.oid.ptr[z])
+            {
                 return 1; // greater than
+            }
             ++z;
         }
 
         // if we truncated the len then these may not be equal
         if (reduced_len)
         {
-            if (smival.value.oid.len < o.smival.value.oid.len) return -1;
-            if (smival.value.oid.len > o.smival.value.oid.len) return 1;
+            if (smival.value.oid.len < o.smival.value.oid.len)
+            {
+                return -1;
+            }
+            if (smival.value.oid.len > o.smival.value.oid.len)
+            {
+                return 1;
+            }
         }
         return 0; // equal
     }
@@ -490,8 +539,10 @@ public:
             ? o.smival.value.oid.len
             : smival.value.oid.len;
 
-        if (length == 0) return 0; // equal
-
+        if (length == 0)
+        {
+            return 0; // equal
+        }
         // only compare for the minimal length
         if (length > smival.value.oid.len)
         {
@@ -508,17 +559,27 @@ public:
         while (z < length)
         {
             if (smival.value.oid.ptr[z] < o.smival.value.oid.ptr[z])
+            {
                 return -1; // less than
+            }
             if (smival.value.oid.ptr[z] > o.smival.value.oid.ptr[z])
+            {
                 return 1; // greater than
+            }
             ++z;
         }
 
         // if we truncated the len then these may not be equal
         if (reduced_len)
         {
-            if (smival.value.oid.len < o.smival.value.oid.len) return -1;
-            if (smival.value.oid.len > o.smival.value.oid.len) return 1;
+            if (smival.value.oid.len < o.smival.value.oid.len)
+            {
+                return -1;
+            }
+            if (smival.value.oid.len > o.smival.value.oid.len)
+            {
+                return 1;
+            }
         }
         return 0; // equal
     }
@@ -526,10 +587,7 @@ public:
     /**
      * Return validity of the object.
      */
-    bool valid() const override
-    {
-        return (smival.value.oid.ptr ? true : false);
-    }
+    bool valid() const override { return smival.value.oid.ptr ? true : false; }
 
     /**
      * Get a printable ASCII string of the whole value.
@@ -539,7 +597,7 @@ public:
     const char* get_printable() const override
     {
         return get_printable(1, smival.value.oid.len, (char*&)iv_str);
-    };
+    }
 
     /**
      * Get a printable ASCII string of the right part of the value.
@@ -552,7 +610,7 @@ public:
     {
         return get_printable(
             smival.value.oid.len - n + 1, n, (char*&)iv_part_str);
-    };
+    }
 
     /**
      * Get a printable ASCII string of a part of the value.
@@ -581,7 +639,7 @@ public:
     const char* get_printable(const uint32_t start, const uint32_t n) const
     {
         return get_printable(start, n, (char*&)iv_part_str);
-    };
+    }
 
     /**
      * Clone this object.
@@ -618,7 +676,10 @@ protected:
     virtual int OidCopy(SmiLPOID srcOid, SmiLPOID dstOid) const
     {
         // check source len ! zero
-        if (srcOid->len == 0) return -1;
+        if (srcOid->len == 0)
+        {
+            return -1;
+        }
 
         // copy source to destination
         memcpy((SmiLPBYTE)dstOid->ptr, (SmiLPBYTE)srcOid->ptr,
@@ -663,7 +724,7 @@ inline void Oid::delete_oid_ptr()
     if (smival.value.oid.ptr)
     {
         delete[] smival.value.oid.ptr;
-        smival.value.oid.ptr = 0;
+        smival.value.oid.ptr = nullptr;
     }
     smival.value.oid.len = 0;
     m_changed            = true;

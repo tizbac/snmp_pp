@@ -1,29 +1,29 @@
 /*_############################################################################
-  _##
-  _##  asn1.h
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  asn1.h
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 
 #ifndef _SNMP_ASN1_H_
 #define _SNMP_ASN1_H_
@@ -38,7 +38,7 @@ namespace Snmp_pp
 {
 #endif
 
-typedef SmiUINT32 oid;
+typedef SmiUINT32 oid_t;
 #define MAX_SUBID   0xFFFFFFFF
 #define MAX_OID_LEN 128 /* max subid's in an oid */
 
@@ -136,7 +136,7 @@ struct snmp_pdu {
     SmiUINT32 errindex; // Error index
 
     // Trap information
-    oid*      enterprise; // System OID
+    oid_t*    enterprise;    // System OID
     int       enterprise_length;
     ipaddr    agent_addr;    // address of object generating trap
     int       trap_type;     // trap type
@@ -150,13 +150,14 @@ struct snmp_pdu {
 // vb list
 struct variable_list {
     struct variable_list* next_variable; // NULL for last variable
-    oid*                  name;          // Object identifier of variable
+    oid_t*                name;          // Object identifier of variable
     int                   name_length;   // number of subid's in name
     unsigned char         type;          // ASN type of variable
-    union {                              // value of variable
+    union                                // value of variable
+    {
         SmiINT32*         integer;
         unsigned char*    string;
-        oid*              objid;
+        oid_t*            objid;
         unsigned char*    bitstring;
         struct counter64* counter64;
     } val;
@@ -225,10 +226,10 @@ DLLOPT unsigned char* asn_build_length(
     unsigned char* data, int* datalength, int length);
 
 DLLOPT unsigned char* asn_parse_objid(unsigned char* data, int* datalength,
-    unsigned char* type, oid* objid, int* objidlength);
+    unsigned char* type, oid_t* objid, int* objidlength);
 
 DLLOPT unsigned char* asn_build_objid(unsigned char* data, int* datalength,
-    unsigned char type, oid* objid, int objidlength);
+    unsigned char type, oid_t* objid, int objidlength);
 
 DLLOPT void asn_build_subid(uint32_t subid, unsigned char*& bp);
 
@@ -259,7 +260,7 @@ DLLOPT int snmp_build(struct snmp_pdu* pdu, unsigned char* packet,
     const unsigned char* community, const int community_len);
 
 DLLOPT void snmp_add_var(
-    struct snmp_pdu* pdu, oid* name, int name_length, SmiVALUE* smival);
+    struct snmp_pdu* pdu, oid_t* name, int name_length, SmiVALUE* smival);
 
 DLLOPT int snmp_parse(struct snmp_pdu* pdu, unsigned char* data,
     int data_length, unsigned char* community_name, int& community_len,
@@ -271,11 +272,11 @@ DLLOPT unsigned char* build_vb(
 DLLOPT unsigned char* build_data_pdu(struct snmp_pdu* pdu, unsigned char* buf,
     int* buf_len, unsigned char* vb_buf, int vb_buf_len);
 
-DLLOPT unsigned char* snmp_build_var_op(unsigned char* data, oid* var_name,
+DLLOPT unsigned char* snmp_build_var_op(unsigned char* data, oid_t* var_name,
     int* var_name_len, unsigned char var_val_type, int var_val_len,
     unsigned char* var_val, int* listlength);
 
-DLLOPT unsigned char* snmp_parse_var_op(unsigned char* data, oid* var_name,
+DLLOPT unsigned char* snmp_parse_var_op(unsigned char* data, oid_t* var_name,
     int* var_name_len, unsigned char* var_val_type, int* var_val_len,
     unsigned char** var_val, int* listlength);
 

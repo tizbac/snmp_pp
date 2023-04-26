@@ -1,29 +1,29 @@
 /*_############################################################################
-  _##
-  _##  mp_v3.h
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  mp_v3.h
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 
 #ifndef _SNMP_MP_V3_H_
 #define _SNMP_MP_V3_H_
@@ -120,12 +120,12 @@ public:
      * snmpEngineBoots counter (The functions getBootCounter() and
      * saveBootCounter() can be used to do this.).
      *
-     * @param engine_id    - The locale engine id
-     * @param engine_boots - The new value for the snmpEngineBoots counter
+     * @param snmpEngineID - The locale engine id
+     * @param engineBoots - The new value for the snmpEngineBoots counter
      * @param construct_status - OUT: SNMPv3_MP_OK or SNMPv3_MP_ERROR
      *
      */
-    v3MP(const OctetStr& engine_id, unsigned int engine_boots,
+    v3MP(const OctetStr& snmpEngineID, uint32_t engineBoots,
         int& construct_status);
 
     /**
@@ -135,19 +135,19 @@ public:
      *
      * @return - SNMPv3_MP_OK or SNMPv3_MP_ERROR
      */
-    void get_local_engine_id(OctetStr& id) { id = own_engine_id_oct; };
+    void get_local_engine_id(OctetStr& id) { id = own_engine_id_oct; }
 
     /**
      * Get the engine id of this SNMP entity as a OctetStr reference.
      *
      * @return Local engine id.
      */
-    const OctetStr& get_local_engine_id() const { return own_engine_id_oct; };
+    const OctetStr& get_local_engine_id() const { return own_engine_id_oct; }
 
     /**
      * Get a pointer to the USM object that is used by the v3MP.
      */
-    USM* get_usm() { return usm; };
+    USM* get_usm() { return usm; }
 
     /**
      * Free all allocated ressources of the v3MP and leave it in an
@@ -164,17 +164,17 @@ public:
      * mode of the USM is enabled, snmp++ will add entries to this table
      * whenever a new engine id is dicovered.
      *
-     * @param engine_id - The engine id
+     * @param snmpEngineID - The engine id
      * @param host      - The numerical IP address
      * @param port      - The port
      *
      * @return - SNMPv3_MP_ERROR, SNMPv3_MP_OK
      */
     int add_to_engine_id_table(
-        const OctetStr& engine_id, const OctetStr& host, int port)
+        const OctetStr& snmpEngineID, const OctetStr& host, int port)
     {
-        return engine_id_table.add_entry(engine_id, host, port);
-    };
+        return engine_id_table.add_entry(snmpEngineID, host, port);
+    }
 
     /**
      * Remove an entry from the engine id table.
@@ -187,24 +187,24 @@ public:
     int remove_from_engine_id_table(const OctetStr& host, int port)
     {
         return engine_id_table.delete_entry(host, port);
-    };
+    }
 
     /**
      * Remove an entry from the engine id table.
      *
-     * @param engine_id - The engine id
+     * @param snmpEngineID - The engine id
      *
      * @return - SNMPv3_MP_ERROR, SNMPv3_MP_OK
      */
-    int remove_from_engine_id_table(const OctetStr& engine_id)
+    int remove_from_engine_id_table(const OctetStr& snmpEngineID)
     {
-        return engine_id_table.delete_entry(engine_id);
-    };
+        return engine_id_table.delete_entry(snmpEngineID);
+    }
 
     /**
      * Get the engine id of the SNMP entity at the given host/port.
      *
-     * @param engine_id - OUT: The engine id
+     * @param snmpEngineID - OUT: The engine id
      * @param hostport  - The numerical IP address and port
      *                    (syntax: a.b.c.d/port)
      *
@@ -212,10 +212,10 @@ public:
      *           SNMPv3_MP_OK
      */
     int get_from_engine_id_table(
-        OctetStr& engine_id, const OctetStr& hostport) const
+        OctetStr& snmpEngineID, const OctetStr& hostport) const
     {
-        return engine_id_table.get_entry(engine_id, hostport);
-    };
+        return engine_id_table.get_entry(snmpEngineID, hostport);
+    }
 
     /**
      * Get the engineID of the SNMP entity at the given host/port.
@@ -231,7 +231,7 @@ public:
         OctetStr& engineID, const OctetStr& host, int port) const
     {
         return engine_id_table.get_entry(engineID, host, port);
-    };
+    }
 
     /**
      * Remove all entries from the engine id table.
@@ -239,17 +239,17 @@ public:
      * @return - SNMPv3_MP_NOT_INITIALIZED, SNMPv3_MP_ERROR,
      *           SNMPv3_MP_OK
      */
-    int reset_engine_id_table() { return engine_id_table.reset(); };
+    int reset_engine_id_table() { return engine_id_table.reset(); }
 
     /**
      * Remove all occurences of this engine id from v3MP and USM.
      *
-     * @param engine_id - The engine id to remove
+     * @param snmpEngineID - The engine id to remove
      *
      * @return - SNMPv3_MP_NOT_INITIALIZED, SNMPv3_MP_ERROR,
      *           SNMPv3_MP_OK
      */
-    int remove_engine_id(const OctetStr& engine_id);
+    int remove_engine_id(const OctetStr& snmpEngineID);
 
     // ----------[ Access to status counters for agent++ ]--------------
 
@@ -261,14 +261,14 @@ public:
     uint32_t get_stats_unknown_security_models() const
     {
         return snmpUnknownSecurityModels;
-    };
+    }
 
     /**
      * Get the value of the status counter snmpInvalidMsgs.
      *
      * @return - The status counter
      */
-    uint32_t get_stats_invalid_msgs() const { return snmpInvalidMsgs; };
+    uint32_t get_stats_invalid_msgs() const { return snmpInvalidMsgs; }
 
     /**
      * Get the value of the status counter snmpUnknownPDUHandlers.
@@ -278,22 +278,22 @@ public:
     uint32_t get_stats_unknown_pdu_handlers() const
     {
         return snmpUnknownPDUHandlers;
-    };
+    }
 
     /**
      * Increment the value of the status counter snmpUnknownSecurityModels.
      */
-    void inc_stats_unknown_security_models() { snmpUnknownSecurityModels++; };
+    void inc_stats_unknown_security_models() { snmpUnknownSecurityModels++; }
 
     /**
      * Increment the value of the status counter snmpInvalidMsgs.
      */
-    void inc_stats_invalid_msgs() { snmpInvalidMsgs++; };
+    void inc_stats_invalid_msgs() { snmpInvalidMsgs++; }
 
     /**
      * Increment the value of the status counter snmpUnknownPDUHandlers.
      */
-    void inc_stats_unknown_pdu_handlers() { snmpUnknownPDUHandlers++; };
+    void inc_stats_unknown_pdu_handlers() { snmpUnknownPDUHandlers++; }
 
     // temporary pointer will be removed...
     static v3MP* instance;
@@ -374,7 +374,7 @@ protected:
     void delete_from_cache(uint32_t requestID, const bool local_request = true)
     {
         cache.delete_entry(requestID, local_request);
-    };
+    }
 
 public:
     /**
@@ -390,7 +390,7 @@ public:
         uint32_t requestID, uint32_t messageID, const bool local_request)
     {
         cache.delete_entry(requestID, messageID, local_request);
-    };
+    }
 
 private:
     /**
@@ -427,31 +427,31 @@ private:
         /**
          * Add an entry to the table.
          *
-         * @param engine_id - The engineID
+         * @param snmpEngineID - The engineID
          * @param host      - The numerical IP address
          * @param port      - The port
          *
          * @return - SNMPv3_MP_ERROR, SNMPv3_MP_OK
          */
         int add_entry(
-            const OctetStr& engine_id, const OctetStr& host, int port);
+            const OctetStr& snmpEngineID, const OctetStr& host, int port);
 
         /**
-         * Get the engine_id of the SNMP entity at the given host/port.
+         * Get the snmpEngineID of the SNMP entity at the given host/port.
          *
-         * @param engine_id - OUT: The engineID
+         * @param snmpEngineID - OUT: The engineID
          * @param hostport  - The numerical IP address and port
          *                    (syntax: a.b.c.d/port)
          *
          * @return - SNMPv3_MP_NOT_INITIALIZED, SNMPv3_MP_ERROR,
          *           SNMPv3_MP_OK
          */
-        int get_entry(OctetStr& engine_id, const OctetStr& hostport) const;
+        int get_entry(OctetStr& snmpEngineID, const OctetStr& hostport) const;
 
         /**
          * Get the engineID of the SNMP entity at the given host/port.
          *
-         * @param engine_id - OUT: The engineID
+         * @param snmpEngineID - OUT: The engineID
          * @param host      - The numerical IP address
          * @param port      - The port
          *
@@ -459,7 +459,7 @@ private:
          *           SNMPv3_MP_OK
          */
         int get_entry(
-            OctetStr& engine_id, const OctetStr& host, int port) const;
+            OctetStr& snmpEngineID, const OctetStr& host, int port) const;
 
         /**
          * Remove all entries from the engine id table.
@@ -472,12 +472,12 @@ private:
         /**
          * Remove the given engine id from the table.
          *
-         * @param engine_id - The engine id to remove
+         * @param snmpEngineID - The engine id to remove
          *
          * @return - SNMPv3_MP_NOT_INITIALIZED, SNMPv3_MP_ERROR,
          *           SNMPv3_MP_OK
          */
-        int delete_entry(const OctetStr& engine_id);
+        int delete_entry(const OctetStr& snmpEngineID);
 
         /**
          * Remove the entry for the given address/port from the table.
@@ -506,14 +506,17 @@ private:
          */
         void set_cache_size_limit(int size_upper_limit)
         {
-            if (size_upper_limit > 0) upper_limit_entries = size_upper_limit;
+            if (size_upper_limit > 0)
+            {
+                upper_limit_entries = size_upper_limit;
+            }
         }
 
     private:
         bool initialize_table(const int size);
 
         struct Entry_T {
-            OctetStr engine_id;
+            OctetStr snmpEngineID;
             OctetStr host;
             int      port;
         };
@@ -571,6 +574,7 @@ private:
             const OctetStr& context_engine_id, const OctetStr& context_name,
             struct SecurityStateReference* sec_state_ref, int error_code,
             bool local_request);
+
         /**
          * Search the cache for a message id, return the error code and
          * the sec_state_ref and delete the entry from the cache.
@@ -619,7 +623,7 @@ private:
 
         void delete_content(struct Cache::Entry_T& ce);
 
-        void set_usm(USM* usm_to_use) { usm = usm_to_use; };
+        void set_usm(USM* usm_to_use) { usm = usm_to_use; }
 
     private:
 #    ifdef _THREADS
@@ -643,7 +647,7 @@ private:
     unsigned int cur_msg_id; ///< msgID to use for next message
     SNMP_PP_MUTABLE SnmpSynchronized cur_msg_id_lock;
 
-    USM* usm; ///< the USM object used
+    USM* usm;                ///< the USM object used
 
     // MIB Counters
     unsigned int snmpUnknownSecurityModels;

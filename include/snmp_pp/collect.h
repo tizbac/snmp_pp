@@ -1,55 +1,55 @@
 /*_############################################################################
-  _##
-  _##  collect.h
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  collect.h
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 /*===================================================================
-
-  Copyright (c) 1999
-  Hewlett-Packard Company
-
-  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  Permission to use, copy, modify, distribute and/or sell this software
-  and/or its documentation is hereby granted without fee. User agrees
-  to display the above copyright notice and this license notice in all
-  copies of the software and any documentation of the software. User
-  agrees to assume all liability for the use of the software; Hewlett-Packard
-  makes no representations about the suitability of this software for any
-  purpose. It is provided "AS-IS without warranty of any kind,either express
-  or implied. User hereby grants a royalty-free license to any and all
-  derivatives based upon this software code base.
-
-
-  SNMP++ C O L L E C T . H
-
-  COLLECTION CLASS DEFINITION
-
-  DESIGN + AUTHOR:  Peter E Mellquist
-
-  DESCRIPTION: Simple Collection classes for SNMP++ classes.
-
-=====================================================================*/
+ *
+ * Copyright (c) 1999
+ * Hewlett-Packard Company
+ *
+ * ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * Permission to use, copy, modify, distribute and/or sell this software
+ * and/or its documentation is hereby granted without fee. User agrees
+ * to display the above copyright notice and this license notice in all
+ * copies of the software and any documentation of the software. User
+ * agrees to assume all liability for the use of the software; Hewlett-Packard
+ * makes no representations about the suitability of this software for any
+ * purpose. It is provided "AS-IS without warranty of any kind,either express
+ * or implied. User hereby grants a royalty-free license to any and all
+ * derivatives based upon this software code base.
+ *
+ *
+ * SNMP++ C O L L E C T . H
+ *
+ * COLLECTION CLASS DEFINITION
+ *
+ * DESIGN + AUTHOR:  Peter E Mellquist
+ *
+ * DESCRIPTION: Simple Collection classes for SNMP++ classes.
+ *
+ * =====================================================================*/
 
 #ifndef _SNMP_COLLECT_H_
 #define _SNMP_COLLECT_H_
@@ -69,7 +69,8 @@ template <class T>
 class SnmpCollection {
     class cBlock {
     public:
-        cBlock(cBlock* p, cBlock* n) : prev(p), next(n) {};
+        cBlock(cBlock* p, cBlock* n) : prev(p), next(n) { }
+
         T*      item[MAXT];
         cBlock* prev;
         cBlock* next;
@@ -94,7 +95,10 @@ public:
      */
     SnmpCollection(const SnmpCollection<T>& c) : count(0), data(0, 0)
     {
-        if (c.count == 0) return;
+        if (c.count == 0)
+        {
+            return;
+        }
 
         // load up the new collection
         cBlock* current   = &data;
@@ -138,11 +142,15 @@ public:
     {
         cBlock* current = &data;
         int     cn      = (int)count % MAXT;
-        while (current->next) current = current->next;
+
+        while (current->next) { current = current->next; }
         if ((count > 0) && ((count % MAXT) == 0))
         {
-            cBlock* add = new cBlock(current, 0);
-            if (!add) return *this;
+            auto* add = new cBlock(current, 0);
+            if (!add)
+            {
+                return *this;
+            }
             current->next = add;
             add->item[0]  = (T*)(i.clone());
         }
@@ -160,11 +168,16 @@ public:
      */
     SnmpCollection& operator=(const SnmpCollection<T>& c)
     {
-        if (this == &c) return *this; // check for self assignment
+        if (this == &c)
+        {
+            return *this; // check for self assignment
+        }
+        clear();          // delete the data
 
-        clear(); // delete the data
-
-        if (c.count == 0) return *this;
+        if (c.count == 0)
+        {
+            return *this;
+        }
 
         // load up the new collection
         cBlock* current   = &data;
@@ -200,9 +213,9 @@ public:
         if ((p < count) && (p >= 0))
         {
             cBlock const* current = &data;
-            int           bn      = (int)(p / MAXT);
-            int           cn      = (int)p % MAXT;
-            for (int z = 0; z < bn; z++) current = current->next;
+            int const     bn      = (int)(p / MAXT);
+            int const     cn      = (int)p % MAXT;
+            for (int z = 0; z < bn; z++) { current = current->next; }
             return *(current->item[cn]);
         }
         else
@@ -220,12 +233,14 @@ public:
      */
     int set_element(const T& i, const int p)
     {
-        if ((p < 0) || (p > count)) return -1; // not found!
-
-        cBlock* current = &data;
-        int     bn      = (int)p / MAXT;
-        int     cn      = (int)p % MAXT;
-        for (int z = 0; z < bn; z++) current = current->next;
+        if ((p < 0) || (p > count))
+        {
+            return -1; // not found!
+        }
+        cBlock*   current = &data;
+        int const bn      = (int)p / MAXT;
+        int const cn      = (int)p % MAXT;
+        for (int z = 0; z < bn; z++) { current = current->next; }
         delete current->item[cn];
         current->item[cn] = (T*)(i.clone());
         return 0;
@@ -238,12 +253,14 @@ public:
      */
     int get_element(T& t, const int p) const
     {
-        if ((p < 0) || (p > count)) return -1; // not found!
-
+        if ((p < 0) || (p > count))
+        {
+            return -1; // not found!
+        }
         cBlock const* current = &data;
-        int           bn      = (int)p / MAXT;
-        int           cn      = (int)p % MAXT;
-        for (int z = 0; z < bn; z++) current = current->next;
+        int const     bn      = (int)p / MAXT;
+        int const     cn      = (int)p % MAXT;
+        for (int z = 0; z < bn; z++) { current = current->next; }
         t = *(current->item[cn]);
         return 0;
     }
@@ -255,12 +272,14 @@ public:
      */
     int get_element(T*& t, const int p) const
     {
-        if ((p < 0) || (p > count)) return -1; // not found!
-
+        if ((p < 0) || (p > count))
+        {
+            return -1; // not found!
+        }
         cBlock const* current = &data;
-        int           bn      = (int)p / MAXT;
-        int           cn      = (int)p % MAXT;
-        for (int z = 0; z < bn; z++) current = current->next;
+        int const     bn      = (int)p / MAXT;
+        int const     cn      = (int)p % MAXT;
+        for (int z = 0; z < bn; z++) { current = current->next; }
         t = current->item[cn];
         return 0;
     }
@@ -271,6 +290,7 @@ public:
     void apply(void f(T&))
     {
         T temp;
+
         for (int z = 0; z < count; z++)
         {
             this->get_element(temp, z);
@@ -286,6 +306,7 @@ public:
     int find(const T& i, int& pos) const
     {
         T temp;
+
         for (int z = 0; z < count; z++)
         {
             this->get_element(temp, z);
@@ -305,6 +326,7 @@ public:
     {
         // first see if we have it
         int pos = 0;
+
         if (find(i, pos))
         {
             SnmpCollection<T> newCollection;
@@ -332,7 +354,10 @@ public:
      */
     void clear()
     {
-        if (count == 0) return;
+        if (count == 0)
+        {
+            return;
+        }
 
         cBlock* current = &data;
         int     z       = 0;
@@ -350,7 +375,7 @@ public:
         }
 
         // delete the blocks
-        while (current->next) current = current->next;
+        while (current->next) { current = current->next; }
         while (current->prev)
         {
             current = current->prev;
