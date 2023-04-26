@@ -1,29 +1,29 @@
 /*_############################################################################
-  _##
-  _##  receive_trap.cpp
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  receive_trap.cpp
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 
 #include "snmp_pp/collect.h"
 #include "snmp_pp/notifyqueue.h"
@@ -80,10 +80,15 @@ void callback(int reason, Snmp* snmp, Pdu& pdu, SnmpTarget& target, void* cd)
 int main(int argc, char** argv)
 {
     int trap_port;
+
     if (argc < 2)
+    {
         trap_port = 10162; // no need to be root
+    }
     else
+    {
         trap_port = atoi(argv[1]);
+    }
 
     //----------[ create a SNMP++ session ]-----------------------------------
     int status;
@@ -171,7 +176,6 @@ int main(int argc, char** argv)
     usm->add_usm_user("SHAIDEA", SNMP_AUTHPROTOCOL_HMACSHA,
         SNMP_PRIVPROTOCOL_IDEA, "SHAIDEAUserAuthPassword",
         "SHAIDEAUserPrivPassword");
-
 #endif
     OidCollection    oidc;
     TargetCollection targetc;
@@ -187,7 +191,9 @@ int main(int argc, char** argv)
         exit(1);
     }
     else
+    {
         std::cout << "Waiting for traps/informs..." << std::endl;
+    }
 
     snmp.start_poll_thread(1000);
 

@@ -1,44 +1,44 @@
 /*_############################################################################
-  _##
-  _##  msec.h
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  msec.h
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 /*
-  Copyright (c) 1999
-  Hewlett-Packard Company
-
-  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  Permission to use, copy, modify, distribute and/or sell this software
-  and/or its documentation is hereby granted without fee. User agrees
-  to display the above copyright notice and this license notice in all
-  copies of the software and any documentation of the software. User
-  agrees to assume all liability for the use of the software; Hewlett-Packard
-  makes no representations about the suitability of this software for any
-  purpose. It is provided "AS-IS without warranty of any kind,either express
-  or implied. User hereby grants a royalty-free license to any and all
-  derivatives based upon this software code base.
-*/
+ * Copyright (c) 1999
+ * Hewlett-Packard Company
+ *
+ * ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * Permission to use, copy, modify, distribute and/or sell this software
+ * and/or its documentation is hereby granted without fee. User agrees
+ * to display the above copyright notice and this license notice in all
+ * copies of the software and any documentation of the software. User
+ * agrees to assume all liability for the use of the software; Hewlett-Packard
+ * makes no representations about the suitability of this software for any
+ * purpose. It is provided "AS-IS without warranty of any kind,either express
+ * or implied. User hereby grants a royalty-free license to any and all
+ * derivatives based upon this software code base.
+ */
 
 #ifndef _SNMP_MSEC_H_
 #define _SNMP_MSEC_H_
@@ -64,6 +64,7 @@ namespace Snmp_pp
 #define MSECOUTBUF 20
 
 //----[ msec class ]---------------------------------------------------
+
 /**
  * Time handling...
  */
@@ -72,14 +73,14 @@ public:
     /**
      * Constructor, sets the time to the current system time.
      */
-    msec() { refresh(); };
+    msec() { refresh(); }
 
     /**
      * Constructor using another msec object
      *
      * @param in_msec - Time for this object
      */
-    msec(const msec& in_msec) : m_time(in_msec.m_time), m_changed(true) {};
+    msec(const msec& in_msec) : m_time(in_msec.m_time), m_changed(true) { }
 
     /**
      * Constructor using seconds and milli sconds.
@@ -87,46 +88,50 @@ public:
      * @param sec    - Seconds
      * @param milsec - Milli seconds
      */
-    msec(const int sec, const int milsec) : m_changed(true)
+    msec(const long sec, const int milsec) : m_changed(true)
     {
         m_time.tv_sec  = sec;
         m_time.tv_usec = milsec;
-    };
+    }
 
     DLLOPT friend int operator==(const msec& t1, const msec& t2);
+
     DLLOPT friend int operator!=(const msec& t1, const msec& t2);
+
     DLLOPT friend int operator<(const msec& t1, const msec& t2);
+
     DLLOPT friend int operator>(const msec& t1, const msec& t2);
+
     DLLOPT friend int operator<=(const msec& t1, const msec& t2)
     {
-        return ((t1 < t2) || (t1 == t2));
-    };
+        return (t1 < t2) || (t1 == t2);
+    }
+
     DLLOPT friend int operator>=(const msec& t1, const msec& t2)
     {
-        return ((t1 > t2) || (t1 == t2));
-    };
+        return (t1 > t2) || (t1 == t2);
+    }
 
     msec& operator-=(const long millisec);
     msec& operator-=(const timeval& t1);
     msec& operator+=(const long millisec);
     msec& operator+=(const timeval& t1);
+
     msec& operator=(const msec& t)
     {
         m_time    = t.m_time;
         m_changed = true;
         return *this;
-    };
+    }
+
     msec& operator=(const timeval& t1);
 
     /**
-     * Use as an unsigned long.
+     * Use as an time_t.
      *
      * @return Time in milli seconds
      */
-    operator unsigned long() const
-    {
-        return ((m_time.tv_sec * 1000) + m_time.tv_usec);
-    };
+    operator time_t() const { return (m_time.tv_sec * 1000) + m_time.tv_usec; }
 
     /**
      * Set the time to the current system time.
@@ -138,10 +143,10 @@ public:
      */
     void SetInfinite()
     {
-        m_time.tv_sec  = (time_t)-1;
+        m_time.tv_sec  = -1;
         m_time.tv_usec = 0;
         m_changed      = true;
-    };
+    }
 
     /**
      * Check if the time is infinite.
@@ -150,8 +155,8 @@ public:
      */
     int IsInfinite() const
     {
-        return ((m_time.tv_sec == (time_t)-1) && (m_time.tv_usec == 0));
-    };
+        return (m_time.tv_sec == -1) && (m_time.tv_usec == 0);
+    }
 
     /**
      * Get the difference between this and the given time.
@@ -171,9 +176,10 @@ public:
      */
     void GetDeltaFromNow(timeval& timeout) const
     {
-        msec now;
+        msec const now;
+
         now.GetDelta(*this, timeout);
-    };
+    }
 
     /**
      * Return the time as printable string.
@@ -183,7 +189,7 @@ public:
 private:
     timeval              m_time = {};
     SNMP_PP_MUTABLE char m_output_buffer[MSECOUTBUF] {};
-    SNMP_PP_MUTABLE bool m_changed;
+    SNMP_PP_MUTABLE bool m_changed {};
 
 #if !defined HAVE_LOCALTIME_R && !defined HAVE_REENTRANT_LOCALTIME
 #    ifdef _THREADS

@@ -1,29 +1,29 @@
 /*_############################################################################
-  _##
-  _##  usm_v3.h
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  usm_v3.h
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 
 #ifndef _SNMP_USM_V3_H_
 #define _SNMP_USM_V3_H_
@@ -93,9 +93,9 @@ namespace Snmp_pp
  * none.
  */
 //@{
-#    define SNMP_PRIVPROTOCOL_NONE   1 ///< None
-#    define SNMP_PRIVPROTOCOL_DES    2 ///< DES
-#    define SNMP_PRIVPROTOCOL_AES128 4 ///< AES128 (RFC 3826)
+#    define SNMP_PRIVPROTOCOL_NONE   1   ///< None
+#    define SNMP_PRIVPROTOCOL_DES    2   ///< DES
+#    define SNMP_PRIVPROTOCOL_AES128 4   ///< AES128 (RFC 3826)
 
 #    define SNMP_PRIVPROTOCOL_IDEA    9  ///< IDEA (non standard)
 #    define SNMP_PRIVPROTOCOL_AES192  20 ///< AES192 (non standard)
@@ -182,32 +182,32 @@ struct UsmKeyUpdate;
 
 struct UsmUserTableEntry {
     unsigned char* usmUserEngineID;
-    long int       usmUserEngineIDLength;
+    SmiINT32       usmUserEngineIDLength;
     unsigned char* usmUserName;
-    long int       usmUserNameLength;
+    SmiINT32       usmUserNameLength;
     unsigned char* usmUserSecurityName;
-    long int       usmUserSecurityNameLength;
+    SmiINT32       usmUserSecurityNameLength;
     SmiINT32       usmUserAuthProtocol;
     unsigned char* usmUserAuthKey;
-    long int       usmUserAuthKeyLength;
+    SmiINT32       usmUserAuthKeyLength;
     SmiINT32       usmUserPrivProtocol;
     unsigned char* usmUserPrivKey;
-    long int       usmUserPrivKeyLength;
+    SmiINT32       usmUserPrivKeyLength;
 };
 
 struct UsmUser {
     unsigned char* engineID;
-    long int       engineIDLength;
+    SmiINT32       engineIDLength;
     unsigned char* usmUserName;
-    long int       usmUserNameLength;
+    SmiINT32       usmUserNameLength;
     unsigned char* securityName;
-    long int       securityNameLength;
+    SmiINT32       securityNameLength;
     SmiINT32       authProtocol;
     unsigned char* authKey;
-    long int       authKeyLength;
+    SmiINT32       authKeyLength;
     SmiINT32       privProtocol;
     unsigned char* privKey;
-    long int       privKeyLength;
+    SmiINT32       privKeyLength;
 };
 
 struct UsmUserNameTableEntry {
@@ -216,9 +216,9 @@ struct UsmUserNameTableEntry {
     SmiINT32       usmUserAuthProtocol;
     SmiINT32       usmUserPrivProtocol;
     unsigned char* authPassword;
-    long int       authPasswordLength;
+    SmiINT32       authPasswordLength;
     unsigned char* privPassword;
-    long int       privPasswordLength;
+    SmiINT32       privPasswordLength;
 };
 
 //-----------[ async methods callback ]-----------------------------------
@@ -275,18 +275,18 @@ public:
      * Enables the discovery mode of the USM, i.e. the USM accepts all messages
      * with unknown engine ids and adds these engine ids to its tables.
      */
-    void set_discovery_mode() { discovery_mode = true; };
+    void set_discovery_mode() { discovery_mode = true; }
 
     /**
      * Disables the discovery mode of the USM, i.e. the USM will not accept any
      * message with an unknown engine id.
      */
-    void unset_discovery_mode() { discovery_mode = false; };
+    void unset_discovery_mode() { discovery_mode = false; }
 
     /**
      * Return true if the USM discovery mode is enabled, false else.
      */
-    bool is_discovery_enabled() const { return discovery_mode; };
+    bool is_discovery_enabled() const { return discovery_mode; }
 
     /**
      * Add a new user to the usmUserNameTable. If the User is already known
@@ -382,7 +382,7 @@ public:
     {
         return add_usm_user(security_name, security_name, auth_protocol,
             priv_protocol, auth_password, priv_password, engine_id);
-    };
+    }
 
     /**
      * Delete all occurrences of the user with the given security name
@@ -456,8 +456,8 @@ public:
      */
     int add_localized_user(const OctetStr& engine_id,
         const OctetStr& user_name, const OctetStr& security_name,
-        const long auth_protocol, const OctetStr& auth_key,
-        const long priv_protocol, const OctetStr& priv_key);
+        const SmiINT32 auth_protocol, const OctetStr& auth_key,
+        const SmiINT32 priv_protocol, const OctetStr& priv_key);
 
     /**
      * Generate localized keys for the given params.
@@ -544,10 +544,10 @@ public:
      * @return - SNMPv3_USM_ERROR (no such entry or not initialized),
      *           SNMPv3_USM_OK
      */
-    int update_key(const unsigned char* user_name, const long user_name_len,
-        const unsigned char* engine_id, const long engine_id_len,
-        const unsigned char* new_key, const long new_key_len,
-        const int type_of_key);
+    int update_key(const unsigned char* user_name,
+        const SmiINT32 user_name_len, const unsigned char* engine_id,
+        const SmiINT32 engine_id_len, const unsigned char* new_key,
+        const SmiINT32 new_key_len, const int type_of_key);
 
     /**
      * Search for a user with the given securityName and engineID
@@ -584,7 +584,7 @@ public:
      * small), SNMPv3_USM_OK
      */
     int get_security_name(const unsigned char* user_name,
-        const long int user_name_len, OctetStr& security_name);
+        const SmiINT32 user_name_len, OctetStr& security_name);
 
     /**
      * Get the user name from a security name.
@@ -599,8 +599,8 @@ public:
      * @return - SNMPv3_USM_ERROR (not initialized, not found, buffer too
      * small), SNMPv3_USM_OK
      */
-    int get_user_name(unsigned char* user_name, long int* user_name_len,
-        const unsigned char* security_name, const long int security_name_len);
+    int get_user_name(unsigned char* user_name, SmiINT32* user_name_len,
+        const unsigned char* security_name, const SmiINT32 security_name_len);
 
     /**
      * Prepare a key update in the USM. The following procedure is used: To
@@ -686,7 +686,7 @@ public:
     const OctetStr& get_local_engine_id() const
     {
         return local_snmp_engine_id;
-    };
+    }
 
     /**
      * Get the number of received messages with an unsupported securityLevel
@@ -696,7 +696,7 @@ public:
     uint32_t get_stats_unsupported_sec_levels() const
     {
         return usmStatsUnsupportedSecLevels;
-    };
+    }
 
     /**
      * Get the number of received messages outside time window
@@ -706,7 +706,7 @@ public:
     uint32_t get_stats_not_in_time_windows() const
     {
         return usmStatsNotInTimeWindows;
-    };
+    }
 
     /**
      * Get the number of received messages with a unknown userName
@@ -716,7 +716,7 @@ public:
     uint32_t get_stats_unknown_user_names() const
     {
         return usmStatsUnknownUserNames;
-    };
+    }
 
     /**
      * Get the number of received messages with a unknown engineID
@@ -726,14 +726,14 @@ public:
     uint32_t get_stats_unknown_engine_ids() const
     {
         return usmStatsUnknownEngineIDs;
-    };
+    }
 
     /**
      * Get the number of received messages with a wrong digest
      *
      * @return - usmStatsWrongDigests
      */
-    uint32_t get_stats_wrong_digests() const { return usmStatsWrongDigests; };
+    uint32_t get_stats_wrong_digests() const { return usmStatsWrongDigests; }
 
     /**
      * Get the number of received messages with decryption errors
@@ -743,9 +743,10 @@ public:
     uint32_t get_stats_decryption_errors() const
     {
         return usmStatsDecryptionErrors;
-    };
+    }
 
     //@{
+
     /**
      * Increase the stats counter. Should only be used by agent++.
      */
@@ -755,6 +756,7 @@ public:
     void inc_stats_unknown_engine_ids();
     void inc_stats_wrong_digests();
     void inc_stats_decryption_errors();
+
     //@}
 
     /**
@@ -919,11 +921,11 @@ protected:
      */
     int generate_msg(unsigned char* globalData, // message header, admin data
         int                         globalDataLength,
-        int             maxMessageSize,   // of the sending SNMP entity
-        const OctetStr& securityEngineID, // authoritative SNMP entity
-        const OctetStr& securityName,     // on behalf of this principal
-        int             securityLevel,    // Level of Security requested
-        unsigned char*  scopedPDU,        // message (plaintext) payload
+        int             maxMessageSize,         // of the sending SNMP entity
+        const OctetStr& securityEngineID,       // authoritative SNMP entity
+        const OctetStr& securityName,           // on behalf of this principal
+        int             securityLevel,          // Level of Security requested
+        unsigned char*  scopedPDU,              // message (plaintext) payload
         int             scopedPDULength,
         struct SecurityStateReference* securityStateReference,
         unsigned char* wholeMsg, // OUT complete generated message
@@ -959,15 +961,15 @@ protected:
     int process_msg(int maxMessageSize,     // of the sending SNMP entity
         unsigned char*  securityParameters, // for the received message
         int securityParametersLength, int securityParametersPosition,
-        SmiINT32       securityLevel,  // Level of Security
-        unsigned char* wholeMsg,       // as received on the wire
-        int            wholeMsgLength, // length as received on the wire
+        SmiINT32       securityLevel,       // Level of Security
+        unsigned char* wholeMsg,            // as received on the wire
+        int            wholeMsgLength,      // length as received on the wire
         unsigned char* msgData, int msgDataLength,
-        OctetStr&      security_engine_id, // authoritative SNMP entity
-        OctetStr&      security_name,      // identification of the principal
-        unsigned char* scopedPDU,          // message (plaintext) payload
+        OctetStr&      security_engine_id,  // authoritative SNMP entity
+        OctetStr&      security_name,       // identification of the principal
+        unsigned char* scopedPDU,           // message (plaintext) payload
         int*           scopedPDULength,
-        long* maxSizeResponseScopedPDU, // maximum size of the Response PDU
+        SmiINT32* maxSizeResponseScopedPDU, // maximum size of the Response PDU
         struct SecurityStateReference* securityStateReference,
         // reference to security state
         // information, needed for response
@@ -1030,9 +1032,9 @@ private:
      * NULL on error
      */
     unsigned char* build_whole_msg(unsigned char* outBuf, int* maxLength,
-        unsigned char* globalData, long int globalDataLength,
+        unsigned char* globalData, SmiINT32 globalDataLength,
         int* positionAuthPar, struct UsmSecurityParameters securityParameters,
-        unsigned char* msgData, long int msgDataLength);
+        unsigned char* msgData, SmiINT32 msgDataLength);
 
     /**
      * Delete the pointers in the structure

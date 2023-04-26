@@ -1,29 +1,29 @@
 /*_############################################################################
-  _##
-  _##  test_app.cpp
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  test_app.cpp
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 
 #include <cstdlib>
 #include <iostream>
@@ -56,9 +56,18 @@ int main(int argc, char** argv)
     std::string genAddrStr("127.0.0.1"); // localhost
     std::string oid_str;
 
-    if (argc > 1) genAddrStr = argv[1];
-    if (argc > 2) req_str = argv[2];
-    if (argc > 3) oid_str = argv[3];
+    if (argc > 1)
+    {
+        genAddrStr = argv[1];
+    }
+    if (argc > 2)
+    {
+        req_str = argv[2];
+    }
+    if (argc > 3)
+    {
+        oid_str = argv[3];
+    }
 
     Snmp::socket_startup(); // Initialize socket subsystem
 
@@ -109,12 +118,12 @@ int main(int argc, char** argv)
             }
             else
             {
-                for (int i = 0; i < NUM_SYS_VBS; i++) pdu += vbl[i];
+                for (const auto& i : vbl) { pdu += i; }
             }
         }
         else
         {
-            Oid req_oid(oid_str.c_str());
+            Oid const req_oid(oid_str.c_str());
             if (!req_oid.valid())
             {
                 std::cerr << "Request oid constructor failed for:" << oid_str
@@ -135,7 +144,7 @@ int main(int argc, char** argv)
         else
         {
             std::cout << "Issued get successfully" << std::endl;
-            int vbcount = pdu.get_vb_count();
+            int const vbcount = pdu.get_vb_count();
             if (vbcount == NUM_SYS_VBS)
             {
                 pdu.get_vblist(vbl, vbcount);
@@ -160,9 +169,12 @@ int main(int argc, char** argv)
     {
         std::cout << "Send a TRAP to: " << ipAddr.get_printable() << std::endl;
 
-        if (oid_str.empty()) oid_str = dflt_trp_oid;
+        if (oid_str.empty())
+        {
+            oid_str = dflt_trp_oid;
+        }
 
-        Oid notify_oid(oid_str.c_str());
+        Oid const notify_oid(oid_str.c_str());
         if (!notify_oid.valid())
         {
             std::cerr << "Notify oid constructor failed for:" << oid_str

@@ -1,57 +1,57 @@
 /*_############################################################################
-  _##
-  _##  octet.h
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  octet.h
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 /*===================================================================
-
-  Copyright (c) 1999
-  Hewlett-Packard Company
-
-  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  Permission to use, copy, modify, distribute and/or sell this software
-  and/or its documentation is hereby granted without fee. User agrees
-  to display the above copyright notice and this license notice in all
-  copies of the software and any documentation of the software. User
-  agrees to assume all liability for the use of the software; Hewlett-Packard
-  makes no representations about the suitability of this software for any
-  purpose. It is provided "AS-IS without warranty of any kind,either express
-  or implied. User hereby grants a royalty-free license to any and all
-  derivatives based upon this software code base.
-
-
-  SNMP++ O C T E T . H
-
-  OCTETSTR CLASS DEFINITION
-
-  DESIGN + AUTHOR:  Peter E Mellquist
-
-  DESCRIPTION:
-  This class is fully contained and does not rely on or any other
-  SNMP libraries. This class is portable across any platform
-  which supports C++.
-=====================================================================*/
+ *
+ * Copyright (c) 1999
+ * Hewlett-Packard Company
+ *
+ * ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * Permission to use, copy, modify, distribute and/or sell this software
+ * and/or its documentation is hereby granted without fee. User agrees
+ * to display the above copyright notice and this license notice in all
+ * copies of the software and any documentation of the software. User
+ * agrees to assume all liability for the use of the software; Hewlett-Packard
+ * makes no representations about the suitability of this software for any
+ * purpose. It is provided "AS-IS without warranty of any kind,either express
+ * or implied. User hereby grants a royalty-free license to any and all
+ * derivatives based upon this software code base.
+ *
+ *
+ * SNMP++ O C T E T . H
+ *
+ * OCTETSTR CLASS DEFINITION
+ *
+ * DESIGN + AUTHOR:  Peter E Mellquist
+ *
+ * DESCRIPTION:
+ * This class is fully contained and does not rely on or any other
+ * SNMP libraries. This class is portable across any platform
+ * which supports C++.
+ * =====================================================================*/
 
 #ifndef _SNMP_OCTET_H_
 #define _SNMP_OCTET_H_
@@ -106,7 +106,7 @@ public:
     /**
      * Destructor, frees allocated space.
      */
-    ~OctetStr();
+    ~OctetStr() override;
 
     //-----------[ Overloaded operators ]----------------------
 
@@ -205,7 +205,7 @@ public:
         m_changed = true;
         validity  = true;
         return smival.value.string.ptr[i];
-    };
+    }
 
     /**
      * Allow access as if it was an array for const OctetStr objects.
@@ -215,14 +215,14 @@ public:
     unsigned char operator[](int i) const
     {
         return smival.value.string.ptr[i];
-    };
+    }
 
     /**
      * Return the syntax.
      *
      * @return This method always returns sNMP_SYNTAX_OCTETS.
      */
-    SmiUINT32 get_syntax() const override { return sNMP_SYNTAX_OCTETS; };
+    SmiUINT32 get_syntax() const override { return sNMP_SYNTAX_OCTETS; }
 
     /**
      * Return the space needed for serialization.
@@ -232,7 +232,7 @@ public:
     /**
      * Return validity of the object.
      */
-    bool valid() const override { return validity; };
+    bool valid() const override { return validity; }
 
     /**
      * Clone this object.
@@ -242,7 +242,7 @@ public:
     SnmpSyntax* clone() const override
     {
         return (SnmpSyntax*)new OctetStr(*this);
-    };
+    }
 
     /**
      * Map other SnmpSyntax objects to OctetStr.
@@ -291,13 +291,13 @@ public:
     static void set_hex_output_type(const enum OutputType ot)
     {
         hex_output_type = ot;
-    };
+    }
 
     /**
      * Set the char get_printable_hex() and get_printable_clear()
      * will use for non printable characters.
      */
-    static void set_np_char(const char np) { nonprintable_char = np; };
+    static void set_np_char(const char np) { nonprintable_char = np; }
 
     /**
      * Set the data on an already constructed OctetStr.
@@ -312,12 +312,12 @@ public:
     /**
      * Get the length of the string.
      */
-    uint32_t len() const { return smival.value.string.len; };
+    uint32_t len() const { return smival.value.string.len; }
 
     /**
      * Get a pointer to internal data.
      */
-    unsigned char* data() const { return smival.value.string.ptr; };
+    unsigned char* data() const { return smival.value.string.ptr; }
 
     // compare n elements of an octet
     int nCompare(const uint32_t n, const OctetStr& o) const;
@@ -366,7 +366,7 @@ protected:
         OutputFunctionClear
     };
 
-    SNMP_PP_MUTABLE char* output_buffer; // formatted Octet value
+    SNMP_PP_MUTABLE char* output_buffer;    // formatted Octet value
     SNMP_PP_MUTABLE unsigned int
                          output_buffer_len; // allocated space for string
     SNMP_PP_MUTABLE bool m_changed;
@@ -393,7 +393,7 @@ public:
     /**
      * Constructor creating a valid zero length OpaqueStr.
      */
-    OpaqueStr() : OctetStr() { smival.syntax = sNMP_SYNTAX_OPAQUE; };
+    OpaqueStr() : OctetStr() { smival.syntax = sNMP_SYNTAX_OPAQUE; }
 
     /**
      * Constructs a OpaqueStr with the given value.
@@ -404,7 +404,7 @@ public:
     OpaqueStr(const char* str) : OctetStr(str)
     {
         smival.syntax = sNMP_SYNTAX_OPAQUE;
-    };
+    }
 
     /**
      * Constructs a OpaqueStr with the given value.
@@ -417,7 +417,7 @@ public:
         : OctetStr(str, length)
     {
         smival.syntax = sNMP_SYNTAX_OPAQUE;
-    };
+    }
 
     /**
      * Construct a OpaqueStr from an OctetStr.
@@ -428,7 +428,7 @@ public:
     OpaqueStr(const OctetStr& octet) : OctetStr(octet)
     {
         smival.syntax = sNMP_SYNTAX_OPAQUE;
-    };
+    }
 
     /**
      * Construct a OpaqueStr from another OpaqueStr.
@@ -439,7 +439,7 @@ public:
     OpaqueStr(const OpaqueStr& opaque) : OctetStr(opaque)
     {
         smival.syntax = sNMP_SYNTAX_OPAQUE;
-    };
+    }
 
     /**
      * Clone this object.
@@ -453,7 +453,7 @@ public:
      *
      * @return This method always returns sNMP_SYNTAX_OPAQUE.
      */
-    SmiUINT32 get_syntax() const override { return sNMP_SYNTAX_OPAQUE; };
+    SmiUINT32 get_syntax() const override { return sNMP_SYNTAX_OPAQUE; }
 
     /**
      * Map other SnmpSyntax objects to OpaqueStr.

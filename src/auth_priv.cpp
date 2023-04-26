@@ -1,29 +1,29 @@
 /*_############################################################################
-  _##
-  _##  auth_priv.cpp
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  auth_priv.cpp
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 
 #include "snmp_pp/config_snmp_pp.h"
 
@@ -128,7 +128,8 @@ int evpAllocAndInit(EVP_MD_CTX** ctx, const EVP_MD* md)
 
 int evpDigestFinalAndFree(EVP_MD_CTX** ctx, unsigned char* digest)
 {
-    int result = EVP_DigestFinal(*ctx, digest, NULL);
+    int const result = EVP_DigestFinal(*ctx, digest, nullptr);
+
     EVP_MD_CTX_free(*ctx);
     return result;
 }
@@ -144,7 +145,7 @@ typedef EVP_MD_CTX* MD5HashStateType;
 #            define MD5_DONE(s, k)           evpDigestFinalAndFree(s, k)
 
 #        endif // OPENSSL_VERSION_NUMBER < 0x10100000L ||
-               // defined(LIBRESSL_VERSION_NUMBER)
+// defined(LIBRESSL_VERSION_NUMBER)
 
 typedef DES_key_schedule DESCBCType;
 #        define DES_CBC_START_ENCRYPT(c, iv, k, kl, r, s)          \
@@ -291,9 +292,9 @@ typedef des_key_schedule DESCBCType;
 
 #            endif // RSAEURO
 
-#        endif // _USE_LIBTOMCRYPT
+#        endif     // _USE_LIBTOMCRYPT
 
-#    endif // _USE_OPENSSL
+#    endif         // _USE_OPENSSL
 
 // 3DES key extension used by two classes
 int des3_extend_short_key(const unsigned char* /* password */,
@@ -302,13 +303,19 @@ int des3_extend_short_key(const unsigned char* /* password */,
     unsigned int* key_len, const unsigned int max_key_len, Auth* auth,
     const unsigned int min_key_len)
 {
-    if (max_key_len < min_key_len) return SNMPv3_USM_ERROR;
+    if (max_key_len < min_key_len)
+    {
+        return SNMPv3_USM_ERROR;
+    }
 
-    unsigned int   p2k_output_len = *key_len;
-    unsigned char* p2k_buf        = new unsigned char[p2k_output_len];
-    int            res            = 0;
+    unsigned int const p2k_output_len = *key_len;
+    auto*              p2k_buf        = new unsigned char[p2k_output_len];
+    int                res            = 0;
 
-    if (!p2k_buf) return SNMPv3_USM_ERROR;
+    if (!p2k_buf)
+    {
+        return SNMPv3_USM_ERROR;
+    }
 
     // p2k function takes the old key as input
     unsigned char* p2k_input_buf = key;
@@ -321,14 +328,22 @@ int des3_extend_short_key(const unsigned char* /* password */,
         res = auth->password_to_key(p2k_input_buf, p2k_input_len, engine_id,
             engine_id_len, p2k_buf, &p2k_buf_len);
 
-        if (res != SNMPv3_USM_OK) break;
+        if (res != SNMPv3_USM_OK)
+        {
+            break;
+        }
 
         unsigned int copy_bytes = min_key_len - *key_len;
 
-        if (copy_bytes > p2k_buf_len) copy_bytes = p2k_buf_len;
+        if (copy_bytes > p2k_buf_len)
+        {
+            copy_bytes = p2k_buf_len;
+        }
 
         if (*key_len + copy_bytes > max_key_len)
+        {
             copy_bytes = max_key_len - *key_len;
+        }
 
         memcpy(key + *key_len, p2k_buf, copy_bytes);
 
@@ -339,7 +354,10 @@ int des3_extend_short_key(const unsigned char* /* password */,
         *key_len += copy_bytes;
     }
 
-    if (p2k_buf) delete[] p2k_buf;
+    if (p2k_buf)
+    {
+        delete[] p2k_buf;
+    }
 
     return res;
 }
@@ -350,7 +368,9 @@ AuthPriv::AuthPriv(int& construct_state)
     priv = new PrivPtr[10];
 
     if (auth)
+    {
         auth_size = 10;
+    }
     else
     {
         auth_size = 0;
@@ -361,7 +381,9 @@ AuthPriv::AuthPriv(int& construct_state)
     }
 
     if (priv)
+    {
         priv_size = 10;
+    }
     else
     {
         priv_size = 0;
@@ -371,9 +393,9 @@ AuthPriv::AuthPriv(int& construct_state)
         LOG_END;
     }
 
-    for (int i = 0; i < auth_size; i++) auth[i] = 0;
+    for (int i = 0; i < auth_size; i++) { auth[i] = nullptr; }
 
-    for (int j = 0; j < priv_size; j++) priv[j] = 0;
+    for (int j = 0; j < priv_size; j++) { priv[j] = nullptr; }
 
     /* Check size of salt, has to be 64 bits */
     if (sizeof(salt) != 8)
@@ -388,11 +410,14 @@ AuthPriv::AuthPriv(int& construct_state)
     }
 
     /* Initialize salt. srand() has been already done in Snmp::init() */
-    unsigned int* rnd = (unsigned int*)(void*)&salt;
+    auto* rnd = (unsigned int*)(void*)&salt;
     for (size_t i = 0; i < sizeof(salt); i += sizeof(unsigned int), rnd++)
     {
         *rnd = rand() << 1;
-        if (rand() < (RAND_MAX / 2)) *rnd += 1;
+        if (rand() < (RAND_MAX / 2))
+        {
+            *rnd += 1;
+        }
     }
 
     construct_state = SNMPv3_USM_OK;
@@ -449,18 +474,22 @@ AuthPriv::AuthPriv(int& construct_state)
 AuthPriv::~AuthPriv()
 {
     for (int i = 0; i < auth_size; i++)
+    {
         if (auth[i])
         {
             delete auth[i];
-            auth[i] = 0;
+            auth[i] = nullptr;
         }
+    }
 
     for (int j = 0; j < priv_size; j++)
+    {
         if (priv[j])
         {
             delete priv[j];
-            priv[j] = 0;
+            priv[j] = nullptr;
         }
+    }
 
     delete[] auth;
     delete[] priv;
@@ -468,15 +497,21 @@ AuthPriv::~AuthPriv()
 
 int AuthPriv::add_auth(Auth* new_auth)
 {
-    if (!new_auth) { return SNMP_CLASS_ERROR; }
+    if (!new_auth)
+    {
+        return SNMP_CLASS_ERROR;
+    }
 
-    int id = new_auth->get_id();
+    int const id = new_auth->get_id();
 
-    if (id < 0) { return SNMP_CLASS_ERROR; }
+    if (id < 0)
+    {
+        return SNMP_CLASS_ERROR;
+    }
 
     if (id >= auth_size)
     {
-        AuthPtr* new_array = new AuthPtr[id + 5];
+        auto* new_array = new AuthPtr[id + 5];
         if (!new_array)
         {
             LOG_BEGIN(loggerModuleName, ERROR_LOG | 1);
@@ -485,9 +520,9 @@ int AuthPriv::add_auth(Auth* new_auth)
 
             return SNMP_CLASS_ERROR;
         }
-        for (int i = 0; i < auth_size; i++) new_array[i] = auth[i];
+        for (int i = 0; i < auth_size; i++) { new_array[i] = auth[i]; }
 
-        for (int j = auth_size; j < id + 5; j++) new_array[j] = 0;
+        for (int j = auth_size; j < id + 5; j++) { new_array[j] = nullptr; }
 
         AuthPtr* victim = auth;
         auth            = new_array;
@@ -519,7 +554,7 @@ int AuthPriv::add_auth(Auth* new_auth)
 
 int AuthPriv::del_auth(const int auth_id)
 {
-    if ((auth_id < 0) || (auth_id >= auth_size) || (auth[auth_id] == 0))
+    if ((auth_id < 0) || (auth_id >= auth_size) || (auth[auth_id] == nullptr))
     {
         LOG_BEGIN(loggerModuleName, WARNING_LOG | 4);
         LOG("AuthPriv: Request to delete non existing auth protocol (id)");
@@ -530,7 +565,7 @@ int AuthPriv::del_auth(const int auth_id)
     }
 
     delete auth[auth_id];
-    auth[auth_id] = 0;
+    auth[auth_id] = nullptr;
 
     LOG_BEGIN(loggerModuleName, INFO_LOG | 6);
     LOG("AuthPriv: Removed auth protocol (id)");
@@ -542,15 +577,21 @@ int AuthPriv::del_auth(const int auth_id)
 
 int AuthPriv::add_priv(Priv* new_priv)
 {
-    if (!new_priv) { return SNMP_CLASS_ERROR; }
+    if (!new_priv)
+    {
+        return SNMP_CLASS_ERROR;
+    }
 
-    int id = new_priv->get_id();
+    int const id = new_priv->get_id();
 
-    if (id < 0) { return SNMP_CLASS_ERROR; }
+    if (id < 0)
+    {
+        return SNMP_CLASS_ERROR;
+    }
 
     if (id >= priv_size)
     {
-        PrivPtr* new_array = new PrivPtr[id + 5];
+        auto* new_array = new PrivPtr[id + 5];
         if (!new_array)
         {
             LOG_BEGIN(loggerModuleName, ERROR_LOG | 1);
@@ -559,9 +600,9 @@ int AuthPriv::add_priv(Priv* new_priv)
 
             return SNMP_CLASS_ERROR;
         }
-        for (int i = 0; i < priv_size; i++) new_array[i] = priv[i];
+        for (int i = 0; i < priv_size; i++) { new_array[i] = priv[i]; }
 
-        for (int j = priv_size; j < id + 5; j++) new_array[j] = 0;
+        for (int j = priv_size; j < id + 5; j++) { new_array[j] = nullptr; }
 
         PrivPtr* victim = priv;
         priv            = new_array;
@@ -593,7 +634,7 @@ int AuthPriv::add_priv(Priv* new_priv)
 
 int AuthPriv::del_priv(const int priv_id)
 {
-    if ((priv_id < 0) || (priv_id >= priv_size) || (priv[priv_id] == 0))
+    if ((priv_id < 0) || (priv_id >= priv_size) || (priv[priv_id] == nullptr))
     {
         LOG_BEGIN(loggerModuleName, WARNING_LOG | 4);
         LOG("AuthPriv: Request to delete non existing priv protocol (id)");
@@ -604,7 +645,7 @@ int AuthPriv::del_priv(const int priv_id)
     }
 
     delete priv[priv_id];
-    priv[priv_id] = 0;
+    priv[priv_id] = nullptr;
 
     LOG_BEGIN(loggerModuleName, INFO_LOG | 6);
     LOG("AuthPriv: Removed priv protocol (id)");
@@ -616,22 +657,32 @@ int AuthPriv::del_priv(const int priv_id)
 
 Auth* AuthPriv::get_auth(const int auth_prot)
 {
-    if ((auth_prot >= 0) && (auth_prot < auth_size)) return auth[auth_prot];
-    return 0;
+    if ((auth_prot >= 0) && (auth_prot < auth_size))
+    {
+        return auth[auth_prot];
+    }
+    return nullptr;
 }
 
 Priv* AuthPriv::get_priv(const int priv_prot)
 {
-    if ((priv_prot >= 0) && (priv_prot < priv_size)) return priv[priv_prot];
-    return 0;
+    if ((priv_prot >= 0) && (priv_prot < priv_size))
+    {
+        return priv[priv_prot];
+    }
+    return nullptr;
 }
 
 // Get the unique id for the given auth protocol.
 int AuthPriv::get_auth_id(const char* string_id) const
 {
     for (int i = 0; i < auth_size; ++i)
+    {
         if ((auth[i]) && (strcmp(string_id, auth[i]->get_id_string()) == 0))
+        {
             return i;
+        }
+    }
     return -1;
 }
 
@@ -639,26 +690,32 @@ int AuthPriv::get_auth_id(const char* string_id) const
 int AuthPriv::get_priv_id(const char* string_id) const
 {
     for (int i = 0; i < priv_size; ++i)
+    {
         if ((priv[i]) && (strcmp(string_id, priv[i]->get_id_string()) == 0))
+        {
             return i;
+        }
+    }
     return -1;
 }
 
 int AuthPriv::get_keychange_value(const int auth_prot, const OctetStr& old_key,
     const OctetStr& new_key, OctetStr& keychange_value)
 {
-
     // uses fixed key length determined from oldkey!
     // works with SHA and MD5
     // modifications needed to support variable length keys
     // algorithm according to USM-document textual convention KeyChange
 
     keychange_value.clear();
-    unsigned int key_len = old_key.len();
+    unsigned int const key_len = old_key.len();
 
     Auth* a = get_auth(auth_prot);
 
-    if (!a) return SNMPv3_USM_UNSUPPORTED_AUTHPROTOCOL;
+    if (!a)
+    {
+        return SNMPv3_USM_UNSUPPORTED_AUTHPROTOCOL;
+    }
 
     // compute random value
     OctetStr random = "";
@@ -669,7 +726,7 @@ int AuthPriv::get_keychange_value(const int auth_prot, const OctetStr& old_key,
         // do not use random values for testing
         random += OctetStr((unsigned char*)"\0", 1);
 #    else
-        char tmprand = rand();
+        char const tmprand = rand();
         random += tmprand;
 #    endif
     }
@@ -681,9 +738,9 @@ int AuthPriv::get_keychange_value(const int auth_prot, const OctetStr& old_key,
     debughexcprintf(21, "random value", random.data(), random.len());
 #    endif
 
-    int      iterations = (key_len - 1) / a->get_hash_len();
-    OctetStr tmp        = old_key;
-    OctetStr delta;
+    int const iterations = (key_len - 1) / a->get_hash_len();
+    OctetStr  tmp        = old_key;
+    OctetStr  delta;
 
     for (int k = 0; k < iterations; k++)
     {
@@ -696,8 +753,10 @@ int AuthPriv::get_keychange_value(const int auth_prot, const OctetStr& old_key,
         // debughexcprintf(21, "loop tmp2", tmp.data(), tmp.len());
         delta.set_len(delta.len() + a->get_hash_len());
         for (int kk = 0; kk < a->get_hash_len(); kk++)
+        {
             delta[k * a->get_hash_len() + kk] =
                 tmp[kk] ^ new_key[k * a->get_hash_len() + kk];
+        }
         // debughexcprintf(21, "loop delta", delta.data(), delta.len());
     }
 
@@ -709,7 +768,9 @@ int AuthPriv::get_keychange_value(const int auth_prot, const OctetStr& old_key,
     tmp.set_data(digest, key_len - delta.len());
     // debughexcprintf(21, " tmp2", tmp.data(), tmp.len());
     for (unsigned int j = 0; j < tmp.len(); j++)
+    {
         tmp[j] = tmp[j] ^ new_key[iterations * a->get_hash_len() + j];
+    }
     // debughexcprintf(21, " tmp3", tmp.data(), tmp.len());
 
     keychange_value = random;
@@ -746,9 +807,12 @@ int AuthPriv::password_to_key_auth(const int auth_prot,
 
     Auth* a = get_auth(auth_prot);
 
-    if (!a) return SNMPv3_USM_UNSUPPORTED_AUTHPROTOCOL;
+    if (!a)
+    {
+        return SNMPv3_USM_UNSUPPORTED_AUTHPROTOCOL;
+    }
 
-    int res = a->password_to_key(
+    int const res = a->password_to_key(
         password, password_len, engine_id, engine_id_len, key, key_len);
 
     return res;
@@ -778,26 +842,39 @@ int AuthPriv::password_to_key_priv(const int auth_prot, const int priv_prot,
     Priv* p = get_priv(priv_prot);
     Auth* a = get_auth(auth_prot);
 
-    if (!p) return SNMPv3_USM_UNSUPPORTED_PRIVPROTOCOL;
-    if (!a) return SNMPv3_USM_UNSUPPORTED_AUTHPROTOCOL;
+    if (!p)
+    {
+        return SNMPv3_USM_UNSUPPORTED_PRIVPROTOCOL;
+    }
+    if (!a)
+    {
+        return SNMPv3_USM_UNSUPPORTED_AUTHPROTOCOL;
+    }
 
-    unsigned int max_key_len = *key_len; /* save length of buffer! */
-    unsigned int min_key_len = p->get_min_key_len();
+    unsigned int const max_key_len = *key_len; /* save length of buffer! */
+    unsigned int const min_key_len = p->get_min_key_len();
 
     /* check if buffer for key is long enough */
     if (min_key_len > max_key_len)
+    {
         return SNMPv3_USM_ERROR; // TODO: better error code!
-
+    }
     int res = password_to_key_auth(auth_prot, password, password_len,
         engine_id, engine_id_len, key, key_len);
-    if (res != SNMPv3_USM_OK) return res;
+    if (res != SNMPv3_USM_OK)
+    {
+        return res;
+    }
 
     /* We have a too short key: Call priv protocoll to extend it */
     if (*key_len < min_key_len)
     {
         res = p->extend_short_key(password, password_len, engine_id,
             engine_id_len, key, key_len, max_key_len, a);
-        if (res != SNMPv3_USM_OK) return res;
+        if (res != SNMPv3_USM_OK)
+        {
+            return res;
+        }
     }
 
     /* make sure key length is valid */
@@ -816,7 +893,10 @@ int AuthPriv::encrypt_msg(const int priv_prot, const unsigned char* key,
     /* check for priv protocol */
     Priv* p = get_priv(priv_prot);
 
-    if (!p) return SNMPv3_USM_UNSUPPORTED_PRIVPROTOCOL;
+    if (!p)
+    {
+        return SNMPv3_USM_UNSUPPORTED_PRIVPROTOCOL;
+    }
 
     return p->encrypt(key, key_len, buffer, buffer_len, out_buffer,
         out_buffer_len, privacy_params, privacy_params_len, engine_boots,
@@ -833,7 +913,10 @@ int AuthPriv::decrypt_msg(const int priv_prot, const unsigned char* key,
     /* check for priv protocol */
     Priv* p = get_priv(priv_prot);
 
-    if (!p) return SNMPv3_USM_UNSUPPORTED_PRIVPROTOCOL;
+    if (!p)
+    {
+        return SNMPv3_USM_UNSUPPORTED_PRIVPROTOCOL;
+    }
 
     return p->decrypt(key, key_len, buffer, buffer_len, out_buffer,
         out_buffer_len, privacy_params, privacy_params_len, engine_boots,
@@ -854,7 +937,6 @@ int AuthPriv::add_default_modules()
     }
 
 #    if defined(_USE_OPENSSL)
-
     if (add_auth(new AuthHMAC128SHA224()) != SNMP_ERROR_SUCCESS)
     {
         LOG_BEGIN(loggerModuleName, ERROR_LOG | 1);
@@ -890,7 +972,6 @@ int AuthPriv::add_default_modules()
 
         ret = SNMP_CLASS_ERROR;
     }
-
 #    endif
 
     if (add_auth(new AuthMD5()) != SNMP_ERROR_SUCCESS)
@@ -976,7 +1057,10 @@ int AuthPriv::get_auth_params_len(const int auth_prot)
 {
     Auth* a = get_auth(auth_prot);
 
-    if (!a) return 0;
+    if (!a)
+    {
+        return 0;
+    }
 
     return a->get_auth_params_len();
 }
@@ -985,7 +1069,10 @@ int AuthPriv::get_priv_params_len(const int priv_prot)
 {
     Priv* p = get_priv(priv_prot);
 
-    if (!p) return 0;
+    if (!p)
+    {
+        return 0;
+    }
 
     return p->get_priv_params_len();
 }
@@ -994,11 +1081,16 @@ int AuthPriv::auth_out_msg(const int auth_prot, const unsigned char* key,
     unsigned char* msg, const int msg_len, unsigned char* auth_par_ptr)
 {
     if (auth_prot == SNMP_AUTHPROTOCOL_NONE)
+    {
         return SNMPv3_USM_UNSUPPORTED_SECURITY_LEVEL;
+    }
 
     Auth* a = get_auth(auth_prot);
 
-    if (!a) return SNMPv3_USM_UNSUPPORTED_AUTHPROTOCOL;
+    if (!a)
+    {
+        return SNMPv3_USM_UNSUPPORTED_AUTHPROTOCOL;
+    }
 
     return a->auth_out_msg(key, msg, msg_len, auth_par_ptr);
 }
@@ -1008,25 +1100,30 @@ int AuthPriv::auth_inc_msg(const int auth_prot, const unsigned char* key,
     const int auth_par_len)
 {
     if (auth_prot == SNMP_AUTHPROTOCOL_NONE)
+    {
         return SNMPv3_USM_UNSUPPORTED_SECURITY_LEVEL;
+    }
 
     Auth* a = get_auth(auth_prot);
 
-    if (!a) return SNMPv3_USM_UNSUPPORTED_AUTHPROTOCOL;
+    if (!a)
+    {
+        return SNMPv3_USM_UNSUPPORTED_AUTHPROTOCOL;
+    }
 
     /* TODO: check if auth par is inside msg
-    if ((auth_par_ptr < msg) ||
-        (msg + msg_len < auth_par_ptr + auth_par_len))
-    {
-      LOG_BEGIN(loggerModuleName, WARNING_LOG | 1);
-      LOG("AuthPriv: Authentication data is not within message (msg start)
-    (len) (auth start) (len)"); LOG(msg); LOG(msg_len); LOG(auth_par_ptr);
-      LOG(auth_par_len);
-      LOG_END;
-
-      return SNMPv3_USM_ERROR;
-    }
-    */
+     * if ((auth_par_ptr < msg) ||
+     *  (msg + msg_len < auth_par_ptr + auth_par_len))
+     * {
+     * LOG_BEGIN(loggerModuleName, WARNING_LOG | 1);
+     * LOG("AuthPriv: Authentication data is not within message (msg start)
+     * (len) (auth start) (len)"); LOG(msg); LOG(msg_len); LOG(auth_par_ptr);
+     * LOG(auth_par_len);
+     * LOG_END;
+     *
+     * return SNMPv3_USM_ERROR;
+     * }
+     */
 
     return a->auth_inc_msg(key, msg, msg_len, auth_par_ptr, auth_par_len);
 }
@@ -1115,11 +1212,11 @@ int AuthMD5::hash(const unsigned char* data, const unsigned int data_len,
 int AuthMD5::auth_out_msg(const unsigned char* key, unsigned char* msg,
     const int msg_len, unsigned char* auth_par_ptr)
 {
-    MD5HashStateType md5_hash_state {};
-    unsigned int     key_len = 16; /* We use only 16 Byte Key! */
-    unsigned char    digest[16];
-    unsigned char    k_ipad[65]; /* inner padding - key XORd with ipad */
-    unsigned char    k_opad[65]; /* outer padding - key XORd with opad */
+    MD5HashStateType   md5_hash_state {};
+    unsigned int const key_len = 16; /* We use only 16 Byte Key! */
+    unsigned char      digest[16];
+    unsigned char      k_ipad[65];   /* inner padding - key XORd with ipad */
+    unsigned char      k_opad[65];   /* outer padding - key XORd with opad */
 
     memset((char*)(auth_par_ptr), 0, 12);
 
@@ -1220,6 +1317,7 @@ int AuthMD5::auth_inc_msg(const unsigned char* key, unsigned char* msg,
 
 #    if defined(_USE_LIBTOMCRYPT) && !defined(_USE_OPENSSL)
 PrivDES::PrivDES() { cipher = find_cipher("des"); }
+
 #    endif
 
 int PrivDES::encrypt(const unsigned char* key, const unsigned int /*key_len*/,
@@ -1228,8 +1326,8 @@ int PrivDES::encrypt(const unsigned char* key, const unsigned int /*key_len*/,
     unsigned char* privacy_params, unsigned int* privacy_params_len,
     const uint32_t engine_boots, const uint32_t /*engine_time*/)
 {
-    unsigned char initVect[8];
-    pp_uint64     my_salt = (*salt)++;
+    unsigned char   initVect[8];
+    pp_uint64 const my_salt = (*salt)++;
 
 #    ifdef INVALID_ENCRYPTION
     debugprintf(-10, "\nWARNING: Encrypting with zeroed salt!\n");
@@ -1258,7 +1356,7 @@ int PrivDES::encrypt(const unsigned char* key, const unsigned int /*key_len*/,
     }
 
     // xor initVect with salt
-    for (int i = 0; i < 8; i++) initVect[i] ^= privacy_params[i];
+    for (int i = 0; i < 8; i++) { initVect[i] ^= privacy_params[i]; }
 
 #    ifdef __DEBUG
     debughexcprintf(
@@ -1281,15 +1379,19 @@ int PrivDES::encrypt(const unsigned char* key, const unsigned int /*key_len*/,
     {
         unsigned char  tmp_buf[8];
         unsigned char* tmp_buf_ptr = tmp_buf;
-        int            start       = buffer_len - (buffer_len % 8);
+        int const      start       = buffer_len - (buffer_len % 8);
         memset(tmp_buf, 0, 8);
         for (unsigned int l = start; l < buffer_len; l++)
+        {
             *tmp_buf_ptr++ = buffer[l];
+        }
         DES_CBC_ENCRYPT(tmp_buf, out_buffer + start, symcbc, initVect, 8);
         *out_buffer_len = buffer_len + 8 - (buffer_len % 8);
     }
     else
+    {
         *out_buffer_len = buffer_len;
+    }
 
     /* Clear context buffer (paranoia!)*/
     DES_MEMSET(symcbc, 0, sizeof(symcbc));
@@ -1315,9 +1417,14 @@ int PrivDES::decrypt(const unsigned char* key, const unsigned int /*key_len*/,
     /* Privacy params length has to be 8  && Length has to be a multiple of 8
      */
     if ((buffer_len % 8) || (privacy_params_len != 8))
+    {
         return SNMPv3_USM_DECRYPTION_ERROR;
+    }
 
-    for (int i = 0; i < 8; i++) initVect[i] = privacy_params[i] ^ key[i + 8];
+    for (int i = 0; i < 8; i++)
+    {
+        initVect[i] = privacy_params[i] ^ key[i + 8];
+    }
 
     memset((char*)outBuffer, 0, *outBuffer_len);
 
@@ -1391,7 +1498,7 @@ int PrivIDEA::encrypt(const unsigned char* key, const unsigned int /*key_len*/,
         privacy_params[7 - j] = (unsigned char)(0xFF & (my_salt >> (8 * j)));
     }
     // xor iv with privacy_params
-    for (int i = 0; i < 8; i++) iv[i] ^= privacy_params[i];
+    for (int i = 0; i < 8; i++) { iv[i] ^= privacy_params[i]; }
 
     idea_set_key(&CFB_Context, key);
 
@@ -1425,7 +1532,10 @@ int PrivIDEA::decrypt(const unsigned char* key, const unsigned int /*key_len*/,
     IDEAContext   CFB_Context;
 
     /* privacy params length has to be 8 */
-    if (privacy_params_len != 8) return SNMPv3_USM_DECRYPTION_ERROR;
+    if (privacy_params_len != 8)
+    {
+        return SNMPv3_USM_DECRYPTION_ERROR;
+    }
 
     idea_set_key(&CFB_Context, key);
 
@@ -1433,7 +1543,7 @@ int PrivIDEA::decrypt(const unsigned char* key, const unsigned int /*key_len*/,
 
     /* Initialize iv with last 8 bytes of key and xor with privacy_params */
     memcpy((char*)iv, key + 8, 8);
-    for (int i = 0; i < 8; i++) iv[i] ^= privacy_params[i];
+    for (int i = 0; i < 8; i++) { iv[i] ^= privacy_params[i]; }
 
     idea_cfb_decrypt(&CFB_Context, iv, out_buffer, buffer, buffer_len);
 
@@ -1468,48 +1578,75 @@ PrivAES::PrivAES(const int aes_type_) : aes_type(aes_type_)
 
     switch (aes_type)
     {
-    case SNMP_PRIVPROTOCOL_AES128:
+    case SNMP_PRIVPROTOCOL_AES128: {
         key_bytes = 16;
         rounds    = 10;
         break;
-    case SNMP_PRIVPROTOCOL_AES192:
+    }
+
+    case SNMP_PRIVPROTOCOL_AES192: {
         key_bytes = 24;
         rounds    = 12;
         break;
-    case SNMP_PRIVPROTOCOL_AES256:
+    }
+
+    case SNMP_PRIVPROTOCOL_AES256: {
         key_bytes = 32;
         rounds    = 14;
         break;
-    default:
+    }
+
+    default: {
         debugprintf(0, "Wrong AES type: %i.", aes_type);
         key_bytes = 0;
         rounds    = 0;
         aes_type  = -1; // will cause an error in AuthPriv::add_priv()
     }
+    }
 
-    unsigned int testswap = htonl(0x01020304);
+    unsigned int const testswap = htonl(0x01020304);
     if (testswap == 0x01020304)
+    {
         need_byteswap = false;
+    }
     else
+    {
         need_byteswap = true;
+    }
 }
 
 const char* PrivAES::get_id_string() const
 {
     switch (aes_type)
     {
-    case SNMP_PRIVPROTOCOL_AES128: return "AES128"; break;
-    case SNMP_PRIVPROTOCOL_AES192: return "AES192"; break;
-    case SNMP_PRIVPROTOCOL_AES256: return "AES256"; break;
-    default: return "error"; break;
+    case SNMP_PRIVPROTOCOL_AES128: {
+        return "AES128";
+        break;
+    }
+
+    case SNMP_PRIVPROTOCOL_AES192: {
+        return "AES192";
+        break;
+    }
+
+    case SNMP_PRIVPROTOCOL_AES256: {
+        return "AES256";
+        break;
+    }
+
+    default: {
+        return "error";
+        break;
+    }
     }
 }
 
-int PrivAES::encrypt(const unsigned char* key, const unsigned int key_len,
-    const unsigned char* buffer, const unsigned int buffer_len,
-    unsigned char* out_buffer, unsigned int* out_buffer_len,
-    unsigned char* privacy_params, unsigned int* privacy_params_len,
-    const uint32_t engine_boots, const uint32_t engine_time)
+int PrivAES::encrypt(const unsigned char* key,
+    [[maybe_unused]] const unsigned int key_len, const unsigned char* buffer,
+    const unsigned int buffer_len, unsigned char* out_buffer,
+    unsigned int* out_buffer_len, unsigned char* privacy_params,
+    unsigned int* privacy_params_len, const uint32_t engine_boots,
+    const uint32_t engine_time)
 {
     if (*out_buffer_len < buffer_len)
     {
@@ -1537,16 +1674,18 @@ int PrivAES::encrypt(const unsigned char* key, const unsigned int key_len,
     *privacy_params_len = 8;
 
     /* Set IV as engine_boots + engine_time + salt */
-    unsigned int* tmpi = (unsigned int*)initVect;
-    *tmpi++            = htonl(engine_boots);
-    *tmpi++            = htonl(engine_time);
+    auto* tmpi = (unsigned int*)initVect;
+    *tmpi++    = htonl(engine_boots);
+    *tmpi++    = htonl(engine_time);
     if (need_byteswap)
     {
         *tmpi++ = htonl(my_salt & 0xFFFFFFFF);
         *tmpi   = htonl((my_salt >> 32) & 0xFFFFFFFF);
     }
     else
+    {
         memcpy(tmpi, &my_salt, 8);
+    }
 
     /* put byteswapped salt in privacy_params */
     memcpy(privacy_params, initVect + 8, 8);
@@ -1560,15 +1699,26 @@ int PrivAES::encrypt(const unsigned char* key, const unsigned int key_len,
         return SNMPv3_USM_ENCRYPTION_ERROR;
     }
 
-    const EVP_CIPHER* evp_cipher = NULL;
+    const EVP_CIPHER* evp_cipher = nullptr;
     switch (aes_type)
     {
-    case SNMP_PRIVPROTOCOL_AES128: evp_cipher = EVP_aes_128_cfb128(); break;
-    case SNMP_PRIVPROTOCOL_AES192: evp_cipher = EVP_aes_192_cfb128(); break;
-    case SNMP_PRIVPROTOCOL_AES256: evp_cipher = EVP_aes_256_cfb128(); break;
+    case SNMP_PRIVPROTOCOL_AES128: {
+        evp_cipher = EVP_aes_128_cfb128();
+        break;
     }
 
-    if (EVP_EncryptInit_ex(ctx, evp_cipher, NULL, key, initVect) != 1)
+    case SNMP_PRIVPROTOCOL_AES192: {
+        evp_cipher = EVP_aes_192_cfb128();
+        break;
+    }
+
+    case SNMP_PRIVPROTOCOL_AES256: {
+        evp_cipher = EVP_aes_256_cfb128();
+        break;
+    }
+    }
+
+    if (EVP_EncryptInit_ex(ctx, evp_cipher, nullptr, key, initVect) != 1)
     {
         debugprintf(1, "EVP_EncryptInit_ex() failed.");
         EVP_CIPHER_CTX_free(ctx);
@@ -1625,11 +1775,12 @@ int PrivAES::encrypt(const unsigned char* key, const unsigned int key_len,
     return SNMPv3_USM_OK;
 }
 
-int PrivAES::decrypt(const unsigned char* key, const unsigned int key_len,
-    const unsigned char* buffer, const unsigned int buffer_len,
-    unsigned char* out_buffer, unsigned int* out_buffer_len,
-    const unsigned char* privacy_params, const unsigned int privacy_params_len,
-    const uint32_t engine_boots, const uint32_t engine_time)
+int PrivAES::decrypt(const unsigned char* key,
+    [[maybe_unused]] const unsigned int key_len, const unsigned char* buffer,
+    const unsigned int buffer_len, unsigned char* out_buffer,
+    unsigned int* out_buffer_len, const unsigned char* privacy_params,
+    const unsigned int privacy_params_len, const uint32_t engine_boots,
+    const uint32_t engine_time)
 {
     if (*out_buffer_len < buffer_len)
     {
@@ -1641,7 +1792,10 @@ int PrivAES::decrypt(const unsigned char* key, const unsigned int key_len,
     unsigned char initVect[16];
 
     /* Privacy params length has to be 8 */
-    if (privacy_params_len != 8) return SNMPv3_USM_DECRYPTION_ERROR;
+    if (privacy_params_len != 8)
+    {
+        return SNMPv3_USM_DECRYPTION_ERROR;
+    }
 
     /* build IV */
     unsigned int* tmp = nullptr;
@@ -1659,15 +1813,26 @@ int PrivAES::decrypt(const unsigned char* key, const unsigned int key_len,
         return SNMPv3_USM_DECRYPTION_ERROR;
     }
 
-    const EVP_CIPHER* evp_cipher = NULL;
+    const EVP_CIPHER* evp_cipher = nullptr;
     switch (aes_type)
     {
-    case SNMP_PRIVPROTOCOL_AES128: evp_cipher = EVP_aes_128_cfb128(); break;
-    case SNMP_PRIVPROTOCOL_AES192: evp_cipher = EVP_aes_192_cfb128(); break;
-    case SNMP_PRIVPROTOCOL_AES256: evp_cipher = EVP_aes_256_cfb128(); break;
+    case SNMP_PRIVPROTOCOL_AES128: {
+        evp_cipher = EVP_aes_128_cfb128();
+        break;
     }
 
-    if (EVP_DecryptInit_ex(ctx, evp_cipher, NULL, key, initVect) != 1)
+    case SNMP_PRIVPROTOCOL_AES192: {
+        evp_cipher = EVP_aes_192_cfb128();
+        break;
+    }
+
+    case SNMP_PRIVPROTOCOL_AES256: {
+        evp_cipher = EVP_aes_256_cfb128();
+        break;
+    }
+    }
+
+    if (EVP_DecryptInit_ex(ctx, evp_cipher, nullptr, key, initVect) != 1)
     {
         debugprintf(1, "EVP_DecryptInit_ex() failed.");
         EVP_CIPHER_CTX_free(ctx);
@@ -1733,10 +1898,13 @@ int PrivAES::extend_short_key(const unsigned char* password,
     (void)password_len;
     (void)engine_id;
     (void)engine_id_len;
-    if (max_key_len < (unsigned)key_bytes) return SNMPv3_USM_ERROR;
+    if (max_key_len < (unsigned)key_bytes)
+    {
+        return SNMPv3_USM_ERROR;
+    }
 
-    int            res      = 0;
-    unsigned char* hash_buf = new unsigned char[auth->get_hash_len()];
+    int   res      = 0;
+    auto* hash_buf = new unsigned char[auth->get_hash_len()];
 
     if (!hash_buf)
     {
@@ -1748,18 +1916,28 @@ int PrivAES::extend_short_key(const unsigned char* password,
     while (*key_len < (unsigned)key_bytes)
     {
         res = auth->hash(key, *key_len, hash_buf);
-        if (res != SNMPv3_USM_OK) break;
+        if (res != SNMPv3_USM_OK)
+        {
+            break;
+        }
 
         int copy_bytes = key_bytes - *key_len;
         if (copy_bytes > auth->get_hash_len())
+        {
             copy_bytes = auth->get_hash_len();
+        }
         if (*key_len + copy_bytes > max_key_len)
+        {
             copy_bytes = max_key_len - *key_len;
+        }
         memcpy(key + *key_len, hash_buf, copy_bytes);
         *key_len += copy_bytes;
     }
 
-    if (hash_buf) delete[] hash_buf;
+    if (hash_buf)
+    {
+        delete[] hash_buf;
+    }
 
     return res;
 }
@@ -1768,25 +1946,41 @@ PrivAESW3DESKeyExt::PrivAESW3DESKeyExt(const int aes_type_)
     : PrivAES(PrivAESW3DESKeyExt::map_aes_type(aes_type_))
 {
     if (PrivAES::get_id() != -1)
+    {
         own_aes_type = aes_type_;
+    }
     else
+    {
         own_aes_type = -1;
+    }
 }
 
 int PrivAESW3DESKeyExt::map_aes_type(const int t)
 {
     switch (t)
     {
-    case SNMP_PRIVPROTOCOL_AES128W3DESKEYEXT:
+    case SNMP_PRIVPROTOCOL_AES128W3DESKEYEXT: {
         return SNMP_PRIVPROTOCOL_AES128;
+
         break;
-    case SNMP_PRIVPROTOCOL_AES192W3DESKEYEXT:
+    }
+
+    case SNMP_PRIVPROTOCOL_AES192W3DESKEYEXT: {
         return SNMP_PRIVPROTOCOL_AES192;
+
         break;
-    case SNMP_PRIVPROTOCOL_AES256W3DESKEYEXT:
+    }
+
+    case SNMP_PRIVPROTOCOL_AES256W3DESKEYEXT: {
         return SNMP_PRIVPROTOCOL_AES256;
+
         break;
-    default: return -1; break;
+    }
+
+    default: {
+        return -1;
+        break;
+    }
     }
 }
 
@@ -1804,16 +1998,28 @@ const char* PrivAESW3DESKeyExt::get_id_string() const
 {
     switch (own_aes_type)
     {
-    case SNMP_PRIVPROTOCOL_AES128W3DESKEYEXT:
+    case SNMP_PRIVPROTOCOL_AES128W3DESKEYEXT: {
         return "AES128W3DESKeyExt";
+
         break;
-    case SNMP_PRIVPROTOCOL_AES192W3DESKEYEXT:
+    }
+
+    case SNMP_PRIVPROTOCOL_AES192W3DESKEYEXT: {
         return "AES192W3DESKeyExt";
+
         break;
-    case SNMP_PRIVPROTOCOL_AES256W3DESKEYEXT:
+    }
+
+    case SNMP_PRIVPROTOCOL_AES256W3DESKEYEXT: {
         return "AES256W3DESKeyExt";
+
         break;
-    default: return "error"; break;
+    }
+
+    default: {
+        return "error";
+        break;
+    }
     }
 }
 
@@ -1827,6 +2033,7 @@ Priv3DES_EDE::Priv3DES_EDE()
     cipher = find_cipher("3des");
     debugprintf(10, "tomcrypt returned cipher %d", cipher);
 }
+
 #        endif
 
 int Priv3DES_EDE::encrypt(const unsigned char* key, const unsigned int key_len,
@@ -1877,7 +2084,7 @@ int Priv3DES_EDE::encrypt(const unsigned char* key, const unsigned int key_len,
     }
 
     // xor initVect with salt
-    for (int i = 0; i < 8; i++) initVect[i] ^= privacy_params[i];
+    for (int i = 0; i < 8; i++) { initVect[i] ^= privacy_params[i]; }
 
 #        ifdef __DEBUG
     debughexcprintf(21, "3DES Data to encrypt", buffer, buffer_len);
@@ -1906,16 +2113,19 @@ int Priv3DES_EDE::encrypt(const unsigned char* key, const unsigned int key_len,
         int            start       = buffer_len - (buffer_len % 8);
         memset(tmp_buf, 0, 8);
         for (unsigned int l = start; l < buffer_len; l++)
+        {
             *tmp_buf_ptr++ = buffer[l];
+        }
         DES_CBC_ENCRYPT(tmp_buf, out_buffer + start, symcbc, initVect, 8);
         *out_buffer_len = buffer_len + 8 - (buffer_len % 8);
     }
     else
+    {
         *out_buffer_len = buffer_len;
+    }
 
     /* Clear context buffer (paranoia!)*/
     DES_MEMSET(symcbc, 0, sizeof(symcbc));
-
 #        else
     DESCBCType ks1, ks2, ks3;
 
@@ -1924,11 +2134,13 @@ int Priv3DES_EDE::encrypt(const unsigned char* key, const unsigned int key_len,
     DES_CBC_START_ENCRYPT(unused, unused, key + 16, unused, unused, ks3);
 
     if (buffer_len >= 8)
+    {
         for (unsigned int k = 0; k <= (buffer_len - 8); k += 8)
         {
             DES_EDE3_CBC_ENCRYPT(
                 buffer + k, out_buffer + k, 8, ks1, ks2, ks3, initVect);
         }
+    }
 
     // Last part
     if (buffer_len % 8)
@@ -1938,14 +2150,18 @@ int Priv3DES_EDE::encrypt(const unsigned char* key, const unsigned int key_len,
         int            start       = buffer_len - (buffer_len % 8);
         memset(tmp_buf, 0, 8);
         for (unsigned int l = start; l < buffer_len; l++)
+        {
             *tmp_buf_ptr++ = buffer[l];
+        }
         DES_EDE3_CBC_ENCRYPT(
             tmp_buf, out_buffer + start, 8, ks1, ks2, ks3, initVect);
 
         *out_buffer_len = buffer_len + 8 - (buffer_len % 8);
     }
     else
+    {
         *out_buffer_len = buffer_len;
+    }
 
     /* Clear context buffer (paranoia!)*/
     DES_MEMSET(ks1, 0, sizeof(ks1));
@@ -1972,7 +2188,9 @@ int Priv3DES_EDE::decrypt(const unsigned char* key, const unsigned int key_len,
     /* Privacy params length has to be 8  && Length has to be a multiple of 8
      */
     if ((buffer_len % 8) || (privacy_params_len != 8))
+    {
         return SNMPv3_USM_DECRYPTION_ERROR;
+    }
 
     /* check key length */
     if (key_len < TRIPLEDES_EDE_KEY_LEN)
@@ -1982,7 +2200,10 @@ int Priv3DES_EDE::decrypt(const unsigned char* key, const unsigned int key_len,
         return SNMPv3_USM_DECRYPTION_ERROR;
     }
 
-    for (int i = 0; i < 8; i++) initVect[i] = privacy_params[i] ^ key[i + 24];
+    for (int i = 0; i < 8; i++)
+    {
+        initVect[i] = privacy_params[i] ^ key[i + 24];
+    }
 
     memset((char*)out_buffer, 0, *out_buffer_len);
 
@@ -2002,7 +2223,6 @@ int Priv3DES_EDE::decrypt(const unsigned char* key, const unsigned int key_len,
     }
     /* Clear context (paranoia!) */
     DES_MEMSET(symcbc, 0, sizeof(symcbc));
-
 #        else
     DESCBCType ks1, ks2, ks3;
 
@@ -2045,7 +2265,11 @@ bool Priv3DES_EDE::test()
 {
     int      status;
     AuthPriv ap(status);
-    if (status != SNMPv3_USM_OK) return false;
+
+    if (status != SNMPv3_USM_OK)
+    {
+        return false;
+    }
 
     if (ap.add_auth(new AuthSHA()) != SNMP_ERROR_SUCCESS)
     {
@@ -2081,7 +2305,7 @@ bool Priv3DES_EDE::test()
 
     key_len = TRIPLEDES_EDE_KEY_LEN;
     status  = ap.password_to_key_priv(SNMP_AUTHPROTOCOL_HMACMD5,
-        SNMP_PRIVPROTOCOL_3DESEDE, password, 10, engine_id, 12, key, &key_len);
+         SNMP_PRIVPROTOCOL_3DESEDE, password, 10, engine_id, 12, key, &key_len);
 
     debughexcprintf(1, "result key 3DES MD5", key, key_len);
 
@@ -2109,6 +2333,7 @@ bool Priv3DES_EDE::test()
     // TODO: check keys and return real value
     return true;
 }
+
 #        endif
 
 #    endif // _USE_3DES_EDE
@@ -2194,8 +2419,8 @@ int AuthSHABase::auth_out_msg(const unsigned char* key, unsigned char* msg,
     const int msg_len, unsigned char* auth_par_ptr)
 {
     std::unique_ptr<Hasher> h(get_hasher());
-    int                     block_size = h->get_block_size();
-    int                     key_len    = h->get_key_length();
+    int const               block_size = h->get_block_size();
+    int const               key_len    = h->get_key_length();
     unsigned char           digest[SNMPv3_AP_MAXLENGTH_AUTHPARAM];
     Buffer<unsigned char>   ipad(block_size);
     Buffer<unsigned char>   opad(block_size);
@@ -2300,7 +2525,8 @@ int AuthSHABase::auth_inc_msg(const unsigned char* key, unsigned char* msg,
 class AuthSHA::HasherSHA1 : public AuthSHABase::Hasher {
 public:
     HasherSHA1() { }
-    virtual ~HasherSHA1() { }
+
+    ~HasherSHA1() override { }
 
     int init() override { return SHA1_INIT(&sha_hash_state); }
 
@@ -2314,10 +2540,11 @@ public:
         return SHA1_DONE(&sha_hash_state, digest);
     }
     int get_key_length() const override { return 20; }
+
     int get_block_size() const override { return 64; }
 
 private:
-    SHAHashStateType sha_hash_state;
+    SHAHashStateType sha_hash_state {};
 };
 
 AuthSHABase::Hasher* AuthSHA::get_hasher() const { return new HasherSHA1(); }
@@ -2327,7 +2554,8 @@ AuthSHABase::Hasher* AuthSHA::get_hasher() const { return new HasherSHA1(); }
 class AuthHMAC128SHA224::Hasher224 : public AuthSHABase::Hasher {
 public:
     Hasher224() { }
-    virtual ~Hasher224() { }
+
+    ~Hasher224() override { }
 
     int init() override { return evpAllocAndInit(&ctx, EVP_sha224()); }
 
@@ -2341,10 +2569,11 @@ public:
         return evpDigestFinalAndFree(&ctx, digest);
     }
     int get_key_length() const override { return 28; }
+
     int get_block_size() const override { return 64; }
 
 private:
-    EVPHashStateType ctx;
+    EVPHashStateType ctx {};
 };
 
 AuthSHABase::Hasher* AuthHMAC128SHA224::get_hasher() const
@@ -2355,7 +2584,8 @@ AuthSHABase::Hasher* AuthHMAC128SHA224::get_hasher() const
 class AuthHMAC192SHA256::Hasher256 : public Hasher {
 public:
     Hasher256() { }
-    virtual ~Hasher256() { }
+
+    ~Hasher256() override { }
 
     int init() override { return evpAllocAndInit(&ctx, EVP_sha256()); }
 
@@ -2369,10 +2599,11 @@ public:
         return evpDigestFinalAndFree(&ctx, digest);
     }
     int get_key_length() const override { return 32; }
+
     int get_block_size() const override { return 64; }
 
 private:
-    EVPHashStateType ctx;
+    EVPHashStateType ctx {};
 };
 
 AuthSHABase::Hasher* AuthHMAC192SHA256::get_hasher() const
@@ -2383,7 +2614,8 @@ AuthSHABase::Hasher* AuthHMAC192SHA256::get_hasher() const
 class AuthHMAC256SHA384::Hasher384 : public Hasher {
 public:
     Hasher384() { }
-    virtual ~Hasher384() { }
+
+    ~Hasher384() override { }
 
     int init() override { return evpAllocAndInit(&ctx, EVP_sha384()); }
 
@@ -2397,10 +2629,11 @@ public:
         return evpDigestFinalAndFree(&ctx, digest);
     }
     int get_key_length() const override { return 48; }
+
     int get_block_size() const override { return 128; }
 
 private:
-    EVPHashStateType ctx;
+    EVPHashStateType ctx {};
 };
 
 AuthSHABase::Hasher* AuthHMAC256SHA384::get_hasher() const
@@ -2411,7 +2644,8 @@ AuthSHABase::Hasher* AuthHMAC256SHA384::get_hasher() const
 class AuthHMAC384SHA512::Hasher512 : public Hasher {
 public:
     Hasher512() { }
-    virtual ~Hasher512() { }
+
+    ~Hasher512() override { }
 
     int init() override { return evpAllocAndInit(&ctx, EVP_sha512()); }
 
@@ -2425,10 +2659,11 @@ public:
         return evpDigestFinalAndFree(&ctx, digest);
     }
     int get_key_length() const override { return 64; }
+
     int get_block_size() const override { return 128; }
 
 private:
-    EVPHashStateType ctx;
+    EVPHashStateType ctx {};
 };
 
 AuthSHABase::Hasher* AuthHMAC384SHA512::get_hasher() const

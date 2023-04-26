@@ -31,7 +31,7 @@
 #include <config.h>
 #endif
 
-#cmakedefine _DEBUG
+#cmakedefine __DEBUG
 
 #cmakedefine CNF_HAVE_SYS_TYPES_H
 #ifdef CNF_HAVE_SYS_TYPES_H

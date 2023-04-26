@@ -1,29 +1,29 @@
 /*_############################################################################
-  _##
-  _##  uxsnmp.h
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  uxsnmp.h
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 
 #ifndef _SNMP_UXSNMP_H_
 #define _SNMP_UXSNMP_H_
@@ -63,6 +63,7 @@ class Pdu;
 class v3MP;
 
 //-----------[ async methods callback ]-----------------------------------
+
 /**
  * Async methods of the class Snmp require the caller to provide a
  * callback address of a function with this typedef.
@@ -88,6 +89,7 @@ bool setCloseOnExecFlag(SnmpSocket fd);
 
 //------------[ SNMP Class Def ]---------------------------------------------
 //
+
 /**
  * SNMP class definition. The Snmp class provides an object oriented
  * approach to SNMP. The SNMP class is an encapsulation of SNMP
@@ -155,14 +157,16 @@ public:
     Snmp(int& status, const UdpAddress& addr_v4, const UdpAddress& addr_v6);
 
     //-------------------[ destructor ]------------------------------------
+
     /**
      * Destructor.
      */
-    virtual ~Snmp();
+    ~Snmp() override;
 
     //@}
 
     //--------[ Get the version of the snmp++ library ]--------------------
+
     /**
      * Get the version of the snmp++ library.
      *
@@ -171,6 +175,7 @@ public:
     static const char* get_version();
 
     //-------------------[ returns error string ]--------------------------
+
     /**
      * Returns a human readable error string.
      *
@@ -178,6 +183,7 @@ public:
      * @return Null terminated error string.
      */
     static const char* error_msg(const int c);
+
 #ifdef _SNMPv3
     /**
      * Returns the error code for a SNMPv3 report Oid.
@@ -255,7 +261,7 @@ public:
      * @return SNMP_CLASS_SUCCESS or a negative error code
      */
     virtual int get(Pdu& pdu, SnmpTarget& target, const snmp_callback callback,
-        const void* callback_data = 0);
+        const void* callback_data = nullptr);
 
     /**
      * Send a blocking SNMP-GETNEXT request.
@@ -278,7 +284,7 @@ public:
      * @return SNMP_CLASS_SUCCESS or a negative error code
      */
     virtual int get_next(Pdu& pdu, SnmpTarget& target,
-        const snmp_callback callback, const void* callback_data = 0);
+        const snmp_callback callback, const void* callback_data = nullptr);
 
     /**
      * Send a blocking SNMP-SET request.
@@ -301,7 +307,7 @@ public:
      * @return SNMP_CLASS_SUCCESS or a negative error code
      */
     virtual int set(Pdu& pdu, SnmpTarget& target, const snmp_callback callback,
-        const void* callback_data = 0);
+        const void* callback_data = nullptr);
 
     /**
      * Send a blocking SNMP-GETBULK request.
@@ -330,7 +336,7 @@ public:
      */
     virtual int get_bulk(Pdu& pdu, SnmpTarget& target, const int non_repeaters,
         const int max_reps, const snmp_callback callback,
-        const void* callback_data = 0);
+        const void* callback_data = nullptr);
 
     /**
      * Send a SNMP-TRAP.
@@ -373,7 +379,7 @@ public:
      * @return SNMP_CLASS_SUCCESS or a negative error code
      */
     virtual int inform(Pdu& pdu, SnmpTarget& target,
-        const snmp_callback callback, const void* callback_data = 0);
+        const snmp_callback callback, const void* callback_data = nullptr);
 
     /**
      * Send a RESPONSE.
@@ -417,7 +423,7 @@ public:
      */
     virtual int broadcast_discovery(UdpAddressCollection& addresses,
         const int timeout_sec, const UdpAddress& addr,
-        const snmp_version version, const OctetStr* community = 0);
+        const snmp_version version, const OctetStr* community = nullptr);
 
 #ifdef _SNMPv3
     virtual int engine_id_discovery(
@@ -466,7 +472,7 @@ public:
      */
     virtual int notify_register(const OidCollection& trapids,
         const TargetCollection& targets, const snmp_callback callback,
-        const void* callback_data = 0);
+        const void* callback_data = nullptr);
 
     /**
      * Unregister to get traps and informs.
@@ -488,19 +494,20 @@ public:
         OidCollection& trapids, TargetCollection& targets);
 
     //-----------------------[ access the trap reception info ]---------------
+
     /**
      * Get a pointer to the callback function used for trap reception.
      *
      * @return Pointer to the function set through notify_register()
      */
-    snmp_callback get_notify_callback() { return notifycallback; };
+    snmp_callback get_notify_callback() { return notifycallback; }
 
     /**
      * Get a pointer to the data that is passed to the callback function.
      *
      * @return Pointer to the data set through notify_register()
      */
-    void* get_notify_callback_data() { return notifycallback_data; };
+    void* get_notify_callback_data() { return notifycallback_data; }
 
     //@}
 
@@ -519,7 +526,7 @@ public:
     virtual int send_raw_data(unsigned char* send_buf, size_t send_len,
         UdpAddress& address, SnmpSocket fd = INVALID_SOCKET);
 
-    const IpAddress& get_listen_address() const { return listen_address; };
+    const IpAddress& get_listen_address() const { return listen_address; }
 
     /**
      * Start one thread listening for responses and notifications.
@@ -548,23 +555,23 @@ public:
      */
     void stop_poll_thread();
 
-    EventListHolder* get_eventListHolder() { return eventListHolder; };
+    EventListHolder* get_eventListHolder() { return eventListHolder; }
 
 protected:
     /**
      * Check for the status of the worker thread.
      * @return true - if running, false - otherwise
      */
-    bool is_running() const { return m_isThreadRunning; };
+    bool is_running() const { return m_isThreadRunning; }
 
-        /**
-         * This is a working thread for the recovery of the pending events.
-         *
-         * @param snmp [in] pointer to the whole object
-         *
-         * @return  0 - if successful,
-         *          1 - in the case of error
-         */
+    /**
+     * This is a working thread for the recovery of the pending events.
+     *
+     * @param snmp [in] pointer to the whole object
+     *
+     * @return  0 - if successful,
+     *          1 - in the case of error
+     */
 #ifdef WIN32
     static int process_thread(Snmp* snmp);
 #else
@@ -591,6 +598,7 @@ protected:
     void check_notify_timestamp(Pdu& pdu);
 
     //-----------[ Snmp Engine ]----------------------------------------
+
     /**
      * gets, sets and get nexts go through here....
      * This mf does all snmp sending and reception

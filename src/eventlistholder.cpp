@@ -1,29 +1,29 @@
 /*_############################################################################
-  _##
-  _##  eventlistholder.cpp
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  eventlistholder.cpp
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 
 #include "snmp_pp/eventlistholder.h"
 
@@ -114,13 +114,16 @@ int EventListHolder::SNMPProcessPendingEvents()
 
     pevents_mutex.lock(); // FIXME: not exception save! CK
 
-    timeout = 1; // chosen a very small timeout
+    timeout = 1;          // chosen a very small timeout
     // in order to avoid busy looping but keep overall performance
 
     do {
         do {
             fdcount = m_eventList.GetFdCount();
-            if (pollfds) delete[] pollfds;
+            if (pollfds)
+            {
+                delete[] pollfds;
+            }
             pollfds = new struct pollfd[fdcount + 1];
             memset(pollfds, 0, (fdcount + 1) * sizeof(struct pollfd));
             remaining = fdcount + 1;
@@ -137,7 +140,10 @@ int EventListHolder::SNMPProcessPendingEvents()
         }
 #    ifdef WIN32
         /* On Win32 select immediately returns -1 if all fd_sets are empty */
-        if (maxfds == 0) Sleep(1); /* prevent 100% CPU utilization */
+        if (maxfds == 0)
+        {
+            Sleep(1); /* prevent 100% CPU utilization */
+        }
 #    endif
     } while (nfound > 0);
 
@@ -147,7 +153,10 @@ int EventListHolder::SNMPProcessPendingEvents()
 
     pevents_mutex.unlock();
 
-    if (pollfds) delete[] pollfds;
+    if (pollfds)
+    {
+        delete[] pollfds;
+    }
 
     return status;
 }
@@ -169,7 +178,10 @@ int EventListHolder::SNMPProcessEvents(const int max_block_milliseconds)
 
     do {
         fdcount = m_eventList.GetFdCount();
-        if (pollfds) delete[] pollfds;
+        if (pollfds)
+        {
+            delete[] pollfds;
+        }
         pollfds = new struct pollfd[fdcount + 1];
         memset(pollfds, 0, (fdcount + 1) * sizeof(struct pollfd));
         remaining = fdcount + 1;
@@ -187,15 +199,19 @@ int EventListHolder::SNMPProcessEvents(const int max_block_milliseconds)
 
     /* Prevent endless sleep in case no fd is open */
     if ((fdcount == 0) && (fd_timeout.tv_sec > 5))
+    {
         fd_timeout.tv_sec = 5; /* sleep at max 5.99 seconds */
-
+    }
     timeout = fd_timeout.tv_sec * 1000 + fd_timeout.tv_usec / 1000;
 
     poll(pollfds, fdcount, timeout);
 
     status = SNMPProcessPendingEvents();
 
-    if (pollfds) delete[] pollfds;
+    if (pollfds)
+    {
+        delete[] pollfds;
+    }
 
     return status;
 }
@@ -230,13 +246,16 @@ int EventListHolder::SNMPProcessPendingEvents()
 
         if (nfound > 0)
         { // found something on select
-            status =
-                m_eventList.HandleEvents(maxfds, readfds, writefds, exceptfds);
-            // TODO: TM should we do anything with bad status?
+          // [[maybe_unused]] status =
+            m_eventList.HandleEvents(maxfds, readfds, writefds, exceptfds);
+            // TODO(TM): should we do anything with bad status?
         }
 #    ifdef WIN32
         /* On Win32 select immediately returns -1 if all fd_sets are empty */
-        if (maxfds == 0) Sleep(1); /* prevent 100% CPU utilization */
+        if (maxfds == 0)
+        {
+            Sleep(1); /* prevent 100% CPU utilization */
+        }
 #    endif
     } while (nfound > 0);
 
@@ -258,7 +277,7 @@ int EventListHolder::SNMPProcessEvents(const int max_block_milliseconds)
     fd_set         writefds;
     fd_set         exceptfds;
     struct timeval fd_timeout = {};
-    msec           now; // automatically calls msec::refresh()
+    msec const     now; // automatically calls msec::refresh()
     msec           sendTime;
     int            status = 0;
 
@@ -279,8 +298,9 @@ int EventListHolder::SNMPProcessEvents(const int max_block_milliseconds)
 
     /* Prevent endless sleep in case no fd is open */
     if ((maxfds == 0) && (fd_timeout.tv_sec > 5))
+    {
         fd_timeout.tv_sec = 5; /* sleep at max 5.99 seconds */
-
+    }
     select(maxfds, &readfds, &writefds, &exceptfds, &fd_timeout);
 
     status = SNMPProcessPendingEvents();
@@ -325,8 +345,8 @@ void EventListHolder::SNMPGetFdSets(
 
 uint32_t EventListHolder::SNMPGetNextTimeout()
 {
-    msec now;
-    msec sendTime(now);
+    msec const now;
+    msec       sendTime(now);
 
     // TM: This function used to have an argument of sendTime and
     //    would simply call eventList.GetNextTimeout(sendTime) and
@@ -336,10 +356,12 @@ uint32_t EventListHolder::SNMPGetNextTimeout()
     // 25-Jan-96 TM
 
     m_eventList.GetNextTimeout(sendTime);
-    if (sendTime.IsInfinite()) { return UINT_MAX; }
+    if (sendTime.IsInfinite())
+    {
+        return UINT_MAX;
+    }
     else
     {
-
         // Kludge: When this was first designed the units were millisecs
         // However, later on the units for the target class were changed
         // to hundreths of secs.  Divide millisecs by 10 to create the
@@ -360,20 +382,25 @@ uint32_t EventListHolder::SNMPGetNextTimeout()
         if (sendTime > now)
         {
             sendTime -= now;
-            return ((((uint32_t)sendTime) / 10) + 1);
+            return (sendTime / 10) + 1;
         }
         else
+        {
             return 0;
+        }
     }
 }
+
 #ifdef _USER_DEFINED_TIMEOUTS
 UtId EventListHolder::SNMPAddTimeOut(
     const uint32_t interval, const ut_callback callBack, const void* callData)
 {
     msec now;
+
     now += interval;
     return m_utEventQueue->AddEntry(now, callBack, callData);
 }
+
 #endif
 
 #ifdef _USER_DEFINED_EVENTS
@@ -383,6 +410,7 @@ UdId EventListHolder::SNMPAddInput(const int source,
 {
     return m_udEventQueue->AddEntry(source, condition, callBack, callData);
 }
+
 #endif
 
 #ifdef SNMP_PP_NAMESPACE

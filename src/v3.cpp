@@ -1,29 +1,29 @@
 /*_############################################################################
-  _##
-  _##  v3.cpp
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  v3.cpp
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 
 #include "snmp_pp/v3.h"
 
@@ -53,12 +53,17 @@ void debug_set_level(const int db_level) { debug_level = db_level; }
 void debughexcprintf(int db_level, const char* comment,
     const unsigned char* data, const unsigned int len)
 {
-    if (db_level > debug_level) return;
+    if (db_level > debug_level)
+    {
+        return;
+    }
 
     char* buf = new char[MAX_LOG_SIZE];
 
-    if (NULL == buf) return; // not good!
-
+    if (NULL == buf)
+    {
+        return; // not good!
+    }
     if (comment && (strlen(comment) < MAX_LOG_SIZE - 25))
     {
         snprintf(buf, MAX_LOG_SIZE, "%s (length %u): ", comment, len);
@@ -112,11 +117,17 @@ void debughexcprintf(int db_level, const char* comment,
 
 void debugprintf(int db_level, const char* format, ...)
 {
-    if (db_level > debug_level) return;
+    if (db_level > debug_level)
+    {
+        return;
+    }
 
     char* buf = new char[MAX_LOG_SIZE];
 
-    if (!buf) return;
+    if (!buf)
+    {
+        return;
+    }
 
     va_list args;
     va_start(args, format);
@@ -134,43 +145,59 @@ void debugprintf(int db_level, const char* format, ...)
 
 #else
 #    if (defined(__STRICT_ANSI__) || !defined(__GNUC__)) && !defined(_MSC_VER)
-void debugprintf(int, const char*, ...) { }
+void debugprintf(int /*unused*/, const char* /*unused*/, ...) { }
+
 #    endif
 
 #endif
 
 #ifdef _SNMPv3
 
-unsigned char* v3strcpy(const unsigned char* src, const int srclen)
+unsigned char* v3strcpy(const unsigned char* src, const size_t srclen)
 {
-    unsigned char* res = new unsigned char[srclen + 1];
-    if (!res) return NULL;
+    if (!src)
+    {
+        return nullptr;
+    }
+    auto* res = new unsigned char[srclen + 1];
+    if (!res)
+    {
+        return nullptr;
+    }
     memcpy(res, src, srclen);
     res[srclen] = '\0';
     return res;
 }
 
-int unsignedCharCompare(const unsigned char* str1, const long int ptr1len,
-    const unsigned char* str2, const long int ptr2len)
+int unsignedCharCompare(const unsigned char* str1, const size_t ptr1len,
+    const unsigned char* str2, const size_t ptr2len)
 {
-    if (ptr1len != ptr2len) return 0;
+    if (ptr1len != ptr2len)
+    {
+        return 0;
+    }
 
     const unsigned char* ptr1 = str1;
     const unsigned char* ptr2 = str2;
 
-    for (int i = 0; i < ptr1len; ++i)
-        if (*ptr1++ != *ptr2++) return 0;
+    for (size_t i = 0; i < ptr1len; ++i)
+    {
+        if (*ptr1++ != *ptr2++)
+        {
+            return 0;
+        }
+    }
 
     return 1;
 }
 
 // Encode the given string into the output buffer.
-void encodeString(const unsigned char* in, const int in_length, char* out)
+void encodeString(const unsigned char* in, const size_t in_length, char* out)
 {
     char*                out_ptr = out;
     const unsigned char* in_ptr  = in;
 
-    for (int i = 0; i < in_length; i++)
+    for (size_t i = 0; i < in_length; i++)
     {
         *out_ptr++ = 64 + ((*in_ptr >> 4) & 0xF);
         *out_ptr++ = 64 + (*in_ptr++ & 0xF);
@@ -178,7 +205,7 @@ void encodeString(const unsigned char* in, const int in_length, char* out)
 }
 
 // Decode the given encoded string into the output buffer.
-void decodeString(const unsigned char* in, const int in_length, char* out)
+void decodeString(const unsigned char* in, const size_t in_length, char* out)
 {
     char*                out_ptr = out;
     const unsigned char* in_ptr  = in;
@@ -194,7 +221,7 @@ void decodeString(const unsigned char* in, const int in_length, char* out)
         return;
     }
 
-    for (int i = in_length / 2; i > 0; i--)
+    for (size_t i = in_length / 2; i > 0; i--)
     {
         *out_ptr = (*in_ptr++ & 0xF) << 4;
         *out_ptr++ |= (*in_ptr++ & 0xF);
@@ -206,11 +233,10 @@ void decodeString(const unsigned char* in, const int in_length, char* out)
 int getBootCounter(
     const char* fileName, const OctetStr& engineId, unsigned int& boot)
 {
-    char  line[MAX_LINE_LEN];
-    char  encoded[MAXLENGTH_ENGINEID * 2 + 2];
-    int   len  = engineId.len();
-    FILE* file = fopen(fileName, "r");
-    ;
+    char   line[MAX_LINE_LEN];
+    char   encoded[MAXLENGTH_ENGINEID * 2 + 2];
+    size_t len  = engineId.len();
+    FILE*  file = fopen(fileName, "r");
 
     boot = 0; // set to default
 
@@ -244,14 +270,17 @@ int getBootCounter(
     {
         line[MAX_LINE_LEN - 1] = 0;
         /* ignore comments */
-        if (line[0] == '#') continue;
+        if (line[0] == '#')
+        {
+            continue;
+        }
 
         if (!strncmp(encoded, line, len * 2 + 1))
         {
             /* line starts with engineId */
             char* ptr = line;
             /* skip until first space */
-            while (*ptr != 0 && *ptr != ' ') ptr++;
+            while (*ptr != 0 && *ptr != ' ') { ptr++; }
 
             if (*ptr == 0)
             {
@@ -294,9 +323,9 @@ int getBootCounter(
 int saveBootCounter(
     const char* fileName, const OctetStr& engineId, const unsigned int boot)
 {
-    char  tmpFileName[MAXLENGTH_FILENAME];
-    int   len     = engineId.len();
-    FILE *file_in = nullptr, *file_out = nullptr;
+    char   tmpFileName[MAXLENGTH_FILENAME];
+    size_t len     = engineId.len();
+    FILE * file_in = nullptr, *file_out = nullptr;
 
     tmpFileName[0] = 0;
     snprintf(tmpFileName, sizeof(tmpFileName), "%s.tmp", fileName);

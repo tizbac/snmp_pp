@@ -225,12 +225,12 @@ typedef int SnmpSocket;
 //#define SNMP_PP_MUTABLE mutable
 #define SNMP_PP_MUTABLE
 
-#define SAFE_INT_CAST(expr)  ((int)(expr))
-#define SAFE_UINT_CAST(expr) ((unsigned int)(expr))
+#define SAFE_INT_CAST(expr)  ((int32_t)(expr))
+#define SAFE_UINT_CAST(expr) ((uint32_t)(expr))
 
 // Safe until 32 bit second counter wraps to zero (time functions)
-#define SAFE_LONG_CAST(expr)  ((long)(expr))
-#define SAFE_ULONG_CAST(expr) ((unsigned long)(expr))
+#define SAFE_LONG_CAST(expr)  ((int)(expr))
+#define SAFE_ULONG_CAST(expr) ((unsigned int)(expr))
 
 #ifdef ENABLE_THREADS
 #    ifdef WIN32

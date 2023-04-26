@@ -1,55 +1,55 @@
 /*_############################################################################
-  _##
-  _##  gauge.h
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  gauge.h
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 /*===================================================================
-
-  Copyright (c) 1999
-  Hewlett-Packard Company
-
-  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  Permission to use, copy, modify, distribute and/or sell this software
-  and/or its documentation is hereby granted without fee. User agrees
-  to display the above copyright notice and this license notice in all
-  copies of the software and any documentation of the software. User
-  agrees to assume all liability for the use of the software; Hewlett-Packard
-  makes no representations about the suitability of this software for any
-  purpose. It is provided "AS-IS without warranty of any kind,either express
-  or implied. User hereby grants a royalty-free license to any and all
-  derivatives based upon this software code base.
-
-
-  SNMP++ G A U G E. H
-
-  GAUGE32 CLASS DEFINITION
-
-  DESIGN + AUTHOR:  Peter E Mellquist
-
-  DESCRIPTION:
-  Class definition for SMI Gauge32 class.
-=====================================================================*/
+ *
+ * Copyright (c) 1999
+ * Hewlett-Packard Company
+ *
+ * ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * Permission to use, copy, modify, distribute and/or sell this software
+ * and/or its documentation is hereby granted without fee. User agrees
+ * to display the above copyright notice and this license notice in all
+ * copies of the software and any documentation of the software. User
+ * agrees to assume all liability for the use of the software; Hewlett-Packard
+ * makes no representations about the suitability of this software for any
+ * purpose. It is provided "AS-IS without warranty of any kind,either express
+ * or implied. User hereby grants a royalty-free license to any and all
+ * derivatives based upon this software code base.
+ *
+ *
+ * SNMP++ G A U G E. H
+ *
+ * GAUGE32 CLASS DEFINITION
+ *
+ * DESIGN + AUTHOR:  Peter E Mellquist
+ *
+ * DESCRIPTION:
+ * Class definition for SMI Gauge32 class.
+ * =====================================================================*/
 
 #ifndef _SNMP_GAUGE_H_
 #define _SNMP_GAUGE_H_
@@ -62,6 +62,7 @@ namespace Snmp_pp
 #endif
 
 //------------[ Gauge32 Class ]------------------------------------------
+
 /**
  * The gauge class allows all the functionality of unsigned integers
  * but is recognized as a distinct SMI type. Gauge32 objects may be
@@ -94,7 +95,7 @@ public:
     /**
      * Destructor (ensure that SnmpUInt32::~SnmpUInt32() is overridden).
      */
-    ~Gauge32() { }
+    ~Gauge32() override { }
 
     //-----------[ SnmpSyntax methods ]----------------------
 
@@ -138,6 +139,7 @@ public:
     Gauge32& operator=(const uint32_t ul)
     {
         SnmpUInt32::operator=(ul);
+
         return *this;
     }
 };

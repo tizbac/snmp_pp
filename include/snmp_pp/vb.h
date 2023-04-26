@@ -1,71 +1,71 @@
 /*_############################################################################
-  _##
-  _##  vb.h
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  vb.h
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 /*===================================================================
-
-  Copyright (c) 1999
-  Hewlett-Packard Company
-
-  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  Permission to use, copy, modify, distribute and/or sell this software
-  and/or its documentation is hereby granted without fee. User agrees
-  to display the above copyright notice and this license notice in all
-  copies of the software and any documentation of the software. User
-  agrees to assume all liability for the use of the software; Hewlett-Packard
-  makes no representations about the suitability of this software for any
-  purpose. It is provided "AS-IS without warranty of any kind,either express
-  or implied. User hereby grants a royalty-free license to any and all
-  derivatives based upon this software code base.
-
-
-  SNMP++ V B . H
-
-  VARIABLE BINDING CLASS DEFINITION
-
-  DESCRIPTION:
-  This module contains the class definition for the variable binding
-  class. The VB class is an encapsulation of a SNMP VB. A VB object is
-  composed of an SNMP++ Oid and an SMI value. The Vb class utilizes Oid
-  objects and thus requires the Oid class. The Vb class may be used
-  stand alone and does not require use of any other snmp library.
-
-  DESIGN + AUTHOR:  Peter E. Mellquist
-
-=====================================================================*/
+ *
+ * Copyright (c) 1999
+ * Hewlett-Packard Company
+ *
+ * ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * Permission to use, copy, modify, distribute and/or sell this software
+ * and/or its documentation is hereby granted without fee. User agrees
+ * to display the above copyright notice and this license notice in all
+ * copies of the software and any documentation of the software. User
+ * agrees to assume all liability for the use of the software; Hewlett-Packard
+ * makes no representations about the suitability of this software for any
+ * purpose. It is provided "AS-IS without warranty of any kind,either express
+ * or implied. User hereby grants a royalty-free license to any and all
+ * derivatives based upon this software code base.
+ *
+ *
+ * SNMP++ V B . H
+ *
+ * VARIABLE BINDING CLASS DEFINITION
+ *
+ * DESCRIPTION:
+ * This module contains the class definition for the variable binding
+ * class. The VB class is an encapsulation of a SNMP VB. A VB object is
+ * composed of an SNMP++ Oid and an SMI value. The Vb class utilizes Oid
+ * objects and thus requires the Oid class. The Vb class may be used
+ * stand alone and does not require use of any other snmp library.
+ *
+ * DESIGN + AUTHOR:  Peter E. Mellquist
+ *
+ * =====================================================================*/
 
 #ifndef _SNMP_VB_H_
 #define _SNMP_VB_H_
 
-#include "snmp_pp/address.h" // address class def
-#include "snmp_pp/counter.h" // counter
-#include "snmp_pp/ctr64.h"   // 64 bit counters
-#include "snmp_pp/gauge.h"   // gauge class
-#include "snmp_pp/integer.h" // integer class
-#include "snmp_pp/octet.h"   // octet class
-#include "snmp_pp/oid.h"     // oid class def
+#include "snmp_pp/address.h"  // address class def
+#include "snmp_pp/counter.h"  // counter
+#include "snmp_pp/ctr64.h"    // 64 bit counters
+#include "snmp_pp/gauge.h"    // gauge class
+#include "snmp_pp/integer.h"  // integer class
+#include "snmp_pp/octet.h"    // octet class
+#include "snmp_pp/oid.h"      // oid class def
 #include "snmp_pp/snmperrs.h"
 #include "snmp_pp/timetick.h" // time ticks
 
@@ -75,6 +75,7 @@ namespace Snmp_pp
 #endif
 
 //------------[ VB Class Def ]-------------------------------------
+
 /**
  * The Vb class is the encapsulation of the SNMP variable binding.
  *
@@ -94,7 +95,7 @@ public:
      *
      * This constructor creates an unitialized vb.
      */
-    Vb() : iv_vb_value(0), exception_status(SNMP_CLASS_SUCCESS) {};
+    Vb() : iv_vb_value(nullptr), exception_status(SNMP_CLASS_SUCCESS) { }
 
     /**
      * Constructor to initialize the oid.
@@ -102,18 +103,19 @@ public:
      * This constructor creates a vb with oid portion initialized.
      */
     Vb(const Oid& oid)
-        : iv_vb_oid(oid), iv_vb_value(0),
-          exception_status(SNMP_CLASS_SUCCESS) {};
+        : iv_vb_oid(oid), iv_vb_value(nullptr),
+          exception_status(SNMP_CLASS_SUCCESS)
+    { }
 
     /**
      * Copy constructor.
      */
-    Vb(const Vb& vb) : iv_vb_value(0) { *this = vb; };
+    Vb(const Vb& vb) : iv_vb_value(nullptr) { *this = vb; }
 
     /**
      * Destructor that frees all allocated memory.
      */
-    ~Vb() { free_vb(); };
+    ~Vb() { free_vb(); }
 
     /**
      * Overloaded assignment operator.
@@ -123,14 +125,14 @@ public:
     /**
      * Clone operator.
      */
-    Vb* clone() const { return new Vb(*this); };
+    Vb* clone() const { return new Vb(*this); }
 
     //-----[ set oid / get oid ]------------------------------------------
 
     /**
      * Set the oid from another oid.
      */
-    void set_oid(const Oid& oid) { iv_vb_oid = oid; };
+    void set_oid(const Oid& oid) { iv_vb_oid = oid; }
 
     /**
      * Get the oid portion.
@@ -138,7 +140,7 @@ public:
      * @note Check the validity of the object through Vb::valid() before
      *       calling this method.
      */
-    void get_oid(Oid& oid) const { oid = iv_vb_oid; };
+    void get_oid(Oid& oid) const { oid = iv_vb_oid; }
 
     /**
      * Get the oid portion as a const.
@@ -146,7 +148,7 @@ public:
      * @note Check the validity of the object through Vb::valid() before
      *       calling this method.
      */
-    const Oid& get_oid() const { return iv_vb_oid; };
+    const Oid& get_oid() const { return iv_vb_oid; }
 
     //-----[ set value ]--------------------------------------------------
 
@@ -157,18 +159,18 @@ public:
     {
         free_vb();
         iv_vb_value = val.clone();
-    };
+    }
 
     /**
      * Set the value with an int.
      *
      * The syntax of the Vb will be set to SMI INT32.
      */
-    void set_value(const int i)
+    void set_value(const int32_t i)
     {
         free_vb();
         iv_vb_value = new SnmpInt32(i);
-    };
+    }
 
     /**
      * Set the value with an unsigned int.
@@ -179,7 +181,7 @@ public:
     {
         free_vb();
         iv_vb_value = new SnmpUInt32(i);
-    };
+    }
 
     /**
      * Set the value with a long int.
@@ -188,11 +190,11 @@ public:
      *
      * The syntax of the Vb will be set to SMI INT32.
      */
-    void set_value(const long i)
+    void set_value(const int64_t i)
     {
         free_vb();
-        iv_vb_value = new SnmpInt32(i);
-    };
+        iv_vb_value = new SnmpInt32(static_cast<int32_t>(i));
+    }
 
     /**
      * Set the value with an uint32_t int.
@@ -201,11 +203,11 @@ public:
      *
      * The syntax of the Vb will be set to SMI UINT32.
      */
-    void set_value(const unsigned long i)
+    void set_value(const uint64_t i)
     {
         free_vb();
-        iv_vb_value = new SnmpUInt32(i);
-    };
+        iv_vb_value = new SnmpUInt32(static_cast<uint32_t>(i));
+    }
 
     /**
      * Set value using a null terminated string.
@@ -216,23 +218,23 @@ public:
     {
         free_vb();
         iv_vb_value = new OctetStr(ptr);
-    };
+    }
 
     /**
      * Set value using a string and length.
      *
      * The syntax of the Vb will be set to SMI octet.
      */
-    void set_value(const unsigned char* ptr, const unsigned int len)
+    void set_value(const unsigned char* ptr, const uint32_t len)
     {
         free_vb();
         iv_vb_value = new OctetStr(ptr, len);
-    };
+    }
 
     /**
      * Set the value portion of the vb to null, if its not already.
      */
-    void set_null() { free_vb(); };
+    void set_null() { free_vb(); }
 
     //----[ get value ]------------------------------------------------
 
@@ -273,29 +275,29 @@ public:
     int get_value(SmiUINT32& i) const;
 
 #if 0
-  /**
-   * Get the value.
-   *
-   * This method will only return success if the value of the vb is SMI INT32.
-   *
-   * @param i - returned value
-   *
-   * @return SNMP_CLASS_SUCCESS on success, else SNMP_CLASS_INVALID.
-   */
-  int get_value(long &i) const;
+    /**
+     * Get the value.
+     *
+     * This method will only return success if the value of the vb is SMI INT32.
+     *
+     * @param i - returned value
+     *
+     * @return SNMP_CLASS_SUCCESS on success, else SNMP_CLASS_INVALID.
+     */
+    int get_value(long&i) const;
 
-  /**
-   * Get the value.
-   *
-   * This method will only return success if the value of the vb can
-   * be mapped to an uint32_t (SMI types uint32, counter32, gauge
-   * and timeticks).
-   *
-   * @param i - returned value
-   *
-   * @return SNMP_CLASS_SUCCESS on success, else SNMP_CLASS_INVALID.
-   */
-  int get_value(uint32_t &i) const;
+    /**
+     * Get the value.
+     *
+     * This method will only return success if the value of the vb can
+     * be mapped to an uint32_t (SMI types uint32, counter32, gauge
+     * and timeticks).
+     *
+     * @param i - returned value
+     *
+     * @return SNMP_CLASS_SUCCESS on success, else SNMP_CLASS_INVALID.
+     */
+    int get_value(uint32_t&i) const;
 #endif
 
     /**
@@ -377,8 +379,8 @@ public:
      */
     SnmpSyntax* clone_value() const
     {
-        return ((iv_vb_value) ? iv_vb_value->clone() : 0);
-    };
+        return (iv_vb_value) ? iv_vb_value->clone() : nullptr;
+    }
 
     //-----[ misc]--------------------------------------------------------
 
@@ -409,12 +411,12 @@ public:
     {
         free_vb();
         exception_status = status;
-    };
+    }
 
     /**
      * Get the exception status.
      */
-    SmiUINT32 get_exception_status() const { return exception_status; };
+    SmiUINT32 get_exception_status() const { return exception_status; }
 
     /**
      * Return a formatted version of the value.
@@ -428,10 +430,7 @@ public:
      *
      * @return A null terminated string (may be empty if no Oid has been set).
      */
-    const char* get_printable_oid() const
-    {
-        return iv_vb_oid.get_printable();
-    };
+    const char* get_printable_oid() const { return iv_vb_oid.get_printable(); }
 
     /**
      * Return the validity of a Vb object.
@@ -454,13 +453,13 @@ public:
     {
         free_vb();
         iv_vb_oid.clear();
-    };
+    }
 
     //-----[ protected members ]
 protected:
-    Oid         iv_vb_oid;        // a vb is made up of a oid
-    SnmpSyntax* iv_vb_value;      // and a value...
-    SmiUINT32   exception_status; // are there any vb exceptions??
+    Oid         iv_vb_oid;           // a vb is made up of a oid
+    SnmpSyntax* iv_vb_value;         // and a value...
+    SmiUINT32   exception_status {}; // are there any vb exceptions??
 
     /**
      * Free the value portion.

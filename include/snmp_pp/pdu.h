@@ -1,57 +1,57 @@
 /*_############################################################################
-  _##
-  _##  pdu.h
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  pdu.h
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 /*===================================================================
-
-  Copyright (c) 1999
-  Hewlett-Packard Company
-
-  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  Permission to use, copy, modify, distribute and/or sell this software
-  and/or its documentation is hereby granted without fee. User agrees
-  to display the above copyright notice and this license notice in all
-  copies of the software and any documentation of the software. User
-  agrees to assume all liability for the use of the software; Hewlett-Packard
-  makes no representations about the suitability of this software for any
-  purpose. It is provided "AS-IS without warranty of any kind,either express
-  or implied. User hereby grants a royalty-free license to any and all
-  derivatives based upon this software code base.
-
-
-  SNMP++ P D U . H
-
-  PDU CLASS DEFINITION
-
-  DESIGN + AUTHOR:  Peter E Mellquist
-
-  DESCRIPTION:
-  Pdu class definition. Encapsulation of an SMI Protocol
-  Data Unit (PDU) in C++.
-
-=====================================================================*/
+ *
+ * Copyright (c) 1999
+ * Hewlett-Packard Company
+ *
+ * ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * Permission to use, copy, modify, distribute and/or sell this software
+ * and/or its documentation is hereby granted without fee. User agrees
+ * to display the above copyright notice and this license notice in all
+ * copies of the software and any documentation of the software. User
+ * agrees to assume all liability for the use of the software; Hewlett-Packard
+ * makes no representations about the suitability of this software for any
+ * purpose. It is provided "AS-IS without warranty of any kind,either express
+ * or implied. User hereby grants a royalty-free license to any and all
+ * derivatives based upon this software code base.
+ *
+ *
+ * SNMP++ P D U . H
+ *
+ * PDU CLASS DEFINITION
+ *
+ * DESIGN + AUTHOR:  Peter E Mellquist
+ *
+ * DESCRIPTION:
+ * Pdu class definition. Encapsulation of an SMI Protocol
+ * Data Unit (PDU) in C++.
+ *
+ * =====================================================================*/
 
 #ifndef _SNMP_PDU_H_
 #define _SNMP_PDU_H_
@@ -77,6 +77,7 @@ class Vb;
 //=======================================================================
 //		     Pdu Class
 //=======================================================================
+
 /**
  * Pdu class...
  */
@@ -106,7 +107,10 @@ public:
      *
      * @param pdu - source pdu object
      */
-    Pdu(const Pdu& pdu) : vbs(0), vbs_size(0), vb_count(0) { *this = pdu; };
+    Pdu(const Pdu& pdu) : vbs(nullptr), vbs_size(0), vb_count(0)
+    {
+        *this = pdu;
+    }
 
     /**
      * Destructor
@@ -132,7 +136,7 @@ public:
      *
      * @return Pointer to a newly created Pdu object, that is identical to this
      */
-    Pdu* clone() const { return new Pdu(*this); };
+    Pdu* clone() const { return new Pdu(*this); }
 
     /**
      * Get Pointers to all Vbs from Pdu.
@@ -183,7 +187,7 @@ public:
      * @param index - The Vb to return starting with 0.
      * @return A const reference to the Vb
      */
-    const Vb& get_vb(const int index) const { return *vbs[index]; };
+    const Vb& get_vb(const int index) const { return *vbs[index]; }
 
     /**
      * Set a particular vb.
@@ -202,7 +206,7 @@ public:
      *
      * @return The number of Vb objects within the pdu.
      */
-    int get_vb_count() const { return vb_count; };
+    int get_vb_count() const { return vb_count; }
 
     /**
      * Get a Vb.
@@ -211,45 +215,45 @@ public:
      *
      * @param i zero based index
      */
-    Vb& operator[](const int i) { return *vbs[i]; };
+    Vb& operator[](const int i) { return *vbs[i]; }
 
     /**
      * Get the error status.
      *
      * @return The SNMP error status
      */
-    int get_error_status() const { return error_status; };
+    int get_error_status() const { return error_status; }
 
     /**
      * Set the error status.
      *
      * @param err - The new SNMP error status.
      */
-    void set_error_status(const int err) { error_status = err; };
+    void set_error_status(const int err) { error_status = err; }
 
     /**
      * Clear the error status.
      */
-    void clear_error_status() { error_status = 0; };
+    void clear_error_status() { error_status = 0; }
 
     /**
      * Get the error index.
      *
      * @return The SNMP error index
      */
-    int get_error_index() const { return error_index; };
+    int get_error_index() const { return error_index; }
 
     /**
      * Set the error index.
      *
      * @param index - The new SNMP error index.
      */
-    void set_error_index(const int index) { error_index = index; };
+    void set_error_index(const int index) { error_index = index; }
 
     /**
      * Clear the error index.
      */
-    void clear_error_index() { error_index = 0; };
+    void clear_error_index() { error_index = 0; }
 
     /**
      * Clear error status and error index.
@@ -265,29 +269,29 @@ public:
      *
      * @return The SNMP request id
      */
-    uint32_t get_request_id() const { return request_id; };
+    uint32_t get_request_id() const { return request_id; }
 
     /**
      * Set the request id.
      *
      * @param rid - The new SNMP request id
      */
-    void set_request_id(const uint32_t rid) { request_id = rid; };
+    void set_request_id(const uint32_t rid) { request_id = rid; }
 
     /**
      * Get the pdu type.
      */
-    unsigned short get_type() const { return pdu_type; };
+    unsigned short get_type() const { return pdu_type; }
 
     /**
      * Set the pdu type.
      */
-    void set_type(unsigned short type) { pdu_type = type; };
+    void set_type(unsigned short type) { pdu_type = type; }
 
     /**
      * Returns validity of Pdu instance.
      */
-    bool valid() const { return validity; };
+    bool valid() const { return validity; }
 
     /**
      * Trim off vbs.
@@ -308,12 +312,12 @@ public:
     /**
      * Set notify timestamp.
      */
-    void set_notify_timestamp(const TimeTicks& ts) { notify_timestamp = ts; };
+    void set_notify_timestamp(const TimeTicks& ts) { notify_timestamp = ts; }
 
     /**
      * Get notify timestamp.
      */
-    void get_notify_timestamp(TimeTicks& ts) const { ts = notify_timestamp; };
+    void get_notify_timestamp(TimeTicks& ts) const { ts = notify_timestamp; }
 
     /**
      * Set the notify id.
@@ -323,8 +327,8 @@ public:
     bool set_notify_id(const Oid& id)
     {
         notify_id = id;
-        return (notify_id.len() == id.len());
-    };
+        return notify_id.len() == id.len();
+    }
 
     /**
      * Get the notify id.
@@ -334,8 +338,8 @@ public:
     bool get_notify_id(Oid& id) const
     {
         id = notify_id;
-        return (notify_id.len() == id.len());
-    };
+        return notify_id.len() == id.len();
+    }
 
     /**
      * Set the notify enterprise.
@@ -345,8 +349,8 @@ public:
     bool set_notify_enterprise(const Oid& e)
     {
         notify_enterprise = e;
-        return (notify_enterprise.len() == e.len());
-    };
+        return notify_enterprise.len() == e.len();
+    }
 
     /**
      * Get the notify enterprise.
@@ -356,8 +360,8 @@ public:
     bool get_notify_enterprise(Oid& e) const
     {
         e = notify_enterprise;
-        return (notify_enterprise.len() == e.len());
-    };
+        return notify_enterprise.len() == e.len();
+    }
 
 #ifdef _SNMPv3
     /**
@@ -369,14 +373,14 @@ public:
      *                SNMP_SECURITY_LEVEL_AUTH_NOPRIV,
      *                SNMP_SECURITY_LEVEL_AUTH_PRIV
      */
-    void set_security_level(const int level) { security_level = level; };
+    void set_security_level(const int level) { security_level = level; }
 
     /**
      * Return the security level of the Pdu.
      *
      * @return - the security level
      */
-    int get_security_level() const { return security_level; };
+    int get_security_level() const { return security_level; }
 
     /**
      * Set the context name of the Pdu.
@@ -386,8 +390,8 @@ public:
     bool set_context_name(const OctetStr& name)
     {
         context_name = name;
-        return (context_name.valid() && name.valid());
-    };
+        return context_name.valid() && name.valid();
+    }
 
     /**
      * Set the context name of the Pdu.
@@ -398,7 +402,7 @@ public:
     {
         context_name = name;
         return context_name.valid();
-    };
+    }
 
     /**
      * Get the context name of the Pdu.
@@ -408,15 +412,15 @@ public:
     bool get_context_name(OctetStr& name) const
     {
         name = context_name;
-        return (context_name.valid() && name.valid());
-    };
+        return context_name.valid() && name.valid();
+    }
 
     /**
      * Get the context name of the Pdu.
      *
      * @return - Return the context name as an OctetStr
      */
-    const OctetStr& get_context_name() const { return context_name; };
+    const OctetStr& get_context_name() const { return context_name; }
 
     /**
      * Set the context engine id of the Pdu.
@@ -426,8 +430,8 @@ public:
     bool set_context_engine_id(const OctetStr& id)
     {
         context_engine_id = id;
-        return (context_engine_id.valid() && id.valid());
-    };
+        return context_engine_id.valid() && id.valid();
+    }
 
     /**
      * Set the context engine id of the Pdu.
@@ -438,7 +442,7 @@ public:
     {
         context_engine_id = id;
         return context_engine_id.valid();
-    };
+    }
 
     /**
      * Get the context engine id of the Pdu.
@@ -448,18 +452,15 @@ public:
     bool get_context_engine_id(OctetStr& id) const
     {
         id = context_engine_id;
-        return (context_engine_id.valid() && id.valid());
-    };
+        return context_engine_id.valid() && id.valid();
+    }
 
     /**
      * Get the context engine id of the Pdu.
      *
      * @return - Return the context engine id as an OctetStr
      */
-    const OctetStr& get_context_engine_id() const
-    {
-        return context_engine_id;
-    };
+    const OctetStr& get_context_engine_id() const { return context_engine_id; }
 
     /**
      * Set the SNMPv3 message id (msgID)
@@ -481,7 +482,7 @@ public:
      *
      * @param l - the maximum size
      */
-    void set_maxsize_scopedpdu(uint32_t l) { maxsize_scopedpdu = l; };
+    void set_maxsize_scopedpdu(uint32_t l) { maxsize_scopedpdu = l; }
 
     /**
      * Get the maximum size of the scoped pdu to be included in a
@@ -489,8 +490,7 @@ public:
      *
      * @return - the maximum size
      */
-    uint32_t get_maxsize_scopedpdu() const { return maxsize_scopedpdu; };
-
+    uint32_t get_maxsize_scopedpdu() const { return maxsize_scopedpdu; }
 #endif // _SNMPv3
 
     /**
@@ -531,27 +531,27 @@ protected:
      */
     bool extend_vbs();
 
-    Vb**           vbs;          // pointer to array of Vbs
-    int            vbs_size;     // Size of array
-    int            vb_count;     // count of Vbs
-    int            error_status; // SMI error status
-    int            error_index;  // SMI error index
-    bool           validity;     // valid boolean
-    uint32_t       request_id;   // SMI request id
-    unsigned short pdu_type;     // derived at run time based on request type
+    Vb**           vbs;             // pointer to array of Vbs
+    int            vbs_size;        // Size of array
+    int            vb_count;        // count of Vbs
+    int            error_status {}; // SMI error status
+    int            error_index {};  // SMI error index
+    bool           validity {};     // valid boolean
+    uint32_t       request_id {};   // SMI request id
+    unsigned short pdu_type {}; // derived at run time based on request type
     // for notify Pdu objects only
     // traps & notifies
     TimeTicks  notify_timestamp; // a timestamp associated with an infor
     Oid        notify_id;        // an id
     Oid        notify_enterprise;
-    GenAddress v1_trap_address; // address object
-    bool       v1_trap_address_set;
+    GenAddress v1_trap_address;  // address object
+    bool       v1_trap_address_set {};
 #ifdef _SNMPv3
     // specific Objects for SNMPv3
-    int security_level; // the securityLevel with which this Pdu
-                        // should be sent or was received
-    uint32_t message_id;
-    uint32_t maxsize_scopedpdu;
+    int security_level {}; // the securityLevel with which this Pdu
+                           // should be sent or was received
+    uint32_t message_id {};
+    uint32_t maxsize_scopedpdu {};
     OctetStr context_name;
     OctetStr context_engine_id;
 #endif // _SNMPv3

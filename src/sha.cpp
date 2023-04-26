@@ -1,29 +1,29 @@
 /*_############################################################################
-  _##
-  _##  sha.cpp
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  sha.cpp
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 
 #include "snmp_pp/sha.h"
 
@@ -77,16 +77,22 @@ static void SHATransform(SHA_CTX* ctx, const unsigned char* X)
 #        ifndef i386
     uint32_t* p = (uint32_t*)X;
     if (msb_flag)
+    {
         memcpy((char*)&W[0], p, 64);
+    }
     else
 #        endif /* ~i386 */
         for (i = 0; i < 64; i += 4)
+        {
             W[(i / 4)] =
                 X[i + 3] | (X[i + 2] << 8) | (X[i + 1] << 16) | (X[i] << 24);
+        }
 #    endif     /* _IBMR2 */
 
     for (i = 16; i < 80; i++)
+    {
         W[i] = ROL((W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16]), 1);
+    }
 
     a = ctx->h[0];
     b = ctx->h[1];
@@ -166,13 +172,19 @@ int SHAInit(SHA_CTX* ctx)
     z_t.ch[0] = 0x01;
 
     if (z_t.ll == 0x01000000)
+    {
         msb_flag = 1;
+    }
     else
     {
         if (z_t.ll == 0x00000001)
+        {
             msb_flag = 0;
+        }
         else
+        {
             printf("ENDIAN-ness is SCREWED! (%0#x)\n", z_t.ll);
+        }
     }
 #    endif /* ~_IBMR2 & ~i386 */
     return 1;
@@ -181,19 +193,27 @@ int SHAInit(SHA_CTX* ctx)
 int SHAUpdate(SHA_CTX* ctx, const unsigned char* buf, unsigned int lenBuf)
 {
     /* Do we have any bytes? */
-    if (lenBuf == 0) return 1;
+    if (lenBuf == 0)
+    {
+        return 1;
+    }
 
     /* Calculate buf len in bits and update the len count */
     ctx->count[0] += (lenBuf << 3);
-    if (ctx->count[0] < (lenBuf << 3)) ctx->count[1] += 1;
+    if (ctx->count[0] < (lenBuf << 3))
+    {
+        ctx->count[1] += 1;
+    }
     ctx->count[1] += (lenBuf >> 29);
 
     /* Fill the hash working buffer for the first run, if  */
     /* we have enough data...                              */
-    int i = 64 - ctx->index;         /* either fill it up to 64 bytes */
-    if ((int)lenBuf < i) i = lenBuf; /* or put the whole data...*/
-
-    lenBuf -= i; /* Reflect the data we'll put in the buf */
+    int i = 64 - ctx->index; /* either fill it up to 64 bytes */
+    if ((int)lenBuf < i)
+    {
+        i = lenBuf;          /* or put the whole data...*/
+    }
+    lenBuf -= i;             /* Reflect the data we'll put in the buf */
 
     /* Physically put the data in the hash workbuf */
     memcpy((char*)&(ctx->X[ctx->index]), buf, i);
@@ -201,10 +221,16 @@ int SHAUpdate(SHA_CTX* ctx, const unsigned char* buf, unsigned int lenBuf)
     ctx->index += i;
 
     /* Adjust the buf index */
-    if (ctx->index == 64) ctx->index = 0;
+    if (ctx->index == 64)
+    {
+        ctx->index = 0;
+    }
 
     /* Let's see whether we're equal to 64 bytes in buf  */
-    if (ctx->index == 0) SHATransform(ctx, ctx->X);
+    if (ctx->index == 0)
+    {
+        SHATransform(ctx, ctx->X);
+    }
 
     /* Process full 64-byte blocks */
     while (lenBuf >= 64)
@@ -237,6 +263,7 @@ int SHAFinal(unsigned char* digest, SHA_CTX* ctx)
         0x00, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,   /* 48 */
         0x00, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,   /* 56 */
         0x00, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 }; /* 64 */
+
     // clang-format on
 
     /* Store the message length to append after */
@@ -269,9 +296,13 @@ int SHAFinal(unsigned char* digest, SHA_CTX* ctx)
     /* How many padding bytes do we need? */
     i = (ctx->count[0] >> 3) & 0x3f; /* # of bytes mod 64 */
     if (i >= 56)
-        i = 120 - i; /* # of padding bytes needed */
+    {
+        i = 120 - i;                 /* # of padding bytes needed */
+    }
     else
+    {
         i = 56 - i;
+    }
 
     SHAUpdate(ctx, padding, i); /* Append the padding */
     SHAUpdate(ctx, truelen, 8); /* Append the length  */
@@ -281,7 +312,9 @@ int SHAFinal(unsigned char* digest, SHA_CTX* ctx)
 #    else
 #        ifndef i386
     if (msb_flag)
+    {
         memcpy(digest, (char*)&ctx->h[0], 20);
+    }
     else
 #        endif /* ~i386 */
         for (i = 0; i < 4; i++)

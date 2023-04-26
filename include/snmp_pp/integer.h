@@ -1,56 +1,56 @@
 /*_############################################################################
-  _##
-  _##  integer.h
-  _##
-  _##  SNMP++ v3.4
-  _##  -----------------------------------------------
-  _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
-  _##
-  _##  This software is based on SNMP++2.6 from Hewlett Packard:
-  _##
-  _##    Copyright (c) 1996
-  _##    Hewlett-Packard Company
-  _##
-  _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  _##  Permission to use, copy, modify, distribute and/or sell this software
-  _##  and/or its documentation is hereby granted without fee. User agrees
-  _##  to display the above copyright notice and this license notice in all
-  _##  copies of the software and any documentation of the software. User
-  _##  agrees to assume all liability for the use of the software;
-  _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
-  _##  about the suitability of this software for any purpose. It is provided
-  _##  "AS-IS" without warranty of any kind, either express or implied. User
-  _##  hereby grants a royalty-free license to any and all derivatives based
-  _##  upon this software code base.
-  _##
-  _##########################################################################*/
+ * _##
+ * _##  integer.h
+ * _##
+ * _##  SNMP++ v3.4
+ * _##  -----------------------------------------------
+ * _##  Copyright (c) 2001-2021 Jochen Katz, Frank Fock
+ * _##
+ * _##  This software is based on SNMP++2.6 from Hewlett Packard:
+ * _##
+ * _##    Copyright (c) 1996
+ * _##    Hewlett-Packard Company
+ * _##
+ * _##  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * _##  Permission to use, copy, modify, distribute and/or sell this software
+ * _##  and/or its documentation is hereby granted without fee. User agrees
+ * _##  to display the above copyright notice and this license notice in all
+ * _##  copies of the software and any documentation of the software. User
+ * _##  agrees to assume all liability for the use of the software;
+ * _##  Hewlett-Packard, Frank Fock, and Jochen Katz make no representations
+ * _##  about the suitability of this software for any purpose. It is provided
+ * _##  "AS-IS" without warranty of any kind, either express or implied. User
+ * _##  hereby grants a royalty-free license to any and all derivatives based
+ * _##  upon this software code base.
+ * _##
+ * _##########################################################################*/
 /*===================================================================
-
-  Copyright (c) 1999
-  Hewlett-Packard Company
-
-  ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
-  Permission to use, copy, modify, distribute and/or sell this software
-  and/or its documentation is hereby granted without fee. User agrees
-  to display the above copyright notice and this license notice in all
-  copies of the software and any documentation of the software. User
-  agrees to assume all liability for the use of the software; Hewlett-Packard
-  makes no representations about the suitability of this software for any
-  purpose. It is provided "AS-IS without warranty of any kind,either express
-  or implied. User hereby grants a royalty-free license to any and all
-  derivatives based upon this software code base.
-
-
-  SNMP++ I N T E G E R. H
-
-  INTEGER CLASS DEFINITION
-
-  DESIGN + AUTHOR:  Jeff Meyer
-
-  DESCRIPTION:
-  Class definition for Integer classes.
-
-=====================================================================*/
+ *
+ * Copyright (c) 1999
+ * Hewlett-Packard Company
+ *
+ * ATTENTION: USE OF THIS SOFTWARE IS SUBJECT TO THE FOLLOWING TERMS.
+ * Permission to use, copy, modify, distribute and/or sell this software
+ * and/or its documentation is hereby granted without fee. User agrees
+ * to display the above copyright notice and this license notice in all
+ * copies of the software and any documentation of the software. User
+ * agrees to assume all liability for the use of the software; Hewlett-Packard
+ * makes no representations about the suitability of this software for any
+ * purpose. It is provided "AS-IS without warranty of any kind,either express
+ * or implied. User hereby grants a royalty-free license to any and all
+ * derivatives based upon this software code base.
+ *
+ *
+ * SNMP++ I N T E G E R. H
+ *
+ * INTEGER CLASS DEFINITION
+ *
+ * DESIGN + AUTHOR:  Jeff Meyer
+ *
+ * DESCRIPTION:
+ * Class definition for Integer classes.
+ *
+ * =====================================================================*/
 
 #ifndef _SNMP_INTEGER_H_
 #define _SNMP_INTEGER_H_
@@ -105,7 +105,7 @@ public:
     /**
      * Destructor (ensure that SnmpSyntax::~SnmpSyntax() is overridden).
      */
-    virtual ~SnmpUInt32() { }
+    ~SnmpUInt32() override { }
 
     /**
      * Return the syntax.
@@ -136,8 +136,10 @@ public:
      */
     SnmpUInt32& operator=(const SnmpUInt32& uli)
     {
-        if (this == &uli) return *this; // check for self assignment
-
+        if (this == &uli)
+        {
+            return *this; // check for self assignment
+        }
         smival.value.uNumber = uli.smival.value.uNumber;
         valid_flag           = uli.valid_flag;
         m_changed            = true;
@@ -154,7 +156,7 @@ public:
      *
      * @return value as uint32_t
      */
-    operator uint32_t() const { return smival.value.uNumber; };
+    operator uint32_t() const { return smival.value.uNumber; }
 
     /**
      * Get a printable ASCII value.
@@ -169,7 +171,7 @@ public:
     SnmpSyntax* clone() const override
     {
         return (SnmpSyntax*)new SnmpUInt32(*this);
-    };
+    }
 
     /**
      * Return validity of the object.
@@ -195,7 +197,7 @@ public:
 
 protected:
     bool                 valid_flag;
-    SNMP_PP_MUTABLE char output_buffer[INTOUTBUF];
+    SNMP_PP_MUTABLE char output_buffer[INTOUTBUF] {};
     SNMP_PP_MUTABLE bool m_changed;
 };
 
@@ -209,7 +211,7 @@ public:
      *
      * @param i - initial value
      */
-    SnmpInt32(const long i = 0)
+    SnmpInt32(const int32_t i = 0)
         : SnmpSyntax(), valid_flag(true), m_changed(true)
     {
         smival.value.sNumber = i;
@@ -231,7 +233,7 @@ public:
     /**
      * Destructor (ensure that SnmpSyntax::~SnmpSyntax() is overridden).
      */
-    virtual ~SnmpInt32() { }
+    ~SnmpInt32() override { }
 
     /**
      * Return the syntax.
@@ -246,7 +248,7 @@ public:
      * @param i - new value
      * @return self reference
      */
-    SnmpInt32& operator=(const long i)
+    SnmpInt32& operator=(const int32_t i)
     {
         smival.value.sNumber = i;
         valid_flag           = true;
@@ -262,8 +264,10 @@ public:
      */
     SnmpInt32& operator=(const SnmpInt32& li)
     {
-        if (this == &li) return *this; // check for self assignment
-
+        if (this == &li)
+        {
+            return *this; // check for self assignment
+        }
         smival.value.sNumber = li.smival.value.sNumber;
         valid_flag           = li.valid_flag;
         m_changed            = true;
@@ -280,7 +284,7 @@ public:
      *
      * @return value as long
      */
-    operator long() const { return (long)smival.value.sNumber; }
+    operator int32_t() const { return (int32_t)smival.value.sNumber; }
 
     /**
      * Get a printable ASCII value.
@@ -295,7 +299,7 @@ public:
     SnmpSyntax* clone() const override
     {
         return (SnmpSyntax*)new SnmpInt32(*this);
-    };
+    }
 
     /**
      * Return validity of the object.
@@ -321,7 +325,7 @@ public:
 
 protected:
     bool                 valid_flag;
-    SNMP_PP_MUTABLE char output_buffer[INTOUTBUF];
+    SNMP_PP_MUTABLE char output_buffer[INTOUTBUF] {};
     SNMP_PP_MUTABLE bool m_changed;
 };
 

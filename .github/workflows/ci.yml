@@ -26,29 +26,32 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: "**/cpm_modules"
           key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
 
 
-      - name: Install llvm-10 Ubuntu Host
+      - name: Install llvm-13 Ubuntu Host
         if: startsWith(matrix.os, 'ubuntu')
         shell: bash
         run: |
+          sudo apt-get install snmp snmp-mibs-downloader
           sudo apt-get install \
-            llvm-10 clang-10 libclang-10-dev clang-tidy-10 ||
-              echo IGNORED
+            llvm-13 clang-13 libclang-13-dev clang-tidy-13 || echo IGNORED
 
       - name: Configure
-        run: cmake -S . -B build -D CMAKE_BUILD_TYPE=Release -D BUILD_SHARED_LIBS=${{ matrix.build }}
+        run: |
+          cmake --version
+          cmake -S . -B build -D CMAKE_BUILD_TYPE=Release -D BUILD_SHARED_LIBS=${{ matrix.build }}
 
       - name: Build
         run: cmake --build build --config Release -j 4
 
-        #       - name: Test
-        #         working-directory: build
-        #         run: ctest -C Release --output-on-failure
+      - name: Test
+        if: startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'ubuntu')
+        working-directory: build
+        run: ctest -C Release --timeout 25
 
       - name: Install
         run: cmake --install build --config Release --prefix stage
@@ -67,13 +70,13 @@ jobs:
         if: startsWith(matrix.os, 'macos') && contains(matrix.type, 'static')
         shell: bash
         run: |
-          export PATH=/usr/local/opt/llvm/bin/:${PATH}
-          perl -i.bak -pe 's#-I($CPM_SOURCE_CACHE)#-isystem $1#g' build/compile_commands.json
-          /usr/local/opt/llvm/share/clang/run-clang-tidy.py -p build src
+          export PATH=$(brew --prefix llvm@15)/bin/:${PATH}
+          perl -i.bak -pe 's#-I($CPM_SOURCE_CACHE)#-isystem $1#g;' -e 's#-W[-\w=\d]+\b##g;'  build/compile_commands.json
+          run-clang-tidy -p build .
 
       - name: Run clang-tidy on Ubuntu Host
         if: startsWith(matrix.os, 'ubuntu') && contains(matrix.type, 'static')
         shell: bash
         run: |
-          perl -i.bak -pe 's#-I($CPM_SOURCE_CACHE)#-isystem $1#g' build/compile_commands.json
-          run-clang-tidy-10 -p build src
+          perl -i.bak -pe 's#-I($CPM_SOURCE_CACHE)#-isystem $1#g;' -e 's#-W[-\w=\d]+\b##g;'  build/compile_commands.json
+          run-clang-tidy-13 -p build .
