@@ -260,7 +260,7 @@ public:
      *
      * @return Printable, null terminated string
      */
-    const char* get_printable() const override;
+    [[nodiscard]] const char* get_printable() const override;
 
     /**
      * Get an ASCII formatted hex dump of the contents.
@@ -278,14 +278,14 @@ public:
      *                                                                     </pre>
      * @return Printable, null terminated string.
      */
-    const char* get_printable_hex() const;
+    [[nodiscard]] const char* get_printable_hex() const;
 
     /**
      * Get the contents with all non printable characters replaced.
      *
      * @return Printable, null terminated string.
      */
-    const char* get_printable_clear() const;
+    [[nodiscard]] const char* get_printable_clear() const;
 
     /**
      * Set the output format for get_pritable_hex().

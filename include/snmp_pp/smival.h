@@ -123,7 +123,7 @@ public:
      *       modified.
      * @note This function is NOT thread safe.
      */
-    virtual const char* get_printable() const = 0;
+    [[nodiscard]] virtual const char* get_printable() const = 0;
 
     /**
      * Return the current syntax.

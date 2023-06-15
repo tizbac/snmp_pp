@@ -175,7 +175,7 @@ public:
      *
      * @return Null terminated string.
      */
-    const char* get_printable() const override;
+    [[nodiscard]] const char* get_printable() const override;
 
     /**
      * Get the Syntax of the object.

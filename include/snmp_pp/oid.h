@@ -594,7 +594,7 @@ public:
      *
      * @return Dotted oid string (for example "1.3.6.1.6.0")
      */
-    const char* get_printable() const override
+    [[nodiscard]] const char* get_printable() const override
     {
         return get_printable(1, smival.value.oid.len, (char*&)iv_str);
     }
@@ -606,7 +606,7 @@ public:
      *
      * @return Dotted oid string (for example "6.0")
      */
-    const char* get_printable(const uint32_t n) const
+    [[nodiscard]] const char* get_printable(const uint32_t n) const
     {
         return get_printable(
             smival.value.oid.len - n + 1, n, (char*&)iv_part_str);
@@ -625,7 +625,7 @@ public:
      *
      * @return Dotted oid string (for example "3.6.1.6")
      */
-    const char* get_printable(
+    [[nodiscard]] const char* get_printable(
         const uint32_t start, const uint32_t n, char*& buffer) const;
 
     /**
@@ -636,7 +636,7 @@ public:
      *
      * @return Dotted oid string (for example "3.6.1.6")
      */
-    const char* get_printable(const uint32_t start, const uint32_t n) const
+    [[nodiscard]] const char* get_printable(const uint32_t start, const uint32_t n) const
     {
         return get_printable(start, n, (char*&)iv_part_str);
     }

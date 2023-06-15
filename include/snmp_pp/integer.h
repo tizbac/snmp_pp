@@ -161,7 +161,7 @@ public:
     /**
      * Get a printable ASCII value.
      */
-    const char* get_printable() const override;
+    [[nodiscard]] const char* get_printable() const override;
 
     /**
      * Clone operator.
@@ -289,7 +289,7 @@ public:
     /**
      * Get a printable ASCII value.
      */
-    const char* get_printable() const override;
+    [[nodiscard]] const char* get_printable() const override;
 
     /**
      * Clone operator.

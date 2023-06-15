@@ -422,7 +422,7 @@ public:
      *
      * @return String containing the numerical address
      */
-    const char* get_printable() const override
+    [[nodiscard]] const char* get_printable() const override
     {
         if (addr_changed)
         {
@@ -670,7 +670,7 @@ public:
      *
      * @return String containing the numerical address
      */
-    const char* get_printable() const override
+    [[nodiscard]] const char* get_printable() const override
     {
         if (addr_changed)
         {
@@ -823,7 +823,7 @@ public:
      *
      * @return String containing the numerical address
      */
-    virtual const char* get_printable() const
+    [[nodiscard]] virtual const char* get_printable() const
     {
         if (addr_changed)
         {
@@ -951,7 +951,7 @@ public:
      *
      * @return String containing the numerical address
      */
-    virtual const char* get_printable() const
+    [[nodiscard]] virtual const char* get_printable() const
     {
         if (addr_changed)
         {
@@ -1076,7 +1076,7 @@ public:
      *
      * @return String containing the numerical address
      */
-    virtual const char* get_printable() const
+    [[nodiscard]] virtual const char* get_printable() const
     {
         if (addr_changed)
         {
@@ -1232,7 +1232,7 @@ public:
      *
      * @return String containing the numerical address
      */
-    const char* get_printable() const override
+    [[nodiscard]] const char* get_printable() const override
     {
         return (address) ? address->get_printable() : output_buffer;
     }

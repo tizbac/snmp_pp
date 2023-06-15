@@ -222,8 +222,7 @@ typedef int SnmpSocket;
 ///////////////////////////////////////////////////////////////////////
 
 // Make use of mutable keyword
-//#define SNMP_PP_MUTABLE mutable
-#define SNMP_PP_MUTABLE
+#define SNMP_PP_MUTABLE mutable
 
 #define SAFE_INT_CAST(expr)  ((int32_t)(expr))
 #define SAFE_UINT_CAST(expr) ((uint32_t)(expr))
