@@ -132,7 +132,7 @@ public:
     void SetDone() REENTRANT({ m_done += 1; })
 
         // see if main loop should terminate
-        int GetDone()
+        int GetDone() const
     {
         return m_done;
     }
@@ -155,7 +155,7 @@ public:
 #endif
 
     // return number of outstanding messages
-    int GetCount() { return m_msgCount; }
+    int GetCount() const { return m_msgCount; }
 
     // process any timeout events
     int DoRetries(const msec& sendtime);

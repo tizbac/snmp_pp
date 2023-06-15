@@ -495,7 +495,7 @@ private:
          * cache.
          * @return - the cache size upper limit (50.000 by default).
          */
-        int get_cache_size_limit() { return upper_limit_entries; }
+        int get_cache_size_limit() const { return upper_limit_entries; }
 
         /**
          * Set the upper limit of the number of entries in this engine ID

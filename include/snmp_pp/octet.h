@@ -58,6 +58,8 @@
 
 #include "snmp_pp/smival.h"
 
+#include <string>
+
 #ifdef SNMP_PP_NAMESPACE
 namespace Snmp_pp
 {
@@ -239,7 +241,7 @@ public:
      *
      * @return Pointer to the newly created object (allocated through new).
      */
-    SnmpSyntax* clone() const override
+    [[nodiscard]] SnmpSyntax* clone() const override
     {
         return (SnmpSyntax*)new OctetStr(*this);
     }
@@ -359,6 +361,8 @@ public:
      */
     bool set_len(const uint32_t new_len);
 
+    std::string as_string() const;
+
 protected:
     enum OutputFunction {
         OutputFunctionDefault,
@@ -446,7 +450,10 @@ public:
      *
      * @return Pointer to the newly created object (allocated through new).
      */
-    SnmpSyntax* clone() const override { return new OpaqueStr(*this); }
+    [[nodiscard]] SnmpSyntax* clone() const override
+    {
+        return new OpaqueStr(*this);
+    }
 
     /**
      * Return the syntax.

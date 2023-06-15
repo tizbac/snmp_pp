@@ -168,7 +168,7 @@ public:
      *
      * @return Pointer to a newly created copy of the object.
      */
-    SnmpSyntax* clone() const override
+    [[nodiscard]] SnmpSyntax* clone() const override
     {
         return (SnmpSyntax*)new SnmpUInt32(*this);
     }
@@ -296,7 +296,7 @@ public:
      *
      * @return Pointer to a newly created copy of the object.
      */
-    SnmpSyntax* clone() const override
+    [[nodiscard]] SnmpSyntax* clone() const override
     {
         return (SnmpSyntax*)new SnmpInt32(*this);
     }

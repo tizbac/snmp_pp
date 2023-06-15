@@ -137,7 +137,7 @@ public:
      * @note The caller MUST use the delete operation on the return
      *       value when done.
      */
-    virtual SnmpSyntax* clone() const = 0;
+    [[nodiscard]] virtual SnmpSyntax* clone() const = 0;
 
     /**
      * Virtual destructor to ensure deletion of derived classes...

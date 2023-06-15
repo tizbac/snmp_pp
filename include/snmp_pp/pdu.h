@@ -136,7 +136,7 @@ public:
      *
      * @return Pointer to a newly created Pdu object, that is identical to this
      */
-    Pdu* clone() const { return new Pdu(*this); }
+    [[nodiscard]] Pdu* clone() const { return new Pdu(*this); }
 
     /**
      * Get Pointers to all Vbs from Pdu.

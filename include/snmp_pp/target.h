@@ -208,7 +208,7 @@ public:
      *
      * @return A pointer to the new object on success, 0 on failure.
      */
-    virtual SnmpTarget* clone() const;
+    [[nodiscard]] virtual SnmpTarget* clone() const;
 
     /**
      * Get the address object.
@@ -339,7 +339,7 @@ public:
      *
      * @return A pointer to the new object on success, 0 on failure.
      */
-    SnmpTarget* clone() const override
+    [[nodiscard]] SnmpTarget* clone() const override
     {
         return (SnmpTarget*)new CTarget(*this);
     }
@@ -522,7 +522,7 @@ public:
      *
      * @return A pointer to the new object on success, 0 on failure.
      */
-    SnmpTarget* clone() const override
+    [[nodiscard]] SnmpTarget* clone() const override
     {
         return (SnmpTarget*)new UTarget(*this);
     }

@@ -646,7 +646,10 @@ public:
      *
      * @return Pointer to the newly created object (allocated through new).
      */
-    SnmpSyntax* clone() const override { return (SnmpSyntax*)new Oid(*this); }
+    [[nodiscard]] SnmpSyntax* clone() const override
+    {
+        return /* (SnmpSyntax*) */ new Oid(*this);
+    }
 
     /**
      * Map other SnmpSyntax objects to Oid.
