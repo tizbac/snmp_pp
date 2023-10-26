@@ -3,8 +3,8 @@ BUILD_TYPE?=Debug
 # export CXX=clang++
 # export CC=clang
 
-# export CXX=g++-12
-# export CC=gcc-12
+export CXX=g++
+export CC=gcc
 
 export CMAKE_BUILD_TYPE=$(BUILD_TYPE)
 export CPM_USE_LOCAL_PACKAGES=0
