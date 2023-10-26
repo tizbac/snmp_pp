@@ -123,7 +123,7 @@ public:
      *       modified.
      * @note This function is NOT thread safe.
      */
-    virtual const char* get_printable() const = 0;
+    [[nodiscard]] virtual const char* get_printable() const = 0;
 
     /**
      * Return the current syntax.
@@ -137,7 +137,7 @@ public:
      * @note The caller MUST use the delete operation on the return
      *       value when done.
      */
-    virtual SnmpSyntax* clone() const = 0;
+    [[nodiscard]] virtual SnmpSyntax* clone() const = 0;
 
     /**
      * Virtual destructor to ensure deletion of derived classes...

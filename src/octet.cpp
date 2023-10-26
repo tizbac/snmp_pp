@@ -976,6 +976,11 @@ bool OctetStr::set_len(const uint32_t new_len)
     return true;
 }
 
+std::string OctetStr::as_string() const
+{
+    return { reinterpret_cast<char*>(data()), len() };
+}
+
 #ifdef SNMP_PP_NAMESPACE
 } // end of namespace Snmp_pp
 #endif

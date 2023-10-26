@@ -403,7 +403,7 @@ public:
      *
      * @return Pointer to the newly created object (allocated through new).
      */
-    SnmpSyntax* clone() const override
+    [[nodiscard]] SnmpSyntax* clone() const override
     {
         return (SnmpSyntax*)new IpAddress(*this);
     }
@@ -422,7 +422,7 @@ public:
      *
      * @return String containing the numerical address
      */
-    const char* get_printable() const override
+    [[nodiscard]] const char* get_printable() const override
     {
         if (addr_changed)
         {
@@ -660,7 +660,7 @@ public:
      *
      * @return Pointer to the newly created object (allocated through new).
      */
-    SnmpSyntax* clone() const override
+    [[nodiscard]] SnmpSyntax* clone() const override
     {
         return (SnmpSyntax*)new UdpAddress(*this);
     }
@@ -670,7 +670,7 @@ public:
      *
      * @return String containing the numerical address
      */
-    const char* get_printable() const override
+    [[nodiscard]] const char* get_printable() const override
     {
         if (addr_changed)
         {
@@ -813,14 +813,17 @@ public:
      *
      * @return Pointer to the newly created object (allocated through new).
      */
-    SnmpSyntax* clone() const { return (SnmpSyntax*)new MacAddress(*this); }
+    [[nodiscard]] SnmpSyntax* clone() const
+    {
+        return (SnmpSyntax*)new MacAddress(*this);
+    }
 
     /**
      * Get a printable ASCII value of the address.
      *
      * @return String containing the numerical address
      */
-    virtual const char* get_printable() const
+    [[nodiscard]] virtual const char* get_printable() const
     {
         if (addr_changed)
         {
@@ -938,14 +941,17 @@ public:
      *
      * @return Pointer to the newly created object (allocated through new).
      */
-    SnmpSyntax* clone() const { return (SnmpSyntax*)new IpxAddress(*this); }
+    [[nodiscard]] SnmpSyntax* clone() const
+    {
+        return (SnmpSyntax*)new IpxAddress(*this);
+    }
 
     /**
      * Get a printable ASCII value of the address.
      *
      * @return String containing the numerical address
      */
-    virtual const char* get_printable() const
+    [[nodiscard]] virtual const char* get_printable() const
     {
         if (addr_changed)
         {
@@ -1054,7 +1060,7 @@ public:
      *
      * @return Pointer to the newly created object (allocated through new).
      */
-    SnmpSyntax* clone() const
+    [[nodiscard]] SnmpSyntax* clone() const
     {
         return (SnmpSyntax*)new IpxSockAddress(*this);
     }
@@ -1070,7 +1076,7 @@ public:
      *
      * @return String containing the numerical address
      */
-    virtual const char* get_printable() const
+    [[nodiscard]] virtual const char* get_printable() const
     {
         if (addr_changed)
         {
@@ -1199,7 +1205,7 @@ public:
      *
      * @return Pointer to the newly created object (allocated through new).
      */
-    SnmpSyntax* clone() const override
+    [[nodiscard]] SnmpSyntax* clone() const override
     {
         return (SnmpSyntax*)new GenAddress(*this);
     }
@@ -1226,7 +1232,7 @@ public:
      *
      * @return String containing the numerical address
      */
-    const char* get_printable() const override
+    [[nodiscard]] const char* get_printable() const override
     {
         return (address) ? address->get_printable() : output_buffer;
     }

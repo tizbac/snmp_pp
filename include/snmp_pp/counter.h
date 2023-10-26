@@ -103,7 +103,7 @@ public:
      *
      * @return Pointer to a newly created copy of the object.
      */
-    SnmpSyntax* clone() const override
+    [[nodiscard]] SnmpSyntax* clone() const override
     {
         return (SnmpSyntax*)new Counter32(*this);
     }

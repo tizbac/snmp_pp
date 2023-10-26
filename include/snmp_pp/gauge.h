@@ -111,7 +111,7 @@ public:
      *
      * @return A cloned Gauge32 object allocated through new.
      */
-    SnmpSyntax* clone() const override
+    [[nodiscard]] SnmpSyntax* clone() const override
     {
         return (SnmpSyntax*)new Gauge32(*this);
     }
