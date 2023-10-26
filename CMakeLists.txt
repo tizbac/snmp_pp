@@ -1,11 +1,11 @@
-cmake_minimum_required(VERSION 3.21...3.26)
+cmake_minimum_required(VERSION 3.21...3.27)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # NOTE: We need LANGUAGE C too for libdes. It may be required to build at Windows! CK
 project(
   snmp_pp
-  VERSION 3.4.7.13
+  VERSION 3.4.7.14
   LANGUAGES CXX C
 )
 
@@ -266,7 +266,7 @@ endif()
 
 include(CPM)
 
-CPMAddPackage("gh:aminya/project_options@0.26.3")
+CPMAddPackage("gh:aminya/project_options@0.32.2")
 list(APPEND CMAKE_MODULE_PATH ${ProjectOptions_SRC_DIR})
 
 if(SNMP_PP_OPENSSL)
@@ -600,7 +600,7 @@ endif()
 
 install(FILES ${MY_HEADER_LIB_FILES} DESTINATION include)
 
-CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.10.0")
+CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.11.0")
 packageProject(
   # the name of the target to export
   NAME ${PROJECT_NAME}

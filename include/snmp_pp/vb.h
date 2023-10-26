@@ -69,6 +69,8 @@
 #include "snmp_pp/snmperrs.h"
 #include "snmp_pp/timetick.h" // time ticks
 
+#include <string>
+
 #ifdef SNMP_PP_NAMESPACE
 namespace Snmp_pp
 {
@@ -125,7 +127,7 @@ public:
     /**
      * Clone operator.
      */
-    Vb* clone() const { return new Vb(*this); }
+    [[nodiscard]] Vb* clone() const { return new Vb(*this); }
 
     //-----[ set oid / get oid ]------------------------------------------
 
@@ -247,6 +249,7 @@ public:
      * @return SNMP_CLASS_SUCCESS if the vb value could be assigned to
      *         the passed SnmpSyntax object, else SNMP_CLASS_INVALID.
      */
+    // TODO(CK) [[nodiscard]]
     int get_value(SnmpSyntax& val) const;
 
     /**
@@ -259,6 +262,7 @@ public:
      *
      * @return SNMP_CLASS_SUCCESS on success, else SNMP_CLASS_INVALID.
      */
+    // TODO(CK) [[nodiscard]]
     int get_value(SmiINT32& i) const;
 
     /**
@@ -272,6 +276,7 @@ public:
      *
      * @return SNMP_CLASS_SUCCESS on success, else SNMP_CLASS_INVALID.
      */
+    // TODO(CK) [[nodiscard]]
     int get_value(SmiUINT32& i) const;
 
 #if 0
@@ -284,6 +289,7 @@ public:
      *
      * @return SNMP_CLASS_SUCCESS on success, else SNMP_CLASS_INVALID.
      */
+    // TODO(CK) [[nodiscard]]
     int get_value(long&i) const;
 
     /**
@@ -297,6 +303,7 @@ public:
      *
      * @return SNMP_CLASS_SUCCESS on success, else SNMP_CLASS_INVALID.
      */
+    // TODO(CK) [[nodiscard]]
     int get_value(uint32_t&i) const;
 #endif
 
@@ -310,6 +317,7 @@ public:
      *
      * @return SNMP_CLASS_SUCCESS on success, else SNMP_CLASS_INVALID.
      */
+    // TODO(CK) [[nodiscard]]
     int get_value(pp_uint64& i) const;
 
     /**
@@ -328,6 +336,7 @@ public:
      *
      * @return SNMP_CLASS_SUCCESS on success, else SNMP_CLASS_INVALID.
      */
+    // TODO(CK) [[nodiscard]]
     int get_value(unsigned char* ptr, uint32_t& len) const;
 
     /**
@@ -349,6 +358,7 @@ public:
      *
      * @return SNMP_CLASS_SUCCESS on success, else SNMP_CLASS_INVALID.
      */
+    // TODO(CK) [[nodiscard]]
     int get_value(unsigned char* ptr, uint32_t& len, const uint32_t maxlen,
         const bool add_null_byte = false) const;
 
@@ -358,16 +368,16 @@ public:
      * This method will only return success if the value of the vb is SMI
      * OCTET.
      *
-     * @note The caller must provide a target string big enough to
-     *       handle the vb string. No length checks are done within
-     *       this method. The returned string will be null terminated.
-     *
-     * @param ptr - Pointer to already allocated space to hold the vb
-     *              value. The first char will be set to zero on failure.
+     * @deprecated Use get_value(std::string& str) instead.
      *
      * @return SNMP_CLASS_SUCCESS on success, else SNMP_CLASS_INVALID.
      */
-    int get_value(char* ptr) const;
+#ifndef NO_DEPRECATED
+    [[deprecated]] int get_value(char* ptr) const;
+#endif
+
+    // TODO(CK) [[nodiscard]]
+    int get_value(std::string& str) const;
 
     /**
      * Clone the value portion of the variable binding.
@@ -377,7 +387,7 @@ public:
      * @return
      *    a pointer to a clone of the value of the receiver.
      */
-    SnmpSyntax* clone_value() const
+    [[nodiscard]] SnmpSyntax* clone_value() const
     {
         return (iv_vb_value) ? iv_vb_value->clone() : nullptr;
     }
@@ -390,7 +400,7 @@ public:
      * @return If the SNMPv2 exception status is set, it is returned.
      *         otherwise the syntax of the value object is returned.
      */
-    SmiUINT32 get_syntax() const;
+    [[nodiscard]] SmiUINT32 get_syntax() const;
 
     /**
      * Set the syntax.
@@ -423,14 +433,17 @@ public:
      *
      * @return A null terminated string (empty if no value).
      */
-    const char* get_printable_value() const;
+    [[nodiscard]] const char* get_printable_value() const;
 
     /**
      * Return a formatted version of the Oid.
      *
      * @return A null terminated string (may be empty if no Oid has been set).
      */
-    const char* get_printable_oid() const { return iv_vb_oid.get_printable(); }
+    [[nodiscard]] const char* get_printable_oid() const
+    {
+        return iv_vb_oid.get_printable();
+    }
 
     /**
      * Return the validity of a Vb object.

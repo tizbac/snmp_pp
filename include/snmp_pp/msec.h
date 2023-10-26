@@ -184,7 +184,7 @@ public:
     /**
      * Return the time as printable string.
      */
-    const char* get_printable() const;
+    [[nodiscard]] const char* get_printable() const;
 
 private:
     timeval              m_time = {};

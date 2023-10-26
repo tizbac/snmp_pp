@@ -285,26 +285,47 @@ int Vb::get_value(SnmpSyntax& val) const
     return SNMP_CLASS_INVALID;
 }
 
+#ifndef NO_DEPRECATED
 //--------------[ Vb::get_value(char  *ptr) ]-------------------
 // get a char * from an octet string
 // the user must provide space or
 // memory will be stepped on
 int Vb::get_value(char* ptr) const
 {
+    if (ptr)
+    {
+        if (iv_vb_value && iv_vb_value->valid()
+            && (iv_vb_value->get_syntax() == sNMP_SYNTAX_OCTETS))
+        {
+            auto*          p_os = dynamic_cast<OctetStr*>(iv_vb_value);
+            uint32_t const len  = p_os->len();
+
+            memcpy(ptr, p_os->data(), len);
+            ptr[len] = 0;
+            return SNMP_CLASS_SUCCESS;
+        }
+
+        ptr[0] = 0;
+    }
+    return SNMP_CLASS_INVALID;
+}
+#endif
+
+int Vb::get_value(std::string& str) const
+{
     if (iv_vb_value && iv_vb_value->valid()
         && (iv_vb_value->get_syntax() == sNMP_SYNTAX_OCTETS))
     {
-        auto*          p_os = dynamic_cast<OctetStr*>(iv_vb_value);
-        uint32_t const len  = p_os->len();
-        memcpy(ptr, p_os->data(), len);
-        ptr[len] = 0;
+        auto*        p_os = dynamic_cast<OctetStr*>(iv_vb_value);
+        size_t const len  = p_os->len();
+        std::string  tmp(reinterpret_cast<char*>(p_os->data()), len);
+        str = std::move(tmp);
+
         return SNMP_CLASS_SUCCESS;
     }
 
-    if (ptr)
-    {
-        ptr[0] = 0;
-    }
+    str = "";
+
     return SNMP_CLASS_INVALID;
 }
 

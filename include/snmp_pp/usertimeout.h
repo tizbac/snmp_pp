@@ -102,7 +102,7 @@ public:
         const ut_callback callBack, const void* callData);
     ~CUTEvent() { }
 
-    UtId GetId() { return m_uniqueId; }
+    UtId GetId() const { return m_uniqueId; }
 
     void GetTimeout(msec& timeout) { timeout = m_timeout; }
 

@@ -175,7 +175,7 @@ public:
      *
      * @return Null terminated string.
      */
-    const char* get_printable() const override;
+    [[nodiscard]] const char* get_printable() const override;
 
     /**
      * Get the Syntax of the object.
@@ -189,7 +189,7 @@ public:
      *
      * @return A cloned Counter64 object allocated through new.
      */
-    SnmpSyntax* clone() const override
+    [[nodiscard]] SnmpSyntax* clone() const override
     {
         return (SnmpSyntax*)new Counter64(*this);
     }

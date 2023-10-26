@@ -110,14 +110,14 @@ public:
     /**
      * Get a printable ASCII value.
      */
-    const char* get_printable() const override;
+    [[nodiscard]] const char* get_printable() const override;
 
     /**
      * Clone operator.
      *
      * @return Pointer to a newly created copy of the object.
      */
-    SnmpSyntax* clone() const override
+    [[nodiscard]] SnmpSyntax* clone() const override
     {
         return (SnmpSyntax*)new TimeTicks(*this);
     }
