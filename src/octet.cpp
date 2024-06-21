@@ -925,7 +925,7 @@ bool OctetStr::set_linefeed_chars(const char* lf_chars)
         return false;
     }
 
-    strlcpy(linefeed_chars, lf_chars, sizeof(linefeed_chars));
+    ::strlcpy(linefeed_chars, lf_chars, sizeof(linefeed_chars));
 
     return true;
 }

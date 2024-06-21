@@ -133,9 +133,9 @@ Oid& Oid::operator+=(const char* a)
         OidToStr(&smival.value.oid, n, ptr);
         if (ptr[0])
         {
-            strlcat(ptr, ".", n); // TODO: CWE-119! CK
+            ::strlcat(ptr, ".", n); // TODO: CWE-119! CK
         }
-        strlcat(ptr, a, n);       // TODO: CWE-119! CK
+        ::strlcat(ptr, a, n);       // TODO: CWE-119! CK
 
         delete_oid_ptr();
 
@@ -408,7 +408,7 @@ int Oid::OidToStr(const SmiOID* srcOid, size_t size, char* str) const
         }
 
         // copy the string token into the main string
-        strlcpy(str + totLen, szNumber, size); // TODO: CWE-119! CK
+        ::strlcpy(str + totLen, szNumber, size); // TODO: CWE-119! CK
 
         // adjust the total len
         totLen += cur_len;

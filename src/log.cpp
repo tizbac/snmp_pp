@@ -270,14 +270,14 @@ bool LogEntryImpl::add_string(const char* s)
     size_t const len = strlen(s);
     if (len <= bytes_left())
     {
-        strlcat(ptr, s, MAX_LOG_SIZE);
+        ::strlcat(ptr, s, MAX_LOG_SIZE);
         ptr += len;
         return true;
     }
 
     if (bytes_left() >= 3)
     {
-        strlcat(ptr, "...", MAX_LOG_SIZE);
+        ::strlcat(ptr, "...", MAX_LOG_SIZE);
         ptr += 3;
     }
     output_stopped = true;
