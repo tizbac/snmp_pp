@@ -574,7 +574,7 @@ int IpAddress::parse_dotted_ipstring(const char* inaddr)
         return false;
     }
 
-    strlcpy(temp, inaddr, sizeof(temp));
+    ::strlcpy(temp, inaddr, sizeof(temp));
     trim_white_space(temp);
     if (strlen(temp) > 15)
     {
@@ -676,7 +676,7 @@ int IpAddress::parse_coloned_ipstring(const char* inaddr)
     {
         return false;
     }
-    strlcpy(temp, inaddr, sizeof(temp));
+    ::strlcpy(temp, inaddr, sizeof(temp));
     trim_white_space(temp);
 
     // first check for ipv6 scope
@@ -1068,7 +1068,7 @@ bool IpAddress::parse_address(const char* inaddr)
         return false;
     }
     // now lets check out the dotted string
-    strlcpy(ds, inet_ntoa(lookupResult) sizeof(ds)); // TODO: CWE-119! CK
+    ::strlcpy(ds, inet_ntoa(lookupResult) sizeof(ds)); // TODO: CWE-119! CK
 
     if (!parse_dotted_ipstring(ds))
     {
@@ -1174,7 +1174,7 @@ bool IpAddress::parse_address(const char* inaddr)
                 (void*)&ipAddr, (void*)lookupResult->h_addr, sizeof(in_addr));
 
             // now lets check out the dotted string
-            strlcpy(ds, inet_ntoa(ipAddr),
+            ::strlcpy(ds, inet_ntoa(ipAddr),
                 sizeof(ds)); // TODO: use inet_ntop()! CK
 
             if (!parse_dotted_ipstring(ds))
@@ -1220,7 +1220,7 @@ int IpAddress::addr_to_friendly()
     int  error = 0;
     char ds[MAX_FRIENDLY_NAME];
 
-    strlcpy(ds, this->IpAddress::get_printable(), sizeof(ds));
+    ::strlcpy(ds, this->IpAddress::get_printable(), sizeof(ds));
     memset(&hints, 0, sizeof(hints));
     hints.ai_flags = AI_CANONNAME;
 #    ifdef AI_ADDRCONFIG
@@ -1265,7 +1265,7 @@ int IpAddress::addr_to_friendly()
     char            ds[61];
 
     // lets try and get the friendly name from the DNS
-    strlcpy(
+    ::strlcpy(
         ds, this->IpAddress::get_printable(), sizeof(ds)); // TODO: CWE-119! CK
 
 #    if !(defined(CPU) && CPU == PPC603) && defined HAVE_GETHOSTBYADDR_R
@@ -1886,7 +1886,7 @@ bool UdpAddress::parse_address(const char* inaddr)
 
     if (inaddr && (strlen(inaddr) < MAX_FRIENDLY_NAME))
     {
-        strlcpy(buffer, inaddr, sizeof(buffer));
+        ::strlcpy(buffer, inaddr, sizeof(buffer));
         trim_white_space(buffer);
     }
     else
@@ -2328,7 +2328,7 @@ bool IpxAddress::parse_address(const char* inaddr)
     {
         return false;
     }
-    strlcpy(temp, inaddr, sizeof(ds)); // TODO: CWE-119! CK
+    ::strlcpy(temp, inaddr, sizeof(ds)); // TODO: CWE-119! CK
     trim_white_space(temp);
     tmplen = strlen(temp);
 
@@ -2702,7 +2702,7 @@ bool IpxSockAddress::parse_address(const char* inaddr)
 
     if (inaddr && (strlen(inaddr) < MAX_FRIENDLY_NAME))
     {
-        strlcpy(buffer, inaddr, sizeof(buffer)); // TODO: CWE-119! CK
+        ::strlcpy(buffer, inaddr, sizeof(buffer)); // TODO: CWE-119! CK
     }
     else
     {
@@ -2912,7 +2912,7 @@ bool MacAddress::parse_address(const char* inaddr)
     {
         return false;
     }
-    strlcpy(temp, inaddr, sizeof(temp)); // TODO: CWE-119! CK
+    ::strlcpy(temp, inaddr, sizeof(temp)); // TODO: CWE-119! CK
     trim_white_space(temp);
 
     // bad total length check
